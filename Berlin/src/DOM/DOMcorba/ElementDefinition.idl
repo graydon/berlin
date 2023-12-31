@@ -1,0 +1,24 @@
+#ifndef __ELEMENTDEFINITION__    
+#define __ELEMENTDEFINITION__
+
+module DOM {
+
+   interface ElementDefinition : Node {
+     // ContentType
+     const int            EMPTY                = 1;
+     const int            ANY                  = 2;
+     const int            PCDATA               = 3;
+     const int            MODEL_GROUP          = 4;
+
+     attribute wstring        name;
+     attribute int            contentType;
+     attribute ModelGroup     contentModel;
+     attribute Node           attributeDefinitions;
+     attribute Node           inclusions;
+     attribute Node           exceptions;
+  };
+
+}
+
+
+#endif

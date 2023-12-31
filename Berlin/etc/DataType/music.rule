@@ -1,0 +1,45 @@
+##------------------------------------------------------------------------
+##
+##  Music Formats
+##  -------------
+##
+
+type:	music/midi
+name:	3 '*.midi'
+name:	3 '*.mid'
+magic:	3 0[4] == 'MThd'
+
+type:	music/mus
+name:	3 '*.mus'
+magic:	3 0[4] == 'MUS' 0x1a
+
+type:	music/ctmf
+name:	3 '*.ctmf'
+magic:	3 0[4] == 'CTMF'
+
+type:	music/mtm
+name:	3 '*.mtm'   # ???
+magic:	3 0[3] == 'MTM'
+
+type:	music/669
+name:	3 '*.669'   # ???
+magic:	2 0[2] == 'if'
+
+type:	music/screamtracker
+name:	3 '*.s3m'
+magic:	3 44[4] == 'SCRM'
+
+type:	music/ultimate
+name:	2 '*.ult'   # ???
+magic:	3 0[5] == 'MAS_U'
+
+type:	music/far
+name:	2 '*.far'   # ???
+magic:	3 0[3] == 'FAR'
+
+type:	music/emod
+name:	2 '*.emod'   # ???
+magic:	3 0[4] == 'EMOD'
+
+## What about .MOD (the original) ???
+

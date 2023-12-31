@@ -1,0 +1,73 @@
+##------------------------------------------------------------------------
+##
+##  Font Formats
+##  ------------
+##
+
+type:	font/truetype
+name:	3 '*.ttf'
+magic:	3 0[4] == 0x00 0x01 0x00 0x00 && 12[4] == 'LTSH'
+magic:	3 0[4] == 0x00 0x01 0x00 0x00 && 12[4] == 'OS/2'
+
+type:	font/type1
+name:	3 '*.pfa'
+name:	3 '*.pfb'
+magic:	3 0[18] == '%!PS-AdobeFont-1.0'
+magic:	3 6[18] == '%!PS-AdobeFont-1.0'
+
+type:	font/type1-metrics
+name:	3 '*.afm'
+
+type:	font/type1-encoding
+name:	3 '*.enc'
+
+type:	font/linux-psf
+name:	3 '*.psf'
+magic:	3 0[4] & 0xff 0xff 0xf0 0xc0 == 0x36 0x04 0x00 0x00
+
+type:	font/amiga
+name:	2 '*.font'
+magic:	3 0[4] & 0xff 0xff 0xff 0xe0 == 0x0f 0x00 0x00 0x00
+
+type:	font/X-bdf
+name:	3 '*.bdf'
+magic:	3 0[10] == 'STARTFONT '
+
+type:	font/X-pcf
+name:	3 '*.pcf'
+magic:	3 0[4] == 0x01 'fsp'
+
+type:	font/X-speedo
+name:	3 '*.spd'
+magic:	3 0[6] == 'D1.0' 0x0d 0x0a
+
+type:	font/X-snf
+name:	3 '*.snf'
+
+type:	font/tex-pk
+name:	2 '*0pk'
+name:	2 '*1pk'
+name:	2 '*2pk'
+name:	2 '*3pk'
+name:	2 '*4pk'
+name:	2 '*5pk'
+name:	2 '*6pk'
+name:	2 '*7pk'
+name:	2 '*8pk'
+name:	2 '*9pk'
+magic:	3 0[19] == 0xf7 0x59 0x1f 'METAFONT output '   # correct ???
+
+type:	font/libgrx
+# suffix ???
+magic:	3 0[4] == 0x14 0x02 0x59 0x19
+
+type:	font/vfont
+name:	2 '*.vfont'   # ???
+magic:	2 0[4] == 'FONT'
+
+type:	font/dosvga
+# any reliable suffix ???
+magic:	3 0[4] == 0xff 'FON'
+magic:	3 0[4] == 0x00 'EGA'
+magic:	3 0[4] == 0x00 'VID'
+

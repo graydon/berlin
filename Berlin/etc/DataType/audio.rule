@@ -1,0 +1,74 @@
+##------------------------------------------------------------------------
+##
+##  Audio Formats
+##  -------------
+##
+
+type:	audio/au
+mime:	audio/basic
+name: 3 '*.au'
+name: 3 '*.snd'
+magic:	3 0[4] == '.snd'
+magic:	3 0[4] == 'dns.'
+magic:	3 0[4] == '.sd' 0x00
+magic:	3 0[4] == 0x00 'ds.'
+
+type:	audio/wav
+mime:	audio/x-wav
+name:	3 '*.wav'
+magic:	3 0[4] == 'RIFF' && 8[4] == 'WAVE'
+
+## What is .WAV22 ???
+
+type:	audio/aiff
+mime:	audio/x-aiff
+name:	3 '*.aiff'
+name: 3 '*.aifc'
+name: 3 '*.aif'
+magic:	3 0[4] == 'FORM' && 8[4] == 'AIFF'
+
+type:	audio/8svx
+name:	2 '*.8svx'
+magic:	3 0[4] == 'FORM' && 8[4] == '8SVX'
+
+type:	audio/maud
+name:	3 '*.maud'
+magic:	3 0[4] == 'FORM' && 8[4] == 'MAUD'
+
+type:	audio/realaudio
+mime:	audio/x-pn-realaudio
+name:	3 '*.ram'
+name:	3 '*.ra'
+magic:	3 0[4] == '.ra' 0xfd
+
+type:	audio/voc
+name:	3 '*.voc'
+magic:	3 0[19] == 'Creative Voice File'
+
+type:	audio/psion-wve
+name:	3 '*.wve'
+magic:	3 0[15] == 'ALawSoundFile**'
+
+type:	audio/hcom
+name:	3 '*.hcom'
+magic:	3 0[4] == 'FSSD' && 128[4] == 'HCOM'
+
+type:	audio/fssd
+name:	3 '*.fssd'
+magic:	3 0[4] == 'FSSD'
+
+type:	audio/samplevision
+name:	2 '*.smp'   # ???
+magic:	3 0[22] == 'SOUND SAMPLE DATA 2.1 '
+
+type:	audio/multitrack    ## should this be music ???
+name:	2 '*.ntrk'   # ???
+magic:	3 0[4] == 'NTRK'
+
+type:	audio/cd-r
+name:	3 '*.cdr'
+
+type:	audio/fm-sbi
+name:	3 '*.sbi'
+magic:	3 0[3] == 'SBI'
+

@@ -1,0 +1,241 @@
+ 
+<chapter ID="intro-chapter">
+  <title>Introduction</title>
+  
+    <abstract>
+      <para>
+      The berlin project is an attempt to make a new graphical user
+      interface for computers. This book is intended to teach you what
+      you need to know as a programmer interacting with berlin, either
+      from the inside of the display server or from the outside, as a
+      client. Here we present an overview of the project, its history,
+      motivation, influences, and goals; and an introduction to the
+implementation design</para>      
+    </abstract>
+
+    <sect1 ID="background">
+      <title>Background</title>
+
+      <para>Berlin is a long term project which was conceived of in
+	1996 by Matt Messier and Jim Fetters. It has been intended
+	from the beginning to be a project with a lot of lasting
+	power, one which sacrifices time and energy spent today for
+	the correct long term decisions of tomorrow. Thus, while every
+	emphasis possible was placed on speed and practicality, the
+	overriding design goal was to <emphasis>get it right this
+	time</emphasis>, and avoid the need to make an other graphical
+	environment for the foreseeable future.</para>
+
+      <para>The problems seen with current graphical environments
+	were as follows</para>
+
+      <orderedlist>
+	<listitem>
+	  <para>
+	  Their network transparency schemes all required too much
+	  bandwidth. The balance of power between CPU speed and
+	  network speed strongly favors localized computation.</para>
+	</listitem>
+	<listitem><para>
+	  They were too difficult to extend as new features were
+	  required.</para>
+	</listitem>
+	<listitem><para>
+	  They were not coded in device-independent terms, so
+	  high-resolution or high-color devices were not
+	  automatically taken advantage of.</para>
+	</listitem>
+	<listitem>
+	  <para>Their imaging models were impoverished.</para>
+	</listitem>
+	<listitem>
+	  <para>They did not handle text well, and did not provide well
+	  for non-ASCII text. In particular, ideographic, vertical,
+	  and right-to-left text was very poorly supported.</para>
+	</listitem>
+	<listitem>
+	  <para>They did not encourage component reuse terribly well. In
+	  general, existing windowing systems had too much
+	  interconnected legacy code to be able to produce small,
+	  simple, useful encapsulated graphical components.</para>
+	</listitem>
+      </orderedlist>
+      
+      <para>In order to eliminate these problems, it was decided that pretty
+     much everything above the hardware access level was going to need
+     rewriting. </para>
+      
+      <para>The design was broken up into 3 large blocks of work which
+      would have to be accomplished:</para>
+      
+      <glosslist>
+	
+	<glossentry>
+	  <glossterm>Berlin Core</glossterm>	    
+	  <glossdef>
+	    <para>
+	      The imaging layer, Inter-process communication system,
+	      text processing system, and interface to the hardware.
+	      The first Berlin Core was written as a C library using
+	      Unix IPC mechanisms and custom image processing
+	      routines. The second (and current) Berlin Core uses
+	      OpenGL as its imaging layer, Corba as its IPC system,
+	      and is written in multi-threaded C++. Both relied on
+	      libGGI to access the display devices. </para>
+	  </glossdef>
+	</glossentry>
+	
+	<glossentry>
+	  <glossterm>Warsaw</glossterm>
+	  <glossdef><para>
+	      The API applications would use to communicate with the
+	      berlin core. This would be an object-oriented class
+	      hierarchy, and include a number of "pluggable"
+	      components which could be replaced to control and
+	      customize the look and feel of the system without the
+	      application's knowledge. Warsaw was developed in concert
+	      with the second Berlin Core, and is specified entirely
+	      in OMG IDL, the interface definition language used in
+	      Corba.</para>
+	  </glossdef>
+	</glossentry>
+	
+	<glossentry>
+	  <glossterm>Moscow</glossterm>
+	  <glossdef><para>
+	      The API to common inter-process services, state
+	      preservation, user services, and content type
+	      negotiation. Moscow is still unspecified as of this
+	      writing.</para>
+	  </glossdef>
+	</glossentry>
+	
+      </glosslist>
+      
+      <para>This division of labor turned out to be somewhat artificial,
+      but the "code names" Warsaw and Moscow still persist, and are
+      useful when referring to different levels of
+      abstraction. </para>
+    </sect1>
+
+    <sect1 ID="design">
+      <title>The Design</title>
+      
+      <para>We sought a design which would solve the shortcomings of
+      existing windowing systems while leveraging as much existing,
+      standard software as possible. Our first task was to settle on a
+      means for clients to speak to the display server. Regardless of
+      how much traffic we localized on the server (and it turned out
+      to be a lot), we were still going to need
+      <emphasis>some</emphasis> way of communicating requests back and
+      forth. This lead us to examine IPC mechanisms such as sockets,
+      RPC, ILU, and eventually Corba, RMI and DCOM. It was clear from
+      the developers slant on extensibility and modularity that an OO
+      system (one which made polymorphism and inheritance easy) would
+      be more favorable than a purely procedural one, and that Corba
+      was the only system with wide enough use, flexibility, and
+      reasonable free implementations, so we decided that
+      client/server communication would take place through
+      Corba.</para>
+
+      <para>The actual API was strongly motivated by Fresco (derived
+      from InterViews). This means that we tried to model the GUI in
+      very abstract terms, keep the interfaces intentionally vague,
+      and adhere to recursive structures, generic algorithms and
+      encapsulated delegation of responsibility wherever possible. The
+      details of the interfaces in the current version of the API are
+      available later on in the manual. It is clean, minimal, and
+      breaks up a GUI into easily digestible concepts. It is a
+      work-in-progress and you are welcome to contribute to it.</para>
+
+      <para>In terms of implementing components, it was very important
+      to us that the user be able to "plug in" different
+      look-and-feel, and potentially complete behavior and semantics,
+      and make all connecting client programs use that look-and-feel
+      regardless of the library they were originally linked
+      against. It was felt important that the system be completely
+      thread-safe, and that a high degree of concurrency be achieved
+      not only in principle but in practice -- a lot of time is wasted
+      in a GUI waiting for responses from client programs (especially
+      network bound ones), polling the user, or dumping commands on a
+      graphics card. All of these, we believe, should be executing in
+      separate threads, otherwise the user may experience lag or
+      lock-up, which is extremely unpleasant and breaks the GUI
+      metaphor. It was also considered important that the pluggable
+      parts could be replaced one-by-one as new versions came out, and
+      that no single monolithic upgrade would be required unless a
+      fundamental aspect of the interfaces changed -- the
+      implementations of various components had to be modularized down
+      to the level of separate shared libraries you could just
+      re-arrange on disk to get different behavior. This meant that
+      the components would reside <emphasis>in the display-server
+      process</emphasis> and connecting clients would allocate
+      resources on the server side. In fact, the server will
+      eventually contain various scripting engines and VMs, allowing
+      the clients to dynamically extend the server at runtime. This
+      functionality was put to great use in NeWS; we expect even
+      greater returns given the number of scripting languages with
+      Corba bindings.</para>
+      
+      <para>At the same time as we were talking turkey about
+      components, we were looking at different ways of drawing on the
+      screen. From the beginning, we were interested in using GGI to
+      provide automatic hardware acceleration, device portability and
+      safe user-mode operation. However GGI's imaging abstractions are
+      decidedly weak -- basically you are given access to pixel
+      buffers and some simple pixel-oriented 2d drawing logic. While
+      we were fiddling around making windowing code on top of this and
+      trying to figure out a way to incorporate the powerful high-end
+      imaging layers like Postscript into our work, it was suggested
+      that we adopt OpenGL. Upon close inspection, OpenGL actually has
+      everything you need for sophisticated drawing. It is not merely
+      a 3d library -- it is a very generic and powerful graphics state
+      machine with 2/3d geometry, curves, NURBS, an advanced color
+      system, pixel and clipping management, texture mapping,
+      transparency, atmospheric effects, and various lighting and
+      shading operators. It is highly customizable, and we found
+      virtually everything we wanted buried in the manual
+      somewhere. Add to this the fact that OpenGL is amongst the best
+      supported graphics languages in silicon, and it seemed a winning
+      bet. This notion was met with some hesitation about speed, and
+      although a GGI-based OpenGL implementation already exists
+      (vastly reducing our development time) it was decided to keep
+      the OpenGL-ness hidden from the OO API, such that berlin client
+      programs need not explicitly know (or be forced to know) that
+      they were causing OpenGL commands to be processed. Furthermore,
+      this leaves the door open for non-OpenGL implementations of the
+      display server without upsetting the clients. Such systems as
+      PDAs, which lack the necessary resources to run OpenGL, or text
+      consoles, which have no meaningful representation of most OpenGL
+      operations, should still work with berlin client programs
+      provided suitable display-server components are developed to
+      match the hardware profile.</para>
+      
+      <para>Finally, the issue of how to handle text remained somewhat
+      of a mystery. Luckily, I work for a guy who lives and breathes
+      typography and text, so after lots of recommended reading about
+      unicode, SGML, fonts, glyphs, and document rendering and layout
+      systems, I set about implementing a text processing system in
+      accordance with the ISO recommendations.  This is described in
+      more detail later on, but it should have most of what you'd want
+      as far as flexibility and multilinguality. This brought about a
+      lot of contributed code, very fast. Andrew donated a library
+      which renders most known types of fonts, using the pre-existing
+      freetype and t1lib rasterizers and various data-type recognition
+      schemes; &Aacute;NOQ implemented the W3C's DOM, which you can use for
+      interacting with an SGML/XML document model in memory; and
+      Alistair contributed implementations of a number of key unicode
+      routines.</para>
+      
+    </sect1>
+
+    
+  </chapter>
+
+    <!--
+     Local Variables:
+     mode: sgml
+     sgml-doctype: "berlin-man.sgm"
+     sgml-parent-document: ("berlin-man.sgm" "book" "chapter")
+     End:
+     -->

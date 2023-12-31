@@ -1,0 +1,7 @@
+#!/bin/sh
+# Wrapper script for the Berlin dsiplay server
+
+export WARSAW=/usr/lib/Berlin/Plugins
+export LD_LIBRARY_PATH=$WARSAW
+/usr/lib/Berlin/bin/berlin.real
+# done! ;)

@@ -1,0 +1,46 @@
+##------------------------------------------------------------------------
+##
+##  Video Formats
+##  -------------
+##
+
+type:	video/mpeg
+mime:	video/mpeg
+name:	3 '*.mpeg'
+name:	3 '*.mpg'
+name:	3 '*.mpe'
+magic:	3 0[4] == 0x00 0x00 0x01 0xb3
+
+type:	video/fli
+mime:	video/fli
+name:	3 '*.flc'
+magic:	3 4[2] == 0x11 0xaf
+
+type:	video/flc
+name:	3 '*.flc'
+magic:	3 4[2] == 0x12 0xaf
+
+type:	video/sgi-movie
+mime:	video/x-sgi-movie
+name:	3 '*.movie'
+magic:	3 0[4] == 'MOVI'
+
+type:	video/quicktime
+name:	3 '*.qt'
+name:	3 '*.mov'
+magic:	3 4[4] == 'moov'
+magic:	3 4[4] == 'mdat'
+
+type:	video/msvideo
+mime:	video/msvideo
+name:	3 '*.avi'
+magic:	3 0[4] == 'RIFF' && 8[4] == 'AVI '
+
+type:	video/dl
+name:	3 '*.dl'
+
+type:	video/gl   # what's this ???
+mime:	video/gl
+name:	3 '*.gl'
+# magic ???
+

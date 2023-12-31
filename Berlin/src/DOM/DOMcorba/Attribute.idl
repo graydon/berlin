@@ -1,0 +1,19 @@
+#ifndef __ATTRIBUTE__    
+#define __ATTRIBUTE__
+
+#include "domDefs.idl"
+#include "Node.idl"
+
+//module DOM {
+
+   interface Attrib : Node {
+     wstring             getName();
+     wstring             getValue();
+     attribute boolean        specified;
+     wstring             toString();
+  };
+
+//}
+
+
+#endif

@@ -1,0 +1,4 @@
+This is the top level of the DOM tree.  It contains code implementing the
+Document Object Model, an emerging standard of structured document API
+from the W3C. this implementation is free, works in either corba or 
+non-corba mode, and is not directly dependent on berlin

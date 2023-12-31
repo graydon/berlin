@@ -1,0 +1,183 @@
+/*$Id: Graphic.idl,v 1.14 1999/09/13 21:22:06 gray Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * http://www.berlin-consortium.org
+ *
+ * this code is based on code from Fresco.
+ * Copyright (c) 1987-91 Stanford University
+ * Copyright (c) 1991-94 Silicon Graphics, Inc.
+ * Copyright (c) 1993-94 Fujitsu, Ltd.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Graphic_idl
+#define _Graphic_idl
+
+#include "Types.idl"
+#include "Allocation.idl"
+
+interface Traversal;
+interface DrawTraversal;
+interface PickTraversal;
+interface Region;
+interface Transform;
+interface DrawingKit;
+
+interface Graphic
+//. The Graphic interface defines the common operations for all objects
+//. within the scene graph. Graphics have a size and an origin for the purposes 
+//. of layout. The Graphic interface provides operations for geometry management,
+//. drawing, picking, and a directed-acyclic structure (not strictly hierarchical).
+{
+  struct Requirement
+    //. If the defined flag is true, a requirement specifies
+    //. a natural size, maximum size, minimum size, and
+    //. alignment.  A composite may "stretch" a requirement
+    //. from its natural size to its maximum size or "shrink"
+    //. the requirement from the natural to minimum size.
+    //. It is possible to have negative sizes, such as for
+    //. "backwards" space.  The alignment is a fraction that
+    //. indicates the origin of the area.  An alignment of zero
+    //. means the origin is at the lower coordinate value;
+    //. an alignment of one means it is at the upper coordinate value.
+    //. Alignments can be negative or larger than one to indicate
+    //. the origin is outside the natural position.
+  {
+    boolean defined;
+    Coord natural, maximum, minimum;
+    Alignment align;
+  };
+  struct Requisition
+    //. A requisition contains a requirement for each axis and
+    //. a flag indicating whether the natural aspect ratios
+    //. should be preserved if the graphic is stretched or shrunk.
+  {
+    Requirement x, y, z;
+    boolean preserve_aspect;
+  };
+  /*
+   * structural methods
+   */
+  attribute Graphic body;
+  //. The body attribute defines a graphic as the recipient
+  //. of operations.  Graphics that have a body defined
+  //. are typically "filters" that decorate, align, or
+  //. otherwise adjust the appearance of the body.
+  void append(in Graphic g);
+  void prepend(in Graphic g);
+  //. Add the given graphic to this composite. If the receiver
+  //. is not actually a composite, the operation will be ignored.
+  //. If the receiver has a body graphic, it should pass the operation
+  //. on to the body. In this way, "wrapper" graphics can
+  //. alter appearance without affecting structural operations.
+  void addParent(in Graphic g, in Tag t);
+  void removeParent(in Graphic g, in Tag t);
+  //. Add or remove a parent for this graphic.
+  /*
+   * layout related methods
+   */
+  Transform transformation();
+  //. Return a transformation matrix associated with the graphic.
+  //. If a graphic implementation does not provide a transform,
+  //. this operation will return nil.
+  void request(out Requisition r);
+  //. This operation asks for a graphic's desired geometry.
+  //. The computation should be fast to allow a composite graphic
+  //. to compute rather than store its components' requisitions.
+  //. In general, if a requisition might be expensive to compute
+  //. then a graphic should store its own requisition.  A composite graphic
+  //. therefore generally should store its requisition rather
+  //. than traverse its components.  A composite can assume
+  //. that needResize() will be called if the requisition
+  //. of one of its children changes.
+  void extension(in Allocation::Info a, in Region r);
+  //. This operation extends the given region by the
+  //. bounds of where this graphic would draw when given
+  //. the allocation and transform defined by the Allocation::Info.
+  void shape(in Region r);
+  //. This operation extends the given region by the
+  //. precise shape where this graphic would naturally draw.
+  //. Calling shape may be more costly than calling extension
+  //. (which just computes bounds) and therefore should only
+  //. be called by composites that wish to perform layout
+  //. using the actual area where the object would draw.
+  /*
+   * traversal related
+   */
+  void traverse(in Traversal t);
+  //. Start traversing a graphic and its components.  The traversal
+  //. object defines the operation on each graphic.  Normally,
+  //. a composite will call traverse recursively on each
+  //. of its components.
+  void draw(in DrawTraversal t);
+  //. Display this graphic using the allocation and transformation
+  //. specified by the given traversal.  No clipping or translation
+  //. is automatic for this operation--the allocation specifies
+  //. the position and size of this graphic for the purposes
+  //. of layout.  However, a composite graphic may set clipping
+  //. or transformations on the traversal's DrawingKit before
+  //. the composite draws its children.
+  //.
+  //. Drawing order is important for graphics when
+  //. they overlap in the same plane.  A graphic's draw operation
+  //. therefore should not be called directly, but implicitly
+  //. will be called as part of the screen update process.
+  void pick(in PickTraversal t);
+  //. Find the graphics that intersect a point or rectangle
+  //. specified in screen-relative coordinates.  Conceptually,
+  //. picking is like drawing and determining what graphics
+  //. intersect the point or region.  When pick returns,
+  //. the traversal contains a list of the graphic trails
+  //. that were hit.
+  /*
+   * update related
+   */
+  void allocate(in Tag t, in Allocation::Info i);
+  void allocations(in Allocation a);
+  //. Compute cumulative information for each allocation
+  //. of the graphic's child g. This operation normally need not
+  //. be called directly; instead application objects
+  //. usually call needRedraw or needResize.
+  void needRedraw();
+  void needRedrawRegion(in Region r);
+  //. These operations request that a graphic cause its appearance
+  //. on the screen to be refreshed. If the graphic appears
+  //. in multiple places on the screen or on several screens,
+  //. the graphic should be redrawn in all the places.
+  //. A graphic may choose not to implement these operations
+  //. Under the assumption that update is either not possible
+  //. or will be handled by higher-level graphics.
+  //.
+  //. The needRedraw operation asks that the entire graphic
+  //. be redrawn; needRedrawRegion specifies an area
+  //. relative to the graphic's coordinate space. One use of
+  //. needRedrawRegion is to redraw the region surrounding the 
+  //. merged before and after areas of a transformed graphic.
+  //. 
+  //. Note these operations do not actually cause an immediate
+  //. screen update; they merely notify the system that
+  //. a draw traversal is desired in the near future.
+  void needResize();
+  //. This operation is similar to needRedraw, but
+  //. includes the additional possibility that the graphic's
+  //. natural size has changed.  This operation implies
+  //. two redraw requests (which will be handled with
+  //. a single draw traversal), one for the graphic's original area
+  //. and one for the graphic's new area.
+};
+
+#endif /* _Graphic_idl */

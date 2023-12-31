@@ -1,0 +1,115 @@
+/*$Id: FigureKit.idl,v 1.8 1999/10/04 22:57:11 gray Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+
+#ifndef _FigureKit_idl
+#define _FigureKit_idl
+
+#include "Types.idl"
+#include "Style.idl"
+#include "Cloneable.idl"
+#include "Figure.idl"
+
+interface BoundedValue;
+interface Graphic;
+interface Raster;
+interface Image;
+interface Transformator;
+
+// This kit produces graphics with appropriate logic for rendering
+// abstract shapes.  you input paths, patches, styles (which define
+// attributes like color, line thickness, pattern, etc) and you get
+// back an object which will draw the specified type of object when it
+// is traversed.
+
+interface FigureKit : Cloneable
+{
+  Graphic root(in Graphic g);
+  //. Return a graphic that centers its body by transformation.
+  //. This kind of graphic should be put around a collection
+  //. of figures that are inside a layout object such as a box.
+  Graphic fitter(in Graphic g);
+  //. Return a graphic that simply transforms its body to fit
+  //. into the space available.  That is, a fitter uses
+  //. its allocation and its body's requested size to compute
+  //. a transform to make the two sizes match.  The fitter
+  //. uses this transform during a traversal so that the
+  //. body will be allocated its natural size, but will be
+  //. transformed to drawn within the fitter's area.
+  Graphic group();
+  //. Return a group that can contain one or more figures.
+  Graphic ugroup();
+  //. Return a group that can contain one or more figures but
+  //. acts as a new entity.
+  Figures::Point point(in Coord x, in Coord y);
+  //. Return a figure that draws a point in the foreground color
+  //. of the given style.
+  Figures::Line line(in Coord x0, in Coord y0, in Coord x1, in Coord y1);
+  //. Return a figure that draws a line from (x0,y0) to (x1,y1)
+  //. using the brush and foreground color of the given style.
+  Figures::Rectangle rectangle(in Coord left, in Coord bottom, in Coord right, in Coord top);
+  //. Return a rectangle with lower-left corner (left,bottom) and
+  //. upper-right corner (right,top).  The mode parameter controls
+  //. whether the rectangle is filled, stroked, or both.
+  //. The style parameter controls which brush and colors are used
+  //. for drawing.
+  Figures::Circle circle(in Coord x, in Coord y, in Coord r);
+  //. Return a circle with center (x,y) and radius r.
+  //. The mode parameter controls whether the circle
+  //. is filled, stroked, or both.  The style parameter
+  //. controls which brush and colors are used for drawing.
+  Figures::Ellipse ellipse(in Coord x, in Coord y, in Coord r1, in Coord r2);
+  //. Return an ellipse with center (x,y) and radii r1 and r2.
+  //. The mode parameter controls whether the ellipse
+  //. is filled, stroked, or both.  The style parameter
+  //. controls what brush and colors are used for drawing.
+//   Figures::Path openBspline(in Figure::Vertices v);
+  //. Return a B-spline curve that uses the given vertices
+  //. as control points.  The curve is "open" in that
+  //. the last and first control points are not connected.
+  //. The mode parameter controls whether the area is filled,
+  //. stroked, or both.  The style parameter controls which
+  //. brush and colors are used for drawing.
+//   Figures::Path closedBspline(in Figure::Vertices v);
+  //. Return a B-spline curve that uses the given vertices
+  //. as control points.  The curve is "closed" in that
+  //. the last and first control points are automatically connected.
+  //. The mode parameter controls whether the area is filled,
+  //. stroked, or both.  The style parameter controls which
+  //. brush and colors are used for drawing.
+  Figures::Path multiline(in Figure::Vertices v);
+  //. Return a list of lines defined by pair-wise of vertices,
+  //. effectively yielding an "open" polygon.  The mode parameter
+  //. controls whether the area is filled, stroked, or both.
+  //. The style parameter controls which
+  //. brush and colors are used for drawing.
+  Figures::Path polygon(in Figure::Vertices v);
+  //. Return the polygon defined by the given vertices.
+  //. The last and first vertices are automatically connected.
+  //. The mode parameter controls whether the area is filled,
+  //. stroked, or both.  The style parameter controls which
+  //. brush and colors are used for drawing.
+  Image   pixmap(in Raster r);
+  //. Return a figure that draws the raster.
+  Transformator projection(in Graphic g);
+};
+
+#endif

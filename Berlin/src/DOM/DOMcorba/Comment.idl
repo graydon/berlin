@@ -1,0 +1,15 @@
+#ifndef __COMMENT__    
+#define __COMMENT__
+
+//module DOM {
+
+#include "Node.idl"
+
+   interface Comment : Node {
+     attribute wstring        data;
+  };
+
+//}
+
+
+#endif

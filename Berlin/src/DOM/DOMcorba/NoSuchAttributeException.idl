@@ -1,0 +1,11 @@
+#ifndef __NOSUCHATTRIBUTEEXCEPTION__    
+#define __NOSUCHATTRIBUTEEXCEPTION__
+
+//module DOM {
+
+exception NoSuchAttributeException {};
+
+//};
+
+
+#endif

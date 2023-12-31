@@ -1,0 +1,148 @@
+<sect1 ID="threads">
+  <title>Threads</title>
+  <para>
+      Threads in a UI normally sit in loops of some sort, either
+      polling (yecch) or sleeping between "events". You have two
+      choices as to what happens when a thread receives an event:
+    </para>
+  
+  <orderedlist>
+    <listitem><para>it does everything it's asked to until all logical
+      consequences of the event have occurred, at which point it sleeps
+      again</para></listitem>
+    
+    <listitem><para>it does some small, local task which represents the limit of
+      its responsibility for the issue, and then (if there are other
+      logical consequences) it "passes the buck" to another thread and
+      then goes back to sleep.</para></listitem>
+    
+  </orderedlist>
+  <para>
+      These are the extreme cases. Realistically, you always have some 
+      sort of combination of these two extremes. The thing to remember 
+      is that you don't want to corrupt the user's experience of the
+      UI as a responsive "machine", so if a thread does something
+      akin to #1, it has to finish what it's doing in a reasonable
+      time and get ready to process another event. If the user has
+      generated a new event during processing, and the event has
+      waited in some kind of queue for more than 10ms, the user is
+      going to notice lag. We do not like lag.
+    </para>
+  
+  <para>
+      Since almost every case in a UI is a special case, Warsaw has
+      been constructed in a way which facilitates both of these
+      responses to events naturally, and in varying mixtures. The base
+      class from which most UI elements will be derived is "widget",
+      which includes an inherited class called "reactor". Reactors
+      are common patterns for event-driven systems. They associate
+      particular anonymous functions with certain events the reactor
+      is interested in processing. When the event arrives, the thread
+      wakes up and executes the function. It has no idea what the
+      function does, so the idea is to keep these functions small and
+      fast. You can read more about these in the section on reactors.
+    </para>
+  
+    <para>
+      "But wait" I hear you say, "What if the anonymous function
+      <emphasis>is</emphasis> long-running"? Well, if you have a command you want
+      executed by a new thread, you have a two options:
+    </para>
+
+    <orderedlist>
+      <listitem><para>
+	You can construct a new thread and insert it into the
+	command, detach the thread, then immediately return to
+	processing inside the reactor </para></listitem>
+	
+      <listitem><para>
+	You can have another reactor sitting around which is not
+	particularly busy, and you can run a different command, one
+	which forwards the message to the other reactor.  If it has
+	been set to handle the message you intend for it, it will run
+	the long-running command it has registered as a handler, and
+	your thread is free to go back to handling its events.</para></listitem>
+
+    </orderedlist>
+
+    <para>
+      The second option is particularly appealing if you get half way
+      through processing the message and realize that another object
+      is interested in seeing the message as well, or worse, that your
+      object is not equipped to handle the message. Then you are
+      obliged to have some kind of mechanism for forwarding the
+      message. The obvious thing to do in most cases is to forward the
+      message to your immediate parent in the widget-containment
+      hierarchy. In the special case of UI events (like the user
+      pressing a key) the order of message-passing is most likely
+      reversed: the outermost container passes the event down to the
+      children only if it wants to, or if the children have indicated
+      an interest in seeing the events. If you think about this for a
+      while, you'll see that it's quite powerful and flexible, but
+      only if you have control over which commands get run on arrival
+      of which message. This is exactly what the reactor class allows
+      you to do: you can manufacture any command and bind it to any
+      message. 
+    </para>
+
+    <para>
+      "Hrm" you say, "Sounds slow. Ponderously slow. Lots of copying.
+      Probably hard to debug too". Indeed, these are hard issues to face. 
+      The fact is, if you can't guarantee certain behavior, or at
+      least the presence of certain interface methods, your
+      program might make some very flawed uses of the components it's
+      built out of. The solution, which is a compromise, is to support 
+      object methods as you normally would in an OOP language, but if
+      they are called by an external thread (if they are public) then
+      make sure that they take constant time &lt; 10ms. If you are
+      uncertain how long a method will take to call, or you suspect
+      that a subclass will override it and make it take significantly
+      longer, you should have the method do one of two things:
+    </para>
+  
+  <orderedlist>
+    <listitem><para>
+	construct a message, and place it in the message queue of the
+	object you're calling the method on. The object's own thread
+	will take care of it, and the calling thread will return fast.
+	</para></listitem>
+    
+    <listitem><para>
+	construct a new thread and have it finish off the method,
+	allowing the calling thread to return fast.
+	</para></listitem>
+    
+  </orderedlist>
+  
+  <para>
+      These are abnormally long functions for an outside thread to be
+      calling. If you think about it, 10ms is like tens of millions of pipelined
+      instructions on a modern CPU. So it's a <emphasis>big</emphasis> command. The
+      intent of the above discussion is simply to drive home a point:
+      <emphasis>It's bad etiquette for a public method to gobble up a calling
+	thread for a really long time</emphasis>. The only public methods you
+      should be implementing are those which have performance
+      guarantees well within this guideline, such as get/set type
+      methods for pre-existing data.
+    </para>
+  
+  <para>
+      Now, private or protected methods, those are another story. 
+      Many widgets, if they are large, will have a second thread aside 
+      from the reactor just running the body of some private method.
+      For instance, a 3d-rendering object will likely have a thread
+      which does double-buffered drawing in addition to the reactor
+      thread, so the object can continue to process events regardless
+      of how nasty the rendering operations get. The only important
+      thing in this case is to make sure the threads don't stomp or
+      deadlock each other. 
+    </para>
+</sect1>
+
+    <!--
+     Local Variables:
+     mode: sgml
+     sgml-doctype: "berlin-man.sgm"
+     sgml-parent-document: ("berlin-prog.sgm" "chapter" "sect1")
+     End:
+     -->

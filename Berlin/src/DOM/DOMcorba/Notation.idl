@@ -1,0 +1,16 @@
+#ifndef __NOTATION__    
+#define __NOTATION__
+
+module DOM {
+
+   interface Notation : Node {
+     attribute wstring        name;
+     attribute boolean        isPublic;
+     attribute string         publicIdentifier;
+     attribute string         systemIdentifier;
+  };
+
+}
+
+
+#endif

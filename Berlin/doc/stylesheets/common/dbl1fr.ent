@@ -1,0 +1,73 @@
+<!ENTITY Abstract	"R\latin-small-letter-e-with-acute;sum\latin-small-letter-e-with-acute;">
+<!ENTITY Appendix	"Appendice">
+<!ENTITY Article	"Article">
+<!ENTITY MsgAud		"Public vis\latin-small-letter-e-with-acute;">
+<!ENTITY Bibliography	"Bibliographie">
+<!ENTITY Book		"Livre">
+<!ENTITY CAUTION	"ATTENTION">
+<!ENTITY Caution	"Attention">
+<!ENTITY Chapter	"Chapitre">
+<!ENTITY Copyright	"Copyright">
+<!ENTITY Dedication	"D\latin-small-letter-e-with-acute;dicace">
+<!ENTITY Edition	"\latin-capital-letter-e-with-acute;dition">
+<!ENTITY Equation	"\latin-capital-letter-e-with-acute;quation">
+<!ENTITY Example	"Exemple">
+<!ENTITY Figure		"Illustration">
+<!ENTITY Glossary	"Glossaire">
+<!ENTITY GlossSee       "Voir">
+<!ENTITY GlossSeeAlso   "Voir aussi">
+<!ENTITY IMPORTANT	"IMPORTANT">
+<!ENTITY ISBN		"ISBN">
+<!ENTITY Important	"Important">
+<!ENTITY Index		"Index">
+<!ENTITY LegalNotice	"Note l\latin-small-letter-e-with-acute;gale">
+<!ENTITY MsgLevel	"Niveau">
+<!ENTITY NOTE		"NOTE">
+<!ENTITY RefName	"Nom">
+<!ENTITY Note		"Note">
+<!ENTITY MsgOrig	"Origine">
+<!ENTITY Part		"Partie">
+<!ENTITY Preface	"Pr\latin-small-letter-e-with-acute;face">
+<!ENTITY Procedure	"Proc\latin-small-letter-e-with-acute;dure">
+<!ENTITY Published	"Publi\latin-small-letter-e-with-acute;">
+<!ENTITY Reference	"R\latin-small-letter-e-with-acute;f\latin-small-letter-e-with-acute;rence">
+<!ENTITY Revision	"Version">
+<!ENTITY RevHistory	"Historique des version">
+<!ENTITY Section	"Section">
+<!ENTITY See		"Voir">
+<!ENTITY SeeAlso	"Voir Aussi">
+<!ENTITY Seealso	"Voir aussi">
+<!ENTITY Set		"Ensemble">
+<!ENTITY SetIndex	"Index">
+<!ENTITY Sidebar	"">
+<!ENTITY Step		"Op\latin-small-letter-e-with-acute;ration">
+<!ENTITY TIP		"TUYAU">
+<!ENTITY Table		"Tableau">
+<!ENTITY Tip		"Tuyau">
+<!ENTITY WARNING	"AVERTISSEMENT">
+<!ENTITY Warning	"Avertissement">
+<!ENTITY appendix	"appendice">
+<!ENTITY chapter	"chapitre">
+<!ENTITY section	"section">
+<!ENTITY step		"op\latin-small-letter-e-with-acute;ration">
+
+<!ENTITY TableofContents	"Table des mati\latin-small-letter-e-with-grave;res">
+<!ENTITY in		"dans">
+<!ENTITY by		"par">
+<!ENTITY Edited		"Publi\latin-small-letter-e-with-acute;">
+<!ENTITY Editedby	"&Edited; &by;">
+<!ENTITY and		"et">
+<!ENTITY Notes		"Notes">
+<!ENTITY TableNotes     "Remarques">
+<!ENTITY nonexistantelement	"Cet \latin-small-letter-e-with-acute;l\latin-small-letter-e-with-acute;ment n'existe pas">
+<!ENTITY Pgs 		"Pages">
+<!ENTITY unsupported	"Non-reconnu par le syst\latin-small-letter-e-with-grave;me">
+<!ENTITY xrefto		"R\latin-small-letter-e-with-acute;f\latin-small-letter-e-with-acute;rence vers">
+<!ENTITY unexpectedelementname	"Nom d'\latin-small-letter-e-with-acute;l\latin-small-letter-e-with-acute;ment non attendu">
+
+<!ENTITY ListofTables "Liste des tableaux">
+<!ENTITY ListofExamples "Liste des exemples">
+<!ENTITY ListofFigures "Liste des illustrations">
+<!ENTITY ListofEquations "Liste des \latin-small-letter-e-with-acute;quations">
+<!ENTITY ListofUnknown "Liste des inconnus">
+

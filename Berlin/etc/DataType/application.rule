@@ -1,0 +1,65 @@
+##------------------------------------------------------------------------
+##
+##  Application Formats
+##  -------------------
+##
+
+type:	binary
+mime:	application/octet-stream
+name:	3 '*.bin'
+
+type:	application/libdatatype
+name:	3 'etc/datatypes'
+magic:	3 0[17] == '##$$ DATATYPES $$'
+
+type:	application/makefile
+name:	3 'Makefile'
+name:	3 'makefile'
+name:	3 'GNUmakefile'
+
+type:	application/pkg-datastream   # is this an archive ???
+magic:	3 0[20] == '# PaCkAgE DaTaStReAm'
+
+
+##  Not Done Yet
+##  ------------
+##   
+##  mime  application/cu-seeme		csm cu
+##  mime  application/dca-rft
+##  mime  application/dec-dx
+##  mime  application/excel		xls
+##  mime  application/ghostview		
+##  mime  application/news-message-id
+##  mime  application/news-transmission
+##  mime  application/oda			oda
+##  mime  application/powerpoint		ppt
+##  mime  application/remote-printing
+##  mime  application/slate
+##  mime  application/wita
+##  mime  application/x-123		wk
+##  mime  application/x-Wingz		wz
+##  mime  application/x-hdf		hdf
+##  mime  application/x-httpd-php		phtml pht php
+##  mime  application/x-maker		frm maker frame fm fb book fbdoc
+##  mime  application/x-netcdf		nc cdf
+##  mime  application/x-sv4cpio		sv4cpio
+##  mime  application/x-sv4crc		sv4crc
+##  mime  application/x-tcl		tcl
+##  mime  application/x-ustar		ustar
+##  mime  application/x-wais-source	src
+
+##  Not Supported / Unknown
+##  -----------------------
+##   
+##  mime  application/x-gtar	gtar tgz
+##  
+##  mime  application/activemessage
+##  mime  application/andrew-inset
+##  mime  application/applefile
+##  mime  application/atomicmail
+##  
+##  mime  text/tab-separated-values	tsv
+##  mime  text/x-setext			etx
+##  mime  text/x-vCalendar		vcs
+##  mime  text/x-vCard			vcf
+

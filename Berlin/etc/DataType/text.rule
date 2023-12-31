@@ -1,0 +1,177 @@
+##------------------------------------------------------------------------
+##
+##  Text Formats
+##  ------------
+##
+
+type:	text/plain
+mime:	text/plain
+name:	3 '*.txt'
+name:	3 '*.text'
+name:	3 '*.ascii'
+name:	3 '*.asc'
+
+## The following is nonsense... For text/* datatypes, the third and
+## 4th element should probably contain the charset and language tags.
+## EG: text/plain/iso8859-1/en-US
+
+# type:	text/iso8859-1
+# suffix:	2 'iso1'
+# 
+# type:	text/iso8859-2
+# suffix:	2 'iso2'
+# 
+# type:	text/iso8859-3
+# suffix:	2 'iso3'
+# 
+# type:	text/iso8859-4
+# suffix:	2 'iso4'
+# 
+# type:	text/iso8859-5
+# suffix:	2 'iso5'
+# 
+# type:	text/iso8859-6
+# suffix:	2 'iso6'
+# 
+# type:	text/iso8859-7
+# suffix:	2 'iso7'
+# 
+# type:	text/iso8859-8
+# suffix:	2 'iso8'
+# 
+# type:	text/iso8859-9
+# suffix:	2 'iso9'
+# 
+# type:	text/iso8859-10
+# suffix:	2 'iso10'
+# 
+# type:	text/iso8859-11
+# suffix:	2 'iso11'
+# 
+# type:	text/unicode
+# suffix:	2 'uni'   /* ??? */
+# 
+# type:	text/ebcdic
+# suffix:	2 'ebcdic'   /* these suffixes are probably bogus */
+# suffix:	2 'ebcd'
+# 
+# type:	text/koi8-r
+# type:	text/euc-cn
+# type:	text/euc-jp
+# type:	text/euc-kr
+# type:	text/iso-2022-cn
+# type:	text/iso-2022-jp
+# type:	text/iso-2022-jp-2
+# type:	text/iso-2022-kr
+# type:	text/big5
+# type:	text/shift_jis
+# type:	text/gb2312
+
+type:	text/html
+mime:	text/html
+name:	3 '*.html'
+name:	3 '*.htm'
+magic:	3 0[14] ~= '<!DOCTYPE HTML'
+magic:	2 0[5]  ~= '<HEAD'
+magic:	2 0[6]  ~= '<TITLE'
+magic:	2 0[5]  ~= '<HTML'
+
+type:	text/sgml
+mime:	text/sgml
+name:	3 '*.sgml'
+name:	2 '*.sgm'
+magic:	2 0[9] ~= '<!DOCTYPE'
+magic:	2 0[8] ~= '<!SUBDOC'
+magic:	2 0[4] == '<!--'
+
+type:	text/richtext
+mime:	text/richtext
+name:	3 '*.rtf'
+name:	3 '*.rtx'
+magic:	3 0[5] == '{\rtf'
+
+type:	text/postscript
+mime:	application/postscript
+name:	3 '*.ps'
+name:	2 '*.eps'
+name:	2 '*.epsi'
+name:	1 '*.ai'   # ???
+magic:	3 0[10] == '%!PS-Adobe'
+magic:	1 0[2]  == '%!'
+magic:	3 0[11] == 0x04 '%!PS-Adobe'
+magic:	1 0[3]  == 0x04 '%!'
+
+type:	text/pdf
+mime:	application/pdf
+name:	3 '*.pdf'
+magic:	3 0[5] == '%PDF-'
+
+type:	text/msword
+mime:	application/msword
+name:	3 '*.wrd'
+name:	2 '*.doc'
+name:	2 '*.dot'    # ???
+magic:	3 2080[27] == 'Microsoft Word 6.0 Document'
+magic:	3 0[4] == 0x31 0xbe 0x00 0x00
+
+type:	text/gnu-info
+name:	3 '*.info'
+magic:	3 0[17] == 'This is Info file'
+
+type:	text/texinfo
+mime:	application/x-texinfo
+name:	3 '*.texinfo'
+name:	3 '*.texi'
+magic:	3 0[14] == '\input texinfo'
+
+type:	text/tex
+mime:	application/x-tex
+name:	3 '*.tex'
+magic:	2 0[6] == '\input'
+
+type:	text/latex
+mime:	application/x-latex
+name:	3 '*.latex'
+magic:	2 0[8]  == '\section'
+magic:	2 0[10] == '\setlength'
+magic:	2 0[14] == '\documentstyle'
+magic:	2 0[8]  == '\chapter'
+
+type:	text/dvi
+mime:	application/x-dvi
+name:	3 '*.dvi'
+magic:	3 0[2] == 0xf7 0x02
+
+type:	text/manpage
+mime:	application/x-troff-man
+name:	3 '*.man'
+name:	2 '*.1'
+name:	2 '*.2'
+name:	2 '*.3'
+name:	2 '*.4'
+name:	2 '*.5'
+name:	2 '*.6'
+name:	2 '*.7'
+name:	2 '*.8'
+name:	2 '*.9'
+
+type:	text/ftxt
+magic:	3 0[4] == 'FORM' && 8[4] == 'FTXT'
+name:	2 '*.ftxt'
+
+
+##  Not Done Yet
+##  ------------
+##
+## mime  application/x-troff		t tr roff
+## mime  application/x-troff-man		man
+## mime  application/x-troff-me		me
+## mime  application/x-troff-ms		ms
+## mime  application/wordperfect5.1	wp5
+## mime  application/macwriteii
+
+##  Also Todo
+##  ---------
+##
+## .c .h .cc .hh .cpp .hpp   -- "program/c" ???
+

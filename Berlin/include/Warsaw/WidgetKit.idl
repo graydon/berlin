@@ -1,0 +1,73 @@
+/*$Id: WidgetKit.idl,v 1.21 1999/10/19 21:07:52 gray Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _WidgetKit_idl
+#define _WidgetKit_idl
+
+#include "Cloneable.idl"
+#include "Types.idl"
+#include "Telltale.idl"
+
+interface TelltaleConstraint;
+interface BoundedValue;
+interface BoundedRange;
+interface TextBuffer;
+interface StreamBuffer;
+interface Graphic;
+interface View;
+interface Controller;
+interface Command;
+interface Button;
+
+interface WidgetKit : Cloneable
+//. this kit is a layer on top of the Graphic interface and
+//. CommandKit. It is responsible for creating subjects, and binding
+//. views and controller strategies to the subjects. These amalgams
+//. are usually called "widgets" -- they react to events in a
+//. particular way by modifying the subjects they're bound to.
+{
+  TelltaleConstraint exclusive();
+  TelltaleConstraint selectionRequired();
+  Telltale     normalTelltale();
+  Telltale     constrainedTelltale(in TelltaleConstraint c);
+  BoundedValue bvalue(in Coord l, in Coord u, in Coord v, in Coord s, in Coord p);
+  BoundedRange brange(in Coord l, in Coord u, in Coord lv, in Coord uv, in Coord s, in Coord p);
+  TextBuffer   text();
+  StreamBuffer stream();
+  
+  Graphic      debugger(in Graphic g, in string s);
+  Graphic      inset(in Graphic g, in Color c, in boolean fill);
+  Graphic      outset(in Graphic g, in Color c, in boolean fill);
+  Graphic      filler(in Graphic g, in Color c);
+  Graphic      indicator(in Graphic g, in Color c, in Telltale t);
+  View         pushButtonFrame(in Graphic g, in Color c, in Telltale t);
+  Controller   dragger(in Graphic g, in Command c);
+  Controller   stepper(in Graphic g, in Command c);
+
+  Button       pushButton(in Graphic g, in Color b, in Command c);
+  Controller   toggle(in Graphic g, in Color b);
+  Graphic      gauge(in Color c, in BoundedValue v);
+  Controller   slider(in Color c, in BoundedValue v);
+};
+
+#endif
+

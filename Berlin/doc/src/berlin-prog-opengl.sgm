@@ -1,0 +1,93 @@
+  <sect1 ID="opengl">
+    <title>OpenGL</title>
+    
+    <abstract>
+      <para>While not strictly a part of the OO API for Berlin, OpenGL
+      makes up a large portion of the "guts" of the reference
+      implementation of Berlin. If you are going to work in any
+      serious way with the graphics model, you have to have a cursory
+      understanding of OpenGL.</para>
+    </abstract>
+
+    <sect2 ID="opengl-design">
+      <title>The design of OpenGL</title> 
+
+      <para>OpenGL is a long-standing graphics API put together by a
+      number of big players in the graphics hardware and software
+      field. Its design is not particularly "OOPish", but it is widely
+      available, commonly implemented at least partially in silicon,
+      and has a full free software implementation available (although
+      not officially certified by the OpenGL consortium, as this costs
+      money). You will often hear OpenGL referred to as "one giant
+      state-machine", which is a reasonably accurate description. The
+      API does not define many types of distinct objects -- rather you
+      call commands sequentially and the global OpenGL library /
+      hardware context changes in response to them. This is not the
+      end-all API, but it is simple enough that you can make it work
+      fast and do only what you want. Higher level APIs are built on
+      top of it.</para>
+
+      <para>Its rendering mechanism is set up such that there are a
+      number of distinct stages connected together into a
+      pipeline. The stages may be enabled, configured, and disabled in
+      relative isolation from one another. Thus, while you will often
+      hear OpenGL referred to as a photo-realistic, 3d scene-rendering
+      API, it is in fact very flexible and only attains that sort of
+      complexity when you "turn everything on".  You can just as
+      easily disable the 3d projection, the shading, the lighting
+      model, and get a complete 2d imaging layer, which is what we've
+      done in berlin.</para>
+
+      <para>The imaging model consists of a geometric model, a number
+      of buffers, stacks of spatial transformation matrices and
+      graphics state, and a set of functions you can call to add
+      vertices, lines, curves, surfaces, pixels, and textures to the
+      buffers and geometry model, as well as manipulate the stacks. In
+      addition, there is a set of objects called display-Lists you can
+      allocate within the state-machine, which are "recorded"
+      sequences of commands you can "replay" at a later time, relative
+      to a possibly-different context. Display-Lists do
+      <emphasis>not</emphasis> capture the environment they are
+      created in. Rather, if you want to capture a certain setting,
+      you must make sure you push the "current" setting on a context
+      stack at the beginning the display-List, followed by a command to
+      set the state to the way you want it, and then a context-stack
+      pop at the end of the display-List. Display-Lists can be thought
+      of as dynamically scoped, primitive building blocks out of which
+      you can construct a "program" for drawing.</para>
+
+      <para>This sort of drawing model is not-coincidentally very
+      similar to the one used by postscript. While one does not have
+      the ability to define "subroutines" with parameters, as you can
+      in forth, the structured approach to drawing by composition of
+      display-Lists and context stacks should be familiar territory
+      for postscript hackers. The additional buffers available in
+      OpenGL, such as the texture, stencil, and accumulation buffers
+      are not really put to much use in the current version of
+      berlin. Basically we just use the main color buffer, which is
+      your standard RGBA pixel array. We access it using geometric
+      primitives and auxiliary pixel sources (such as our font
+      rasterizer). Geometric primitives (such as windows) are
+      orthographically projected in our viewing volume onto the
+      screen, managing transparency, occlusion, and linear
+      transformations automatically. The fact that our drawing model
+      does not precisely match the logical graphics model should not
+      concern the reader too much -- we have taken care that the
+      Warsaw API is not particularly bound to OpenGL; rather we are
+      using the parts of OpenGL which supply us with facilities we
+      want, and ignoring or supplementing it where it mismatches the
+      structure of the API. </para>
+
+    </sect2>
+
+
+</sect1>
+
+    <!--
+     Local Variables:
+     mode: sgml
+     sgml-doctype: "berlin-man.sgm"
+     sgml-parent-document: ("berlin-prog.sgm" "chapter" "sect1")
+     End:
+     -->
+ 

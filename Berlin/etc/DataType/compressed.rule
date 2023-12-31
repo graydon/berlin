@@ -1,0 +1,55 @@
+##------------------------------------------------------------------------
+##
+##  Compression Types
+##  -----------------
+##
+
+type:	encoded/compress
+mime:	application/x-compress
+name:	3 '*.z'
+name:	3 '*.Z'
+name:	2 '*.compress'
+magic:	3 0[2] == 0x1f 0x9d
+
+type:	encoded/gzip
+mime:	application/x-gzip
+name:	3 '*.gz'
+name:	3 '*.tgz'
+name:	2 '*.gzip'
+magic:	3 0[2] == 0x1f 0x8b
+
+type:	encoded/bzip
+name:	3 '*.bz'
+name:	3 '*.bz2'
+name:	2 '*.bzip'
+## magic: ???
+
+type:	encoded/pack
+name:	2 '*.pack'
+magic:	3 0[2] == 0x1f 0x1e
+magic:	1 0[2] == 0x1f 0x1f
+
+type:	encoded/compact
+name:	2 '*.compact'
+magic:	2 0[2] == 0xff 0x1f   ## correct ???
+
+type:	encoded/squeeze
+name:	2 '*.squeeze'
+magic:	3 0[2] == 0xff 0x76
+
+type:	encoded/crunch
+name:	2 '*.crunch'
+magic:	3 0[2] == 0xfe 0x76
+
+type:	encoded/freeze
+name:	2 '*.freeze'
+magic:	3 0[2] == 0x1f 0x9f
+magic:	3 0[2] == 0x1f 0x9e
+
+type:	encoded/sco-lzh
+name:	2 '*.scolzh'
+magic:	3 0[2] == 0x1f 0xa0
+
+### suffix-abbreviation: 'tgz' 'tar.gz' ???
+### suffix-abbreviation: 'taz' 'tar.gz' ???
+

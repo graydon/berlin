@@ -1,0 +1,17 @@
+#ifndef __DOCUMENTFRAGMENT__    
+#define __DOCUMENTFRAGMENT__
+
+//module DOM {
+
+#include "Node.idl"
+
+interface Document;
+
+   interface DocumentFragment : Node {
+     attribute Document       masterDoc;
+  };
+
+//}
+
+
+#endif

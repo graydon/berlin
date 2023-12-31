@@ -1,0 +1,6 @@
+* make all classes thread safe
+* use timespec in Time, not timeval (but define conversion operator)
+* use threads within Timer and Agent
+* finish GetOpt class
+
+* test it on different platforms

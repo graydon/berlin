@@ -1,0 +1,122 @@
+##------------------------------------------------------------------------
+##
+##  Archive Formats
+##  ---------------
+##
+
+type:	archive/tar
+mime:	application/x-tar
+name:	3 '*.tar'
+magic:	3 257[6] == 'ustar'   0x00
+magic:	3 257[8] == 'ustar  ' 0x00
+
+type:	archive/debian
+mime:	application/x-debian-package
+name:	3 '*.deb'
+magic:	3 0[7] == '!<arch>' && 8[13] == 'debian-binary'
+
+type:	archive/ar
+name:	3 '*.a'
+name:	3 '*.sa'
+name:	2 '*.ar'    # ???
+magic:	3 0[7] == '!<arch>'
+magic:	2 0[4] == '<ar>'
+
+type:	archive/redhat
+mime:	application/x-redhat-package
+name:	3 '*.rpm'
+magic:	3 0[4] == 0xed 0xab 0xee 0xdb
+
+type:	archive/zip
+mime:	application/zip
+name:	3 '*.zip'
+magic:	3 0[4] == 'PK' 0x03 0x04
+
+type:	archive/cpio
+mime:	application/x-cpio
+name:	3 '*.cpio'
+magic:	3 0[2] == 0x71 0xc7
+magic:	3 0[2] == 0xc7 0x71
+magic:	2 0[6] == '070707'
+magic:	2 0[6] == '070701'
+magic:	2 0[6] == '070702'
+
+## mime: application/x-bcpio, suffix: 'bcpio' ???
+
+type:	archive/lharc
+name:	2 '*.lharc'   # ???
+magic:	3 2[5] == '-lh0-'
+magic:	3 2[5] == '-lh1-'
+magic:	3 2[5] == '-lz4-'
+magic:	3 2[5] == '-lz5-'
+
+type:	archive/lha
+name:	3 '*.lha'
+magic:	3 2[5] == '-lzs-'
+magic:	3 2[5] == '-lh -'
+magic:	3 2[5] == '-lhd-'
+magic:	3 2[5] == '-lh2-'
+magic:	3 2[5] == '-lh3-'
+magic:	3 2[5] == '-lh4-'
+magic:	3 2[5] == '-lh5-'
+
+## What is .LZH ???
+
+type:	archive/zoo
+name:	3 '*.zoo'
+magic:	3 20[4] == 0xdc 0xa7 0xc4 0xfd
+
+type:	archive/arc
+name:	3 '*.arc'
+# This magic is pretty dodgy...
+magic:	2 0[6] & 0xff 0xff 0x80 0x80 0x80 0x80 == 0x1a 0x08 0 0 0 0
+magic:	2 0[6] & 0xff 0xff 0x80 0x80 0x80 0x80 == 0x1a 0x09 0 0 0 0
+magic:	2 0[6] & 0xff 0xff 0x80 0x80 0x80 0x80 == 0x1a 0x02 0 0 0 0
+magic:	2 0[6] & 0xff 0xff 0x80 0x80 0x80 0x80 == 0x1a 0x03 0 0 0 0
+magic:	2 0[6] & 0xff 0xff 0x80 0x80 0x80 0x80 == 0x1a 0x04 0 0 0 0
+magic:	2 0[6] & 0xff 0xff 0x80 0x80 0x80 0x80 == 0x1a 0x06 0 0 0 0
+magic:	1 0[6] & 0xff 0xff 0x80 0x80 0x80 0x80 == 0x1a 0x01 0 0 0 0
+magic:	1 0[6] & 0xff 0xff 0x80 0x80 0x80 0x80 == 0x1a 0x05 0 0 0 0
+magic:	1 0[6] & 0xff 0xff 0x80 0x80 0x80 0x80 == 0x1a 0x07 0 0 0 0
+
+type:	archive/arcfs
+name:	2 '*.arcfs'	# ???
+magic:	3 0[8] == 0x1a 'archive'
+
+type:	archive/arj
+name:	3 '*.arj'
+magic:	3 0[2] == 0x60 0xea
+
+type:	archive/jam
+name:	3 '*.jam'
+magic:	3 0[6] == 0xe9 0x2c 0x01 'JAM'
+
+type:	archive/rar
+name:	3 '*.rar'
+magic:	3 0[4] == 'Rar!'
+
+type:	archive/squish
+name:	2 '*.squish'      # ???
+magic:	3 0[4] == 'SQSH'
+
+type:	archive/shar
+mime:	application/x-shar
+name:	3 '*.shar'
+magic:	3 10[25] == '# This is a shell archive'
+
+type:	archive/hpack
+name:	2 '*.hpack'      # ???
+magic:	3 0[4] == 'HPAK'
+
+type:	archive/ha
+name:	2 '*.ha'    # ???
+magic:	2 0[2] == 'HA'
+
+
+##  Not Done Yet
+##  ------------
+## 
+## type:	archive/mips
+## type:	archive/vax
+## type:	archive/pdp
+

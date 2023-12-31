@@ -1,0 +1,41 @@
+/*$Id: TextBuffer.idl,v 1.2 1999/06/21 16:30:51 gray Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _TextBuffer_idl
+#define _TextBuffer_idl
+
+#include <Subject.idl>
+#include <Types.idl>
+
+interface TextBuffer : Subject
+{
+  readonly attribute long size;
+  attribute long position;
+  void forward();
+  void backward();
+  void shift(in long d);
+  void insertChar(in Unichar u);
+  void insertString(in Unistring u);
+  void removeLeft(in long d);
+  void removeRight(in long d);
+};
+
+#endif /* _TextBuffer_idl */

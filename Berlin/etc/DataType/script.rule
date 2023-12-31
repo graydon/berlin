@@ -1,0 +1,51 @@
+##------------------------------------------------------------------------
+##
+##  Script Formats
+##  --------------
+##
+
+type:	script/sh
+mime:	application/x-sh
+name:	3 '*.sh'
+magic:	3 0[9] == '#!/bin/sh'
+
+type:	script/bash
+mime:	application/x-bash
+name:	3 '*.bash'
+magic:	3 0[11] == '#!/bin/bash'
+
+type:	script/csh
+mime:	application/x-csh
+name:	3 '*.csh'
+magic:	3 0[10] == '#!/bin/csh'
+
+type:	script/ksh
+name:	3 '*.ksh'
+magic:	3 0[10] == '#!/bin/ksh'
+
+type:	script/tcsh
+name:	3 '*.tcsh'
+magic:	3 0[11] == '#!/bin/tcsh'
+
+type:	script/perl
+mime:	application/x-perl
+name:	3 '*.perl'
+name:	3 '*.pl'
+name:	3 '*.pm'
+magic:	3 0[11] == '#!/bin/perl'
+magic:	3 0[15] == '#!/usr/bin/perl'
+
+type:	script/msdos-bat
+mime:	application/x-msdos-program
+name:	3 '*.bat'
+magic:	2 0[6] ~= '@ECHO '
+
+type:	script/javascript
+# suffix ???
+# magic ???
+
+type:	script/rexx
+name:	3 '*.rexx'
+name:	3 '*.rex'
+# magic ???
+

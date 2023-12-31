@@ -1,0 +1,31 @@
+##------------------------------------------------------------------------
+##
+##  Database Formats
+##  ----------------
+##
+
+type:	database/gdbm
+name:	2 '*.gdbm'   # ???
+magic:	3 0[4] == 'GDBM'
+magic:	3 0[4] == 0x13 0x57 0x9a 0xce
+magic:	3 0[4] == 0xce 0x9a 0x57 0x13
+
+type:	database/berkeley-hash
+# suffix: 2 'hash' ???
+magic:	3 0[3] == 0x06 0x15 0x61
+
+type:	database/berkeley-btree
+# suffix: 2 'btree' ???
+magic:	3 0[3] == 0x05 0x31 0x62
+
+type:	database/mkid
+name:	2 '*.mkid'   # ???
+magic:	3 0[2] == 0xc9 0xc4
+
+
+##  Not Done Yet
+##  ------------
+## 
+## type:	database/dbase
+## type:	database/filemaker ???
+

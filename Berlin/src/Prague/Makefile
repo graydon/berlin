@@ -1,0 +1,99 @@
+# Generated automatically from Makefile.in by configure.
+# $Id: Makefile.in,v 1.8 1999/11/10 21:53:51 stefan Exp $
+#
+# This source file is a part of the Berlin Project.
+# Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+# http://www.berlin-consortium.org
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+# Places to install libraries, binaries, etc.
+prefix      = /usr/local
+bindir      = $(prefix)/bin
+libdir      = $(prefix)/lib
+includedir  = $(prefix)/include
+
+SHELL 	    = /bin/sh
+# The C and C++ compilers to use.
+CC          = gcc
+CXX         = g++
+
+# Various programs used in compilation and running of the programs.
+
+AR	    = ar
+YACC	    = bison -y
+FLEX	    = flex
+INSTALL	    = /usr/bin/install -c
+LD	    = ld
+MAKEINFO    = makeinfo
+RANLIB      = ranlib
+TEXI2DVI    = texi2dvi
+TEXI2HTML   = texi2html
+TEX         = 
+DVIPS       = 
+
+# Compilation and linking flags.
+CFLAGS	   	= -Wall -I../../include
+CXXFLAGS   	= -Wall -I../../include -pthread
+LDFLAGS    	= -shared -rdynamic
+OPTFLAGS	= -O3
+SOFLAGS		= -fpic
+GDBFLAGS	= -ggdb -DGDB
+PROFILEFLAGS	= -pg -Winline 
+
+cpath		= config
+ipath		= ../../include
+lpath		= ../../lib
+dpath		= dep
+opath		= obj
+gpath		= gdb
+ppath		= prf
+rpath		= $(lpath)
+
+LIBS		= -ldl -lz -lpthread
+
+TARGET		= $(lpath)/libPrague.so
+
+vpath %.d $(dpath)
+
+world:	$(TARGET)
+		cd Unicode/Blocks; $(MAKE) plugins
+
+include Prague.mk
+
+clean:	
+		rm -f $(opath)/*.o $(gpath)/*.o $(ppath)/*.o $(dpath)/*.d
+		cd Examples; $(MAKE) clean;
+		cd Unicode/Blocks; $(MAKE) clean;
+
+distclean:	clean
+		rm -f $(TARGET)
+		rm -rf $(opath) $(gpath) $(ppath) $(dpath)
+		rm -f config/config.cache config/config.log config/*~
+		cd Examples; $(MAKE) distclean
+
+$(TARGET):	$(OBJ)
+		$(CXX) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
+
+install:
+		install -m755 $(TARGET) $(libdir)
+
+Makefile:	$(cpath)/Makefile.in $(cpath)/config.status
+		cd $(cpath); ./config.status
+
+$(cpath)/config.status:	$(cpath)/configure
+		cd $(cpath); ./config.status --recheck
+

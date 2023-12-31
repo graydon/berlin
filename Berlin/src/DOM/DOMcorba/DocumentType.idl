@@ -1,0 +1,19 @@
+#ifndef __DOCUMENTTYPE__    
+#define __DOCUMENTTYPE__
+
+module DOM {
+
+   interface DocumentType {
+     attribute wstring        name;
+     attribute Node           externalSubset;
+     attribute Node           internalSubset;
+     attribute Node           generalEntities;
+     attribute Node           parameterEntities;
+     attribute Node           notations;
+     attribute Node           elementTypes;
+  };
+
+}
+
+
+#endif

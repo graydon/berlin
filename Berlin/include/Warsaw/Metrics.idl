@@ -1,0 +1,73 @@
+#ifndef __METRICS__
+#define __METRICS__ 
+
+//
+// $Id: Metrics.idl,v 1.1 1999/03/09 05:00:05 gray Exp $
+//
+// This source file is a part of the Berlin Project.
+// Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
+// http://www.berlin-consortium.org
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public License
+// as published by the Free Software Foundation; either version 2 of
+// the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+//
+
+struct FontMetrics {
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // metrics you really need to get out of every font in order 
+    // to do the simplest glyph layout
+    ///////////////////////////////////////////////////////////////////////////////
+    
+    long unitsPerEm;		// the size of the "EM" square, used to determine all other measurements
+    long baseline;		// normal baseline position in EM square   
+    long ascent;		// how high above the baseline the font ever reaches
+    long descent;		// how far below the baseline the font ever reaches
+    long lineGap;		// how much space to leave between (ascent - descent) lines of text
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // additional baselines for use when this font is dominant,
+    // i.e. other fonts are positioned to "line up" with this one
+    ///////////////////////////////////////////////////////////////////////////////
+
+    long ideographicCenteredBaseline; // where to align ideographic glyphs with centered baselines
+    long ideographicLowBaseline; // where to align ideographic glyphs with bottom baselines
+    long topBaseline;		// !!!FIXME!!! what is this for?
+    long mathematicalBaseline;	// where to align mathematical text
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // additional metrics useful in font mapping & substitution, 
+    // or synthesis (yes, you can fabricate fonts on the fly :)
+    ///////////////////////////////////////////////////////////////////////////////
+    
+    long verticalStroke;        //  !!!FIXME!!! what is this for?
+    long capHeight;		// height of a capital letter
+    long xHeight;		// height of the curve in lowercase "h"
+    
+    long stemV;			// thickness of vertical stems (?)
+    long stemH;			// thickness of horizontal stems (?)
+    long ascender;		// height of the vertical line in lowercase "h"
+    long descender;		// negative height of the hook hanging below baseline in lowercase "j"
+    
+    long panose1;		// family classification
+    long panose2;		// more detailed family classification
+    
+    // ... more metrics in here perhaps? ...
+    
+};
+
+
+
+#endif

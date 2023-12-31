@@ -1,0 +1,30 @@
+##------------------------------------------------------------------------
+##
+##  PGP
+##  ---
+##
+
+type:	application/pgp-signature
+mime:	application/pgp-signature
+name:	2 '*.pgp'   # correct ?
+magic:	3 0[25] == '-----BEGIN PGP SIGNATURE-'
+magic:	3 0[25] == '=====BEGIN PGP SIGNATURE='
+
+type:	application/pgp-message
+# suffix: 2 'pgp' ???
+magic:	2 0[30] == '-----BEGIN PGP SIGNED MESSAGE-'
+magic:	2 0[30] == '=====BEGIN PGP SIGNED MESSAGE='
+
+type:	application/pgp-public-ring
+# suffix ???
+magic:	3 0[2] == 0x99 0x00
+
+type:	application/pgp-security-ring
+# suffix ???
+magic:	3 0[2] == 0x95 0x01
+magic:	3 0[2] == 0x95 0x00
+
+type:	encrypted/pgp
+# suffix ???
+magic:	2 0[2] == 0xa6 0x00
+

@@ -1,0 +1,200 @@
+#ifndef __CORE__    
+#define __CORE__
+
+//hb////-*-Mode: C++-*-////////////////////////////////////////////////////////
+//                                                                           //
+// NAME        :                                                             //
+// DESCRIPTION :                                                             //
+// HISTORY     :                                                             //
+//                                                                           //
+//he///////////////////////////////////////////////////////////////////////////
+
+exception NoSuchNodeException {
+};
+exception NotMyChildException {
+};
+
+// Enumerator class for a node list
+interface NodeEnumerator {
+  Node getFirst();
+  Node getNext();
+  Node getPrevious();
+  Node getLast();
+
+  Node getCurrent();
+
+  // The rationale for their existence is that the enumerator may be used
+  // internally to a method, which may return some interesting value, and
+  // therefore cannot also indicate whether the start or end of enumeration
+  // was reached.  Any of the traversal methods affects the state, and
+  // so are not suitable for usage as predicates (unless possible state
+  // manipulation is acceptable).
+  boolean atStart();
+  boolean atEnd();
+};
+
+// Define the type for a sequence of nodes
+interface NodeList {
+  NodeEnumerator getEnumerator();
+
+  Node item(in unsigned long index)
+    raises(NoSuchNodeException);
+
+  // This may be expensive to compute
+  unsigned long getLength();
+};
+
+// Define the type for a sequence of nodes
+interface EditableNodeList : NodeList {
+  void replace(in unsigned long index, in Node replacedNode) 
+    raises (NoSuchNodeException);
+
+  void insert(in unsigned long index, in Node newNode) 
+    raises (NoSuchNodeException);
+
+  Node remove(in unsigned long index)
+    raises (NoSuchNodeException);
+};
+
+// Interface to a node in a grove
+interface Node {
+  enum NodeType {
+    DOCUMENT,
+    ELEMENT,
+    ATTRIBUTE,
+    PI,
+    COMMENT,
+    TEXT
+    };
+
+  NodeType getNodeType();
+
+  // Simple traversal interface
+  Node     getParentNode();
+  NodeList getChildren();
+  boolean  hasChildren();
+  Node     getFirstChild();
+  Node     getPreviousSibling();
+  Node     getNextSibling();
+
+  void insertBefore(in Node newChild, in Node refChild)
+    raises (NotMyChildException);
+
+  Node replaceChild(in Node oldChild, in Node newChild)
+    raises (NotMyChildException);
+
+  Node removeChild(in Node oldChild)
+    raises (NotMyChildException);
+};
+
+// Named node list
+interface NamedNodeList {
+  // Core get and set interface. Note that implementations may
+  // build the list lazily
+  Node getNode(in wstring name);
+  Node setNode(in wstring name, in Node aNode);
+ 
+  Node remove(in wstring name) raises (NoSuchNodeException);
+ 
+  Node item(in unsigned long index)
+    raises(NoSuchNodeException);
+ 
+  unsigned long getLength();
+ 
+  NodeEnumerator getEnumerator();
+};
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// OBJECTS RELATED TO THE DOM ITSELF                                    //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+interface DOM {
+  DOMFactory  getFactory();
+};
+
+interface DOMFactory {
+  Document          createDocument();
+  DocumentContext   createDocumentContext();
+  Element           createElement(in wstring tagName, 
+				  in AttributeList attributes);
+  Text              createTextNode(in wstring data);
+  Comment           createComment(in wstring data);
+  PI                createPI(in wstring name, in wstring data);
+  Attribute         createAttribute(in wstring name, in NodeList value);
+};
+
+interface DocumentContext {
+  attribute Document	theDocument;//FIXME: Was: document
+};
+
+interface Document : Node {
+  attribute Node        documentType;
+  attribute Element 	documentElement;
+  NodeEnumerator        getElementsByTagName(in wstring name);
+};
+
+//////////////////////////////////////////////////////////////////////////
+//                                                                      //
+// OBJECTS RELATED TO THE INSTANCE                                      //
+//                                                                      //
+//////////////////////////////////////////////////////////////////////////
+
+interface Attribute : Node {
+  // ?? In the spec is has getName()
+  attribute wstring   name;
+
+  attribute NodeList  value;
+
+  attribute boolean	specified;
+
+  // provides a connection to the DTD 
+  // attribute Node  	definition;
+
+  wstring toString();
+};
+
+// Attribute list
+interface AttributeList {
+  Attribute getAttribute(in wstring name);
+  Attribute setAttribute(in wstring name, in Attribute attr);
+
+  Attribute remove(in wstring name) 
+    raises (NoSuchNodeException);
+
+  Node item(in unsigned long index)
+    raises(NoSuchNodeException);
+
+  unsigned long getLength();
+};
+
+// Processing Instruction
+interface PI : Node {
+  attribute wstring 	name;
+  attribute wstring 	data;
+};
+
+interface Element : Node {
+  // ?? In the spec is has getTagName()
+  attribute wstring	tagName;
+
+  attribute AttributeList  attributes;
+
+  void setAttribute(in Attribute newAttr);
+
+  NodeEnumerator getElementsByTagName(in wstring name);
+};
+
+// Represents the content of <!-- ... -->
+interface Comment : Node {
+  attribute wstring	data;
+};
+
+interface Text : Node {
+  attribute wstring    data;
+
+  attribute boolean isIgnorableWhitespace;
+};
+
+#endif

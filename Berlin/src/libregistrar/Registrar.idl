@@ -1,0 +1,137 @@
+//
+// $Id: Registrar.idl,v 1.2 1998/12/31 04:58:13 gray Exp $
+//
+// This source file is a part of the Berlin Project.
+// Copyright (C) 1998 Jordan Mendelson <jordy@wserv.com> 
+// http://www.berlin-consortium.org
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public License
+// as published by the Free Software Foundation; either version 2 of
+// the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+//
+#ifndef __REGISTRAR_IDL__
+#define __REGISTRAR_IDL__
+
+/** 
+ * Registrar is a general purpose hierarchial configuration database.
+ *
+ * @author Jordan Mendelson
+ * @version $Revision: 1.2 $
+ */
+interface Registrar {
+    typedef sequence<string> keys;
+    typedef sequence<any> values;
+
+    struct keyaccess {
+        short mode;
+        long uid;
+        long gid;
+    };
+
+    struct keypair {
+        any value;
+        long type;
+        long ctime;
+        long mtime;
+        keyaccess perms;
+    };
+
+    struct binary {
+        string value;
+        long length;
+    };
+
+    typedef sequence<keypair> keypairs;
+
+    exception NotFound {};
+    exception InvalidName {};
+    exception InvalidType {};
+    exception PermissionDenied {};
+    exception EntryExists {};
+    exception InternalError {
+        string Error;
+    };
+
+    long createKey(in string key, in keyaccess perms)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long deleteKey(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long getValueType(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    short getBooleanValue(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied,
+               InvalidType);
+
+    long getIntegerValue(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied,
+               InvalidType);
+
+    string getStringValue(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied,
+               InvalidType);
+
+    binary getBinaryValue(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied,
+               InvalidType);
+
+    any getValue(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long setBooleanValue(in string key, in short value)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long setIntegerValue(in string key, in long value)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long setStringValue(in string key, in string value)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long setBinaryValue(in string key, in binary value)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long setValue(in string key, in any value)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied,
+               InvalidType);
+
+    long deleteValue(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    keypair getKeyPair(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    keys enumKeys(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    keyaccess getSecurityInfo(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long setSecurityInfo(in string key, in keyaccess perms)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long watchKey(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long lockKey(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    long unlockKey(in string key)
+        raises(NotFound, InternalError, InvalidName, PermissionDenied);
+
+    string getVersion();
+};
+
+#endif /* __REGISTRAR_IDL__ */

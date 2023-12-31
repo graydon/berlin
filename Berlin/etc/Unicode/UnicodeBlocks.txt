@@ -1,0 +1,103 @@
+# This file is generated from Block-3.txt
+# available at ftp://ftp.unicode.org/Public/UNIDATA/
+# 
+# HEADER:
+# contains the number of lines in the body:
+88
+#
+# BODY
+# blockstart blockend filename-of-relevant-plugin
+0000 007F ../../modules/Unicode/0000-007F=Basic_Latin.so
+0080 00FF ../../modules/Unicode/0080-00FF=Latin-1_Supplement.so
+0100 017F ../../modules/Unicode/0100-017F=Latin_Extended-A.so
+0180 024F ../../modules/Unicode/0180-024F=Latin_Extended-B.so
+0250 02AF ../../modules/Unicode/0250-02AF=IPA_Extensions.so
+02B0 02FF ../../modules/Unicode/02B0-02FF=Spacing_Modifier_Letters.so
+0300 036F ../../modules/Unicode/0300-036F=Combining_Diacritical_Marks.so
+0370 03FF ../../modules/Unicode/0370-03FF=Greek.so
+0400 04FF unsupported
+0530 058F unsupported
+0590 05FF unsupported
+0600 06FF unsupported
+0700 074F unsupported
+0780 07BF unsupported
+0900 097F unsupported
+0980 09FF unsupported
+0A00 0A7F unsupported
+0A80 0AFF unsupported
+0B00 0B7F unsupported
+0B80 0BFF unsupported
+0C00 0C7F unsupported
+0C80 0CFF unsupported
+0D00 0D7F unsupported
+0D80 0DFF unsupported
+0E00 0E7F unsupported
+0E80 0EFF unsupported
+0F00 0FFF unsupported
+1000 109F unsupported
+10A0 10FF unsupported
+1100 11FF unsupported
+1200 137F unsupported
+13A0 13FF unsupported
+1400 167F unsupported
+1680 169F unsupported
+16A0 16FF unsupported
+1780 17FF unsupported
+1800 18AF unsupported
+1E00 1EFF unsupported
+1F00 1FFF unsupported
+2000 206F unsupported
+2070 209F unsupported
+20A0 20CF unsupported
+20D0 20FF unsupported
+2100 214F unsupported
+2150 218F unsupported
+2190 21FF unsupported
+2200 22FF unsupported
+2300 23FF unsupported
+2400 243F unsupported
+2440 245F unsupported
+2460 24FF unsupported
+2500 257F unsupported
+2580 259F unsupported
+25A0 25FF unsupported
+2600 26FF unsupported
+2700 27BF unsupported
+2800 28FF unsupported
+2E80 2EFF unsupported
+2F00 2FDF unsupported
+2FF0 2FFF unsupported
+3000 303F unsupported
+3040 309F unsupported
+30A0 30FF unsupported
+3100 312F unsupported
+3130 318F unsupported
+3190 319F unsupported
+31A0 31BF unsupported
+3200 32FF unsupported
+3300 33FF unsupported
+3400 4DB5 ../../modules/Unicode/3400-4DB5=CJK_Unified_Ideographs_Extension_A.so
+4E00 9FFF ../../modules/Unicode/4E00-9FFF=CJK_Unified_Ideographs.so
+A000 A48F unsupported
+A490 A4CF unsupported
+AC00 D7A3 ../../modules/Unicode/AC00-D7A3=Hangul_Syllables.so
+D800 DB7F ../../modules/Unicode/D800-DB7F=High_Surrogates.so
+DB80 DBFF ../../modules/Unicode/DB80-DBFF=High_Private_Use_Surrogates.so
+DC00 DFFF ../../modules/Unicode/DC00-DFFF=Low_Surrogates.so
+E000 F8FF ../../modules/Unicode/E000-F8FF=Private_Use.so
+F900 FAFF unsupported
+FB00 FB4F unsupported
+FB50 FDFF unsupported
+FE20 FE2F unsupported
+FE30 FE4F unsupported
+FE50 FE6F unsupported
+FE70 FEFE unsupported
+FEFF FEFF unsupported
+FF00 FFEF unsupported
+FFF0 FFFD unsupported
+#
+# FOOTER
+#
+# String of unicode characters representing the
+# version of the Block.txt file (here: 3.0.0)
+# 0x0033 0x002E 0x0030 0x002E 0x0030

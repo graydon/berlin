@@ -1,0 +1,50 @@
+1999-04-10  graydon@pobox.com  <graydon@pobox.com>
+
+	* CommandKit.idl: added import
+
+1999-03-09  graydon@pobox.com  <graydon@pobox.com>
+
+	* Text.idl: Modified text to use new typenames, graphic
+	requisitions, etc.
+
+	* Makefile: cleaned up makefile, conformed it to berlin build
+	process
+
+	* Types.idl: added Text Types to standard types
+
+1999-03-08  graydon@pobox.com  <graydon@pobox.com>
+
+	* Reactor.idl: added the ___init() methods to reactor construction
+
+	* Metrics.idl: removed glyphMetrics since they are subsumed by the
+	requirements structure in the layout kit
+
+1999-03-08  gray  <gray@dub>
+
+	* Telltale.idl, Makefile, Types.idl, config.hh:
+	*** empty log message ***
+
+	* ClientContext.idl, Cloneable.idl, Message.idl, Reactor.idl, TextTypes.idl:
+	new integration from the last version of libwarsaw
+
+1999-03-04  gray  <gray@dub> (stefan)
+
+	* LayoutKit.idl, Makefile, Pencil.idl, Traversal.idl:
+	*** empty log message ***
+
+1999-03-02  gray  <gray@dub> (stefan)
+
+	* Collector.idl, Makefile, LayoutKit.idl, config.hh, DrawingKit.idl, Graphic.idl:
+	*** empty log message ***
+
+1999-02-22  gray  <gray@dub> (stefan)
+
+	* Damage.idl, Graphic.idl, Screen.idl: some minor bug fixes...
+
+1999-02-19  gray  <gray@dub> (stefan)
+
+	* Drawable.idl: *** empty log message ***
+
+	* BoundedValue.idl, Damage.idl, Drawable.idl, DrawingKit.idl, Graphic.idl, Grid.idl, LayoutKit.idl, Pencil.idl, Region.idl, Screen.idl, Subject.idl, Transform.idl, Traversal.idl, Types.idl:
+	initial checkin
+

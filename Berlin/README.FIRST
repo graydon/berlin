@@ -1,0 +1,51 @@
+Welcome to the Berlin windowing system
+
+The current release is 0.1.2, which means it is not even into the stage
+where the most adventuresome users will gain any productivity from
+it. It's a *developer's* release. If you want to help develop berlin,
+you can work off this release with some modicum of confidence and
+convenience. 
+
+If you're unpacked the entire source tree, and you meet the prerequisites
+(see below) you should be able to run:
+
+# make config
+# make
+
+with little difficulty. When (if) the build finishes, you will find
+several test applications in the /test directory. You must have omniNames
+running for any of these to work. 
+
+# runtest.sh server &
+# runtest.sh demo &
+
+
+PREREQUISITES
+~~~~~~~~~~~~~
+
+Testing has been confined to an extremely narrow environment. The
+facilities we build & test with are:
+
+ * linux 2.2.x
+ * g++ 2.9 +
+ * glibc 2.1.1 & pthreads
+ * libstdc++ 2.9 & devel
+ * libggi 2.0 beta 2.1 & devel
+ * Mesa 3.1b3 (targetted at GGI) & devel
+ * omniORB 2.7.1
+
+Please do not hesitate to customize the build process for an
+additional platform and send us patches to this tree. If it builds
+naked on any configuration other than the above mentionned, please
+report this fact to us as well. If you encounter any bugs, please let
+us know. This whole process relies on you communicating your
+experiences back to the people who wrote it.
+
+Questions / comments are best directed towards the mailing list:
+  design@berlin-consortium.org
+
+Archives of the mailing list & FAQ are on our web site: 
+  http://www.berlin-consortium.org
+
+Hope you enjoy it
+-graydon <graydon@pobox.com>

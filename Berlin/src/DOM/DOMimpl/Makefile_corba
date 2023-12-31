@@ -1,0 +1,25 @@
+TOPDIR=../..
+OS_ARCH='Linux'
+
+DIR_INCLUDES = -I$(TOPDIR)/src/DOMcorba  -I. 
+DIR_CXXFLAGS = -rdynamic
+DIR_CPPFLAGS = -D_MIT_POSIX_THREADS -D_REENTRANT
+DIR_LDFLAGS  = -lomniORB2 -lomnithread -lpthread -ltcpwrapGK -lomniLC \
+               -lstdc++ -ldl
+
+CXXSRCS = domString.cc domText_impl.cc domAttrib_impl.cc testIt.cc \
+          domElement_impl.cc domNode_impl.cc domNodeIterator_impl.cc \
+          domAttributeList_impl.cc domDocument_impl.cc
+
+CXXOBJS = domString.o domText_impl.o domAttrib_impl.o testIt.o \
+          domElement_impl.o domNode_impl.o domNodeIterator_impl.o \
+          domAttributeList_impl.o domDocument_impl.o
+
+EX_TARGET = testText
+
+EX_OBJS_testText = $(CXXSRCS:.cc=.o) ../DOMcorba/*SK.o
+EX_CFLAGS_testText = -rdynamic
+
+
+include $(TOPDIR)/config/rules.mk
+

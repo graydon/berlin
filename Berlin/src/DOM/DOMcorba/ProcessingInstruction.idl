@@ -1,0 +1,16 @@
+#ifndef __PROCESSINGINSTRUCTION__    
+#define __PROCESSINGINSTRUCTION__
+
+//module DOM {
+
+#include "Node.idl"
+
+   interface ProcessingInstruction : Node {
+     attribute wstring        name;
+     attribute wstring        data;
+  };
+
+//}
+
+
+#endif

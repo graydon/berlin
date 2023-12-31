@@ -1,0 +1,34 @@
+#ifndef __ATTRIBUTEDEFINITION__    
+#define __ATTRIBUTEDEFINITION__
+
+module DOM {
+
+   interface AttributeDefinition : Node {
+     // DeclaredValueType
+     const int            CDATA                = 1;
+     const int            ID                   = 2;
+     const int            IDREF                = 3;
+     const int            IDREFS               = 4;
+     const int            ENTITY               = 5;
+     const int            ENTITIES             = 6;
+     const int            NMTOKEN              = 7;
+     const int            NMTOKENS             = 8;
+     const int            NOTATION             = 9;
+     const int            NAME_TOKEN_GROUP     = 10;
+
+     // DefaultValueType
+     const int            FIXED                = 1;
+     const int            REQUIRED             = 2;
+     const int            IMPLIED              = 3;
+
+     attribute wstring        name;
+     attribute StringList     allowedTokens;
+     attribute int            declaredType;
+     attribute int            defaultType;
+     attribute Node           defaultValue;
+  };
+
+}
+
+
+#endif

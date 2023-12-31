@@ -1,0 +1,5 @@
+This is the top level of the library tree.  It contains the main library
+binaries of the Berlin server, the warsaw library, and any test programs.
+Several subdirectories contain the plugin libraries used for dynamic binding
+of widgets, commands, and other CORBA objects.  You should add this
+directory to your LD_LIBRARY_PATH envrionmental variable

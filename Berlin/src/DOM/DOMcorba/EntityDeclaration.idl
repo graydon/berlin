@@ -1,0 +1,14 @@
+#ifndef __ENTITYDECLARATION__    
+#define __ENTITYDECLARATION__
+
+module DOM {
+
+   interface EntityDeclaration {
+     attribute wstring        replacementString;
+     attribute DocumentFragmentreplacementSubtree;
+  };
+
+}
+
+
+#endif

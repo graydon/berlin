@@ -1,0 +1,51 @@
+/*$Id: CommandKit.idl,v 1.8 1999/08/26 13:55:39 gray Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _CommandKit_idl
+#define _CommandKit_idl
+
+#include "Cloneable.idl"
+#include "Command.idl"
+
+interface CommandKit : Cloneable
+//. the command kit is a collection of strategy objects. they form the
+//. basis of any control protocol between widgets and subjects. The
+//. kit also encapsulates the constructors for command dispatchers
+//. (a.k.a. reactors), which you can think of as threading strategies
+//. if that suits you.
+{  
+  // this usually results in a reactor with its own thread for
+  // processing Messages, so when you send it a Message the call
+  // returns in constant time
+  Reactor asyncReactor(in ReactorBindingList initialBindings);
+  
+  // whereas this results in a reactor which consumes the calling
+  // thread during Message receipt
+  Reactor syncReactor(in ReactorBindingList initialBindings);
+  
+  Command sendMessage(in Message msgToSend, in MessageListener recipient);
+  Command forwardMessage(in MessageListener recipient);
+  Command log(in string t);
+  // more commands to follow in here
+};
+
+#endif /* _CommandKit_idl */

@@ -1,0 +1,6 @@
+This directory currently contains 2 *separate* implementations of the berlin
+class libraries. This is an unfortunate side effect of the fact that we're 
+in the middle of a rewrite and still porting some bits and pieces. It's easy
+to tell apart though -- the new stuff is all in the UpperCase directories, 
+and the old stuff is in lowercase. Simple. We'll be adding in more roadmaps
+as time goes on, so keep your pants on.

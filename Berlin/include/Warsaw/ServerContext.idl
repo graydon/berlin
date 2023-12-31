@@ -1,0 +1,72 @@
+/*$Id: ServerContext.idl,v 1.5 1999/09/10 20:57:37 gray Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _ServerContext_idl
+#define _ServerContext_idl
+
+module CosLifeCycle
+{
+  interface FactoryFinder;
+  interface LifeCycleObject;
+};
+
+interface ClientContext;
+
+exception SecurityException {};
+exception SingletonFailureException {};
+exception CreationFailureException {};
+
+interface ServerContext
+//. the ServerContext is an object you pick up from the berlin
+//. server's root ContextManager, and which you use to create all
+//. generic interfaces (kits, plugins, etc) using a thin layer around
+//. the COS GenericFactory mechanism. If you need to invoke any of the
+//. Lifecycle operations using a FactoryFinder, you can do so using the
+//. attribute of the serverContext. It will always resolve to the
+//. GenericFactory running inside the berlin server you're connected
+//. to.
+{    
+  readonly attribute ClientContext client;
+  readonly attribute ::CosLifeCycle::FactoryFinder factoryFinder;
+
+  // this is the entry point to generic object creation on a server. 
+  Object create(in string interfaceName) 
+    raises (SecurityException, CreationFailureException);
+    
+  // access to singletons (like the fontManager) this way
+  void setSingleton(in string name, in Object singleton) 
+    raises (SecurityException, SingletonFailureException);
+
+  void delSingleton(in string name)
+    raises (SecurityException, SingletonFailureException);
+
+  Object getSingleton(in string name) 
+    raises (SecurityException, SingletonFailureException);
+};
+
+// this is the "super-context" -- the entry point for all new contexts.
+interface ServerContextManager
+{
+  ServerContext newServerContext(in ClientContext C) raises (SecurityException);
+};
+
+
+#endif

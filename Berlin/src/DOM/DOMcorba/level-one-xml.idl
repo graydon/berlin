@@ -1,0 +1,119 @@
+#ifndef __XML__    
+#define __XML__
+
+module DOM.XML {
+
+   interface XMLNode {
+     Node                getParentXMLNode(in boolean expandEntities);
+     NodeIterator        getChildXMLNodes(in boolean expandEntities);
+     boolean             hasChildXMLNodes(in boolean expandEntities);
+     Node                getFirstXMLChild(in boolean expandEntities);
+     Node                getPreviousXMLSibling(in boolean expandEntities);
+     Node                getNextXMLSibling(in boolean expandEntities);
+     EntityReference     getEntityReference();
+     EntityDeclaration   getEntityDeclaration();
+  };
+
+  interface DocumentType {
+    attribute wstring        name;
+    attribute Node           externalSubset;
+    attribute Node           internalSubset;
+    attribute Node           generalEntities;
+    attribute Node           parameterEntities;
+    attribute Node           notations;
+    attribute Node           elementTypes;
+ };
+
+ interface ElementDefinition : Node {
+   // ContentType
+   const int            EMPTY                = 1;
+   const int            ANY                  = 2;
+   const int            PCDATA               = 3;
+   const int            MODEL_GROUP          = 4;
+
+   attribute wstring        name;
+   attribute int            contentType;
+   attribute ModelGroup     contentModel;
+   attribute Node           attributeDefinitions;
+   attribute Node           inclusions;
+   attribute Node           exceptions;
+};
+
+interface PCDATAToken : Node {
+};
+
+interface ElementToken : Node {
+  // OccurrenceType
+  const int            OPT                  = 1;
+  const int            PLUS                 = 2;
+  const int            REP                  = 3;
+
+  attribute wstring        name;
+  attribute int            occurrence;
+};
+
+interface ModelGroup : Node {
+  // OccurrenceType
+  const int            OPT                  = 1;
+  const int            PLUS                 = 2;
+  const int            REP                  = 3;
+
+  // ConnectionType
+  const int            OR                   = 1;
+  const int            SEQ                  = 2;
+  const int            AND                  = 3;
+
+  attribute int            occurrence;
+  attribute int            connector;
+  attribute Node           tokens;
+};
+
+interface AttributeDefinition : Node {
+  // DeclaredValueType
+  const int            CDATA                = 1;
+  const int            ID                   = 2;
+  const int            IDREF                = 3;
+  const int            IDREFS               = 4;
+  const int            ENTITY               = 5;
+  const int            ENTITIES             = 6;
+  const int            NMTOKEN              = 7;
+  const int            NMTOKENS             = 8;
+  const int            NOTATION             = 9;
+  const int            NAME_TOKEN_GROUP     = 10;
+
+  // DefaultValueType
+  const int            FIXED                = 1;
+  const int            REQUIRED             = 2;
+  const int            IMPLIED              = 3;
+
+  attribute wstring        name;
+  attribute StringList     allowedTokens;
+  attribute int            declaredType;
+  attribute int            defaultType;
+  attribute Node           defaultValue;
+};
+
+interface Notation : Node {
+  attribute wstring        name;
+  attribute boolean        isPublic;
+  attribute string         publicIdentifier;
+  attribute string         systemIdentifier;
+};
+
+interface EntityDeclaration {
+  attribute wstring        replacementString;
+  attribute DocumentFragmentreplacementSubtree;
+};
+
+interface EntityReference {
+  attribute boolean        isExpanded;
+  void                expand(in  );
+};
+
+interface CDATASection : Text {
+};
+
+}
+
+
+#endif

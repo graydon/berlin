@@ -1,0 +1,14 @@
+#ifndef __DOM__    
+#define __DOM__
+
+module DOM {
+
+   interface DOM {
+     Document            createDocument(in wstring type);
+     boolean             hasFeature(in wstring feature);
+  };
+
+}
+
+
+#endif

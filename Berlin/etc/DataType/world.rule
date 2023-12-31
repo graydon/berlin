@@ -1,0 +1,15 @@
+##------------------------------------------------------------------------
+##
+##  World Formats
+##  -------------
+##
+
+# Should this be just "model/vrml", or is there a difference ???
+
+type:	world/vrml
+mime:	x-world/x-vrml
+name:	3 '*.vrml'
+name:	3 '*.vrm'
+name:	3 '*.wrl'
+magic:	3 0[7] == '#VRML V'   # correct ???
+

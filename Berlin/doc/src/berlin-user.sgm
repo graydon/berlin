@@ -1,0 +1,88 @@
+<chapter ID="user-chapter">
+  <title>User's Guide</title>
+  <abstract>
+    <para>This chapter, while currently a little weak, will hopefully
+evolve into a decent man page for users.</para>
+  </abstract>
+  <sect1 ID="prerequisites">
+    <title>Prerequisites</title>
+      <para>Berlin is developed using a lot of "bleeding edge" stuff,
+and as such you have to do a certain amount of work before it will
+even work on your system. People have produced binary packages in the
+meantime of many of these programs and libraries, so it's definitely
+getting easier. But you will still probably need to perform a few
+upgrades. 
+
+<orderedlist>
+
+	  <listitem><para>glibc 2.1.1</para></listitem>
+	  <listitem><para>omniORB 2.7.1</para></listitem>
+	  <listitem><para>egcs 1.1.2</para></listitem>
+	  <listitem><para>GGI 2</para></listitem>
+	  <listitem><para>mesa 3.0 with GGI suppoer</para></listitem>
+	  <listitem><para>libstdc++ 2.9</para></listitem>
+	  <listitem><para>linux 2.0.3x (for Berlin-in-X)</para></listitem>
+	  <listitem><para>linux 2.2.xx (for Berlin-on-fbcon)</para></listitem>
+
+</orderedlist>
+Perhaps most importantly, at the moment you need a lot of creativity,
+interest, and patience. Berlin is not at a stage where it will appeal
+to a casual user, or even someone looking to try something new -- it
+is in development, and provides no significant functionality or
+productivity gain to a user. 
+</para>
+    </sect1>
+
+    <sect1 ID="running-berlin">
+      <title>Running berlin</title> <para>Starting up the display
+      server is relatively simple. You need to obviously have
+      installed all the above software. Since we have not completed
+      integrating the persistent configuration database on the server
+      side, you need to set up a "friendly environment" for berlin to
+      locate its settings. To do so, you follow these steps:
+<orderedlist>
+	  <listitem><para>Make sure omniNames, the Corba nameserver,
+is running and the omniORB config file contains the proper IOR (object reference)</para></listitem>
+	  <listitem><para>set the environment variable WARSAW equal to 
+the directory in which the kit libraries are contained</para></listitem>
+	  <listitem><para>set the environment variable FONTDIR equal
+to the location of some fonts, if you want font support (this step optional)</para></listitem>
+	  <listitem><para>set the GGI mode parameters you want berlin
+to run under (it automatically finds a good one if you don't do this)</para></listitem>
+	  <listitem><para>run <command>berlin</command></para></listitem>
+</orderedlist>
+	  The server will connect to the name server and register
+	  itself there, look up the plugins, instantiate a top level
+	  event dispatcher and scene graph (a single node), scan the
+	  fonts into a font manager, and enter an event dispatch
+	  loop. Nothing more exciting will happen. Much like
+	  X-windows, the display server itself is completely
+	  non-exciting until a client connects to it.
+</para>
+
+    <para>In order to get a client to connect, all you need to do it
+    run the client in a location where it will look to the name server
+    the display server is registered with. This means either on the
+    local machine, or on a machine with a shared omniORB config
+    file. This limits the number of display servers you can reasonably
+    run to 1 per machine, at the moment, but it's only like that
+    because we were lazy and the server-finding process is a
+    non-critical part of the program -- we will remove this
+    restriction when more pressing matters are dealt with.</para>
+
+    <para>Since all there are currently are client programs which test
+    the widgets on the server, there is really not much more to talk
+    about in this section.
+</para>
+
+
+</chapter>
+
+     <!--
+     Local Variables:
+     mode: sgml
+     sgml-doctype: "berlin-man.sgm"
+     sgml-parent-document: ("berlin-man.sgm" "book" "chapter")
+     End:
+     -->
+

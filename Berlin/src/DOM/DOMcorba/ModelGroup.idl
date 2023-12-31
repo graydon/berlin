@@ -1,0 +1,25 @@
+#ifndef __MODELGROUP__    
+#define __MODELGROUP__
+
+module DOM {
+
+   interface ModelGroup : Node {
+     // OccurrenceType
+     const int            OPT                  = 1;
+     const int            PLUS                 = 2;
+     const int            REP                  = 3;
+
+     // ConnectionType
+     const int            OR                   = 1;
+     const int            SEQ                  = 2;
+     const int            AND                  = 3;
+
+     attribute int            occurrence;
+     attribute int            connector;
+     attribute Node           tokens;
+  };
+
+}
+
+
+#endif

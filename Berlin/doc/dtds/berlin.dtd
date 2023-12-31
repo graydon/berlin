@@ -1,0 +1,28 @@
+<!-- this is our customization layer of the docbook DTD which allows us to -->
+<!-- mark up OO languages. it's based on a posting nwalsh made to oasis    -->
+<!-- this is experimental but should be supported soon in docbook 5.0      -->
+
+
+
+<!-- first we pull in the original docbook DTD                             -->
+
+<!entity % docbook public "-//OASIS//DTD DocBook V3.1//EN">
+%docbook;
+
+
+
+<!-- then we augment it with some new class synopsis elements              -->
+
+<!entity % local.synop.class "|ClassSynopsis">                                  
+<!element ClassSynopsis   - - (Modifier*, ClassName, SuperClass*, Interface*,(FieldSynopsis|MethodSynopsis)*)>
+<!attlist ClassSynopsis        Class (Class|Interface) "Class">
+<!element Modifier        - - (%smallcptr.char.mix;)*>                                 
+<!element SuperClass      - - (%smallcptr.char.mix;)*>                               
+<!element FieldSynopsis   - - (Modifier*, Type?, VarName, Initializer?)>          
+<!element Initializer     - - (%smallcptr.char.mix;)*>                              
+<!element MethodSynopsis  - - (Modifier*,(Type|Void)?, MethodName,(MethodParam+|Void),Exception*)>
+<!attlist MethodSynopsis       Class (Method|Constructor|Destructor) "Method">
+<!element MethodName      - - (%smallcptr.char.mix;)*>
+<!element MethodParam     - - (Modifier*,Type?, ((Parameter,Initializer?)|FuncParams))>                           
+<!attlist MethodParam          Choice (Opt|Req) "Req">
+<!element Exception       - - (%smallcptr.char.mix;)*>                                

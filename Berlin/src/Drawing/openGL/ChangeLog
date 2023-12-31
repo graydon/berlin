@@ -1,0 +1,25 @@
+1999-05-08  graydon@pobox.com  <graydon@pobox.com>
+
+	* Pointer.cc ("C"): fixed a bug which was causing overwrites of the
+ 	linear framebuffer. Now it checks boundaries of the buffer.
+
+1999-04-13  graydon@pobox.com  <graydon@pobox.com>
+
+	* GLPencil.cc (GLPencil): modified pencil to accept style values,
+ 	and added in new drawing routines based on style values. Still
+ 	pretty feature-thin, but it does polys and rectangles with RGBA
+ 	now, which is enough to play with. it's more than X, anyway :)
+
+1999-04-10  graydon@pobox.com  <graydon@pobox.com>
+
+	* Pointer.cc : Redid the pointer so that it looks like an X
+	pointer rather than a blob of colors, and fixed a buglet
+	in the directbuffer write loop (write()) which was causing
+	the screen update to skip lines, giving a somewhat cool 
+	but ultimately broken looking "scanline" effect.
+
+1999-03-14  graydon@pobox.com  <graydon@pobox.com>
+
+	* GLDrawable.cc: hoisted in some code from the old DBGraphic for
+ 	initializing GL properly.  
+	

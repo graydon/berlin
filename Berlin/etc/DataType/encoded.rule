@@ -1,0 +1,31 @@
+##------------------------------------------------------------------------
+##
+##  Encoding Types
+##  --------------
+##
+
+type:	encoded/uu
+name:	3 '*.uu'
+magic:	3 0[6] == 'begin ' && 6[4] & 0xf8 0xf8 0xf8 0xff == '000 '
+
+type:	encoded/base64
+name:	2 '*.base64'
+
+type:	encoded/base85
+name:	2 '*.base85'
+
+type:	encoded/quoted-printable
+name:	2 '*.qp'
+
+type:	encoded/utf8
+name:	2 '*.utf8'
+
+type:	encoded/utf7
+name:	2 '*.utf7'
+
+type:	encoded/mac-binhex
+mime:	application/mac-binhex40
+name:	2 '*.hqx'   # correct ???
+magic:	3 0[4] == 0x00 0x05 0x16 0x00
+magic:	3 0[4] == 0x00 0x05 0x16 0x07
+

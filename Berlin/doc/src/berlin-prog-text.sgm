@@ -1,0 +1,235 @@
+<sect1 ID="text">
+  <title>Text</title>
+    <para>
+Text is arguably the most important part of any GUI. The majority of
+the time you spend working on a computer, you spend dealing with text
+of some form or another. It turns out that text is also extremely
+complicated to work with at a GUI level, and requires great care if
+you want to do it right, so here we present some information to help
+explain the approach we took.
+</para>
+<sect2 ID="unicode">
+      <title>Unicode</title>
+      <para>Unicode is a character set. That is, it is a set of numbers
+    in the range 0x0000 - 0xffff, each of which denotes a particular
+    character. The meaning of "character" is not necessarily clear,
+    and is perhaps most importantly defined by what it is
+    <emphasis>not</emphasis>. A character is not a glyph. To cite the
+    unicode standard:
+ 
+     <quote>Unicode characters represent primarily, but not
+     exclusively, the letters, punctuation, and other signs that
+     comprise natural language text and technical notation. Characters
+     are represented by code values that reside only in a memory
+     representation, as strings in memory, or on disk. The Unicode
+     Standard deals only with character codes. In contrast to
+     characters, glyphs appear on the screen or paper as particular
+     representations of one or more characters. A repetoire of glyphs
+     comprises a font. Glyph shape and methods of identifying and
+     selecting glyphs are the responsibility of individual font
+     vendors and of appropriate standards and are not part of the
+     Unicode Standard.</quote>
+
+  Here are some more things you need to know about Unicode:
+<orderedlist>
+	<listitem>
+	  <para>All Unicode characters are the same width (bit
+	  width).For certain simple applications, this is all you'll
+	  ever need to know. A unicode character (unichar) is exactly
+	  16 bits. You are used to ASCII being 8, just think of
+	  unichars as double the width. They are fixed-width, and
+	  completely unambiguous: comparing two of them
+	  lexicographically is valid, though in unicode's case
+	  somewhat naive.  </para>
+	</listitem>
+
+	<listitem><para>There are lots of languages in unicode. Do not
+	expect to come up with simple algorithms which can process all
+	languages of the world. That's giving yourself way too much
+	credit. You can modularize certain algorithms and plug in
+	specialized rules for sorting, composing, coalating, and
+	rendering subranges of the standard into glyphs, but you're
+	<emphasis>not</emphasis> going to be able to do simple things
+	you're used to with english-in-ASCII. In particular, think
+	long and hard about what you're doing if you ever find
+	yourself doing explicit comparisons of codepoints. It would be
+	nice if it were this simple, but often what you want to
+	achieve is semantically more complex than just the character
+	codes. </para></listitem>
+
+	<listitem><para>There are multiple ways of achieveing similar
+glyphs. Just because two things look similar on the screen does
+	  not mean they were composed using the same unichars. The
+	  standard tries to unify as many combinations as possible
+	  (for instance, Korean, Japanese, and Chinese ideographs were
+	  unified in appearances, but not meanings), but the fact is
+	  it doesn't succeed. You can have, for instance, a sequence
+	  of unicode characters containing "A", "B" and then a
+	  non-spacing accent mark which gets dynamically composed with
+	  the B, and another sequence containing "A" and then
+	  "B-with-an-accent", cause "B-with-an-accent" might be a
+	  separate codepoint in the standard. So lexicographic
+	  comparison isn't always realistic -- you likely have to do
+	  some kind of normalization pass over the text first to
+	  convert all the statically-composed and dynamically-composed
+	  combinations of characters into common forms. This is a
+	  headache, and it's stupid, and it's part of the standard. As
+	  far as I can tell this happened in order to preserve
+	  compatibility with older standards like the ISO 8859 series
+	  which has a bunch of precomposed accented character
+	  forms. Since unicode supports dynamic composition from the
+	  start (sequentially composing characters and non-spacing
+	  character marks like accents), it had to come up with this
+	  silly state of affairs where canonical forms from different
+	  vendors might not be bitwise identical. Sigh. Well, CRLF is
+	  still a problem in ASCII, so we can obviously get by. It's
+	  just annoying. </para></listitem>
+
+	<listitem><para>There <emphasis>is</emphasis> a logical memory
+	ordering. You can at least be thankful that this got
+	standardized: no matter which direction text is being laid out
+	on the screen, unichars are supposed to appear in memory in a
+	simple one-dimensional array, just like ASCII, only twice as
+	wide. In C, a <type>uint16 text[];</type> is a perfectly valid
+	unicode processing space.  The canonical direction corresponds
+	to the fact that a user composes characters sequentially over
+	time, so even if they are composing hebrew (which goes
+	"backwards" to english-reading eyes, i.e. right-to-left) the
+	user still typed one character in before the next, so they get
+	stored in memory in the order they arrive. There are
+	algorithms for determining directionality of glyph layout, but
+	that's a higher-level issue </para></listitem>
+
+	<listitem><para>Many transformations are reasonably
+	simple.This is a mixed blessing, but basically if you're using
+	a widely accepted (ISO) character encoding now, it's codespace
+	is likely duplicated, with order preserved, somewhere in
+	unicode, and all you have to do is add a certain integer
+	offset to all your characters and they're unichars. In a
+	particularly chauvinistic move, ASCII was put up front, so all
+	you have to do is cast to a wider datatype and your ASCII text
+	instantly becomes unicode. Cheap trick eh? The problem with
+	this choice is that characters that should have been unified,
+	weren't, and characters that should remain semantically
+	separate (like greek characters and their common uses in
+	mathematics) were left unified because people already used
+	them interchangably in old 8-bit character sets, and it would
+	be next-to-impossible to automatically convert the uses to
+	their appropriate character. So we get the mess I mentionned
+	earlier.  Again, the trick is to normalize on input, and agree
+	on a normal form throughout all the software modules in a
+	given program. There is a standard transformation to 8-bit
+	encoding called UTF-8, which looks exactly like ASCII if you
+	stay in that range (0x0000 - 0x0080), and gets a little uglier
+	for other character sets. </para></listitem>
+
+	<listitem><para>They threw in some other things.  Not only are
+	most written languages in unicode (or slated for inclusion),
+	but a number of character codes which are very useful for
+	programmers were thrown in for fun. For instance, there are
+	specific directionality markers indicating a change in layout
+	direction should occur here whether the heuristics of your
+	tool think so or not, there is a special character reserved
+	for indicating byte-order of a flat chunk of unicode data in
+	memory, there is an explicit paragraph separator, a
+	soft-hyphen, a non-breaking hyphen, a fraction-forming-slash,
+	an "unknown character" marker, and numerous spacing-control
+	characters. There is also a sizeable private-use space in the
+	standard for extending it without appealing to the unicode
+	consortium, either because you disagree with their practises
+	or your extension has limited use outside a few
+	applications.</para></listitem>
+
+      </orderedlist>
+	
+	Berlin's approach to unicode character processing is to
+	isolate most supporting functions for character set
+	translation, normalization, sorting and searching in a
+	separate support library, such that other programs can make
+	use of any functions we develop. The library supports loadable
+	sorters, equality operators, converters, decomposers
+	bidirectionality hinters, and character substitution modules.
+
+</para>
+</sect2>
+
+<sect2 ID="glyphs">
+      <title>Glyphs</title>
+    <para>Glyphs are, as mentionned in the previous section, "little
+    pictures" which correspond in some way to the characters stored in
+    memory, but the correspondence is not necessarily one-to-one. In
+    fact, the process of choosing glyphs is complex enough that it is
+    split into multiple parts, and can be extended at runtime by
+    either rules embedded in fonts or modules other programmers write
+    to interpret the contents of fonts.</para> 
+
+    <para> Within berlin, glyphs are treated uniformly as flowable
+    objects laid out in composite graphics (containers) just like
+    any other. Rather than have 1 glyph for every occurance in a
+    document, glyphs are shared between instances, such that any given
+    size, style, font, and glyph identifier combination uniquely
+    selects one and only one static glyph which the display server
+    holds in a cache. When new glyphs are requested, the glyph cache
+    is consulted before constructing any new objects, and if the
+    appropriate glyph has already been manufactured a reference to it
+    is returned. This means that most glyphs are just single pointers
+    to shared glyphs, and (given the small size of many users' glyph
+    repetoire) only modest space overhead is incurred. If a glyph
+    requires special positioning adjustments to be made above and
+    beyond its standard metrics, a hinting container can be inserted
+    with the glyph inside it, which will convey the appropriate
+    adjustment to the shared glyph instance when rendering. Since
+    positioning can occur in sub-pixel units, glyphs will often cache
+    multiple rendered bitmap forms corresponding to varying
+    grid-fittings. It is left up to an individual font resource to
+    provide proper hinting and anti-aliasing information.
+</para>
+    <para>Each glyph also supports the ability to have its metrics
+    queried for precise line breaking and positioning
+    information. This allows a text process to render what looks best
+    on the screen, what looks most like the printed page, or any
+    combination of measurements it sees fit to.
+</para>
+
+</sect2>
+
+<sect2 ID="fonts">
+      <title>Fonts</title>
+      <para>
+      Fonts in berlin are opaque resources which provide glyphs when
+      asked. The actual process of mapping unicode characters into
+      glyphs varies from font to font and language to language, so
+      berlin uses a pluggable "mapper" interface which walks a tree of
+      fonts (primary and secondary choices, arranged recursively),
+      selecting those best able to perform the mapping and requesting
+      the production of glyphs. Some fonts have extremely complex
+      internal programs which describe how glyph substitution and
+      selection should take place; in those cases, we delegate to the
+      font to let it make its own mind up. In addition, however, the
+      font interface supports querying and setting of enhanced layout
+      features, as well as requesting individual glyphs by their
+      symbolic glyph names (postscript names, WGL4 names, or AFII
+      names). This lets you write cross-font glyph substitution
+      mappers, and compose them with existing font-delegating mappers
+      for sections of the glyph range you don't want to deal with,
+      don't know how to deal with, or don't trust the font's internal
+      mechanisms to deal with properly.
+</para>
+
+      <para> Since we recognize that this sort of font loading and
+      rasterizing facility would be useful to other developers, not
+      just berlin, we are releasing the majority of the font selection
+      logic in a support library called libgfont. It is able to read
+      and operate on a variety of fonts, including dialects of
+      TrueType, Type 1, and various bitmap fonts. </para>
+
+</sect2>
+</sect1>
+
+    <!--
+     Local Variables:
+     mode: sgml
+     sgml-doctype: "berlin-man.sgm"
+     sgml-parent-document: ("berlin-prog.sgm" "chapter" "sect1")
+     End:
+     -->

@@ -1,0 +1,185 @@
+##------------------------------------------------------------------------
+##
+##  Image Formats
+##  -------------
+##
+
+type:	image/gif
+mime:	image/gif
+name:	2 '*.gif'   # .gif is sometimes used for non-GIF images
+magic:	3 0[5] == 'GIF87'
+magic:	3 0[5] == 'GIF88'   # exists ???
+magic:	3 0[5] == 'GIF89'
+
+type:	image/jpeg
+mime:	image/jpeg
+name:	3 '*.jpeg'
+name:	3 '*.jpg'
+name:	3 '*.jpe'
+magic:	3 0[2] == 0xff 0xd8 && 6[4] == 'JFIF'
+
+type:	image/jpeg-hsi
+name:	2 '*.jpeg'
+name:	2 '*.jpg'
+name:	2 '*.jpe'
+magic:	3 0[4] == 'hsi1'
+
+type:	image/tiff
+mime:	image/tiff
+name:	3 '*.tiff'
+name:	3 '*.tif'
+magic:	3 0[4] == 'MM' 0x00 0x2a
+magic:	3 0[4] == 'II' 0x2a 0x00
+
+type:	image/niff
+name:	2 '*.niff'	# real suffix (if any) ???
+name:	2 '*.nif'
+magic:	3 0[4] == 'IIN1'
+
+type:	image/png
+name:	3 '*.png'
+magic:	3 0[8] == 0x89 'PNG' 0x0d 0x0a 0x1a 0x0a
+
+type:	image/pcx
+name: 3 '*.pcx'
+# This magic is too ambiguous !
+# magic: 1 0[1] == 0x1a
+
+type:	image/bmp
+name:	3 '*.bmp'
+magic:	3 0[2] == 'BM' && 14[1] == 0x2e
+magic:	3 0[2] == 'BM' && 14[1] == 0x40
+magic:	3 0[2] == 'BM' && 14[1] == 0x0c
+
+type:	image/portable-bitmap
+mime:	image/x-portable-bitmap
+name:	3 '*.pbm'
+magic:	3 0[2] == 'P1'
+magic:	3 0[2] == 'P4'
+
+type:	image/portable-graymap
+mime:	image/x-portable-graymap
+name:	3 '*.pgm'
+magic:	3 0[2] == 'P2'
+magic:	3 0[2] == 'P5'
+
+type:	image/portable-pixmap
+mime:	image/x-portable-pixmap
+name:	3 '*.ppm'
+magic:	3 0[2] == 'P3'
+magic:	3 0[2] == 'P6'
+
+## The following is not really a specific datatype; it is really just a
+## catchall which covers all of the other portable-* datatypes.
+
+type:	image/portable-anymap
+mime:	image/x-portable-anymap
+name:	3 '*.pnm'
+
+type:	image/X-bitmap
+mime:	image/x-xbitmap
+name:	3 '*.xbm'
+
+type:	image/X-pixmap
+mime:	image/x-xpixmap
+name:	3 '*.xpm'
+magic:	3 0[9] == '/* XPM */'
+
+type:	image/ilbm
+name: 3 '*.ilbm'
+magic:	3 0[4] == 'FORM' && 8[4] == 'ILBM'
+
+type:	image/targa
+name: 3 '*.targa'
+name: 3 '*.tga'
+
+type:	image/imagemagick
+mime:	application/x-mif   # ??? I'm just assuming this is right
+name:	3 '*.miff'
+name: 2 '*.mif'
+magic:	3 0[14] == 'id=ImageMagick'
+
+type:	image/artisan
+name:	2 '*.artisan'	# real suffix (if any) ???
+magic:	3 0[4] == 0x42 0xf0 0x0f 0x24
+magic:	3 0[4] == 0x24 0x0f 0xf0 0x42
+
+type:	image/fig
+name:	2 '*.fig'		# real suffix (if any) ???
+magic:	3 0[4] == '#FIG'
+
+type:	image/phigs
+magic:	3 0[10] == 'ARF_BEGARF'
+magic:	3 0[12] == '@(#)SunPHIGS'
+
+type:	image/gksm
+name:	2 '*.gksm'	# real suffix (if any) ???
+magic:	3 0[4] == 'GKSM'
+
+type:	image/cgm
+name:	2 '*.cgm'		# real suffix (if any) ???
+magic:	3 0[5] == 'BEGMF'
+
+type:	image/fbm
+name:	2 '*.fbm'		# real suffix (if any) ???
+magic:	3 0[8] == '%bitmap' 0x00
+
+type:	image/facsimile
+name:	2 '*.fax'		# real suffix (if any) ???
+magic:	3 1[16] == 'PC Research, Inc'
+
+type:	image/iff
+name:	3 '*.iff'
+magic:	3 0[18] == 'Imagefile version-'
+
+## What format is .RLE ???
+
+type:	image/cmu-raster
+mime:	image/x-cmu-raster
+name:	2 '*.ras'
+magic:	3 0[4] == 0xf1 0x00 0x40 0xbb
+
+type:	image/sun-raster
+name:	2 '*.ras'
+magic:	3 0[4] == 0x59 0xa6 0x6a 0x95
+
+type:	image/sgi
+name:	2 '*.sgi'		# real suffix (if any) ???
+magic:	3 0[2] == 0x01 0xda
+
+type:	image/photocd
+name:	2 '*.photocd'	# real suffix (if any) ???
+magic:	3 2048[7] == 'PCD_IPI'
+magic:	3 0[7]    == 'PCD_OPA'
+
+type:	image/mgr
+name:	2 '*.mgr'
+magic:	3 0[2] == 'yz'
+magic:	3 0[2] == 'yx'
+magic:	3 0[2] == 'zz'
+magic:	3 0[2] == 'xz'
+
+type:	image/fit	## what's this ???
+name:	2 '*.fit'	  # correct ???
+magic:	3 0[4] == 'IT01'
+magic:	3 0[4] == 'IT02'
+
+type:	image/fits	## what's this ???
+name:	2 '*.fits'    # real suffix (if any) ???
+magic:	3 0[9] == 'SIMPLE  ='
+
+type:	image/ief	## what's this ???
+mime:	image/ief
+name:	3 '*.ief'
+
+type:	image/X-windowdump
+mime:	image/x-xwindowdump
+name:	3 '*.xwd'
+
+type:	image/rgb	## what's this ???
+mime:	image/x-rgb
+name:	3 '*.rgb'
+# Is the following the right magic for "rgb" files ???  
+# magic:	3 0[4] == 'FORM' && 8[4] == 'RGBN'
+# magic:	3 0[4] == 'FORM' && 8[4] == 'RGB8'
+

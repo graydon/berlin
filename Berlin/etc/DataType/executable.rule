@@ -1,0 +1,22 @@
+##------------------------------------------------------------------------
+##
+##  Executable Formats
+##  ------------------
+##
+
+type:	executable/msdos-com
+mime:	application/x-msdos-program
+name:	3 '*.com'
+# This magic is too simple...
+# magic:	1 0[1] == 0x8c
+# magic:	1 0[1] == 0xb8
+# magic:	1 0[1] == 0xe9
+# magic:	1 0[1] == 0xe9
+
+type:	executable/msdos-exe
+mime:	application/x-msdos-program
+name:	2 '*.exe'
+magic:	3 0[2] == 'MZ'
+
+## HEAPS to do !
+

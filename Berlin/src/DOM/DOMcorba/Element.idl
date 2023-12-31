@@ -1,0 +1,27 @@
+#ifndef __ELEMENT__    
+#define __ELEMENT__
+
+#include "Node.idl"
+#include "NodeIterator.idl"
+#include "Attribute.idl"
+
+//module DOM {
+
+   interface Element : Node {
+     wstring             getTagName();
+     NodeIterator        getAttributes();
+     wstring             getAttribute(in wstring name);
+     void                setAttribute(in wstring name, 
+                                      in wstring value);
+     void                removeAttribute(in wstring name);
+     Attrib              getAttributeNode(in wstring name);
+     void                setAttributeNode(in Attrib newAttr);
+     void                removeAttributeNode(in Attrib oldAttr);
+     void                getElementsByTagName(in wstring tagname);
+     void                normalize();
+  };
+
+//}
+
+
+#endif

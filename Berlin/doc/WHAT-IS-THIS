@@ -1,0 +1,45 @@
+
+:::: Micro SGML environment for berlin docs ::::
+
+
+main items of intrest
+~~~~~~~~~~~~~~~~~~~~~
+
+src/		source of documentation (SGML)
+html/		output dir for HTML 
+print/		output dir for print (PDF)
+
+
+how it works
+~~~~~~~~~~~~
+
+(1) install jade
+(2) type "make"
+(3) point your browser at html/berlin-man.html
+
+
+PDF building may or may not work on your machine. I haven't
+imported a micro-jadetex distribution in here and I doubt I
+will. if you're really anxious for printed docs, mail me and
+I'll generate them for you.
+
+
+customization
+~~~~~~~~~~~~~
+
+stylesheets/berlin.dsl	berlin stylesheet customization layer
+dtds/berlin.dtd		berlin docbook DTD customization layer
+
+
+
+auxilliary stuff
+~~~~~~~~~~~~~~~~
+
+stylesheets/		dsssl stylesheets
+dtds/			SGML DTDs 
+entities/		docbook entities
+declarations/		SGML declarations
+
+
+enjoy
+-graydon <graydon@pobox.com>

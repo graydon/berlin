@@ -1,0 +1,49 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:586: checking host system type
+configure:607: checking target system type
+configure:625: checking build system type
+configure:649: checking whether make sets ${MAKE}
+configure:680: checking for bison
+configure:713: checking for flex
+configure:747: checking for yywrap in -lfl
+configure:766: cc -o conftest    conftest.c -lfl   1>&5
+configure:791: checking for gcc
+configure:904: checking whether the C compiler (gcc  ) works
+configure:920: gcc -o conftest    conftest.c  1>&5
+configure:946: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:951: checking whether we are using GNU C
+configure:960: gcc -E conftest.c
+configure:979: checking whether gcc accepts -g
+configure:1015: checking for c++
+configure:1047: checking whether the C++ compiler (c++  ) works
+configure:1063: c++ -o conftest    conftest.C  1>&5
+configure:1089: checking whether the C++ compiler (c++  ) is a cross-compiler
+configure:1094: checking whether we are using GNU C++
+configure:1103: c++ -E conftest.C
+configure:1122: checking whether c++ accepts -g
+configure:1156: checking for ar
+configure:1185: checking for ld
+configure:1218: checking for ranlib
+configure:1257: checking for a BSD compatible install
+configure:1312: checking how to run the C++ preprocessor
+configure:1330: g++ -E  conftest.C >/dev/null 2>conftest.out
+configure:1394: checking for omniidl2
+configure:1456: checking for omniORB2/CORBA.h
+configure:1466: g++ -E -D__x86__ -D__linux__ -D__OSVERSION__=2   conftest.C >/dev/null 2>conftest.out
+configure:1499: checking for working omniORB environment
+configure:1536: g++ -o conftest -g -O2 -D__x86__ -D__linux__ -D__OSVERSION__=2    -lomniORB2 -lomnithread -ltcpwrapGK -lomniLC  conftest.C  1>&5
+configure:1607: checking how to run the C preprocessor
+configure:1628: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1725: checking for ggi/ggi.h
+configure:1735: gcc -E   conftest.c >/dev/null 2>conftest.out
+configure:1768: checking for ggiInit in -lggi
+configure:1787: gcc -o conftest -g -O2    conftest.c -lggi   1>&5
+configure:1872: checking for GL/gl.h
+configure:1882: gcc -E   conftest.c >/dev/null 2>conftest.out
+configure:1914: checking for glFinish in -lGL
+configure:1933: gcc -o conftest -g -O2    conftest.c -lGL   1>&5
+configure:1967: checking if OpenGL version >= 1.2 is supported
+configure:2027: checking for GL/ggimesa.h
+configure:2037: gcc -E    conftest.c >/dev/null 2>conftest.out

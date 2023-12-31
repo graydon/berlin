@@ -1,0 +1,348 @@
+<sect1 ID="corba-intro">
+  <title>A brief intro to Corba</title>
+  <abstract>
+    <para>The 1 thing all implementations of berlin must have in
+common is the Common Object Request Broker Architecture, or
+<acronym>Corba</acronym>. Corba is a broad industry standard for
+object oriented, network and language transparent
+inter-process-communication. It is the fundamental communication
+technique in berlin.
+</para>
+ 
+  </abstract>
+    <para>
+      All Corba-based programs begin their lives as IDL, which stands
+      for <emphasis>Interface Definition Language</emphasis>. IDL is like an
+      abstract class declaration, or a C++ header file. If you speak
+      Java, you can think of an IDL interface exactly as you think of
+      a Java interface. It describes 1 visible interface of an
+      object to the outside world. Anything you declare in IDL, your
+      object must actually be able to do. This is not a two-way street
+      though. You can have an object which is capable of many things,
+      only a few of which you choose to declare in IDL. The IDL for an
+      interface tells you that any object of a given type is
+      guaranteed to support the declared methods, but the object may
+      support many more. You may hear us speaking of the portions of
+      an object which are "exported through corba" -- this refers to
+      the parts of the object which have declared in IDL. Interfaces
+      which are declared in IDL can inherit from one another in a
+      hierarchy, thus forming an abstract class library. The berlin
+      project's class library is called <emphasis>Warsaw</emphasis>, and it
+      consists, as you might expect, of nothing but IDL files.
+    </para>
+
+    <para>
+      IDL alone isn't good for very much though. Once you have an IDL
+      file, you need to implement all the methods which you have
+      declared in it. You do this by choosing an ORB (in our case,
+      OmniORB2) and an IDL stub compiler (omniidl2). You pass the IDL
+      files through the stub compiler, and lo and behold a whole mess
+      of C++ code will be sitting there in the directory. This C++
+      code contains <emphasis>stubs</emphasis> and <emphasis>skeletons</emphasis> for the IDL
+      interfaces you declared. The stubs must be linked against any
+      C++ program which wishes to make a call through the ORB into the
+      implementation of the interface. So, if I am a client connecting
+      to a berlin display server, I must link against the stubs. The
+      stubs are proxy objects, which appear nearly identical to normal
+      C++ object pointers, only they might refer to objects on remote
+      computers or written in other languages. The magic part about
+      Corba is that it hides this fact from you. As a C++ hacker, all
+      you know is that you have something that <emphasis>looks</emphasis> and
+      <emphasis>acts</emphasis> like a C++ object pointer. Who cares what it
+      really is? You can store them in arrays, call methods on them,
+      make STL templates out of them. You name it. They're just like
+      pointers. Although, you really shouldn't do pointer arithmetic
+      on them, cause it won't work. Use them sanely though, and
+      there's no problem.
+    </para>
+
+    <para>
+      The other things the IDL compiler produces are
+      <emphasis>skeletons</emphasis>. Skeletons are classes with some
+      conspicuously abstract methods. In fact, a skeleton contains 1
+      abstract method for each method you declared in the IDL
+      interface. The skeleton has some other Corba magic hidden away
+      inside it, but the important part is those abstract (or <emphasis>pure
+      virtual</emphasis>) methods. In order to make Corba work right, you
+      must subclass from a skeleton and <emphasis>fill in</emphasis> these
+      abstract methods. So they actually do something. See, what will
+      happen is when a client makes a call to a server-side object,
+      the Corba ORB will grab a free thread and perform an
+      <emphasis>up-call</emphasis> into your skeleton-derived object, so regardless
+      of where the call really originated in the world, it just looks
+      like an ordinary method on your object. You treat it just like
+      you'd treat any other method in a C++ program.
+    </para>
+
+    <sect2 ID="corba-example">
+      <title>Example</title>
+      
+      <para>
+      Here is an example IDL file, for an example I will say we are
+      making some interfaces for simulating rodents.
+    </para>
+      
+      <programlisting>
+interface physicalObject {
+  attribute long x_pos;
+  attribute long y_pos;
+  attribute long z_pos;
+  readonly attribute long mass;
+};
+
+interface tastyMouseTreat : physicalObject {};
+
+interface incompatibleSexException {};
+
+interface mouse : physicalObject {
+  void eat( in tastyMouseTreat dinner );
+  mouse spawnOffspring( in mouse mate ) 
+    raise (incompatibleSexException);
+  readonly attribute boolean isFemale;
+  attribute boolean isAwake;  
+};
+
+
+// here's the scary part of a mouse's life
+
+interface mouseTrap : physicalObject, tastyMouseTreat {
+  void snap( in mouse helplessVictimOfFate );
+}
+</programlisting>
+
+
+    <para>
+      You'll note this looks an awful lot like C++ or Java interface
+      declarations. There is the extra <token>in</token> modifier
+      written in for each argument, and there are these scary things
+      called attributes, but it's basically comprehensible, I
+      hope. Comments obviously are introduced just as in Java and C++, 
+      and inheritance is expressed by following the interface name by a
+      colon and a list of parent interfaces. Exceptions are declared
+      like in C++, only using the <token>raise</token> keyword rather
+      than <token>throw</token>.
+    </para>
+
+    <para>
+      This IDL will generate 5 abstract classes in C++ and a few
+      helpers, stubs and skeletons derived from the abstract classes.
+      We'll consider only 1 of these classes for the time being:
+      <token>mouse</token>. In your C++ code, you will be required to
+      subclass from the mouse skeleton, which in our case will be
+      called <token>_sk_mouse</token>, and fill in the
+      methods. Remember, the skeleton has all the magic in it, but
+      it's spat out by the compiler -- you don't need to touch any of
+      it. You only need to write an <emphasis>implementation class</emphasis> such as this:
+    </para>
+
+    <programlisting>
+class mouse_impl : public virtual _sk_mouse {
+  
+public:
+
+  virtual void eat ( tastyMouseTreat_ptr dinner );
+  virtual mouse_ptr spawnOffspring( mouse_ptr mate ) 
+    throw (incompatibleSexException);
+
+  // attributes in IDL produce getter/setters
+  virtual CORBA::Boolean isAwake();
+  virtual void isAwake( CORBA::Boolean b );
+
+  // readonly attributes produce getters
+  virtual CORBA::Boolean isFemale();
+
+protected:
+  bool _isFemale;
+  bool _isAwake;
+
+};
+      </programlisting>
+
+    <note>
+      <para>I've left out the declaration of the
+	_sk_physicalObject methods for now</para>
+    </note>
+
+    <para>
+      You'll notice that the IDL interface type <token>mouse</token> has 
+      been mapped into the C++ type <token>mouse_ptr</token>. This is an 
+      opaque type which behaves similarly to a pointer, but may be
+      implemented using anything. You have no idea what it really
+      represents, and you should not pretend it is more like a pointer 
+      than it really is. So don't do arithmetic on it, don't
+      explicitly dereference it using <token>operator*()</token>, and
+      don't compare it using <token>operator=()</token>. You obtain a
+      <token>mouse_ptr</token> type from a <token>mouse_impl *</token> type by
+      calling <token>_this()</token>, which is inherited from the skeleton. 
+    </para>
+
+    <para>
+      Allocating a <token>mouse_ptr</token> actually uses up resources
+      in the ORB, which means that amongst other things,
+      <token>mouse_ptr</token>s must explicitly be freed using
+      <token>mouse::_release()</token>. This is a pain in the ass. In
+      order to make life simpler, you can use variables of type
+      <token>mouse_var</token> in place of the <token>mouse_ptr</token>s,
+      and they will automatically release their resources when they go
+      out of scope or are assigned over top of. These special
+      variables are part of the standard Corba C++ mapping. This is a
+      good thing, so you want to use <token>mouse_var</token>s as much
+      as possible. You can transparently assign back and forth between
+      the two types, but if you ever want to pass a
+      <token>mouse_var</token> into a function expecting a
+      <token>mouse_ptr</token> or return it from a method, you should
+      call <token>mouse::_duplicate(mouse_var m)</token> to get a stable
+      copy set aside for the call. It's tricky, and you may cause
+      memory leaks, and since C++ isn't garbage collected you'll have
+      to live with that fact.
+    </para>
+
+    <para>
+      The exceptions declared in IDL are remarkably fun. They are
+      actually propagated between ORBs, which means a failure can be
+      safely contained between objects even if the objects reside on
+      separate machines or are written in different languages. It is
+      important to get all the exceptions you might throw into IDL
+      however, otherwise the ORB will propagate a generic, unknown
+exception type back to your client, and unless you're in the habit of
+catching everything on every call, an uncaught unknown can cause the
+client to fall over. In general, if the failure case is real, it's
+worth declaring as an exception.
+    </para>
+
+    <sect3 ID="corba-client-server">
+    <title>How the client and the server meet</title>
+
+    <para>
+      When you create a new object you want to serve through Corba,
+      you must make the object known to whoever is going to use it
+      through some standard locating mechanism like Corba Name
+      Service. Before you do that, you must make the object known to
+      the ORB. Before you do that, you must initialize the ORB. Lets
+      walk through an example which makes a <token>mouse</token> and
+      puts it in name service. Since name service is somewhat ugly and
+      you'll never have to deal with it, for the sake of argument I'm
+      going to pretend there's a function called
+      <token>BindNameToObject(char *name, CORBA::Object_ptr
+      object)</token>, and you can trust me that such a function is
+      doable. If you want to see how name service really works you can
+      check out one of the OmniORB examples or our test programs.
+    </para>
+
+    <programlisting>
+int main(int argc, char *argv[]) 
+{
+
+// start up the ORB and the BOA
+CORBA::ORB_var orb = CORBA::ORB_init(argc,argv,"omniORB2");   
+CORBA::BOA_var boa = orb->BOA_init(argc,argv,"omniORB2_BOA"); 
+boa->impl_is_ready(0,1); 
+
+// make a mouse, and register it with the BOA
+mouse_impl * theMouse = new mouse_impl();
+theMouse->_obj_is_ready(boa);
+mouse_var theMouseRef = theMouse->_this();
+
+BindNameToObject("superMouse", theMouseRef);
+
+}
+    </programlisting>
+
+    <para>
+      What's happening is pretty straightforward. You're making an ORB
+      (Object Request Broker), which is a utility object you use to
+      communicate with the Corba runtime library. You're then making a
+      BOA (Basic Object Adaptor) which is an object which keeps track
+      of all the objects you create. You are then telling the BOA to
+      begin serving requests to the objects it's responsible for, and
+      then adding a new <token>mouse_impl</token> to it. Finally you are
+      binding the object reference returned by
+      <token>mouse_impl::_this()</token> to the symbolic name
+      "superMouse", so other Corba programs can look the object up.
+      It's very <emphasis>very</emphasis> important that you use the result of
+      <token>theMouse->_this()</token> rather than a <token>mouse_impl
+      *</token> such as <token>theMouse</token> itself. The two types may
+      be implemented as similar enough pointers that this difference
+      makes it past the compiler, but there will be hell to pay if you
+      try to make programs use pointers instead of the Corba reference
+      types. Honest. Make it a habit to switch from using an
+      implementation pointer to a Corba reference type (like
+      <token>mouse_ptr</token>) as soon after the creation of an object
+      as possible. You cannot convert back, you cannot safely cast
+      between them, and any assumptions you make about the object
+      being a pointer type may be fatally flawed. Use the reference
+      type. If you are really pressed to get an implementation object
+      back from a pointer type, you can make a table which maps
+      reference types onto implementations, and then look it
+      up. That's the only really safe way, because the real object may 
+      be located in another address space, or the ORB may be using
+      something slightly sneakier than a straightforward pointer. 
+    </para>
+
+    <para>
+      Now, assuming we have a function in the client which can look up
+      names in Corba Name Service, say <token>CORBA::Object_ptr
+      lookup(char *name)</token>, and assuming we've written an
+      implementation of interface <token>mouseTrap</token> called
+      <token>mouseTrap_impl</token>, we can proceed to write a client
+      which looks up the implementation <token>mouse</token> and then
+      feeds it a mouseTrap, with some dire consequences for the mouse,
+      no doubt!
+    </para>
+
+    <programlisting>
+int main(int argc, char *argv[]) 
+{
+
+// start up the ORB and the BOA
+CORBA::ORB_var orb = CORBA::ORB_init(argc,argv,"omniORB2");   
+CORBA::BOA_var boa = orb->BOA_init(argc,argv,"omniORB2_BOA"); 
+boa->impl_is_ready(0,1); 
+
+// make a mouseTrap, and register it with the BOA
+mouseTrap_impl * theTrap = new mouseTrap_impl();
+theTrap->_obj_is_ready(boa);
+mouseTrap_var theTrapRef = theTrap->_this();
+
+victimMouse = mouse::_narrow(lookup("superMouse"));
+victimMouse->eat(theTrapRef);
+
+}
+    </programlisting>
+
+    <para>
+      The one new thing you'll see in here is the call to
+      <token>mouse::_narrow()</token>. This is the dynamic typing system 
+      of Corba at work. It's kinda cheezy for those of us who really
+      like static types, but since IDL doesn't support parametric
+      polymorphism, operations on generic containers (like those in
+      Name Service) have to operate on the root of all types,
+      <token>CORBA::Object</token>. You then downcast
+      (<token>_narrow()</token>) the result, and test for nil using
+      <token>CORBA::_is_nil(CORBA::Object_ptr p)</token>. If you've
+      worked in Java, this is old hat. If you wish IDL was more like
+      STL, join the crowd. Anyway you have to do it for now, and it's
+      not likely to change anytime soon.
+    </para>
+
+    <para>
+      Basically, if you can handle that, you've got Corba nailed. It
+      looks and acts just like objects once you've got the initial
+      references to ORBs and BOAs working, only they are location and
+      language transparent. You need not know how one ORB finds the
+      other or how they marshal your request.
+    </para>
+
+    </sect3>
+    </sect2>
+</sect1>
+
+
+    <!--
+     Local Variables:
+     mode: sgml
+     sgml-doctype: "berlin-man.sgm"
+     sgml-parent-document: ("berlin-prog.sgm" "chapter" "sect1")
+     End:
+     -->
+ 

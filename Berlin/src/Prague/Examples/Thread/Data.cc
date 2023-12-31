@@ -1,0 +1,80 @@
+/*$Id: Data.cc,v 1.1 1999/09/27 17:53:10 gray Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+
+#include <Prague/Sys/Thread.hh>
+#include <Prague/Sys/ThreadData.hh>
+#include <vector>
+#include <iostream>
+#include <unistd.h>
+#include <string>
+
+using namespace Prague;
+
+class lostream
+{
+public:
+  lostream() { mutex.lock();}
+  ~lostream() { mutex.unlock();}
+  template <class T>
+  lostream &operator << (const T &t) { cout << t; return *this;}
+  lostream & operator << (ostream & (func)(ostream &)) { func(cout); return *this;}
+private:
+  static Mutex mutex;
+};
+
+Mutex lostream::mutex;
+
+class Worker
+{
+public:
+  Worker() : thread(start, this)
+    {
+      thread.start();
+    }
+private:
+  static int counter;
+  static Mutex mutex;
+  Thread thread;
+  static void *start(void *X)
+    {
+      Thread::Data<int> tsd;
+      {
+	mutex.lock();
+ 	*tsd = counter++;
+	mutex.unlock();
+      }
+      lostream() << "thread creates specific data: " << *tsd << endl;
+      Thread::delay(Time(200));
+      lostream() << "thread destroys specific data: " << *tsd << endl;
+      return 0;
+    }
+};
+
+int   Worker::counter = 0;
+Mutex Worker::mutex;
+
+int main(int argc, char **argv)
+{
+  vector<Worker *> workers(10);
+  for (size_t i = 0; i != workers.size(); i++) workers[i] = new Worker();
+  for (size_t i = 0; i != workers.size(); i++) delete workers[i];
+}

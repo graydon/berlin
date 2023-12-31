@@ -1,0 +1,8 @@
+- Documentation! Lots of it :-)
+- Removing all those FIXMEs that are scattered through the code
+- Improving Unistring support (at the moment only storage of
+  Unicode Strings works. None of the unicode-functions is
+  implemented yet).
+- Improving Unichar support. Most functions work allready.
+- Adding locale-support. I need that for sorting.
+- Fixing bugs.

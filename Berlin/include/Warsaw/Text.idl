@@ -1,0 +1,95 @@
+#ifndef _Text_idl
+#define _Text_idl
+
+//
+// $Id: Text.idl,v 1.6 1999/07/05 05:42:11 gray Exp $
+//
+// This source file is a part of the Berlin Project.
+// Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
+// http://www.berlin-consortium.org
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public License
+// as published by the Free Software Foundation; either version 2 of
+// the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// General Public License for more details.
+//
+// You should have received a copy of the GNU Library General Public
+// License along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+//
+
+#include "Types.idl"
+#include "Metrics.idl"
+#include "Graphic.idl"
+
+// this is a reworking of the text module, primarily because the last
+// one didn't work for beans!
+
+module Text {
+
+  interface Font;
+  typedef sequence<Font> FontSeq;
+  interface BaseFont;
+  interface CompositeFont;
+  exception NoSuchFontException {};
+
+  struct FontDescriptor {
+    FontMetrics metrics;
+    unsigned long pointsize;
+    Unistring name;
+    Unistring style;
+  };
+
+  typedef sequence<FontDescriptor> FontDescriptorSeq;
+    
+  // this is your basic visitor/typer. in the most common case it'll work (I think) much
+  // faster than repeated narrowings, and speed is important in here.
+  
+  interface FontVisitor {
+    void visitCompositeFont(in CompositeFont c);
+    void visitBaseFont(in BaseFont f);
+  };
+  
+  // fonts are either composites or bases. You can add more if you
+  // want, like if you want precise control over the layout features
+  // or something. As it is the base interface should be OK for a lot
+  // of applications. just throw a string at it and the text gets
+  // painted.  if you want finer control, you can walk the font tree
+  // till you get a base font, and then twiddle its feature set.
+  
+  interface Font {    
+    void acceptFontVisitor(in FontVisitor v);
+    readonly attribute FontDescriptor descriptor;
+    boolean canDrawText(in Unistring u);      
+    void allocateText(in Unistring u, inout Graphic::Requisition req);
+    void drawText(in Unistring u, in Vertex v);
+  };
+  
+  // this is our basic base-font class which supports settable features 
+  
+  interface BaseFont : Font {
+    FeatureValueList queryFeature(in FeatureType ft);
+    void setFeature(in FeatureType ft, in FeatureValue fv);
+  };
+  
+  // this lets you build trees of fonts by preference, which can be
+  // handy if you want to share a subtree in the middle of a
+  // composite font (say if you only have one kanji font installed
+  // and you want it in *all* composites)
+  
+  interface CompositeFont : Font {
+    attribute Font primaryChoice;
+    attribute Font backupChoice;
+  };
+  
+};
+
+
+
+#endif

@@ -1,0 +1,19 @@
+#ifndef __ELEMENTTOKEN__    
+#define __ELEMENTTOKEN__
+
+module DOM {
+
+   interface ElementToken : Node {
+     // OccurrenceType
+     const int            OPT                  = 1;
+     const int            PLUS                 = 2;
+     const int            REP                  = 3;
+
+     attribute wstring        name;
+     attribute int            occurrence;
+  };
+
+}
+
+
+#endif

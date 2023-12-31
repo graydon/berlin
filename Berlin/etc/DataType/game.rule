@@ -1,0 +1,26 @@
+##------------------------------------------------------------------------
+##
+##  Game Formats
+##  ------------
+##
+
+type:	game/zmachine
+name:	3 '*.z1'
+name:	3 '*.z2'
+name:	3 '*.z3'
+name:	3 '*.z4'
+name:	3 '*.z5'
+name:	3 '*.z6'
+name:	3 '*.z7'
+name:	3 '*.z8'
+name:	3 'story.dat'
+name:	3 'Story.dat'
+# Unfortunately, Z-machine files have no magic...
+
+type:	game/doom
+name:	3 '*.wad'
+name: 3 '*.iwad'
+name: 3 '*.pwad'
+magic: 3 0[4] == 'IWAD'
+magic: 3 0[4] == 'PWAD'
+

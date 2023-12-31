@@ -1,0 +1,10 @@
+berlin (0.1.0-1) unstable; urgency=low
+
+  * Initial Release.
+  * From cvs
+
+ -- Aaron Van Couwenberghe <vanco@sonic.net>  Wed, 30 Jun 1999 11:46:37 -0700
+
+Local variables:
+mode: debian-changelog
+End:

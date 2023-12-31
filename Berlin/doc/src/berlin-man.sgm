@@ -1,0 +1,59 @@
+
+<!-- This is the top entity for the berlin manual.        -->
+<!-- the driver file (driver.dsl) should be applied       -->
+<!-- to this document. it will then generate the          -->
+<!-- whole book from the following declarations           -->
+<!--                                                      -->
+<!-- this file is copyright (C) 1999 Graydon Hoare        -->
+<!-- released under the GNU GPL v2.0+                     -->
+
+
+<!doctype Book system "../dtds/berlin.dtd" [
+
+<!-- these are chapter-entity declarations -->
+
+<!entity berlin-intro        system "berlin-intro.sgm">
+<!entity berlin-user         system "berlin-user.sgm">
+<!entity berlin-prog         system "berlin-prog.sgm">
+<!entity berlin-prog-thread  system "berlin-prog-thread.sgm">
+<!entity berlin-prog-opengl  system "berlin-prog-opengl.sgm">
+<!entity berlin-prog-text    system "berlin-prog-text.sgm">
+<!entity berlin-prog-corba   system "berlin-prog-corba.sgm">
+
+]>
+
+<book id="berlin-man">
+  <title>The Berlin Manual</title>
+  <bookinfo>
+
+    <author>
+
+      <firstname>Graydon</firstname> <surname>Hoare</surname>
+      <!-- additional authors, please insert your names here -->
+
+    </author>
+    <copyright>
+      <year>1998,1999</year>
+      <holder>the author(s)</holder>
+    </copyright>
+    <legalnotice>
+      <para>
+      Released under the terms of the GNU General Public License,
+      version 2.0 or greater. This document has been prepared for printing
+    and the web using SGML &amp; DocBook. It is available online
+    at <ulink url="http://www.berlin-consortium.org">http://www.berlin-consortium.org</ulink>
+ in HTML and PDF.  Comments, additions,
+    and discussion are welcome, and best directed towards the mailing
+    list.</para>
+    </legalnotice>
+  </bookinfo>
+
+
+<!-- these statements, harmless looking though they may be,   -->
+<!-- load and include all the remaining chapters inline       -->
+
+&berlin-intro;
+&berlin-user;
+&berlin-prog;
+  
+</book>

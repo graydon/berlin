@@ -1,0 +1,83 @@
+/*$Id: Message.idl,v 1.7 1999/08/26 13:55:40 gray Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef __Message_idl
+#define __Message_idl 
+
+#include "Types.idl"
+
+// a message is a prioritized payload. gets passed around between
+// various objects.  there is an additional headers field for embedding
+// hints to the message listener about which messages to dispose of
+// and/or how to process them efficiently. There's no requirement that
+// any message have meaningful hints in it, and a listener should be
+// able to deal with a message with no hints, perhaps less
+// efficiently, as well as one with many hints.
+
+struct Message
+{
+  Time timeOfCreation; 
+  short priority;
+  sequence<any> headers;
+  any payload;
+};
+
+// anything which can accept a Message
+interface MessageListener
+{
+  void accept(in Message m);
+};
+
+
+// this header will appear on a message which can be sorted/filtered
+// by a spatial origin point. this needs to be rewritten when the message
+// crosses a transformation boundary.
+
+struct SpatialVertexHeader
+{
+  Vertex pointInSpace;
+};
+
+// this header indicates that a given message is time-limited and not
+// valid after a given moment in time. can be used to reduce traffic,
+// or send time-sensitive information such as animation articulation
+// messages
+
+struct ExpiryHeader
+{
+  Time expires;
+};
+
+
+// this header will appear on a Message which requests a response be
+// sent on its arrival. the original sender, and the Message to send
+// in response, are included in the header. Note: the sender must be
+// prepared to live with the fact that an rsvpHeader might be totally
+// ignored. 
+
+struct RsvpHeader
+{
+  MessageListener originalSender;
+  Message receiptConfirmation;
+};
+
+#endif

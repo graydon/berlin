@@ -1,0 +1,12 @@
+#ifndef __CDATASECTION__    
+#define __CDATASECTION__
+
+module DOM {
+
+   interface CDATASection : Text {
+  };
+
+}
+
+
+#endif

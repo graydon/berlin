@@ -1,0 +1,18 @@
+#ifndef __DOCUMENTCONTEXT__    
+#define __DOCUMENTCONTEXT__
+
+
+//module DOM {
+
+interface Document;
+
+   interface DocumentContext {
+     attribute Document       theDocument;
+  };
+
+#include "Document.idl"
+
+//}
+
+
+#endif

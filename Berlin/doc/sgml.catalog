@@ -1,0 +1,21 @@
+DOCTYPE Book                                             dtds/berlin.dtd
+
+PUBLIC "-//Norman Walsh//DOCUMENT DocBook Print Stylesheet//EN"	stylesheets/print/docbook.dsl
+PUBLIC "-//Norman Walsh//DOCUMENT DocBook HTML Stylesheet//EN"	stylesheets/html/docbook.dsl
+PUBLIC "-//Norman Walsh//DOCUMENT DSSSL Library//EN"		stylesheets/lib/dblib.dsl
+PUBLIC "-//Norman Walsh//DTD DocBook OLink Summary V1.1//EN"	dtds/olinksum.dtd
+PUBLIC "-//Norman Walsh//DTD DocBook HTML 1.0//EN"		dtds/dbhtml.dtd
+PUBLIC "-//Norman Walsh//DTD Image Library 1.0//EN"		dtds/imagelib.dtd
+PUBLIC "-//James Clark//DTD DSSSL Flow Object Tree//EN" "dtds/fot.dtd"
+PUBLIC "ISO/IEC 10179:1996//DTD DSSSL Architecture//EN" "dtds/dsssl.dtd"
+PUBLIC "-//James Clark//DTD DSSSL Style Sheet//EN" "dtds/style-sheet.dtd"
+
+-- DTDDECL "-//OASIS//DTD DocBook V3.1//EN" "declaration/docbook-3.1.dcl" --
+
+PUBLIC "-//OASIS//DTD DocBook V3.1//EN" "dtds/docbook-3.1/docbook.dtd"
+PUBLIC "-//USA-DOD//DTD Table Model 951010//EN" "dtds/cals-tbl.dtd"
+PUBLIC "-//OASIS//ELEMENTS DocBook Information Pool V3.1//EN" "dtds/docbook-3.1/dbpool.mod"
+PUBLIC "-//OASIS//ELEMENTS DocBook Document Hierarchy V3.1//EN" "dtds/docbook-3.1/dbhier.mod"
+PUBLIC "-//OASIS//ENTITIES DocBook Additional General Entities V3.1//EN" "entities/docbook-3.1/dbgenent.mod"
+PUBLIC "-//OASIS//ENTITIES DocBook Notations V3.1//EN" "entities/docbook-3.1/dbnotn.mod"
+PUBLIC "-//OASIS//ENTITIES DocBook Character Entities V3.1//EN" "entities/docbook-3.1/dbcent.mod"

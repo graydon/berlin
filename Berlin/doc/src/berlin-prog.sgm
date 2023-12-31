@@ -1,0 +1,547 @@
+
+  <chapter ID="programming-chapter">
+    <title>Programming the Display Server</title>
+    
+    <abstract>
+    <para>This chapter describes the ideas (and interfaces) which play
+    key roles in the berlin display server, and gives an overview of
+    their use in typical scenarios. The actual API is available in
+    other places (including the source tree :). This section is
+    intended to give you an idea how it all "fits together".</para>
+    </abstract>
+ 
+
+    <sect1 ID="creation">
+      <title>Object Creation</title> 
+      <sect2 ID="genericfactory">
+<title>The Generic Factory</title> 
+
+	<para>As has been discussed already, the Berlin display server
+	is intended to be both highly modular and highly
+	extensible. In order to achieve this goal, it must be possible
+	to load new, previously unknown objects into the server at
+	runtime and have it serve them to connecting clients as "new
+	features". The Berlin display server contains an
+	implementation of the Corba COS GenericFactory, which is an
+	interface for remotely creating objects given their interface
+	name or other distinguishing criteria. The GenericFactory in
+	Berlin uses the host operating system's dynamic linking
+	facility to load objects from "plugins" which it discovers at
+	runtime. For instance, if a client connecting to the display
+	server wished to create a new fooObject, it could ask the
+	GenericFactory for interface name
+	<classname>IDL:fooObject:1.0</classname> and if the
+	GenericFactory had a plug-in implementing that interface, it
+	would call into the plugin and return to the client an object
+	reference to the constructed fooObject. It is important to
+	realize why a client would do this rather than use the new
+	operator. Using the GenericFactory causes an object to be
+	created <emphasis>in the display server process</emphasis>,
+	not in the client process. This is very important since
+	objects in the same process communicate several orders of
+	magnitude more rapidly than those in different processes,
+	mediated by IIOP (the Corba wire protocol).
+</para>
+	</sect2>
+      <sect2 ID="Kits">
+      <title>Kits</title>
+
+      <para>While the GenericFactory is a very flexible method for
+      creating new objects on the server, it presents a number of
+      difficulties in the real world:</para>
+
+	<orderedlist>
+	  <listitem>
+	    <para>The interface is cumbersome, and requires a number
+	    of dynamic type casts. Since it is "generic", the objects
+	    it returns are of the root type
+	    <classname>CORBA::Object</classname>, which gets
+	    annoying. It is difficult to understand, and is not
+	    readily checkable at compile time for correctness.</para>
+	  </listitem>
+	  
+	  <listitem><para>The newly constructed objects are
+	  effectively unparameterized -- in order to construct them
+	  with parameters an even more cumbersome interface with even
+	  more casts is required. In addition the parameter list will
+	  never be statically type checked, no matter what, so it's
+	  more error-prone.</para></listitem>
+	</orderedlist>
+	  
+	  <para>In order to get around these problems, we have
+	  introduced additional special purpose factories which reside
+	  on the server, called <classname>Kits</classname>. The kits
+	  generally have one method per object type they know how to
+	  create, and the methods accept a number of common parameters
+	  for construction of the new objects. The return values from
+	  these methods are the newly created objects, but since the
+	  types are known statically at compile time there's less
+	  casting. The kits themselves are still dynamically loaded
+	  through the GenericFactory, but once loaded each kit
+	  effectively "locks in" a set of features which a given
+	  display server implements. This makes object creation less
+	  failure-prone as there are fewer chances for the
+	  GenericFactory to fail to locate an appropriate
+	  plugin.</para>
+	
+	<para>As an example, consider the
+	<classname>LayoutKit</classname>. This kit contains methods
+	which construct transparent container objects for other
+	graphical objects, laying them out according to the solutions
+	of some simple packing constraints. So the LayoutKit has
+	methods called hbox(), vbox(), glue(), hfill(), etc. Each of
+	these methods returns an object with identical Corba interface
+	(a <classname>Graphic</classname>) but the implementation
+	objects obviously do different things. </para>
+	
+	<para>Using kits reduces the number of interfaces we need to
+	export through Corba, which is a good thing overall, and makes
+	it somewhat simpler to write objects whose implementations
+	efficiently share and reuse resources within a given
+	kit. While the use of kits is not mandatory when creating
+	objects in the Berlin server, the kits are highly convenient
+	both for the application writer and for a programmer engaged
+	in extending or customizing the server.</para>
+      </sect2>
+    </sect1>
+
+
+    <sect1 ID="scenegrarph">
+      <title>The Scene Graph</title>
+      <sect2 ID="graphics">
+	<title>Graphics</title>
+	
+	<para>The Berlin display server is concerned primarily with
+	arranging visual objects in a scene and displaying it to a
+	user. Thus, most objects constructed in the server implement
+	the <classname>Graphic</classname> interface.  It must be
+	implemented by any object which is to appear on the screen or
+	other display device; in other words, any object which is
+	subject to the layout and rendering processes. Graphics are
+	composed within one another in a directed, acyclic graph
+	(DAG), which simply means that they can have "child" graphics
+	and "parent" graphics, and more than one graphic can have the
+	same parent or child, but no graphic can be its own parent (or
+	ancestor of any kind). Some examples of Graphics are: glyphs
+	(anti-aliased images of text characters), pixmaps, bezier
+	curves, polygons, windows, buttons, scroll bars, menus, and
+	alignment, flow and grouping boxes such as those found in
+	TeX.</para>
+	
+	<para>Graphics in a DAG are connected together by Edges. An
+	Edge is an encapsulated relationship between a parent graphic
+	and a child. The DAG of all Graphics and Edges in a Berlin
+	server is commonly called the Scene Graph. Some examples of
+	the containment relationship are: glyphs within a word, words
+	within a line, lines within a page, entries within a menu,
+	buttons within a toolbar, polygons within a structured
+	graphics editor, images within a web page, windows within the
+	screen. The same type of Edge object is used to represent each
+	such containment relationship.</para>
+
+	<para>In order to make the scene graph more memory efficient,
+	Graphics are actually shared objects which can appear in more
+	than one place in the scene graph. In other words, the DAG
+	structure is actually made use of and there are regularly
+	nodes in the scene graph with more than one parent. To
+	appreciate why one would do this, consider the representation
+	of glyphs within words as a relevant case. The average
+	anti-aliased pixmap of a glyph in a word might be 8x8 = 64
+	pixels, each of which is 4 doubles (berlin's colorspace is
+	high resolution) so we have a total of 64 * 4 * 8 = 2kb per
+	glyph. Now consider your average text document, which might
+	have 3 80x25 screens of text rendered at any time (for display
+	buffering). In the case where we store each individual glyph
+	in each individual slot, you get about 4 megabytes of image
+	data (outside the framebuffer). This is a pretty significant
+	amount of repetition. You can reduce it from a pixmap to a
+	bitmap if you are using a monocolor font, and do the
+	anti-aliasing on the fly, but you still only shrink things by
+	a factor of 32 -- you're still storing about 100k of
+	bitmap. If, however, you take the approach of sharing the
+	glyphs, then you have (for most alphabetic languages) under
+	200 different glyphs on the screen in any given document,
+	which you can fit in a paltry 28kb (including the edge
+	structure you need to represent multiple parents). While most
+	windowing systems already implement glyph sharing as a special
+	case, in Berlin <emphasis>all</emphasis> graphics can be
+	shared this way; font glyphs are not a special case.</para>
+      </sect2>
+
+      <sect2 ID="traversals">
+	<title>Traversals</title>
+	
+	<para>The main operations performed by the display server on
+	the scene graph are layout/drawing (also called repairing),
+	and delivering events (also called picking). These operations
+	are encapsulated into visitor-pattern objects called
+	traversals. The basic traversal algorithm is a depth-first
+	walk of the scene graph, stopping at each graphic along the
+	way to perform some operation. In the case of the
+	DrawTraversal, the operation is an intersection test against a
+	pre-computed "damaged clipping region". If this test succeeds,
+	a redraw of the intersecting region is queued up in the object
+	managing the target draw device. If the test fails, the
+	traversal will carry on visiting other graphics, with no
+	effect. A PickTraversal, on the other hand, is trying to
+	deliver an event (generated by a user, or some other process)
+	to any graphic which is interested. Each graphic decides for
+	itself whether it is interested, or has any children which are
+	interested. The traversal process can be governed either by
+	geometrical tests (for pointer-like events), directed focus,
+	broadcasting, or any combination thereof. The specifics of the
+	Traversal algorithm are free to change without upsetting the
+	interface each graphic needs to support. </para>
+
+	<para>Additionally, each graphic may choose to handle a
+	sub-traversal using its own thread (if it contains an
+	asynchronous <classname>reactor</classname>), rather than pass
+	a visiting traversal to its children directly. This is useful
+	is a graphic is out-of-process, or is busy with some sort of
+	operation which has temporarily locked a portion of the scene
+	graph. Since layout is performed dynamically at the time of
+	drawing, there is a simple rule that traversals must only be
+	"split" into separate threads like this between inner and
+	outer portions of fixed-layout graphics, and while a traversal
+	is visiting a given container with fixed layout information in
+	its parent, all "internal" size and position changes are
+	suspended while the traversal lays the children out. For
+	instance, a traversal of 4 windows might take place in 4
+	threads, since each window is of fixed size and its layout
+	will not change during the traversal. In contrast, a traversal
+	cannot reasonably be split between the first half and second
+	half of a page of text, as the decisions made on the first
+	half of each line effect those made on the second half.</para>
+      </sect2>
+    </sect1>
+    
+    <sect1 ID="action">
+	<title>Action and Interaction</title> 
+
+      <para>The objects which make up the scene graph mostly reside in
+      the display server process. This makes traversals and drawing
+      very fast, and allows the user to centrally customize the look
+      and feel of the user interface without the application knowing
+      (or needing to know). There are, however, a number of auxilliary
+      objects which are crucial in connecting the objects in scene
+      graph together with one another, and with application programs
+      using the display server.</para>
+      
+      <sect2 ID="subjects">
+	<title>Subjects</title>
+
+	<para>The scene graph can be thought of as a "view" of a
+	particular set of data, plus a bunch of "controllers" to alter
+	that data. Since many applications present remarkably similar
+	types of data through their UI, we have standardized
+	interfaces to reading and controlling such values. Some
+	examples are editable and non-editable text buffers, bounded
+	integer and floating point values, pseudo-terminals (ptys),
+	sets of togglable flags, and selections from sets of such
+	values. These are all encapsulated in interfaces called
+	<classname>Subjects</classname>, and each subject has the
+	interesting property of being observable, which means that it
+	can hold a list of observers and will notify them when its
+	value changes. This is an efficient mechanism for propagating
+	change information between multiple interested parties, and
+	allowing multiple controllers to convey the state of a
+	controlled value via some UI metaphor like a button, slider,
+	or dial.</para>
+
+	<para>A common scenario when using the Berlin display server
+	is for a client application to create a number of subjects
+	representing values the user should be able to control, and
+	then "hooking them up" to user interface components running in
+	the display server. From then on, all redrawing, event
+	handling, layout, look and feel selection, scripting, etc. is
+	handled by components the user has installed in the display
+	server. The application is only notified when a complete
+	state-change has been applied to one of the subjects it
+	contains. The rest of the time the application is idle.</para>
+      </sect2>
+
+      <sect2 ID="observers">
+	<title>Observers</title>
+
+	<para>Hand in hand with the concept of a <classname>Subject</classname> is the
+	concept of an <classname>Observer</classname>, which is an
+	object of unknown particular type, which happens to be
+	interested in some aspect of the subject's state. Rather than
+	having the observer constantly querying the subject to see if
+	its state has changed, the observer gives a pointer to itself
+	to the subject it's interested in observing, and effectively
+	asks "call me if anything changes". When there's any sort of
+	state change worth mentionning in the subject, it calls
+	this->notifyObservers(), which sequentially calls update() on
+	each registered observer of the subject. What update does is
+	unknown -- it's simply some sort of method the observer must
+	implement to update its knowledge of the relevant state of the
+	subject. This is essentially an "event driven" notification
+	model, and should be old hat to most GUI or OO programmers.
+</para>
+
+	<para>One special case of subjects and observers in berlin is
+	the scene graph itself. Our first approach to redrawing was to
+	use the subject/observer pattern to propagate repairs
+	(redraws) to the top level node in the scene graph. We have
+	changed this slightly to make use of special information
+	available to the graphics about how their changes effect the
+	screen. In particular, when a graphic changes state, it
+	actually reaches up through its parents to obtain its
+	"allocations", which are the regions it appears in on the
+	screen, including cumulative linear transformations, and
+	extends the screen's damage region to include its
+	allocations. This queues up a DrawTraversal with a region
+	composed of every region which was damaged since the last
+	traversal. DrawTraversals are queued so that they do not
+	happen too frequently. </para>
+
+	<para>This redrawing protocol is advantageous in that it
+	allows us to make much more lightweight (non OpenGL) drawing
+	kits by externalizing all the transformation and layout
+	information. Furthermore, we redraw less of the screen, using
+	faster tests, when we do the DrawTraversal's region test
+	rather than OpenGL's culling test on a clipping region (as we
+	were doing before). Finally since it computes more values on
+	the fly from external state, it uses less memory.</para>
+      </sect2>
+      
+      <sect2 ID="controllers">
+	<title>Controllers</title>
+
+	<para>An obvious question by now is "how does anything in the
+	scene graph change at all?" The answer is that while many
+	graphics in the scene graph are "just for looks", other
+	graphics react to events they receive from
+	PickTraversals. Such graphics are called widgets (or
+	controllers). Examples of widgets are: pushbuttons,
+	scrollbars, thumbs, radio buttons, menu bars, menu entries,
+	sliders, check boxes, combo boxes, and text editing
+	areas. </para>
+
+	<para>Each widget typically controls zero, one, or more
+	subjects based on some control metaphor it is supposed to
+	encapsulate. For example, a checkbox controls a boolean
+	subject, which is a kind of object called a
+	<classname>TellTale</classname> -- an abstraction for a
+	set-like or flag-like data value. A pushbutton, on the other
+	hand, doesn't necessarily control a subject. It merely takes
+	an anonymous action when it receives a given event or sequence
+	of events (for instance: mouse press, hold, release). A
+	scrollbar usually (but not always) controls a boundedValue,
+	which is an encapsulated floating point number with a maximum
+	and minimum value. The subjects controlled by widgets are
+	typically observed by one or more other observers, which alter
+	their appearance as the subject changes -- for instance by
+	scrolling up and down as a BoundedValue changes.</para>
+      </sect2>
+
+      <sect2 ID="reactors">
+	<title>Reactors</title>
+	<para> Since widgets obviously have a lot of variation in
+	their behaviour, we have decided not to hard-wire the way they
+	act. Instead, widgets have hidden inside each of them a
+	special type of object called a
+	<classname>Reactor</classname>. Reactors are very common
+	software objects. Many systems have reactors they don't call
+	reactors, they call them dispatch tables. The concept is very
+	simple. There is a table stored within the reactor which
+	relates incoming events to actions to be taken. The actions
+	have an anonymous signature, so they can be rearranged or
+	reassigned. They are somewhat like function pointers, only
+	they may have some encapsulated parameters. The point of a
+	<classname>Reactor</classname> is that it serves as a
+	dynamically reconfigurable part of an otherwise
+	statically-typed program. It serves as the key flexibility
+	abstraction. By altering which action is taken on a given
+	event, you can alter the behaviour of the controller. </para>
+
+	<para>When you construct a widget, you must pass in a reactor
+	which the widget will use to bind its default commands to, to
+	implement its default behaviour. You can hold onto a reference
+	to the reactor if you want to customize the widget beyond its
+	normal mode of operation. In addition, there may be
+	convenience parameters you can supply to the widget
+	constructor methods, such as subjects to control or commands
+	to trigger on the default interaction sequence. These can
+	usually be left blank if you want to make the widget do
+	specialized tasks -- null values will be ignored and the logic
+	which depends on them is just left out.</para>
+
+	<para><Classname>Reactor</Classname>s are implemented in
+	berlin as Corba interfaces. The "incoming requests" are
+	structs of type <classname>Message</classname>, which has a
+	timestamp and a priority, a set of headers to help sort the
+	message, and a payload of type <classname>Any</classname>
+	which is an inspectable, unspecified type. The
+	<Classname>Any</Classname>'s are inspected and their
+	<classname>TypeCode</classname>s are matched against other
+	<classname>TypeCode</classname>s stored in the
+	<classname>Reactor</classname>'s lookup table, and a set of
+	selections is made based on the
+	<classname>TypeCode</classname>s which match.
+	</para>
+
+	<para>In addition to allowing the programmer to customize the
+	behaviour of each widget he or she creates, berlin provides 2
+	separate types of reactors:
+	<classname>SyncReactors</classname> and
+	<classname>AsyncReactors</classname>. The core dispatching
+	code in each is shared; the difference is that AsyncReactors
+	encapsulate a separate thread and message queue. This has
+	interesting implications, which are discussed in the threading
+	section. 
+      </sect2>
+      <sect2 ID="commands">
+	<title>Commands</title> 
+
+	<para> Since there is no such thing as a function pointer in
+	IDL, it is necessary to promote the action part of a dispatch
+	table to full interface status. Thus we have instances of
+	interface <classname>Command</classname>, which must support a
+	single method:
+
+<funcsynopsis>
+	    <funcprototype>
+	      <funcdef>
+<function>execute</function>
+                    </funcdef>
+	      <paramdef><parameter>Message m</parameter></paramdef>
+	    </funcprototype>
+	  </funcsynopsis>
+
+              The <Classname>Message</Classname>, which may contain a
+              great deal of important information, is provided as a
+              parameter to the <classname>Command</classname> to do
+              with as it pleases. An application may bind multiple
+              <classname>Command</classname>s to multiple
+              <classname>TypeCode</classname>s, in order to customize
+              the behavior of a <classname>Reactor</classname>.</para>
+	
+	<para>A <classname>Command</classname>, as mentioned in the
+	<Classname>Reactor</Classname> section, is a named,
+	encapsulated function supporting at least one anonymous
+	interface which can cause it to "execute". The entire purpose
+	of <classname>Command</classname>s is that they can be placed
+	in <classname>Reactor</classname>s, and the
+	<classname>Reactor</classname> can be configured to execute
+	them on any type of incoming request without violating the
+	compile-time type safety of C++. Each
+	<classname>Command</classname> usually takes a number of
+	clearly defined parameters in its constructor, such as the
+	subject to alter when executed, the message to deliver, the
+	amount by which to incriment, etc etc. </para>
+
+      <informalexample>
+	<para>As an example of the use of Commands, consider the
+	"traversal-passing" system in berlin. When a traversal hits an
+	AsyncReactor node, it will most likely "hand off" a copy of
+	the event it's delivering into the reactor's message queue and
+	allow the reactor to do what it likes with the event. The
+	reactor will then process the message it has received, and
+	take appropriate action. This might involve running one or
+	more PickTraversals on its children. In order to do that, the
+	reactor will have a PickTraversalCommand bound to the TypeCode
+	of the event in question. The PickTraversalCommand must be
+	parameterized with the starting point of the traversal to run;
+	the event itself can be extracted from the message passed to
+	the command's execute(Message m) method. When the AsyncReactor
+	receives the event, it looks up the command, which runs the
+	traversal. If this seems a strange example, consider how the
+	root event dispatcher operates: it is exactly the sort of
+	AsyncReactor described here, except that it has its events
+	injected from the underlying operating system, rather than
+	delivered "from above". There's nothing stopping you from
+	delivering events "from above" though. In fact, berlin has
+	been designed specifically to allow you to view and interact
+	with another user's workspace inside a window on your
+	own. This is quite useful from a technical support and
+	debugging perspective. </para>
+      </informalExample>
+      </sect2>
+      
+      <sect2 ID="events">
+	<title>Events</title> 
+	
+	<para>Events are reasonably important in a GUI. They are the
+	data structures generated rapidly by users (and programs) as
+	they interact with the display server. Events cause basically
+	everything to happen. If the system has no events in it, then
+	it is most likely idle. Because event is such a broad term, it
+	is difficult to know exactly what sorts of event will come to
+	exist, how they should be dealt with, filtered, passed,
+	ignored, stored, replayed, etc. Every user seems to like their
+	computer to respond in a slightly different manner, and users
+	themselves vary in the sorts of events they generate. Programs
+	vary in how fast they can respond to events and whether they
+	are interested or not in even being informed of events. Thus
+	we have a very general, asynchronous mechanism for processing
+	events (and anything else you want to pass around between
+	asynchronous queues) called
+	<classname>reactors</classname>. See that section for details
+	on how they work.
+      </para>
+
+	<para>The events defined in berlin are small IDL structs
+	representing raw data we read out of the GGI visual. These
+	correspond to pointer movement information, pointer click and
+	release events, key press, repeat, and release events (and
+	their corresponding unicode character values). GGI obtains the
+	events from the console device, the X bridge, or whatever
+	subsystem it happens to be running on. It is not the concern
+	of berlin to deal with events below the GGI layer. Once inside
+	berlin, the events are distributed through the scene graph
+	using PickTraversals. For debugging purposes, a kind of
+	graphic exists which one can wrap around other graphics which
+	will send information to stderr when a traversal passes
+	through them. This is helpful in determining the flow of
+	events through the system.
+    </sect2>
+    </sect1>
+
+  <!-- include the fabulously well-written threading document  :) -->
+      &berlin-prog-thread;
+    
+    
+    <sect1 ID="contexts">
+      <title>Contexts</title>
+      
+      <para>A <classname>ServerContext</classname> is a logical
+      collection of all the allocated resources a given client uses
+      when connecting to the display server. The server maintains a
+      collection of ServerContexts in an object called a
+      <classname>ServerContextManager</classname>, which is
+      responsible for granting new ServerContexts to connecting
+      clients. A client is represented in the system by the
+      <classname>ClientContext</classname> interface, which the
+      ServerContext may query from time to time to determine its
+      security rights and identity. When a client is no longer
+      reachable, a ServerContext destroys all the resources it is in
+      charge of, and then destroys itself. ServerContexts occasionally
+      ping clients to check to see if they are still alive. </para>
+
+      <para>This implies that ClientContexts are in the client address
+      space, which indeed (if you look at berlin clients) they
+      are. Not only do ClientContexts represent the reachability of a
+      given client, they are also the place in which all security
+      mechanisms will be implemented. Obviously it is unacceptable to
+      transmit ones security credentials over the wire to a display
+      server -- rather, the client must respond intelligently to a
+      given challenge with appropriate credentials. This allows berlin
+      to use asymmetric security systems like public key cryptography.
+      </para>
+    </sect1>
+
+    &berlin-prog-text;
+    &berlin-prog-corba;
+    &berlin-prog-opengl;
+
+  </chapter>
+
+    <!--
+     Local Variables:
+     mode: sgml
+     sgml-doctype: "berlin-man.sgm"
+     sgml-parent-document: ("berlin-man.sgm" "book" "chapter")
+     End:
+     -->

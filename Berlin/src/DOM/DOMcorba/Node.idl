@@ -1,0 +1,50 @@
+#ifndef __NODE__    
+#define __NODE__
+
+interface NodeIterator;
+
+#include "domDefs.idl"
+#include "NoSuchAttributeException.idl"
+#include "NotMyChildException.idl"
+#include "NodeIterator.idl"
+
+
+// module DOM {
+
+interface Node {
+  enum NodeType {
+    DOCUMENT,
+    ELEMENT,
+    ATTRIBUTE,
+    PI,
+    COMMENT,
+    TEXT
+  };
+  
+  NodeType            getNodeType();
+  Node                getParentNode();
+  NodeIterator        getChildNodes();
+  boolean             hasChildNodes();
+  Node                getFirstChild();
+  Node                getPreviousSibling();
+  Node                getNextSibling();
+  Node                insertBefore(in Node newChild, 
+				   in Node refChild)
+    raises (NotMyChildException);
+  
+  Node                replaceChild(in Node newChild, 
+				   in Node oldChild)
+    raises (NotMyChildException);
+  
+  Node                removeChild(in Node oldChild)
+    raises (NotMyChildException);
+
+  //Implementaion specific methods - DO NOT USE THESE!
+  void                setParentNode__(in Node newParent);
+  void                setPreviousSibling__(in Node newPrevSib);
+  void                setNextSibling__(in Node newNextSib);
+};
+
+// };
+
+#endif

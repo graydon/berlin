@@ -1,0 +1,43 @@
+#ifndef __ENTITIES__    
+#define __ENTITIES__
+
+//hb////-*-Mode: C++-*-////////////////////////////////////////////////////////
+//                                                                           //
+// NAME        :                                                             //
+// DESCRIPTION :                                                             //
+// HISTORY     :                                                             //
+//                                                                           //
+//he///////////////////////////////////////////////////////////////////////////
+
+typedef sequence<octet> buffer;
+
+interface Entity : Node {
+  attribute wstring name;
+  attribute boolean isParameterEntity;
+};
+
+interface InternalEntity : Entity {
+  attribute wstring content;
+};
+
+interface ExternalEntity : Entity {
+  attribute boolean isNDATA;
+  attribute boolean isPublic;
+
+  attribute string  publicIdentifier;
+  attribute string  systemIdentifier;
+};
+
+interface ExternalTextEntity : ExternalEntity {
+  attribute wstring content;
+};
+
+interface ExternalNDATAEntity : ExternalEntity {
+  attribute Notation  theNotation;//FIXME: Was: notation
+  attribute buffer    content;
+};
+
+interface NDATA : Node {
+  attribute buffer content;
+};
+#endif

@@ -1,0 +1,88 @@
+berlin for Debian
+----------------------
+
+From the website:
+
+Berlin is a windowing system being
+actively developed by members of the free
+software community. Its features include a
+multilingual text rendering system, a set
+of extensible user interface components
+residing in-process with the display server,
+an advanced imaging model with strong support
+for hardware acceleration, and a
+persistent user-preferences database. 
+
+Berlin is designed around 3 major existing
+standards: Unicode, OpenGL, and Corba. It
+is released under the GNU Library General
+Public License, and written entirely by
+volunteers using GNU/Linux, OmniORB, Mesa and
+Egcs -- all free software. 
+
+All code is under the GNU Lesser General Public License:
+
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+PLEASE NOTE: This is a pre-alpha release of Berlin. At this point, nobody's
+even taken the time to tie up loose ends in the CVS tree and announce a new
+stable branch. However, this is generally considered a next generation
+berlin server (in comparison to the last 'stable'), so it's been given a new
+verion number: 0.1.0. Please, instead of calling it by this number, call it
+simply 'berlin from today's development branch' -- things are liable to
+change before 0.1.0 is actually released.
+
+  Note that Berlin is steadily gaining functionality (text and image display
+recently) but there is still no unification layer for these. In addition, the
+plugin organization is still somewhat ad-hoc, implying that network
+interoperability machanisms are still somewhat unrefined.
+
+  Currently, there are only three demos for berlin: 'button', 'draggable'
+and 'terminal,' the latter of which doesn't work, but is still included in
+this distribution. Each of these is wrapped to conserve namespace, and in
+addition so some plugins that would have unnecessarily hogged namespace
+could be moved out. To call any of these, append the prefix 'berlin-' to
+their names: berlin-button, berlin-draggable, and berlin-terminal. The
+server itself is wrapped as well in the script 'berlin.'
+
+  Please do not, after witnessing the simplicity of the demos, their
+lagginess, and the server's tendency to crash, discount Berlin as still in
+infantile development stages. On the contrary, the display server is
+currently much more capable than the demos suggest; all that's needed is
+more manpower to publicize these capabilities with working client code.
+The same goes for its speed. Optimization has barely been pursued at all
+at this point, and much is possible DESPITE our use of CORBA as the
+communication protocol (contrary to the beliefs of some).
+
+To help with the Berlin project and push towards solving both of these
+dilemmas, please have a look at http://www.berlin-consortium.org or join the
+mailing list (design@berlin-consortium.org). To subscribe, send a single
+mail to design-request@berlin-consortium.org with the word 'subscribe' in
+the body of the message.
+
+  This server requires omniNames to be running and correctly configured
+before it will work. Before you run the clients, you need to run the server
+(of course!).
+ 
+  Because Berlin's only currently working display engine is written with
+OpenGL using GGI as a target, the display server can be displayed in almost
+any environment; however, it's STRONGLY recommended that you refrain from
+anything but X. Other targets you try at your own risk -- I can tell you
+from experience that you may have to do a hard reboot to get out.
+
+If you have any questions, feel free to drop me a line.
+
+ -- Aaron Van Couwenberghe <vanco@sonic.net>, Wed, 30 Jun 1999 11:46:37 -0700
