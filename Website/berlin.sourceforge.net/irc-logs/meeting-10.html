@@ -1,0 +1,979 @@
+<html><head><title>IRC Meeting Log on #berlin </title></head><body bgcolor="white"><h2>#berlin </h2><table><tr><td>&nbsp;</td><td><font color="red" size="-1">  BEGIN LOGGING AT Thu Sep 14 21:39:04 2000 </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Hello all!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Heya Nick.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: hi</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>;)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  stefan is still chasing bugs :( </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Aww. :(</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: on the other hand, if I get that worked out, it will be <em>really</em> clean ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: What exactly is the problem? Related to client hangups? I didn't quite get your design list posting.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: cleanup trouble when the client(s) are killed.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes, all right.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: i.e. 'irregular' exits.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Having to do with the order of deactivation due to the POA doing things in its own order?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: yes, that's one of the problem...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: All right, what else then? </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm braces himself. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: in fact, not only the order, but the fact that POAs take all objects down at once, not one at a time.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Oh. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: so the object which is being destructed can't assume anything about the other objects it's being connected to.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: And no way to hook up to some internal call in the POA and take care of things?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I see...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: that makes recovery quite difficuly (imagine a linked list for example...)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>nope</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I can see that.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: But the POA has good mechanisms for activation, why nothing for deactivation?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Oh well.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: because that could cause endless loops.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: 'deadlocks'</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yesssss....</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm thinks about this. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: it's not a normal condition anyway (shutdown due to POA destruction I mean)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: but since we want to be fault tolerant we have to deal with it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes, I see.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: So this is what happens when the client ping() returns COMM_FAILURE, and we want to garbage-collect the objects belonging to the client by destroying the POA?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>This is that situation, I mean, right?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Btw, the meeting is in about an hour an ten minutes? </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka nods to Nick. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka thinks that at this rate, he's likely to be 10-15 mins late to it too. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm got his time zones mixed up and is now calibrating thanks to misaka's thoughtful URL. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>We should remember to make use of that for future meetings. :]</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm nods to misaka. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I was under the impression that GMT was the same time zone as what they have in London. It seems I was mistaken.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka stares at fresh code modifications. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>njs: Hello, O Keeper of the Lore!</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  stefan bows to the operator :) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>They want me to put it in, I want to put it in, but is it worth it right before I leave?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>stefan: hah, too late</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>njs: sorry ;)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm chuckles. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hehe</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Everyone: let's play "Catch the operator"!</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  njs pounces </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm growls </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Not fair. I was in another virtual desktop.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>I'm not going to able to be here long, or for the actual meeting; is there anything that people need to ask me in particular?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>regarding the web site or something</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>they both actually seem to be updating and stuff, I'm amazed</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>I think this is the first time everything has worked right in months</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>That's good. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>njs: right, we should have scheduled the meeting a lot earlier ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>nooooo !!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>what a foolish bug !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>score one for most obscure bug</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>stefan: ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: What?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm perks up. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>you know the relationship between a CORBA object and a servant ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Yes. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>stefan: which is what?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>in the berlin setting it's such that if an object is deactivated, the servant gets destructed.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm nods. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>stefan: I understand the theory, I just can never remember which word refers to which part</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>however, I invoked '_this()' in the destructor, effectively activating the object again :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>njs: 'servant' refers to the entity which serves the COBRA object. The object is abstract, the servant its representation in a particular context.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Ahhh...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Granted, that's an obscure bug. :) </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: and then omni complains that I delete an object which is still active...</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm chuckles. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Implicit acitivation is not all that great in that respect, I guess.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: right. Lots of people warn about it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: however, you can't do anything about it without rewriting the _default_POA() method.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: as long as the _default_POA() method returns the root POA, you are bound to the policies which come with that.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: since you only can change policies for  POA which you explicitely create.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes, I can understand that.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm nods. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>Anyone have any idea why A dense in B, B dense in C =&gt; A dense in C?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>njs: dense?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm must have a terminology problem here. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>NickElm: set theory</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>NickElm: or metric space theory, whatever that is</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>njs: it sounds intuitive, but I guess you woudn't accept that :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>njs: So then "dense" is transitive? That's the definition of transitivity, at least.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>stefan: I'd accept it, my prof wouldn't :-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Not really intuitive, not for all relations. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: well, I guess that would simply be a different way to phrase the same statement :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Exactly. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>NickElm: well, sort of</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>NickElm: it's not symmetric, and A is a subset of B is a subset of C, so it's not exactly the same as what one normally thinks of as transitivity</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>njs: This calls for a Venn diagram, I think.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>njs: You know, the one with circles inside circles. :) A graphical proof is proof enough...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>NickElm: perhaps, but representing closure() on a Venn diagram is, erm, non-trivial</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Oh.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>That's what dense is. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>A is dense in B if A subset B &amp;&amp; closure(A) = B</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>anyway, back in a little while...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>njs: Right. There's a tiny bit of language barrier here, though. :(</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  stefan has quit ([x]chat)</font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">ilya:</font></td><td>Every non-empty subset of C has non-empty intersection with B</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">ilya:</font></td><td>If you can show that this intersection is open in B, than it should have non-empty intersection with A </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">ilya:</font></td><td>Thus showing that every non-empty open subset of C has intersection with A, i.e. A is dense in C.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">ilya:</font></td><td>Maybe, you can replace 'open subset' with 'sphere' here.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>ilya: how can every non-empty subset of C have non-empty intersection with B?  That's absurd.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">ilya:</font></td><td>non-empty <em>open</em> subset.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>ilya: oh</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>ilya: that makes a difference :-P</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka heads home. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>With luck I'll be there by 21h00 GMT ... but more likely I'll be 15 mins late or so.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: what do you think of that mail from BeOS ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>that's not from BeOS</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>it's from BeOpen</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>very different</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  stefan has quit (Ping timeout for stefan[rubidium.BIOPHYS.UMontreal.CA])</font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>sorry, back again</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: can you repeat ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>my feeling is that 1) if they want to link to us, fine, but there's no real reason to "trade" links; that's not the point of our site, and 2) no banner ads, berlin has had too much unfounded hype</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>BeOpen != BeOS. BeOpen is a linux development group, basically. they made some xemacs modules, like hyperbole and infodock, a long time ago, and now they're re-targetting themselves as a python development house with a python portal network to back it up.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>though honest banner ads might be amusing... "Berlin: the distant future in computing."  "Berlin: cursor control is for weenies."</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: I see.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>njs: I'm sure Rob, for one, would be able to do some banners.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: ah, did you talk to him ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>NickElm: yeah, I'm just not sure that we want to do advertising stuff right now</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>in any case, I have to run</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">njs:</font></td><td>/msg me anything you want me to answer later</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  njs is away: class </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I think that he can whip something up quite easily.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: He can't make it today, he has a bad cold and needs his sleep. :(</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>njs: See ya!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: oh well, say hi from me anyway</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Then I will. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: how different is docbook XML from docbook SGML ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: it appears docbook has evolved quite a bit recently, so I'm wondering whether we still need to carry our own environment around.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: and at the same time, whether we can just use the XML version of it for our own stuff</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I'd like to use the XML version. it's not too different.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, fine. do we still need our own environment ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>it appears with the current docbook (4.01 ?) even 'classsynopsis' etc. are supported, i.e. we could even have a docbook version of the reference manual</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>the "our own environment" thing is just to make it easier to build. otherwise we need toa dapt to the person who's trying to build the docs. there's no "autoconf for XML" yet :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: right. Let's wait, Havard is supposed to come today :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm is here and ready.  </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>may be we could start with the more technical points</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">ilya:</font></td><td>Program received signal SIGSEGV, Segmentation fault.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">ilya:</font></td><td>0x402535f6 in Warsaw::_impl_Graphic::_impl_Graphic () from /home/ilya/berlin/Berlin/lib/libBerlin.so</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>oh well...:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>I think we need to improve the home page or just the way we use it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>ilya: That's a technical point, granted. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Right now there is no working/up to date task list for example</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>what should we do about that ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Hmm.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>btw., anybody logging ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>It's definitely true that all project needs some kind of task management, especially a project like Berlin.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">danpost:</font></td><td>stefan: I'm logging :)  I always log...  Even if I'm not one of the core developers yet.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>HI!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>hunger: Hi! Just in time. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Sorry that I am late.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Trust Tobias to make an entrance.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm snickers. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hunger: really, we have almost finished ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>NickElm: Christina told me to tell you hi!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>hunger: Well, tell her hi too! Rob would probably say hi as well, but he's in bed with a cold.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon doesn't know how to log in bitchx, and X isn't working for me today </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm is logging, too. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: too ? anyway, fine.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>All right, people are waking up and appearing, good. Misaka will be here soon, too.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">danpost:</font></td><td>brb</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Well, dan was logging too. :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  danpost has quit ([x]chat)</font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Just for the logs: I might be logging too. I never know with xchat ;-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>And Chalky seems to have a never-ending log repository. :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm prods Chalky. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger is a irc-newbie that does not want to bother just because of this channel. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: do you think the sourceforge task manager is good enough for us ?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon can only stay for about 1.5 hours. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>hunger: I found it under Settings | Setup. It puts my logs in ~/.xchat</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: it probably will do. at least it can be updated online.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>So tasks cannot really be assigned to someone by someone else, but you could take on a task voluntarily or something, right? </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>like now, in other words, only a bit more formal.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, then let's use it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: well, there are always unassigned tasks.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: of course.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: once you start working on them it's a good idea to assign them to yourself to let others know that you are working on it...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Right, exactly.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: That sounds reasonable, so let's use it. Doesn't seem hard.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm is there right now. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>So, should we move on to something else?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>right</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: you are the coordinator, go ahead :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm waits eagerly.  </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>I'd suggest that we start with a little summary of the last year, especially the last six months.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm nods. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Including the code work as well as side work, like conferences.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>well, ok</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>we had two exciting and quite successful presentations in Stuttgart (LinuxTag) and Ottawa (Linux Symposium)...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>we went to linuxtag and OLS, this much everyone probably knows</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I guess you've all seen our ugly mugshots from Stuttgart. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I saw some mugs from Ottawa, too. :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  stefan is still eager to see the photos from Niklas/Robert </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>there's a new console abstraction, freetype fonts work, the libart DK is much faster, we run on omni 3, there's a new resource management scheme in place for reclaiming objects...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: But I thought Rob put up a few of them? </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: On the Linuxtag report, not many, but we're all featured there...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>we run on fbcon, we're fully "3d" even though in orthographic mode still for simplicity</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>NickElm: How is Rob's translation of the LinuxTag posters coming along?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>hunger: He got halfway, then had to do schoolwork. I'll remind him to continue when he has the time.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>what else?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>we talked to Thomas Hiller, which was the last maintainer of Fresco</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>he seemed pretty interested in our evolution...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>I'</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm nods. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger nods too. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>v been playing with the idea to contact John Vlissides as he played an important role in InterView's development</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: He named us the official successor of Fresco, did he not?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Hiller, that is.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>As Tobias said, Rob is translating the Linuxtag posters from German to English. Could come in handy if someone wants to put up a poster or hold a presentation somewhere.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Didn't he talk about possible sponsorship, too?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>I am collecting useful sniplets for presentations. So if you have some drawings, articles, or whatever, please send them to me.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: right, we have a couple of important architectural changes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>the Console layer is one of them.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>it was an attempt to get rid of the explicit dependency of GGI</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>and it turns out that this buys us quite a lot, for example the ability to port to even more platforms.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>hunger: You'll get the translations when they're done.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Yes, like CAVEs, for one thing. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I can't think of much else. the time I put into berlin this summer was mostly spent with libart(DK|font) and with jprof.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: yeah, tell us a bit about all that...</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger likes CAVEs:-) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>hunger: :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Well, sure...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I started implementing a CAVEConsole as soon as Stefan had finished the Console abstraction.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>However, I ran into some problems related to the multiprocess nature of cavelib, the lib I use to be able to perform OpenGL calls on the CUBE. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Actually, it's related to shared memory and how to get the different rendering processes to be able to all access the scene graph,</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Or, alternatively, how to build a single display list in one thread, and have each of the three or so rendering processes execute this list.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I got in touch with the company behind cavelib, and they told me that they have a multithreaded version of cavelib in the works, and that I would receive a beta version as soon as possible.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Nothing yet, though.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>So, in the meantime, I tried my hand at implementing a GLUTConsole using the console abstraction. This would allow us to run berlin on any OpenGL platform with GLUT.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>However, me and Stefan ran into trouble again here, mostly concerning glut not being thread-safe nor instance-safe.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>yeah, that was a pain...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>In theory, however, it worked great. :) We even got output and all that, and we could interact with berlin, but ever so often, glut would roll into a little ball on refuse to work.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Right. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>yeah. I also started work on an SDL console, partly out of curiosity and partly because GGI is difficult to get stable packages of on peoples' systems.. also stefan and I have been discussing what seems like the next logical step, which is to start building a simple pixel-level bridge to let X apps into a berlin server.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>and it was slow</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: That too. But it was a useful proof-of-concept.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: absolutely.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: We identified a few issues with the console, too.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>graydon: how did the console abstraction map to SDL, then? Anything blatantly different?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: right. I have been playing with a new interface: Canvas. It's a way to export a shm id together with pixel/drawable alignment info to let clients draw themself </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>NickElm: well, I didn't finish. it looked like it would be a pretty direct mapping though.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>graydon: That's great.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>yeah, it seems SDL follows GGI design relatively closely</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Anyway, just to summarize, I am *this</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Uh.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Anyway, just to summarize, I am <em>this</em> close to getting Berlin-on-CAVE (in plain, ortographic 2D) running.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>cool !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I just need a multithreaded cavelib, or rework a drawing kit to use shared memory. </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka arrives, a bit later than expected. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger has quit (Read error to hunger[rzppp-70.uni-trier.de]: Connection reset by peer)</font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: it probably depends on when the mt cavelib will be ready</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  aaron appears to have been afk at the wrong time </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes, I think so, too.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: Welcome back!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I am not sure whether the effort to modify the GLDrawingKit to use shared memory is worth it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, so just to summarize what the Console layer is:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>I forgot about the meeting; I've been reading HHGTTG instead ;). oh well, logs work out i guess</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>it provides a uniform way to access some standard functionality you would expect from a Console such as input event generation as well as some simple drawing primitives.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: We've just been at it for about 30 minutes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>the nice thing is that with the tie approach we use you <em>can</em> access the special implementation, so if there is some new feature only a particular console implementation provides, you can write a special DrawingKit for it.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  aaron backs off, no input here ;). </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I am writing a short doc about the console for console writers, dunno when it will be ready.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: very nice. It may become a chapter in the Tutorial I think.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I gather XML is easier than SGML, so if we are to switch over, I'll wait. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: that would be good.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>um.. so the basic idea with bridging to an X app is to make a little slab of shared memory, say with mmap or shm or something, and a pipe pair, and then fork the app you want to bridge (local to the server) as a subprocess holding these resources. it can then read events from the pipe with select(), paint into the shared memory as a "visual", and signal the server (holding the other end of the pipe) when it wants to redraw. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>which is (embarassingly) what the "berlin classic" server was supposed to do anyway :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>graydon: Going back to our roots. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>indeed</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>NickElm: docbook works with XML. just use docbook... look at the ORA book online, there's almost no difference</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: Okay, I see. </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm is having a slight problem setting up the SGML utilities on his machine--not that he's tried very hard. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: yeah. But why needs it to be forked by the server ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: well, depends if you want to use a fifo or a pipe</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: can't I write an Xlib emulation library which connects to the 'Canvas' object I was talking about for drawing ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>or a socket, I suppose :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: yeah :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: well, as long as the events are pure data (as in X) they could be delivered over the very same shm segment.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: the pipe/socket/fifo also serves as a synchronization mechanism</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: right</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: you need something to signal a hand-off. "this canvas is currently not to be touched as it is redrawing".</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: well, I thought you could embedd a semaphore into the shm...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>plus something to put the app to sleep when nothing's happening. you don't want it polling shared memory to look for events. you want select()-like sleeping.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: yes, semaphores should work just fine for this as well.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: anyway, that are details...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>a semaphore is also ok. I prefer not to use sysV IPC because it's global, and it seems in the few tests I've done to be slower than mmap and pipes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>yeah</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>right, but there are posix semaphores as well...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>non-global?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: you mean multi process ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>posix semaphores. are they a system-wide resource like sysV semaphores?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>i.e. can anyone attach to them, or are they private per-process objects?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: well, you can create 'named semaphores'. Then they are multi process semaphores...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>right. per-process objects like fds seem cleaner to me.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: ok, well. One or the other, we could probably play with a number of different implementations.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>the important point being that we need a low level API for emulators to hook in.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>yeah</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>This is also the same canvas that would make direct-access for high-performance apps (like movie players) possible?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>and soon!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>lots of people ask about this.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: yes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Excellent.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: though the Canvas is just the rendering part, i.e. without the event handling.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Oh, I see.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>well, not "direct" access to the video card, but much simpler than rendering into PNGs and transferring them thru the ORB</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: in fact, not even rendering, just the frame buffer (or other memory)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: I missed a big chunk of this conversation, has the canvas been started or is the idea just being tossed around</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: might even be direct</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: might be. but I don't know exactly what fbcon allows.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: no serious work. But with the Console abstraction this becomes closer to reality.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>graydon: this was one of JT's problems with doing region management inside the server. if you have a graphics library that can manage regions for you, something like a canvas can be just a blit.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: JT?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>and either way, the DK doesn't know how to discriminate between composited and "opaque rectangle" modes, so you're going to go thru libart's compositor anyway.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>jon taylor, when he was adding his ideas</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>at least, not in a way which permits you to write to a masked section of the framebuffer</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm nods. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: depends. We may simply consider the Canvas to be an opaque screen parallel rectangular region. Then we can use simple blits.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: or we take transforms, alpha channels etc. into account, then we need to go over the renderer</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>I think I'v read on the SDL list that they support blitting with alpha support.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Doesn't this imply that we can blend the Canvas <em>into</em> the scene graph ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: wow</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>well, modulo transformations...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>well, "supporting" blitting with alpha might mean running a compositing loop over each pixel in software. which is what we do.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, I guess the Canvas has to become pretty high on the task list's priority</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: yeah, but it may mean that, if there is h/w support, it can forward this task.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>That sounds good, anyway.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: which only the Console implementation itself can know. We can't</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>and SDL is under LGPL</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Wasn't sdt interested in something like this? Only I haven't seem him in a long while.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: right. He is in Waterloo, Canada, right now, without much internet connection.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Ahh.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: else he would be interested in fbsd/berlin...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: That's right.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>and a possible port of his WorldForge project</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka wonders how he could be at UofW without a decent Internet connection. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon wonders too </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>UofW?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>It seems like all the Berlin developers move to Canada. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>University of Waterloo?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>hunger - University of Waterloo</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: do they ? :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm tries to prod hunger awake. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm feels the call of Canda, but resists it. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Next item on the agenda, immigration assistance for those Berlin developers moving to Canada ...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Hey NickElm! Why do you prod me away? </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm chuckles. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>heh</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: hehehe. I could need such assistence indeed...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>hunger: Cause you're not paying attention!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: That means a cutter picking me up at sea and smuggling me ashore?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Perhaps we should try to get this on track again. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>NickElm: I can see you allready sitting in front of a computer in a dark canadian cellar ;-)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka thinks we should get back on track too. :] </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Good initiative.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>the POA is an amazing animal...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Did we skip the 3D additions to Berlin item?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon hands the floor over to Mr. POA. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>We'll get there later, thenn.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Or was that really covered with the cavelib discussion?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: I'll mention something later.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka nods to Nick. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>can I assume that everybody is familiar with the general idea of an Object Adapter ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>You may.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: problem. doesn't berlin still use omnithread all over the place?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Um.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Not by name, over here.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger nods. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>that's one thing to be dealt with before POA gives berlin orb portability</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: No, in prague, there are only posix threads.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  aaron zips it, then </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>and Object Adapter maps between objects (abstract entities as seen by the client) and servants (the code implementing the object)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Ah, right, I recall the concept.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>with the POA there is an amazing variety of scenarios how to bind the two together.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>what we do, generally, is this:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>all servants are ref counted. When the object is activated (short after the servant is created), the POA takes over ownership (by being the only one holding a reference).</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>this means that as soon as the object is being deactivated, the servant will be deleted. (that is, once the POA decides it is save to do so)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok. So now the question is how and when to deactivate the objects, as this needs to be a local operation.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>There are three possibilities:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>you create a temporary object, do some work with it, and release it. So you can call deactivate explicitely.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Maybe you should add that we keep track of objects by grouping them with the clients that created them. This, in turn, is done by creating a dedicated POA for each client, right?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: wait a minute...:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Sorry. :(</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>the second possibility is an object with a single owner.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm didn't realize that stefan had this planned out so well. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Imagine you ask for an iterator.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm shuts up. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>which is created by a (possibly remote) graphic.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>so you need a method to delete it. All interfaces which are used that way contain a 'destroy()' method.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>I didn't feel like adding a special interface for that, though</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Third, there are the objects which don't have owners.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>they are reference counted, so they deactivate themselfs if the reference counter drops to zero.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>For this there is the </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>'RefCountBase' interface.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>with methods 'increment' and 'decrement'.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>with this, it is possible to manage memory correctly, i.e. to know when a particular object isn't used any more and can be deactivated (and the servant be deleted).</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>does everybody follow/agree up to here ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Yes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>ja.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>One question.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Ja.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>In first example, the object is deactivated because it falls out of scope?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: well, that would be a convenience construct.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  danpost is away </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>me too...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: is there a real benefit to having an owner for each object?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: what else would you propose ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: in C++ you can write helper classes which do some cleanup if they go out of scope. In fact, we provide a couple of them. ('auto_ptr' is a keyword).</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: nothing, I just didn't quite understand the function of the second scenario</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>stefan - But that would be an example of how that would be used, or perhaps even the intended use, yes?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>(as... something that had benefits over the other two)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: yes, of course.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: sure, it's much simpler.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Ok, I'm following then. :]</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: I just take it that the second option is just for people that like complete control</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: well, no. It's for a set of objects.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: and it's not just for some people who prefer it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: I mean, you may look at it like the difference between static and dynamic typing.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: the difference often being robustness.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>anyway, let's stay on topic :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>ok</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, all that I described applies as long as everybody plays nice.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>what if a client is killed ? Or just forgets to call 'decrease' on a ref counted object ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>the question is how we can make berlin fault tolerant</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>as you all know, the server pings the clients if he is curious to see whether the clients are all still alive.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>if such a ping results in an exception, ot</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>s time to clean up the resources which had been allocated in behalf of that client.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>And since our POAs contain a list of all active objects (Active Object Map), I thought it might be easy to let them care of the cleanup</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm nods. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>to do this, we simply give a new POA to each Kit a client allocates.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>since the ServerContext knows the kits which are allocated, it can deactivate the kits, which triggers all the POAs to be destroyed, and with them, all the objects belonging to the client.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>that works, but it sounds easier than it actually is :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: So one POA for each kit, not one for each client?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm updates his mental model. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: right, one per kit.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I guess that's more intuitive.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: we may have different security issues with different kits, and different policies with different kits, etc.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Ahh, quite right, quite right.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>That's one POA per kit for each client?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>how big is a POA object?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: a POA is mostly behavior, until you start filling the AOM.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: so it's as big as you make it by activating objects with it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>The knowledgeable people on comp.object.corba (like Michi Henning), told stefan that this was exactly the kind of application the POA was made for.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>what concerns me more isn't the size of the POA as the time a method dispatch takes since you have to find the matching POA from the IOR...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: ok, fine then. simple clients will devote very little room to their POAs then</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: right.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: yeah</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: Besides, the alternative would be to keep a list of the created servants for each client, and that would essentially be redundant information, since the POA already has all of that in its active object map.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: I wondered about that as well, but I don't want to be too much of a smart ass ;) figured someone else would broach it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: There's been any benchmarks on that? Is that an issue?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: well, I assume the simplest alternative would be to have a single POA per client.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: no. I asked on comp.object.corba whether scalability is an issue with this approach. They said it is not.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>anyway, it should be trivial to change from POA-per-kit to POA-per-client (which is the least we need)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes, I'm not saying this is wrong, I'm saying that if we were being ignorant, we would have had a single POA for all of Berlin and keep track of all of this ourselves. Redundant. So we don't. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: right</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: the display server has an IOR for every object involved in the scene graph right?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, so now what I have been doing lately:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>if a POA is being destroyed, none of it's object is available.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>that means that within the cleanup there are lots of CORBA::OBJECT_NOT_EXIST exceptions being thrown</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>so we need to catch those</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: well, not exactly. Depends on what you mean by that.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: just wondering if you have to hop from POA to POA to find an object that's drawing to the scene graph, ever.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>nevermind.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>off-topic.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: well, if you have an object reference, it contains the name of the POA as well as it's 'ObjectId', which is unique only in the context of its POA.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: so what the ORB does is figure out the POA, then ask it to call into the servant being associated with that ObjectId.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: the naming of the POA is up to the creator, i.e. you. You can make short names, as long as they are unique.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Btw, have you done any benchmarks on berlin and compared performance before and after the POA switch?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: I'm currently using the repoId of the Kit as the name, plus a counter (since there are multiple instances of the kits, one per client at least)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: is network latency ever an issue? suppose one complicated client died and the server received 200 OBJECT_NOT_EXIST exceptions... would this clog up any important threads?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: ok, that answers my question</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>no behavior similar to triple dereferencing.... good thing, that wouldn't be smart on a network protocol</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>triple/quadruple/n-....</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: no. It's definitely a bit slower, due to the robustness we get. (one more indirection in local calls).</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Just curious. I'm all for the robustness anyway.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: did you contact Duncan to discuss the mutex stuff ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>oh well...</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  aaron has 10 minutes </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>if you want me to do anything to purcel or orbital, now's the time</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon did not talk to duncan. i'm bad. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: take it down?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>purcel?  orbital?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Web servers?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: may be we could start a discussion with him on the omni mailing list.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>NickElm: nah, I don't feel like being banned from sourceforge or debian thank you ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>NickElm: yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>graydon: he is very responsive. He told me the is_identical trick btw. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: Awww, don't be such a coward. :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm is sidetracking again. Must be that his bedtime is approaching. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>Hey, what's the advantages of Berlin over a system like NeXT's windowing system, that used PS?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>NickElm: You go to bed this early? Warmduscher:-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: very little right now but conceptually, a lot.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, so while I'd really like to get the next release out of the door, I'm also a bit reluctant while there are still a couple of obvious bugs. (even though the solution is less obvious :(</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm ignores hunger. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: kind of a meeting in session right now...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>aaron: I'm curious..</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>oh</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Peaker: it's free software, not written in PS and ObjC, and it's available for download right now :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>stefan - I'm with you.  Stability is important, especially as perceived by others.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>I played with the python applets and the run nicely. You can start them, kill them, the server still serves :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka, stefan: Yes, definitely. We wamt to be as stable as possible. It's not as if people are pressuring us to release, it's up tou s.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: is berlin at a point where keeping bugs in a bts is more feasible now? I mean, even just as a source of information for onlookers</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>I'd guess that we can deal with having a reputation for being slow with releases, and that's certainly better than buggy releases. :]</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>graydon: I'm referring to technical advantages though :)  ObjC doesn't make it worse in principle, and what's wrong with PS?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>so I'm actually trying to rewrite the C++ demo in python and then debug it line by line. (feature by feature that is...)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Peaker: it's imaging model is good (as is ours) but DPS locks you into a particular language. we are corba-based.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: did you look at any of our docs ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: Long ago</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: Are there references to NeXT's system?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: good point.. I'd like to make much more use of the online project management tools, if only to get more people involved.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: CORBA at a much higher level than X's network protocol, so bandwidth is a much smaller issue too. As well as very elegant layout mechanisms inherited from fresco.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: however, some of the reported bugs are a bit rediculous: 'server crashes' etc. You get the idea...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>stefan,aaron - I believe that's a topic on the agenda. :]</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>aaron: But the bandwidth in NeXT's system was low as well, the PS could contain functions to implement the layout, as I understand</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: I mean, perhaps a developer maintained database. you guys know more about the bugs than anyone else, and it would be nice to see your description of the bugs you're working on</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: not much. But still, if you know NeXT, and you read our docs, you may make up your mind yourself.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: fair enough.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: have you ever read the GOF book?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: I'm sorry to say I'm just interested as a result of hearing people's oppinions, but I only know the basics of each</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>anyway, I think that I'm really close now so the release should follow Real Soon Now...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Btw, speaking of the upcoming release, I committed my initial work on the 3D stuff, now called PrimitiveKit. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>most of vlissides' examples are straight out of interviews (Interviews -&gt; Fresco -&gt; Berlin, that's the genaeology)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: right, which brings us to the next topic, and to the future directions :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>No implementation, just a few interfaces. I didn't have time to do it right before I got involved in the Console...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Right. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>What are the future directions, then? </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I, for one, will try to juggle my time with Berlin and work on the PrimitiveKit and the CAVEConsole (whenever I get my hands on a MT cavelib).</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I <u>really</u> would like to see Berlin in the 3D-CUBE.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Peaker: As I see it (not knowing PS/DPS very well) berlin is much more abstract, allowing for non 2D interfaces that NeXT never thought about.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>NickElm: does cavelib normally work on top of 3d accelerated hardware?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>hunger: It seems to me that there's a problem of lack of API competition, in the widget set/etc, since there will only be one :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: Yes... </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Peaker: Only one interface:-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Peaker: but the widgetkit is pluggable, so that is not quite true...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>NickElm: will you have to write an entire cavelib 2d drawingkit to make your first primitivekit that can interoperate? or will they be two completely separate and independent pieces of code?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Peaker: One interface does not mean one implementation! You can have a motif-button, a qt-button or a button-object in a 3D environment.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>hunger: Yes, but the competition on the interface side also helps :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: the trouble is just getting the interface right. and if you still want to do gtk (*shudder*) after you figure out berlin's interface, that will eventually be possible</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: No, fortunately, the cavelib stuff only touches the console, not higher in the abstraction layers. This means I only need the CAVEConsole. I have already adapted the GLDrawingKit with the slight changes needed to make it work with the CAVEConsole.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>NickElm: so CAVE can cooperate with openGL</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: And the PrimitiveKit is, of course, totally independent from the actual drawingkit implementation. It only needs the Dk to support a DK3D (which I also defined as an interface).</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: Yes, the purpose of cavelib is to be able to use IrisGL or OpenGL on top of the CUBE hardware.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: personally, I think fresco did it right. better than any other GUI interface I've taken the time to understand...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>aaron: How do signal/slots work there?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon needs to head out. see y'all.. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: you mean callbacks? Qt's signal/slot mechanism is just a macro trickery for callbacks</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>later graydon</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>graydon: See you!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Bye graydon</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: and the answer is, berlin uses an abstracted form of callbacks that work with CORBA. no difference here ;)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has quit ([BX] Dr. Kavorkian is DYING to use BitchX. Aren't you?) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>aaron: Gtk-- also implemented signal/slots, with templtaes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>aaron: Are they static-type safe?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: explain yourself, I'm a bit behind on jargon.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>(that wasn't a hostile remark, just, jargon is jargon, and static-type safe isn't a term I know ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Well, moving on...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>aaron: Well, if a signal invokes a callback that receives an int, you shouldn't be able to connect it to a callback that recieves nothing</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>stefan: can commands receive something other than an Any?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>aaron: the point of signals/slots is to have type safety in the callback mechanism, which is a very good point</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>to make sure what is sent, is what is received, and to not have to have the inconvinience of always receiving a void*</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>(or 'Any')</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: that's a strange idea: 'something else than any'</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>aaron: :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: yes, they are, but in an odd CORBA-ish way. If I understand correctly, it's the equivalent of being passed a void *, and the slot method will try to narrow that (ie, dynamicCast, if you will). if it doesn't work I think your slot will throw an exception</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>aaron: static type safety merely means that the test is done statically, at compiletime</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, to get back on track. I have some ideas of what we need in the near and not so near future</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm is all ears. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>but let stefan elaborate on that.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>aaron: Ok, but to me as a programmer, it seems that I receive the correct parameter list?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>the near task at hand is robustness, which I hope to settle with the next release</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>Peaker: as the programmer whose code is being called back</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger listens to stefan. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">aaron:</font></td><td>I'm not really sure. ask stefan, for now I have to go. and sorry for interrupting, everyone ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Bye aaron!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Excellent. Then that will be squared away, we can hope.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>later aaron</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>aaron: See you! </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>then, we need to make berlin attractive as an actual coding platform for application writers. This implies a complete WidgetKit, as well as a working Canvas implementation such that people can write client side emulators for gtk, etc.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>Bye aaron</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  aaron has quit ([x]chat)</font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: Why is a Canvas necessary, why not wrap the Berlin Wigdet kit interface with GTK's interface?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: (supporting non-gdk programs)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Is the widget kit interface stable, btw?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: well, it is, ahm, minimal right now. And even that is probably an euphemism.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: That's what I thought. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: we need to find all the common widgets and implement them.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes. Easier said than done, though. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: which should be relatively simple. The reason I didn't work on the WidgetKit more was that I felt that the underlaying structure wasn't robust enough.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: now it almost is, so this becomes an issue once again.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I'm talking about finding all the common widgets, not implementing them...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: in fact, it's not just a flag WidgetKit implemenation. Common sub tasks can be implemented inside the ToolKit and the CommandKit for example.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: out of which the WidgetKit can generate widgets...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: The problem I see is that once we commit to an interface, it is hard to change it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: right</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: right. So the interfaces need to be minimal, much in the spirit of what we have.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: But still be able to be extensible? How do you do that? </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: in fact, I'm not sure that we really need more interfaces.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: No, quite right.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: may be one more for non flat choices like menus, i.e. to traverse them.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Since we can just return scene graph subtrees, we can hide the actual implementation of the widget from the client. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Or Graphics, that is.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: precisely.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Peaker: The canvas is supposed to get us X-compatibility.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Peaker: pixel-level X compatibility, even, I think?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>hunger: Oh, but toolkits are better off wrapped than emulated, don't you think?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: yes, as the Canvas is about pixel based drawing, not vector based.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Peaker: A gtk-wrapper would be great to have (since we can add more berlin-stuff to it), but X-compatibility is more important right now.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>And less complex ...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: you are welcomed to write a widget bridge, really !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Or so I've been reading.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: But concerning the widgetkit interface, how can we fix it and still support extensibility without reverting to some dynamic scheme?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>"fix it" meaning "freeze it".</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: hmm, what do you mean by 'fix' ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: heh, point me to documents of what to bridge to, and I might find time to start it up :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Peaker: You are right, but it is also more work to do good wrappers for all kinds of libs (qt, gtk, wxwindows, ...) then to do a single X-wrapper.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: the idea is to have a factory method per widget. What it returns is still a Controller. Once we know how many different widgets we want to support, we can 'fix' the WidgetKit interface.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Okay. Right. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>hunger: The vast majority of applications are Qt/Gtk</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: But what if we want to extend that later? That would be impossible? </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: and even then, if ever we need to change the interface, all that is required is a recompilation of all parties using it. It's not like with closed source packages...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>All right.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>hunger: I think I know enough of both Qt and Gtk to start wrapper work</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Peaker: Great!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I'm just a little bothered about this, is all. :) I keep running into the same problem in other projects, notably 3Dwm. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>hunger: I don't know ANYTHING about the Berlin interface though</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Peaker: But we don't have anything to wrap it onto:-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: when did you last look into Warsaw ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: ages ago :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: then what are you complaining ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: am I complaining?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: yes, it sounds so. You keep asking 'why' and 'how' and I keep pointing out to you that you should have a look into the docs we provide. At least for a start...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: Hmm.. Those are not criticizing questions, those are curiosity questions, sorry to sound that way :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Maybe Peaker doesn't realize we're on an agenda now. :]</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: then we might gladly accept your help to write bridges :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Peaker: Actually, it's great to get someone who can help us with this part.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: oh, I pretty much like substantial discussions, that's fine.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>NickElm: Cool.. But I don't know what to make of what I read now - is there or is there not what to bridge to right now?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>yes, absolutely.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>Where can I read about it?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: have a look at the general discussion about the scene graph and the way we use it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: then have a look at the WidgetKit interface to see how we instantiate a button (for example).</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Peaker: There isn't. We're planning to add an pixel-level bridge as soon as possible. We only have Warsaw at current.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: then you might think about how you could wrap such a call into a gtk button creation function.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: Any more specific URL's?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: such that gtk apps create berlin buttons when they think they create gtk buttons...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: what about www.berlin-consortium.org ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>heh, that's why I said specific :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>ok I'll look for it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Peaker: Try http://www2.berlin-consortium.org/docs/html/berlin-tut.html</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Peaker - There's a tutorial there that should prove usefull.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>The one NickElm just pasted in.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>the fresco tutorial is even better...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>ok, thanks</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Yes, Fresco is at http://www2.berlin-consortium.org/fresco/tutorial/</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  stefan couldn't imagine that anybody finding us here didn't know about our home page... </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Well, finding the actual docs could be difficult. *I'm* not that found of the site layout. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: I knew about the home page</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: point taken :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>stefan: I was asking for a more 'specific' URL but never mind :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: do the URLs the others gave you help ? (the berlin and fresco tutorials)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>yeap</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Peaker:</font></td><td>saves some browsing :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: then there are all the research papers, the wiki page, etc.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Peaker: we now even have a search engine</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>We have a search engine? I have to look at our homepage again.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger blushes to a crimson red. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>for a more long term development I'm thinking about the model domain and how to add storage capabilities.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm is just as ignorant, and joins in. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka plugs in his Newton to cache the Fresco tutorial. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Mmm, yes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>does anybody know DOM here ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>nope.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka only knows it roughly. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>the interesting thing about a storage system is that it provides the means for a range of different things.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>like real session management, for one thing.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>from persistent objects (sessions for example) over data exchange (clipboard, drag'n'drop, ...) up to data recovery.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: precisely</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>The storage system involves the serializing of objects in the scene graph?  In broad terms?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>What was the scheme we were planning? Storing it as XML using our own DTD?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: well, yes and no. what we want to store are the models (in the MVC paradigm), not the graphics.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: that shouldn't matter at this point. The storage interfaces should allow that as well as anything else.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>stefan - Ah.  Right.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I see.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>take for a moment OpenDoc:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>there you have a 'Document' which is composed out of 'Parts', which consists of 'models', i.e. text buffers, rasters, whatever...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>it's a DAG, which is somehow isomorphic to the scene graph. However, the scene graph 'views' the model graph.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>you can have multiple views associated with a single model. That</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>'s what we get with MVC</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>anyway. The model graph is a polymorphic graph. Storing it means to create a 'pure data' representation of it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>I thought about creating a shadow graph of 'ObjectState' objects, which are mostly buffers for all the objects.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Hmm.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>this you could simply dump to a data base with XML or any other formatting.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>hmmm</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Persistent memento?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>and you create a new model graph with it with a factory which knows how to generate real objects out of the 'ObjectState' instances (and their stored repoIDs)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: yes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Neat...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: here you go:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>if an application wants to provide backups (as emacs for example), it has to store the model graph regularly.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>therefor it would be wise if all the models keep a modification time (much like the 'cacheable' concept we have been discussing) such that it can decide whether the associated ObjectStore is still up to date or not.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes, I see.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Also, the ObjectState could contain a version, such that you can safe multiple drafts of a single document.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>there are lots of possible scenarios.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>(I'v been reading the OpenDoc specs over the summer...:)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm can tell.  </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>(Actually, I can't really, but I could figure it out... ;) )</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka is content with believing it. :] </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm is above people like misaka. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>and finally, if you want to put something into the Clipboard, you simply create an ObjectState from your object and hand it over to the Clipboard such that the peer can try to reinstantiate it or do whatever it wants with the data.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger is a firm believer:-) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Hrm.  Interesting.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>anyway, just to point out that I think a good storage system will serve us well.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>falvim: do you have any thoughts on this ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: But when you speak about the "model", you mean the model as in the scene graph?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: the scene graph doesn't contain the models, it contains views which observe models.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Right...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>I could, if I knew more about the data in question.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: so there is a coupling between the scene graph and the model graph, but that's all</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: But what is the model graph, then? I'm a little confused.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: imagine a page you download with netscape.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: what you see is a rendered scene graph.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Yes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>My problem is that the details and the overall functionality escapes me a bit,</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: but internally, there must be something else. At least abstractly.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: you can select text from it and copy/paste it to a different window.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>falvim: I'm sorry, I've never seen you here before, you are an expert at these things? ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>but if I had some hints I could start an abstract model or something to start from</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: I'm just trying to understand how this needs to be designed.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>That was not an aggressive question, btw. :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Peaker has quit (Gotta make history)</font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>stefan - Makes sense.  Does the model graph currently exist?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes, I see. But what is the model graph in terms of berlin?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm nods at misaka. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>stefan: The model-graph is basically a list of things (pictures, text, programs, ...)  with placement information?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: no, we only have individual models (see what the CommandKit creates for example)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: but once we want to write real applications, especially structured documents, we need to care about an actual graph of models</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>stefan: leaving out the messy details that is...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>NickElm: I&acute;doing some anthropological research here. But I would like to contribute. I&acute;ve worked as</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hunger: well, not placement information, no. That's something only a particular view needs to care about.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: So the model is stored on the server? I thought it was part of the client, for the most part at least. Or is this a question of terminology?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hunger: model graphs need to know about containment only.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>falvim: Ahh, I see. I was just curious.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>a data-modelling consultant for more than a decade now.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>for example: a document consists of one part, which consists of text.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>stefan: Placement information in the sence of "object x is part of object y".</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>stefan: That's what I meant.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>falvim: Then I can see that you have proficiency in the area. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>another example: a document consisting of two parts, one being text, the other a raster. Etc...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: no, the model is not kept in the server. But the server needs to care about session management and data exchange, at least it needs to coordinate them.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Okay. I can understand that.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm yawns hugely. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>NickElm: I really dunno, but I hope my former clients think so :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>We've been at this for 2.5 hours ...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: and if you want to embedd one application into another (i.e. associating different part editors with different parts of a document), the server plays an important role as well...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I see your point.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, fine :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm surrenders. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>stefan - So the client/application will need to provide us with some kind of interface to the model they have?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>falvim: ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hmm, what else ? Havard isn't here tonight, that's a pitty</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: well, as always in corba, each object needs to support a couple of interfaces.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Yes, what else.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Or would Berlin be more involved with the creation of the model than that?  Maybe providing an interface to the client/application?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: for example, all models should be 'storeable'</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>How about the use of the name "Fresco" in conjunction with "Berlin"?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Perhaps as part of hte logo.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: so whoevere happens to own a 'store' can ask these models to externalize themselfs into it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Us now being the official descendants of Fresco.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>stefan - Ok, that makes it a little more clear.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: no, I'd really prefer the clients to care about the models, that's not the domain of the server.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger agrees with misaka. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Right, I agree.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>So the client would have to provide for those interfaces.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: but still, the server needs to have access to the *interfaces*, i.e. it needs to coordinate data exchange etc.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>And we would define what the interface is that they must provide for.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: the implementations, yes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>we == the Berlin server.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka nods to stefan. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: "Berlin - the Fresco Company"</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  stefan grins </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: "Berlin -- We Make Frescoes." And then a hammer and a chisel and some paint as part of the logo.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>I would prefer Berlin - the Fresco Factories.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>''The Berlin - Fresco Conglomorate'' ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: a hammer ??</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Hammer and a chisel??</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: you paint frescos with a hammer ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>Stefan: It has a peculiar meaing in portuguese...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>falvim: what ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Hehe, maybe not. </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka gets that confused with a sycle (sp?). </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>sickle?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Ah, that looks right, thank you.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>But say you want to get your block of stone and carry it around?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>It's been a while since I had to worry about that particular symbol. :]</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>well, hammer and sickle is something entirely different, right misaka ? ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: lol</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hehe</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Indeed ... indeed.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  stefan knows it all too well... </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>No, let's have a scythe. Healthy tool, the scythe.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>yes, and a lot of water...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I'm getting tired.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>anyway. misaka has been working on a terminal emulator, i.e. a parser to report control sequences...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Stupid ideas are popping up everywhere...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: right, that's normally a sign...</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka nods to stefan. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Is somebody spellchecking this?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Unfortunately there's not much progress to report.  Except that I'm certainly gaining a better understanding for how to do it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>we need to make the terminal more functional, to support at least the more basic editors like vi.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka was planning on aiming directly for xemacs, but ... :] </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Whoever writes the first bit of Berlin code inside Berlin gets an award!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>My approach at this point is to write a basic terminal emulator, and then work on integrating that with Berlin properly.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>misaka: Do you need locale support?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>I think I'm at a point where I can get the basic terminal code decoder working, but that'll certainly have to wait untill after my trip.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>hunger - Er, I'm not certain at this point.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>I'm just curious, because I am thinking about writing a locale manager.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger grins. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>I don't yet see how locale support would be worked in.  This part, at least, is strictly looking for specific terminal codes and invoking callbacks.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>hunger is the l10n and i18n guy around here. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>I may need that at some point to understand the stream coming in, I suppose.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm has finally understood what those acronyms mean, and is suitably amused. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Nick - ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: hehe</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Everything I need to get Prague::Unicode of the ground is locale dependent since those guys came up with their new version:-(</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>l10n and i18n?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>NickElm - Indeed, I don't know what they mean.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>l10n is short for "localization", it means "l" followed by 10 characters, and then ended by an "n".</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>The same for i18n, only it's "internationalization". :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Ok, that is mildly amusing. :]</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Ah, geek humour.  Beautifull. :]</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: longs words which Germans are known for. Though this time it's not their fault :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Indeed. :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger finds the humor of computer scientist confusing... even being one himself. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Yeah, well... </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Currently, with the terminal emulator, I've only been thinking of terminal emulation.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>I'm certain that there will be other issues involved in making a proper application, but that'll be secondary.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>A locale manager would allow me to get many more modules into the CVS. I know you all love them:-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: are you going to work on the PrimitiveKit implementation in the near future ? I mean, while the libcave guys try to come up with a release :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yes, I will.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>Sorry &acute;bout bringing things back, but wouldn&acute;t it be  a good idea to put some ideas</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I'm going to experiment with the maya-style primitive transforms as part of that.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>about abstract and permanent data on the wiki ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: yeah. Have a look at 'DDD' to get inspiration what streambuf filters can be used for. They intercept all gdb output and make it into a UI.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  hunger is byting his tongue for some time now. He does not want to make a statement about a complex Kit. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>stefan - That sounds neat.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>falvim: yes, absolutely.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>falvim: Yes, true.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Oi, I have to step out for a bit to gather food-like materials.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>bbiam.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>falvim: may be I should write down what I have in mind so far, so others can hack it away :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>If I had more clues (many different necessities here), I could start to work on something</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>The beauty of delegation. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>Stefan: cool</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: hahaha</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Really, I need to go to bed now.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>My eyes are getting droopy and my jokes worse. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: yes, that'd be interesting. If it works, I'm certainly going to adapt the FigureKit as well...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Excellent.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>NickElm: Not worse then mine!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: heh, not that bad...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, anything else we should discuss ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Hmm.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm racks his brain. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  NickElm comes up with a big fat zero. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>like, planning our next (real) berlin meeting ? :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Ahh.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>never mind :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>though I'm looking forward...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>We are invited for the next LinuxTag 2001. Did I mention it allready?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hunger: you did :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Well. Like falvim said, we should try to document stuff more instead of letting it float around in our heads.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hunger: and I'm on the list for the 'call for papers' mailing list.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>While it's good that way, it's not beneficial for the rest of us. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hunger: may be with a bit of support we can make this a somewhat bigger berlin meeting.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: That would be nice.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>It would be great to have graydon in Stuttagrt too.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>So are we just about done?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Hrm.  Would we benefit greatly by having a mildly technical writer involved?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: Yes... Maybe so. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Involved with the project, writing documentation, that is.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: Anyone you know, or do we shop around for one?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hunger: especially if we <em>know</em> we are there, may be we can have a bigger booth with a little CAVE clone...:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Yess....</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Nick - A friend may be interested in getting involved ...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Or at least an immersadesk or realitywall. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>misaka: I think that would be a gain. Having "outsiders" going over the docs might bring up some fresh ideas...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>misaka: Not to mention better docs:-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: That would be really good.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>stefan: I am sure we could get SGI to sponsor that.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>well, actually the guy reviewing my paper for Stuttgart talked to me about that. He is an editor for a german publisher ('dpunkt').</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Ok, I'll e.mail him asking him if he would like to solidify his interest in getting involved.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: excellent...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>but I'm not sure whether that would involve any agreement we wouln't like to sign...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>He's not too technical, but I think he'll be interested in learning.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: yes, definitely.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: Right. But we can at least check it out.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>stefan: I am thinking about doing a short article for the Linux Magizin here in Germany.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hunger: excellent !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>stefan: My boss did some articles for them and he said they should be interessted.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I think I've had enough for onbe evening. ;) It's 2 o'clock in the morning now. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>ok, so let's close this meeting.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>Ok,</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Right. I have all the logs.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>How much do you all think to be able to work on berlin in the near future ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: cool. Do you know how to postprocess them ? Else mail them to graydon.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>stefan: I should be able to get back into business soon.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>I can't be sure what with school and all, but I do have two days out of five free.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I think I will mail him.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: that sounds promizing.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Once the trip is over, I hope maybe about 8 hours a week.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: I'd really like to be able to play with primitives.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka isn't certain, however, and has been certainly donating less than that in the past. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>I'd like to hit 8 hours a week, if not more.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: I hope you'll enjoy your trip.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: I can't guarantuee, though, since we have a deadline for 3Dwm as well.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: Yes, have a safe trip!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>NickElm: I see.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>I'd like to get back to the 16 hours coding days I had during the first weeks.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>stefan: But I'll do my best. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Especially with the winter coming, and a new notebook planned ... if that has any impact on it.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka thanks stefan and Nick. </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka is quite excited about the whole thing. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">falvim:</font></td><td>I can put a day in a week, having something to stick my teeth into :)=</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>falvim: ok, great. I'll keep that in mind then :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>But I don't think I can do that... I have two other jobs running in parallel and my own company:-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>hunger: :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Oh well. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Now are we done? ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>hunger: Oh, I forgot to mention school ;-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hunger: need to remind yourself about that, eh ? ;)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  misaka is done, certainly. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">hunger:</font></td><td>stefan: Yep. I did about 2 hours a week during the last year.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>and I promize to get that release out as soon as I can.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Great!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>(and as stable as I can :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Heh.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>stefan - I guess we'll avoid a mention on /. ... :]</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>misaka: hopefully, yes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>This time ...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">NickElm:</font></td><td>Well, good night to you all!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Ya, I guess it's not entirely up to us.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>misaka: though there are a couple of diaries on advogato which might bring that up eventually...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">misaka:</font></td><td>Good night Nick.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>good night</td></tr>
+</table></body></html>

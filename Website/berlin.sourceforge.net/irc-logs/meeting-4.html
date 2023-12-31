@@ -1,0 +1,3486 @@
+<html><head><title>IRC Meeting Log</title><body bgcolor="white"><table><tr><td>&nbsp;</td><td><font color="red" size="-1">  Logging Started : Sun Jun 14 11:49:16 EDT 1998 </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    toddf: </font>
+	      </td><td>
+		 hrm, when would that b e relative to now?
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  RangeRick (syntax@1Cust25.tnt1.bloomington.il.da.uu.net) has joined channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Hey rick
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 howdy
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    toddf: </font>
+	      </td><td>
+		 hrm, reladed the zone now .. helps lots .. duh .. I forgot to do that .. thanks, core!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: i will let you log the session, i have a stupid appointment in exactly 1 hour [but i'm not really needed for libggi2D/gwt etc, more for coordination and making sure the server worked]
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 toddf: you're welcome :)
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon is already logging. </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 okay, well, shall we start? :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anyone having trouble accessing the GGI cvs server?
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  fries (~todd@lighthouse.fries.net) has joined channel #ggi </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Mode change "+o fries" on channel #ggi by core </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 It's giving me a delightfully weird error
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 Graydon: Had on friday, but all well again since saturday.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: I've no problems
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: there were some problems early this week related to my stupidity of managing domains, but now it should work
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: toddf (Leaving) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: What happens ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 tan : why do you need to "fake an API" change in ggi2DOpen ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 cvs server: failed to create lock directory in repository `/projects/ggi/cvsdevel/CVSROOT': Permission denied
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  jws (joe@pandora.earthlight.co.nz) has joined channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 cvs server: failed to obtain dir lock in repository `/projects/ggi/cvsdevel/CVSROOT' 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ShadowX: </font>
+	      </td><td>
+		 graydon: hope you have a right CVSROOT
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 :pserver:guest@cvs.ggi-project.org:/projects/ggi/cvsdevel 
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon was using it fine up until, erm, maybe friday night (?) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: hmm (you should use todd's anonymous repository in the USA, but..)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 heh.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 i know where that comes from, but i don't know why it would do it again now :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: does it abort at that point or wait and retry?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 whatever. Someone who is authoritative, give me an email address and I'll resolve it afterwards. It shouldn't hold up a meeting ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: I think core has his CVSROOT setup so you can't get it
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: does it work now?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 ort: you mean "API change"? -> to load the libs 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: todd@fries.net :-)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: i manage the repository (i'm Emmanuel)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: yeah, working fine now. thanks
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 tan: yes, but why at this time (it should n't be triggered by libggi?)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: no problem :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: what are you doing actually? cvs checkout degas?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 just cvs update on degas
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 ort: no. the libs must loaded on ggi2dopen so that you start drawing after the call
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: ah, hrm, okay. well it will work now :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: the prob  is you must 'cd degas; cvs update' to do that
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 ortalo: Done on purpose to keep things flexible. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 anyway - Andreas, Graydon, lead the path.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: otherwise you 'grab' everything ELSE in the repository besides degas
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 which includes CVSROOT
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 tan,mac: okay.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ah. ok
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 O.K. - as we don't have many really GGI-related issue, I'll leave it to graydon, which probably knows the GGI<->Berlin things best - right ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Is uwe here?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Mat: </font>
+	      </td><td>
+		 Nope
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 I don't see him as uwe
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 drat
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: we wish.. he'd be useful for mesaGGI.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 am I wrong? I thought uwe also did dosemu?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: I can probably help out a bit here ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 the next major issue for me is to get mesaGGI moved up to current version numbers so that someone other than myself with my screwy old libggi can use berlin..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 or am I thinking of another person with the same name
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 fries: IIRC he did a allegro/dos port
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 iirc it was uwe who did the mesaGGI patch
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 Uwe Maurer did mesaGGI, yes
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: me too. I know much of the mesa internals...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: right ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 and apparently andreas beck (macarena :) and thomas tanner (tan :) can help you too.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 cool, so I guess I have enough people here to ask for criticism about the idea of using mesa as an imaging layer for berlin, rather than libggi2d + libgwt ++
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  bri (~root@uislr1p6.umassp.edu) has joined channel #ggi </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Mode change "+o bri" on channel #ggi by core </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 graydon: how do you use berlin currently without libgwt ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 hello brian :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri: </font>
+	      </td><td>
+		 Hi, 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: my thoughts would be 'wow, cool!' .. then we can have true 3d window managers that rotate cubes with applications on each side, etc ..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: yes, the most recent version in CVS speaks to mesaGGI, which in turn goes to libGGI
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  bri yawns, having just woke up </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: if you mean, even for 2D, well, irix does that, and their desktop gets everyone to pant
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 so mesaGGI manages the windows ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: yes. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 I guess then you don't have a window for each widget ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: the only thing I'm having difficulty with was pointed out by the mesa author, which is that doing traditional rectangular clipping is kinda expensive
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: no, I have a mesa display-list for each widget, which is in turn composed of calllists() calls to its children.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: what is non-traditional that isn't expensive?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: opengl is well suited for 3d and some 2d, but IMHO not for WinSystems
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: it turns out to be very simple to code that way :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: ok, elaborate. Why not?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 garydon: you mean from the application level ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 tan: is that because of older hw?  new accelerated hw will make it easily possible
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: GL doesn't really have provisions for moving regions without redrawing them, etc, though.. not?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: no, the application has no clue it's using openGL.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: it lacks arc/circles/ellipses, font handling 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 graydon: then why do you say it is easy ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: it's easy to implement widgets that way, in side the display server.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 fries: the hardware is here (ie. my SGI Crime board :), but the price is the showstopper
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: IMO QuickDrawGX is better for GUIS
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: erm, it has curves of all sorts, and the fonts we are working with the gltt guy to add. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: Are your widgets "real-3D", then ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: ah, but there is no free quickdrawGX :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: yes, but a spanish guy wanted to create one IIRC
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 macrena: well, right now I'm playing with borrowed code from moonlight's GUI, which just simulates 3d with pixmaps and lines, like most WMs.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 core: heh. I'm just thinking of the future.  How long will it be before someone comes out with, instead of a traditional 2d with shading to make it look like 3d windowing environment, a windowing environment you can navigate in 3d and rotate applications in 3d and have a button cube you can rotate, etc ..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: he did. I just haven't seen any code. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: i suggest you use opengl for now, but later quickdrawgx or other apis...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: the entire decision was based on availability of code (and hw accel chips), not necesarily technical supremacy.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 fries: as long as it will take to make it usable. 3D windows are fun, but aren't very useful. think about 3D platform games, and how long it took them to make them as playable as 2D ones
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: yeah, I have no problem there. Just, y'know, some guy asked why we were bothering to reimpliment all this stuff that's already available in mesa, and I had no good answer why not.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: asvogler (Leaving) </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  asvogler (~duff@vortex.hawo.stw.uni-erlangen.de) has joined channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: i mean, don't you fix to a certain api
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Mode change "+o asvogler" on channel #ggi by core </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 graydon: how do you manage windows overlapping, exposure events, etc... ? (Don't know Mesa API very well.)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: agreed. I haven't seen a strong motivating example for "rotating things in 3-space" GUIs yet.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 ortalo: I suppose by just arraging the planes in 3D space ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: here's one: 1st guy who does that sents the precedence for others and goes down in history books??
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: that also means that you must add networking support to ggi
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: the api we export to apps is "warsaw", which is more abstract than a given imaging model. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: yes, that's what i mean. if the learning curve is steeper and it's less usable, there's no point.. that's why all those movies with people using sensitive gloves to move their files in 3D made me laugh :P
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: ah. ok. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: sure, I just literally mean I have *no ideas* for 3d components. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 tan: what makes you suggest networking for ggi?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 i like to have a global vision on one desktop, without having to shuffle things around, but that's just me.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: ggi doesn't have to be network transparent, it's just the local rendering system. i don't know much about Berlin, but it uses corba, which does the network-transparent stuff.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: warsaw is in terms of "widgets" -- although we'll probably add in a set of objects for talking to the imaging api directly as well, in which case yeah, a change of underlying api would break those apps which talked to OpenGL.. can't help that.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 greydon: I had this dream once. it had a stadium type of picture, but wasn't detailed enough to see seats, etc .. and you could fly around in it, and as you moved your mose over the various sections they sunk in with a 'kuh-thud' and highlighted themselves .. and you swirled around and saw on the horizon tons of other things to interact with
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  weigon (weigon@pppm09.kiel.netsurf.de) has joined channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 fries: but if it takes half an hour to get to your files, that's annoying ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 creating a GUI is an huge work - you can't set many things in stone. some people will want the 3D flying widgets, and some others just the plain desktop. you have to implement both somehow, i guess.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: I see
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 core: of course shortcuts and useful interaction would be a goal .. but for me to be able to 'back up' and have everything shrink in size would be useful in and of itself!
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Mat is away: (Auto-Away after 10 mins) [BX-MsgLog On] </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Mat is back from the dead. Gone 0 hrs 0 min 5 secs </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 programmers setting things in stone has led to many rewrites.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: are there any problems with mesaggi?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 core: of course shortcuts and useful interaction would be a goal .. but for me to be able to 'back up' and have everything shrink in size would be useful in and of itself!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: the intent with berlin is that if the user is a newbie, or has the horsepower to do that, they can swap in components which act that way, and anyone asking for a window just hapens to get a pane on a 3d stadium floor..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: ok now I am very happy
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: sounds like something i am working on [unrelated], so i like the idea.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: so you would allow windows to be dealt with as true 3d components, with appropriate 'distortions' for seeing them at angles and such?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 'course, the guys who still use vi and /bin/sh at work will not want that, and so (hopefully) they can load up "ultraminimalWidgets" which all respond to single character commands, and disable the mouse entirely :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 graydon: what are the things that ANNOY you when using MesaGGI as the drawing layer ? You seem pretty happy from that choice in fact currently so... What are the drawbacks you suspect ? (hint: maybe some performance drawback ? [other hint: maybe an HEAVY])
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: that's done by OpenGL
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: I am very concerned about performance issues, yes.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: only because everything is drawn by using mesa widgets .. coolies
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: one of the things I wanted to discuss with people here who perhaps know things abotu video cards is how to achieve performance.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: do you still intend to use [mesa]GGI as your lowlevel API everywhere?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: until suitable arguments against it are presented, I think so..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: ok :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 anyone have an idea how does software-emulation-mesaggi compares in terms of speed to software-emulation-mesaglx?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 hrm... maybe more useful for more people would be to be inside a cube, the current "selected" desktop would be in the back wall, and other virtual desktops would be along the sides, top, and bottom  :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: one nice thing about OpenGL is that you "compile" display lists before running them. Literally, the API has a "compile" mode you throw it into before calling draw commands.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: let's say, I have a 386 with 256k mem video hardware. will there be something avail to allow it to be usable like 'turn off all cool 3d effects and shading' widgets?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 but either way, that's quite a bit in the distance right now  :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 silk: Steffen Seeger did hand-optimized code that ran in circles around any other implementation, but it never got commited. we'll ask him..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 The problems I see is when doing multi-windowed app., or exploiting the regioning code (e.g. to setup a word processor appearance.)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: yeah, you should be able to fallback to something very mundane == easy on the CPU
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 core: i helped him. i modified mesa so that we can include his code. that's why i know the mesa internals ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 (NB: But, here I want to be the devil's advocate. :-)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 yes - an operating system or windowing system should help you to work, not hinder your system :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: ok so we have a terminal emulator .. so up 'grows' a 3270 terminal complete with keyboard and display that one could rotate around and look at for grins .. and then sit infront of and start interacting with .. heh ..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 yeah, steffen was talking about run-time relinking of parts of mesa, in order to collapse branches and remove checks.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: ah, okay, good :) any clue if he's going to commit that sometime soon?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 fries: cool, but rather useless  :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 core: yes, I suspect there's a lot of room for optimisation in Mesa's soft-primitive code (which is written in C).
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 rangerick: I've got 'cpu/hw accellerated 3d' on the brain today
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: yes, i saw that working about 6 months ago (not running on mesa at the time)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 although it may be cool to flip a window over and have configuration on the back  :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 and the "compile" phase supports that very nicely. You get back a handle to code which does your drawing mode, and nothing else, so it should run very fast.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 range: hehehe
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 silk: steffen wrote self-recompiling code for it in assembler, it was TIMES faster
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 core: no. AFAIK he's quite busy now and it has low priority for him right now.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 Have you tried to draw 300 overlapping rectangles in a window and then show/hide the window ? What is the drawing time ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: what is he busy with?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 core: kgi and xaa AFAIK
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: I have been unable to benchmark mesa at the moment, as any numbers I obtained would be terribly depressing.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: ah, ok.. we haven't got news from him for a long time, except some answers on the list.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: reason: I am running uwe's original patch, which only uses putpixels()
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 core: wait! we don't now whether this technique is really faster
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: and then I am displaying *back* into the X target so I can develop next to xemacs
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: so it's miserably slow.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 graydon: okay. So, in fact personnally, the only problem I see with Mesa is that perf. problem.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: me too.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 core: s/now/know/
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 But in fact, you know, I like the whole idea.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: there's a lot of room for optimization in mesaGGI- that's why i sort of hoped Berlin would work on it :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: but -- ever used a voodoo chip? 
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon makes an evil grin </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: voodoo is terrible at 2
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 s/2/2D/
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 ortalo: especially when there's options for low cpu/hw accel (or no hw accel) assistance situations
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 However, we should have a provision for getting rid of the heavy Mesa layer, no ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: is it? oh well. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: yes, we have a libggi target for it :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 core: the only bigger optimization we can make is hardware accel
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: unless you draw your windows using texturemapped triangles ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: I am hoping (and the mesa author says it's totally possible) for mesa to basically "become" a simple 2d layer when need be, simply by changing certain settings.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 Could you have an "abstract" drawing layer (subset of Open/GL) that would be satisfying enough to implement some specific part of the API ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: bigger optimization than what? steffen's code maybe, but not current mesaggi code.. it's C using putpixels()
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 graydon: so mesa could provide such subset ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: I intend to work on it, but I set berliners a deadline of having a working architectural demo (with no performance guarantees) by the end of august, so we could show it off.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: and the 3D renderer i wrote for ubisoft, was assembler using fpu and cpu in parallel (for derivated means), it was at full frame rate on a stock p75 three years ago.. so.. there's always room for optimization.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 core: AFAIK the latest patch was a bit better using PutLines and such, but I may be wrong ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: mesa is quite abstract already. What do you have in mind?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: but you won't show it off with the current slow mesaggi code..?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 macarena: you're probably right, i haven't followed mesaggi much :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 What I have in mind is: the pure 2d parts of Berlin could rely on some user-defined drawing lib.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 core: of course. but ggi is portable. I hope you know what i mean ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: we'll show it to people who are willing to look past the speed issue. I.e., bruce perens asked me for a demo real soon.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 ortalo: but then you take away the possibility to do 3d stuff if hw does it
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 If Mesa can provide this part, very well, it will save work. If not, we could complement it.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: doesn't mean we can't write hw-specific code where relevant :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 ortalo: you did hear mesa was going to have a 2d layer implementation, right?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: i'll be curious too.. :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 Howver, the problem is that Berlin should be able to use full Open/GL when feasible (or when the user wants to show-off).
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: i just meant that if you want a "general public" demo, you need to resolve the speed issue
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 How could you combine the two requirements in Berlin ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: it depends what you want in your 2d layer. If you want nurbs, polygons, alpha channels, etc. then you get them in mesa already.. It'd be a bitch (and possibly redundant) to reproduce all that in a 2d-only mode when you can just optimize out in mesa.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 core: I think this is more of a "proof-of-concept" demo  :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: indeed, and for that, we will need KGI
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 rangerick: yes, i understand that :) but speed is something you can hardly get past (trust my experience ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 NOTE: I would be _very_ happy to rely on Mesa (I'm not a workaholic.. :-)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 or fbcon, if it's any good for acceleration :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: yes, i can imagine - the new KGI has been moved in the repository, once it is nailed down and all drivers are ported (one time for all), it will be fine :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: fbcon doesn't accelerate anything, but it works (as of today) with any VBE 2.0 board, plus all KGI drivers when Andrew is done
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 Hmm - Actually I though Berlin was intended a very "lightweight" thing ... X makes me mad with its 12MB memory footprint ... do you think you can keep size small ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: and it'll be in the main kernel sometime soon :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: fbcon ends at blitting. But we can try to extend it :-)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 macarena: yes, that's what I was expecting Berlin for, mainly - PDAs and such :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: you can detect certain things in mesa, like which projection matrix you're using, and if you're in orthographic mode, and if your viewport coordinates exactly match your modelling coordinates, and if these conditions are met, your calls suddenly turn into pixel pushing 2d calls.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Macarena grins at core with a knowing smile ... </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon saw the itsy as well, y'know. </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 pilot-berlin?  :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: btw: what about printing support in berlin?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 hehe
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  core returns the smile to macarena (i'll mail you, honest! i was finishing the docs when 5 PM rolled in :) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: ah, i see. that's smart
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 an app which speaks to berlin is actually asking for "widgets", having no idea what they are (assuming it does no direct-imaging)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: i guess mesa will only load its 3D components when these conditions aren't met then (for the memory footprint problem)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: that'd be nice, but I don't know its guts well enough.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: i suppose it needs some butchery to do that, but..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Mat: </font>
+	      </td><td>
+		 graydon: any plans to implement "X over Berlin" ? *duck*
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: so far the memory footprint is ... hang on ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 mat: as useful as "linux over win95" :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 core: AFAIK it's not very easy to split mesa into 2d and 3d 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 IDEA: What about implementing libgwt using Mesa ? If we furnish another implementation (faster or lightwight) we might help wrt perf. ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: i'm just trying to imagine how Berlin can take less memory than X, loading full mesa, widgets etc :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 tan: it only takes a few state changes to start drawing in orthographic mode
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 Mat: shouldn't be a problem, if we can make a "Berlin target" which opens a window that contains a single 2D drawing widget - we can run Xggi on it ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 core: um, x apps would HAVE to have some way to display themselves .. otherwise nobody would use it
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 grr. doesn't like staying up at the moment, can't get a mem useage number. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 In fact, my brain-problem currently is that I don't see what the mesa-guy wants to do to split-out a 2d API for Mesa (with windowing support).
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 mac: heh. or you could do the xserver kind that windows has and do an optional per-window wrapping with the berlin wm
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 fries: i know :) i guess they'll write some xlib stub
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: there's a few approaches you can take for X, none of them terribly satisfactory
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 core: Someone is trying that for Wine. I am in contact with him ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: you can have 1 X server window, and have every X program live inside it.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: source compatibility would be fine for me, but i guess most people will want runtime compatibility :)
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Mode change "+o weigon" on channel #ggi by Macarena </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: or you can try to represent each X window structure as a separate berlin window
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: c'mon, X is not that good, but flexible enough to have its windows displayed in Berlin windows :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: or you can try to finagle an xlib which speaks to berlin in secret on the backend
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: hehe. my thoughts exactly
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: that would be the 'optimized' approach .. to get it working, though, I think your original idea would be 'X in window'
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: in which case, it's easier to do with something at the level of, like GNOME than xlib
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 or rather, GTK+
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 cause it's already an OOP widget-based API
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 i guess yes :)
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: bri (Remote closed. [0kb/9pks(0q)] [31kb/258pks(5q)]) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I mean, I don't have perfect answers for a lot of weird problems
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  bri (~root@uislr1p8.umassp.edu) has joined channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 you don't have to either; first get Berlin to work
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 when it works, getting legacy X applications to work is a secondary problem
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Mode change "+o bri" on channel #ggi by Macarena </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 and there's *lots* of weird problems to face -- how to get a pilot to even *contain* NURBS trimming code, etc :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: that's what i meant, by not being able to set many things in stone
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 garydon: You need to have a modular implementation of Mesa I think.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 ortalo: my thoughts exactly
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 if you can't split mesa in components, you can't use it with Berlin, or it will take more resources than X itself
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 That's what we aimed at: libggi2d, libgwt, and then mesa. (all over libggi)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 core: I dunno, mesa is 600k.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: So i suppose you are talking to some intermediate "rendering and widget ordering" layer that might be substituteable to have "light" and "heavy" versions ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 graydon: on disk, but not of memory, yes? :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 ort: I've tried to split Mesa, but no success till now ;((
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 XF86_SVGA is 2.7 megs
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 tan: why ? (that's the problem here in fact, please elaborate)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 on disk
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 ort: seems that everything depends on everything ;(
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 -rwxr-xr-x  1 todd  todd  2527232 Apr 26 17:19 bin/XGGI
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: I agree, spliiting mesa doesn't sound too easy. The code is very tightly wound together.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 but on linux thats not a big problem: it supports demand loading
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 tan: replace Linux with UNIX and you got it
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 tan: No - not every Unix does demand paged loading ... argh ... !
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 Mac: oooh, ok so I'm wrong. most modern unix'es I'm sure though
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: demand paged loading slashes performance too
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 how do the mesa-guys intend to proceed: add a new part with 2d only, or reuse things from Mesa3D ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I mean, GGI has abstracted video driver code from X, and corba abstracts xlib, x proto, and the various X bindings for other languages, so I think we're safe in assuming it'll be smaller than X
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 s/tan/fries/ ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 graydon: yes but there are still these windowed thingy to abstract away...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 and demand loading only makes sense when the code itself is separated in the binary
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 ok, the announced appointment is here.. i'll exceptionally leave .. my scope of work is low-level anyway.. :) See you, work well, post the logs :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    core: </font>
+	      </td><td>
+		 tan: right
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: hehe. Yeah. Well, if you take the windows out of the windowing system, you get 8 1/2, and that's not the design I'm interested in.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 whoever committed xf86dga display support ... it assumes alot
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 bye core
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ShadowX: </font>
+	      </td><td>
+		 bye core
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bye core
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: core (bye everyone :)) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 and it is annoying me as a window seems to be rather different from a viewport... (win can go off-screen, resized, be virtual, etc.)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 in 8 1/2, the windowing system is only a couple dozen KB, but it does nothing, calls the client *very* frequently, and the user can't customize it at all.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  weigon has left channel #ggi </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon munches on oatmeal </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 In libgwt I expected to put a simple way to provide visual independence in fact. (With additional support for overlapping visuals, and managing events.) Isn't it enough for a small thing ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 I always saw libgwt as a layer allowing apps to share one visual. Nothing much more.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: yeah, but share how?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Mat: </font>
+	      </td><td>
+		 I'll be going too. Not like I'm much use anyway :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 ortalo: I think we should definitely continue with LibGWT, as I see need for it in many fields ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 you got rectangle multiplexing
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 rectangles with z-order
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 polygons
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 curves
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 alpha channels
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 mac: I agree
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: Mat (Mat disappears in a poof of smoke...) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 where does GWT stop, and high level stuff begin?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 GWT manages where you are going to draw. Once you start drawing it has done its job.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 hate to ask this, but how does X do it?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: GWT basically allows to manage and order a bunch of "subvisuals" on a larger main visual. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I agree, it sounds good to have a lightweight kit, but what if I want to decorate my windows with semi-transparent vines?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 btw: I think there's a security problem with alpha blending and windows
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 and visuals are rectangular.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: Use an Alpha channeled larger subvisual for the border, which has a smaller subvisual for the contents inside.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 graydon: I don't help you with this. ( I agree, this may be a limitation.)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 Is an app allowed to read the contents of an underlying window?
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  allanon (allanon@becker2.u.washington.edu) has joined channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: I doubt it
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 tan: Actually X allows it, so ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 tan: no, why ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: there's lots of sticky security issues in berlin tho.. not to claim it's secure :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 In fact, I did not want to put in libgwt things that I was not sure were really belonging to libgwt.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 if you do alpha blending you need to read the contents of the screen. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: what would it take to make it secure?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 tan: I see the problem, but I
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 'tan: am not sure if we should really do something about it ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: an act of god :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: no, not really
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 of course, if the drawing is done by the server, the app has no access to it...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: just a lot of discussion and patience
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: so you are saying you can't guarantee the root passwords we type in berlin windows aren't being snarfed? um, that is scary and limits your audience
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: I'm saying I can't *guarantee* it, cause I have no idea what people will plug into berlin.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 fries: They can be in X, too ... if they get displayed. How do you think the xv grab button works ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: can't guarantee it in X either.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 So, with MeTalGuy, we thought it would be best to remain a convenient way of, let's say, splitting the screen into parts. (maybe multiple screen into parts)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 mac: x can be secured. only allow apps that have a magic cookie to connect
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: you can do a similar inflexible security scheme with berlin if you like..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 mac: but graydon just said 'no clue how to guarantee security' in berlin. that scares me and will definately be an issue with OpenBSd which is security conscious
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 fries: I suppose Berlin will have such functionality, too ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 And, if possible provide windows in a transparent way, so that application would not be aware of the fact they draw in a window.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri: </font>
+	      </td><td>
+		 A very small SUID server might be acceptable in this case -- no hw access needed, and it could be small enough and simple enough to comb for security holes.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: oy, if it does alpha channels it may be sufficient
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 well, if I can somehow guarantee security( if x's is inflexible, ok go for something more flexible, I care not) just that it is secure!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 bri: What would we need SUID for ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 well, berlin is a userland app, so it runs as you
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 no need to be suid root
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 bri: um, the whole point of ggi is graphics w/out suid. better have a GOOD reason to require suid.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri: </font>
+	      </td><td>
+		 Well actually I guess maybe not, but you'd need an authentication protocol for a non-suid one (with SUID you just check if it has rights on the resources)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 mac: alpha channels (from graydon) make me thing that, in fact, we need some lib for "combining" visuals one with each other (either split, stacked, or even mixed)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 bri: terms, for example, need ownership of tty/pty's which atm require suid
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 the only security issue is that, since programs are sharing corba object references, those references can be forged -- you might not be talking to whom you think you are talking to.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 that's security at the corba level. There is a corba security standard, we just don't happen to have an implementation anywhere.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 I'm just thinking of the day berlin gets popular then there are a series of bugtraq announcements regarding it.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: everything has security holes. Best we can do is respond to any concernes with a solution.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: if you plan for security up front, it makes things easier in the long run cuz you don't have to hack ontop of hacks to make it so
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: I know the OpenBSD guy will probably be able to find a million security flaws in our program
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: but he can find all the same flaws in, like, PINE -- it's just a single user process.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: but will there be a million security fixes?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: I see no reason to leave a security hole open :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: then that is good.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: with a good design you avoid most sec holes. otherwise fixing them will be a lot of work...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon: here is a good question. do you do 'if(open() < 0)' or 'if(open() == -1)' ?? .. that is a good example of poor coding .. hehe .. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 O.k. - back on topic - what doe Berlin need most from GGI _now_ ? A Mesa GGI that runs with the most current Mesa ? Acceleration ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 oops we have a topic.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: yes, I know, and I'm sure we'll be subject to lots of security audits, but I'd simply be *lying* to you if I said my code, or my design, was entirely secure. I Do not know, nor do I have the expertise to find out..
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  bri forces himself to put down cigarette lighter after creating a small disaster with his latent pyromania </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 macarena: yesh.. a mesa that runs on the current KGI would be lovely.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: What version of Mesa would you like ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 macarena: one of the 3.0 betas, I guess the latest
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: Silk (I'm outta here!) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: no problem. AFAIK uwes port runs with 3.0beta4
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: yeah, it just doesn't happen to work with current libggi.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: should be a small matter though
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: I'm planning to do it if nobody else feels up to it :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 graydon: O.K. - I'll talk to Uwe - tan - please EMail me, if you'd like to work on it, too. Seems I got to quit now ...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Macarena: </font>
+	      </td><td>
+		 CU folks !
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 see ya
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: ok. I'll help!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri: </font>
+	      </td><td>
+		 bye andy
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: Macarena ( ) </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  ZinO (peter@hiro.idonex.se) has joined channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: cool. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 So, it seems we are mostly done, no ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: I got uwe's patch working on 0.0.9 in just under an hour, so I don't imagine it'll be too hard
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ortalo: I have nothing else much, nope..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 When I will have something ready with libgwt, I will show it. We'll see if it can be useful to berlin then
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 graydon screenshots?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: porting will be easy when I got my libggi2d ported.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 :-)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri: </font>
+	      </td><td>
+		 anyone care to stick around and answer a few questions on evstacks?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fries: right now a screenshot == a big blank screen
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 fries: I can make one for ya if you want  :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri: </font>
+	      </td><td>
+		 (or is noone here an evstack pro...)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 range: we had trouble in the past with people faking screenshots of berlin. I'd prefer to stick to realism :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 graydon: that's what I mean... just make a black 800x600 image or whatever  :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    ortalo: </font>
+	      </td><td>
+		 I have to go also now (some real work left somewhere also :-). Good evening, and see you soon... (with screenshots :-)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 range: oh, I see. hehe -- did you see the egcs team's screenshot?
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: ortalo (bye..bye...) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 no... um... I'm afraid to ask, but uh... where is it?  :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 it's funny -- it's an xterm with : gcc something.c <return> >>prompt.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  tan is just looking over Uwes code and sees that it access the framebuffer directly </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 it has the caption "look at egcs go!"
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: way?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    RangeRick: </font>
+	      </td><td>
+		 hahah
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    asvogler: </font>
+	      </td><td>
+		 got to go. bye
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: core thought that it uses putpixel()
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  asvogler has left channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 yeah, so did I -- isn't the "INNER_LOOP" macro a call to putpixels?
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  RangeRick has to run.  later, all </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: RangeRick (syntax: Um... er... yeah.) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: there are two versions: a generic one using putpixel and one using direct access
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 where's the direct access one? (http://?)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 http://home.t-online.de/home/uwe_maurer/ggimesa.htm
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 that's the one I have, the 3.0 patch, right?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: yep. 3.0beta3
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: the putpixel calls in linear8/15.. can be optimized...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 are there any other issues? i've to leave soon.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: ooh, you mean the stuff down at the bottom of the patch?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: no, I'm just bumming around
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: see default/linear.c
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 snazzy.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri: </font>
+	      </td><td>
+		 can anyone think of a way to do the target overloading yet provide something approaching the efficiency on inlining?  How much overhead is in a function call anyway?  (I never took a compiler course:)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: still doesn't call libggi for geometric primitives. We'll see if that's possible :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 bri: isn't that what the struct->function() pointers are for?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 bri: if an app insists on calling putpixel() for every pixel of a 1024x768 screen, that's the app's fault not ours. if however the guy does a putimage() or whatever the function cal equiv is .. then the app is optimiized!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 bri: or add a function like putpixelS and draw several pixels at once
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 tan add? I thought that was in there .. putline() where a line is an array of pixels to put at once, not necessarily the whole width of the screen .. maybe I got the name wrong but not the functionality, I've looked at it before
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 or better yet, invent quantum computing and holographic display, so you can show every possible picture simultaneously, then just collapse the wave function and the display instantly updates. Should be a snap, right?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri: </font>
+	      </td><td>
+		 I'm just wondering if the generated code does a lot of saving of registers and stuff that wouldn't be necessary on some targets?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: ;)
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  bri2 (~root@uislr1p1.umassp.edu) has joined channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 bri: registers are the compiler's arena
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri2: </font>
+	      </td><td>
+		 ok what's the irc command to get the last screen?
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Mozart (Mozart@mozart.windsor.igs.net) has joined channel #ggi </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 I just use the scrollbar on my irc app
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon is thinking he'll head off, if there's nothing else, and see if he can get mesa to like the new libGGI. </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 fries: no. there's no putline function. there are only puth/vline
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri2: </font>
+	      </td><td>
+		 e.g. to see what I missed (and I'm using SIRC which doesn't scroll the whole console :()
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tan: you'll be around the next few days to talk about this stuff? (you know libggi way better than I do!)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Mozart: </font>
+	      </td><td>
+		 hello there ggi and berlin folks
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri2: </font>
+	      </td><td>
+		 hi
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 graydon: better ask Andy. I'm just trying to port libggi2d and there are still problems with the extension scheme
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    fries: </font>
+	      </td><td>
+		 hey Mozart .. graydon is berlin and he's ready to leave to do work .. :-)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Mozart: </font>
+	      </td><td>
+		 fries: :(
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon will stay if mozart has berlin questions </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Mozart: </font>
+	      </td><td>
+		 not any question really
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Mozart: </font>
+	      </td><td>
+		 but
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Mozart: </font>
+	      </td><td>
+		 i've been reading the berlin lists for the last few days with some fascination about the ui 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    tan: </font>
+	      </td><td>
+		 ok. have to leave now. bye!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mozart: oh, well, since there are no real widget interfaces I though I'd just let that conversation unfold into some new ideas. Doesn't hurt.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Mozart: </font>
+	      </td><td>
+		 i cant really add much more than, Put as much configurability into the hands of the user 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bye tan!
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: tan (Leaving) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bri2: </font>
+	      </td><td>
+		 bye!
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: ShadowX (Leaving) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ok, I'm gonna bail then. Nice talking to y'all. Feel free to demolish my code with something better :)
+		  </td></tr>
+</table></body></html>

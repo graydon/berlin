@@ -1,0 +1,311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<title>Fresco : Code review</title>
+<link rel="Start" href="http://www.fresco.org/index.html">
+<link rel="index" href="http://www.fresco.org/index.html">
+<link rel="home" href="http://www.fresco.org/index.html">
+<link rel="toc" href="http://www.fresco.org/index.html">
+<link rel="News" href="http://www.fresco.org/news.html">
+<link rel="Status" href="http://issues.fresco.org/reports/status.html">
+<link rel="Search" href="http://search.fresco.org/index.html">
+<link rel="Author" href="http://www.fresco.org/people.html">
+<link rel="FAQ" href="http://wiki.fresco.org/FAQ">
+<link rel="Contents" href="http://www.fresco.org/sitemap.html">
+<link rel="Copyright" href="http://www.fresco.org/about.html">
+<link rel="Help" href="http://www.fresco.org/legend.html">
+<link rel="shortcut icon" href="http://www.fresco.org/glyphs/favicon.png">
+<link href="/default.css" rel="stylesheet" type="text/css" charset="ISO-8859-1"></head>
+<body bgcolor="#ffffff">
+<div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="blueBack" summary="Our top banner for logo and short-links to popular items.">
+<tr class="blueBack">
+<td class="blueBack" width="150" align="center"><img border="0" height="1" width="150" src="http://www.fresco.org/glyphs/blank_dot.png" alt=""></td>
+<td class="blueBack" width="100%" align="left"><img border="0" height="1" width="1" src="http://www.fresco.org/glyphs/blank_dot.png" alt=""></td>
+</tr>
+<tr class="blueBack">
+<td class="blueBack" align="center"><a href="/"><img border="0" height="56" src="http://www.fresco.org/glyphs/f_l.png" width="95" alt="Fresco logo"></a></td>
+<td class="blueBack" align="left"><a href="/"><img border="0" src="http://www.fresco.org/glyphs/f_t.png" alt="Fresco title"></a></td>
+</tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0"><tr><td width="100%" class="shadow" style="background-image:url(http://www.fresco.org/glyphs/shadow.png);"><img border="0" height="6" width="1" src="http://www.fresco.org/glyphs/blank_dot.png" alt=""></td></tr></table>
+</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="Contains our three columns of content."><tr>
+<td width="150" valign="top" class="leftBack">
+<img src="http://www.fresco.org/glyphs/blank_dot.png" width="2" height="3" border="0" alt=""><br>
+    <table width="150" border="0" cellspacing="2" cellpadding="2" title="Menu" summary="Our menu.">
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://www.fresco.org/index.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow_h.png" border="0" alt="">&nbsp;Home</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://issues.fresco.org/reports/status.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow.png" border="0" alt="">&nbsp;Status</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://download.fresco.org/" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow.png" border="0" alt="">&nbsp;Download</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://www.fresco.org/contact.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow.png" border="0" alt="">&nbsp;Contact</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><hr size="1" noshade="noshade" style="color:#999999;"></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://www.fresco.org/introduction.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow.png" border="0" alt="">&nbsp;Introduction</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://www.fresco.org/running.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow.png" border="0" alt="">&nbsp;Running</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://www.fresco.org/developing.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow.png" border="0" alt="">&nbsp;Developing</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu2Normal"><a href="http://www.fresco.org/docs_d.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/dot_r2.png" border="0" alt="">&nbsp;Docs</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu2Normal"><a href="http://www.fresco.org/reading.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/dot_r2.png" border="0" alt="">&nbsp;Further reading</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu2Normal"><a href="http://download.fresco.org/snapshots/" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/dot_r2.png" border="0" alt="">&nbsp;snapshots</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu2Normal"><a href="http://src.fresco.org/" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/dot_r2.png" border="0" alt="">&nbsp;Source Code</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu2Selected"><a href="http://www.fresco.org/codereview.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/dot_r2.png" border="0" alt="">&nbsp;Code review</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu2Normal"><a href="http://issues.fresco.org/" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/dot_r2.png" border="0" alt="">&nbsp;Issue tracking</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu2Normal"><a href="http://issues.fresco.org/reports/tasks.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/dot_r2.png" border="0" alt="">&nbsp;Current tasks</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://wiki.fresco.org/FrontPage" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow.png" border="0" alt="">&nbsp;Wiki<img src="http://www.fresco.org/glyphs/icon_wiki.png" border="0" alt=""></a></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><hr size="1" noshade="noshade" style="color:#999999;"></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://www.fresco.org/sitemap.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow.png" border="0" alt="">&nbsp;Sitemap</a></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><hr size="1" noshade="noshade" style="color:#999999;"></td></tr>
+<tr><td width="100%" valign="middle" class="menu1Normal"><a href="http://search.fresco.org/index.html" title="" class="nounderline"><img src="http://www.fresco.org/glyphs/arrow.png" border="0" alt="">&nbsp;Search</a></td></tr>
+</table>
+  <br><br>
+</td>
+<td valign="top" width="15" style="width:15px;"><img src="http://www.fresco.org/glyphs/blank_dot.png" width="15" height="1" border="0" alt=""></td>
+<td width="" valign="top">
+<font size="-1"><img src="http://www.fresco.org/glyphs/blank_dot.png" width="2" height="2" border="0" alt=""><br></font>
+    <p class="header">Code review</p>
+    <p class="text">
+  	 Something which comes up far too regularly in programming is that
+  	 people cannot read one another's code. This is a terrible shame,
+  	 because when you get right down to it, there's nothing more important
+  	 in the elimination of bugs than being able to tell what a program is
+  	 supposed to do. It doesn't really matter if the program does the
+  	 right thing <b>today</b> if it's unreadable, because as soon as
+  	 someone tries to change it, they will have no clue how it works and
+  	 will introduce new bugs. Thus the thing to remember is to make code
+  	 as readable as possible. It is the #1 goal.
+    </p>
+    <p class="text">
+  	 Code Review is something too few projects ever encourage, but which
+  	 is perhaps the single greatest way of noticing and killing bugs,
+  	 increasing overall understanding, fixing design problems, and
+  	 learning from one another. The process is really simple and you will
+  	 be doing a <b>Good Thing</b> if you do it, regardless of your
+  	 background or skill set. Just follow these simple steps:
+    </p>
+    <p class="text">
+      <ol style="padding:4px;">
+        <li>
+          Set aside enough time. Rushed code review is worthless code review.
+          If you're new to Fresco, to C++, to CORBA, etc. then take a couple hours aside.
+        </li>
+        <li>
+          Choose a file in CVS. Any file will do. If you want to do something simple,
+          check out a header or an IDL file. If you want something more complex, check
+          out an implementation file. If you're feeling ambitious, take a <b>few</b>
+          implementations in a related category all at once.</li>
+        <li>
+          Either open it in a buffer with a scratch buffer to make notes in, or print
+          it out and take it to a coffee shop with a red pen. Mark down <b>anything</b>
+          you're suspicious about. You are not <b>attacking</b> the person you're reviewing,
+          you're <b>helping</b> them to see where their code could be better. Any commentary
+          you can make is of assistance, so make <b>lots</b>.</li>
+        <li>
+          Check over the basics. This much you can do with hardly any understanding of what 
+          the file is or what it does:
+      	  <ol style="padding:4px;">
+            <li>Is there a header guard? (<code>#ifdef _foo_h</code>)</li>
+      	    <li>Is there a copyright notice?</li>
+      	    <li>Is there a comment giving a general overview of the file?</li>
+      	    <li>Does the file include only those headers which are strictly necessary?</li>
+      	    <li>Does the class declare a virtual destructor and a copy constructor? (it should)</li>
+      	    <li>Are there non-inline methods defined in the header? (there shouldn't be)</li>
+      	    <li>Are there annoying, abnormally commented-out blocks of code with no explanation given?</li>
+      	    <li>Are there obsolete <code>//!!!FIXME!!!</code> comments lying around?</li>
+      	    <li>
+              Do the comments accurately explain what's going on or have they lagged behind the actual
+              work done modifying the code?
+            </li>
+          </ol>
+        </li>
+        <li>
+          Check out style. Again, this is mostly &quot;eyeball&quot; work which comments on the precognitive
+          noise that comes along with each chunk of code you're trying to decipher.
+      	  <ol style="padding:4px;">
+            <li>Does the code use namespaces? We'd like everything to be tucked away in namespaces eventually.</li>
+      	    <li>Are the names descriptive?
+      	      <ol style="padding:4px;">
+                <li>
+                  Methods should be short, meaningful verb phrases, such as <code>attackEnemy</code>
+                  or <code>cookEggs</code>, as opposed to <code>preFormatMigrate</code> or
+                  <code>timerCheckOpen</code>. The previous two, you can tell what they do from the names.
+                  The latter two, you are left guessing. Methods which return boolean values should be phrased
+                  like questions, such as <code>IsProcessFinished</code> or <code>HasUserBittenCarrot</code>.
+                </li>
+                <li>
+                  Formal parameters should be obvious from their datatypes if possible, 
+                  so the datatypes should be descriptive. <code>np</code> is not nearly as useful as
+                  <code>Node *</code>, if you get the idea.</li>
+      	        <li>
+                  Object-local variables should be prefixed with &quot;my_&quot;. It's a simple step to discriminate and
+                  it much more readable than &quot;__&quot; on the front. Besides which, it encourages you to write the 
+                  variable names <b>as noun phrases</b>, which they should be anyway, like <code>my_chicken_turnip</code>
+                  instead of <code>chtnp</code>.
+                </li>
+      	        <li>
+                  Formal parameter names can be short (like &quot;<code>n</code>&quot;) so long as the method is 
+                  (a) short enough that you can see the whole thing on 1 page, (b) the meaning of the
+                  parameter is obvious from the method name and the parameter type. A method called
+                  <code>int activate(int p,int q)</code> doesn't tell you diddly about whether the body
+                  of the function is really doing what it's supposed to. A method called 
+                  <code>void insert_element(void *o, container *c)</code> is acceptable since no 
+                  misinterpretation is possible. If the method is longer than a page or so, a meaningful
+                  parameter name becomes a necessity, as anyone reading it will have to thrash up and down
+                  to remember what <code>vp</code> refered to.
+                </li>
+              </ol>
+            </li>
+      	    <li>Do the lines all fit on a reasonably sized page?</li>
+      	    <li>Is there enough spacing to make it reasonably legible?</li>
+      	    <li>Are the methods reasonably short (say, under 150 lines)?</li>
+      	    <li>
+              Does the author overuse &quot;clever&quot; multi-way boolean expressions, 
+              ternary operators, autoincrement and dereference operators, etc.?
+            </li>
+          </ol>
+        </li>
+        <li>
+          Check out basics of logical comprehensibility and correctness (this requires thinking,
+          though not necessarily deep understanding):
+      	  <ol style="padding:4px;">
+            <li>
+              Does the method make it clear from the onset what it's trying to accomplish,
+              either through comments or (preferably) direct, simple, well-named statements?
+            </li>
+            <li>
+              Is it clear how multiple boolean conditions interact? I.e., is it really easy
+              to tell, given an arbitrary combination of true and false answers to the various
+              tests and conditionals, which course of action the method will take? Are all cases
+              even accounted for? Are cases clearly separated from one another or are they all
+              tangled up? Are there too many levels of nested conditionals to make heads or 
+              tails of it?
+            </li>
+            <li>
+              Does the method do one single task as described in its name, or does it have some
+              hidden side effects such as setting flags, creating/deleting objects, sorting or
+              rearranging objects, caching or redirecting objects, etc?</li>
+      	    <li>
+              Does it try/throw/catch meaningful exceptions, and is it obvious which exceptions
+              will cause which course of action? can you see an easier way to structure the 
+              exceptions?
+            </li>
+            <li>
+              Are there suitable checks against NULL values or thrown exceptions where it seems
+              possible that they might occur? Note: <b>any</b> pointer dereference is a potential 
+              segfault.
+            </li>
+      	    <li>
+              If the method <b>touches</b> (including reading) any internal state of an object,
+              is there a thread guard in place to prevent concurrent access?
+            </li>
+      	    <li>
+              Does the method cast <b>down</b> an inheritance hierarchy using 
+              <code>dynamic_cast</code> or <code>static_cast</code>?
+            </li>
+            <li>
+              Does the method alter its parameters? If so, does it need to? If not, can the 
+              parameters be made const?
+            </li>
+            <li>
+              Does the method alter the state of the object? if so, does it need to? If not, 
+              can it be made into a const method?
+            </li>
+            <li>
+              Can you foresee a case in which a programmer would want to extend or override 
+              the method? If so, make the method virtual.
+            </li>
+            <li>
+              Does the method need to exist at all? If so, does it need to be expressed through CORBA?
+              If not, does it even need to be public? If not, can it even be made private? If it is a
+              utility method, can it be made static?
+            </li>
+      	    <li>
+              Does the method fail gracefully when there is no more memory, when a pointer is null, etc.?
+              Or does it just leave the door open to disaster?
+            </li>
+      	    <li>
+              Does the constructor use assignment when it could get away with using initialisation?
+              (initialisation is better)
+            </li>
+            <li>Does the method return object-internal data by reference? (this is bad)</li>
+            <li>Does the code reveal a public data member of an object? (this is bad)</li>
+      	    <li>Does the code use <code>#define</code> where it should be using <code>consts</code>?</li>
+      	  </ol>
+        </li>
+        <li>Work your way through what it's actually <b>doing</b> and see if you can find major logical flaws:
+          <ol style="padding:4px;">
+            <li>Are there resource leaks you can spot? Open files, memory leaks, etc?</li>
+            <li>
+              Are there possible thread deadlocks? A deadlock happens when
+              two threads are blocked waiting to acquire locks one another
+              holds.
+            </li>
+            <li>Is it possible to produce invalid iterators or cursors?</li>
+      	    <li>
+              Can the code be made less dependent on the contents of other
+              files, either by using implementation superclasses, or CORBA
+              reference types?
+            </li>
+      	    <li>
+              Can you think of any general way of making the algorithms more
+              readable or simpler?
+            </li>
+            <li>
+              Can you think of a case where you see two things doing almost
+              identical activities, which could be factored into a common case
+              with parameters?
+            </li>
+      	  </ol>
+        </li>
+        <li>
+          Once you have a bloody, war-torn page marked up with the above commentary,
+          you have 2 options: 
+      	  <ol style="padding:4px;">
+            <li>
+              Mail your commentary back to the author and wait for them to
+              get around to fixing things.
+            </li>
+      	    <li>
+              Try and correct the problems, even just a few of them, and mail the
+              author a patch as well as some commentary on what you did and why 
+              you did it.
+            </li>
+      	  </ol>
+          The latter is much more likely to actually work. If you get no reply at all
+          from the original author, it's possible they're dead, and you might need to
+          ask someone else with CVS write permission to commit it for you. If you're 
+          going to be doing a <b>lot</b> of review, you should probably get in touch 
+          and we can set you up with permanent write access.
+        </li>
+      </ol>			
+    </p>
+    <p class="text">
+      That's it! if you've got this far, and done your duty, then Fresco has
+      become stronger, less buggy, and cooler for the work you
+      did. Congrats. Start again with another file :)			
+    </p>
+  </td>
+<td valign="top" width="15" style="width:15px;"><img src="http://www.fresco.org/glyphs/blank_dot.png" width="15" height="1" border="0" alt=""></td>
+<td valign="top" style="width: 2px; background-image:url(http://www.fresco.org/glyphs/dot.png); background-repeat:repeat-y; font-size:3px;"><img src="http://www.fresco.org/glyphs/blank_dot.png" width="2" height="1" border="0" alt=""></td>
+<td valign="top" width="15" style="width:15px;"><img src="http://www.fresco.org/glyphs/blank_dot.png" width="15" height="1" border="0" alt=""></td>
+<td width="150" valign="top">
+<font size="-1"><img src="http://www.fresco.org/glyphs/blank_dot.png" width="2" height="2" border="0" alt=""><br></font>
+    <p class="text">
+      <table width="100%" border="0" cellspacing="0" cellpadding="4" summary="Related links to this page">
+<tr class="relatedBack"><td colspan="2" align="left" valign="top"><b>Related links</b></td></tr>
+<tr class="smallerText">
+<td align="center" valign="center"><img src="http://www.fresco.org/glyphs/top_dot.png" width="4" height="4" border="0" alt=""></td>
+<td align="left" valign="top"><a href="http://www.fresco.org/coding-style.html" title="" class="">Coding style</a></td>
+</tr>
+</table>
+    </p>
+  </td>
+</tr></table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="Our footer contains maintainence info.">
+<tr><td valign="top" height="2" style="background-image:url(http://www.fresco.org/glyphs/dot.png); background-repeat:repeat-x; font-size:3px;"><img src="http://www.fresco.org/glyphs/blank_dot.png" width="10" height="2" border="0" alt=""></td></tr>
+<tr><td valign="top" height="5"><img src="http://www.fresco.org/glyphs/blank_dot.png" width="10" height="5" border="0" alt=""></td></tr>
+<tr><td align="center"><font size="-1" color="#cccccc"><i>F r e s c o (c) 2002,  webdesign: 
+              <a style="color: #cccccc;" href="mailto:alexander@fresco.org">Alexander Johannesen</a></i><br><i>Report problems to 
+              <a style="color: #cccccc;" href="mailto:webmaster@fresco.org">webmaster</a></i></font></td></tr>
+<tr><td align="center"><img src="http://www.fresco.org/glyphs/blank_dot.png" width="10" height="6" border="0" alt=""></td></tr>
+</table>
+</body>
+</html>

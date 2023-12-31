@@ -1,0 +1,81 @@
+<html><head><title>IRC Meeting Log on #berlin (Fri Mar 12 17:24)</title><body bgcolor="white"><h2>#berlin (Fri Mar 12 17:24)</h2><table><tr><td>&nbsp;</td><td><font color="red" size="-1">  Value of LOG set to ON </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon is logging now..  </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>*** Starting logfile IrcLog</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>oh, damnit</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i guess i can turn mine off</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>multiple logs is fine</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>ok... i'll mail the log to graydon tomorrow (MET)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I have to go in 5 minutes anyway.l</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>have to clean up some msg things ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>crash: thanks.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>bye =)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: crashcut (relay) </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon ponders this </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I think..</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: well like i said, i can do the same basic thing with regex</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>the problem is what stefan was talking about</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>storing things like *fonts*bold = blah</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and then storing fonts.arial.bold = otherblah</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: matching amongst a consistent set of patterns is actually the inverse of what you're visualizing</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and having it actually work correctly :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: you're thinking the registrar DB will hold a tree of some sort</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>yeah, that's what i'm thinking :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>what are you thinking</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: ideally, it should hold a <em>set</em> of objects, each of which matches itself only against those paths in the <em>scene graph</em> which its pattern matches</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>define scene graph... </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: the DAG of graphics on the screen, or of XML nodes in a document</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>actually, never mind i understand</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>doesn't LDAP implement something similar to what you want, it's pattern matching looks different than XSL, but it's functionally the same</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: i.e. registrar could hold something like "*font=helvetica" and that doesn't have <em>any</em> meaningful position in a tree. rather, it <em>matches against</em> a tree that the application using the registrar provides</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: no, LDAP is a tree-structured storage model</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>damn, i need to stop thinking in trees, haha, it's just the logical way to organize data :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: in this view, registrar becomes a sort of "tree interpreter". Like a regex matcher, only the thing it's matching on isn't its own data, it's chunks of the scene graph.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hmmm</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: it's own data is a set of rules which get sorted, prioritized and optimized so as it can interpret a tree context rapidly and provide the user with the appropriate matching keys.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>alright, well then what will store the actual data? :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: for instance, in the example there, I've stored "*font=helvetica" in registrar. Now I pass registrar a path to /mozilla/dialog/textWidget/font. Registrar should (unless something overrides the first rule) return "helvetica"</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>not the patterns that the data is to matched against</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>oh ok, registrar is to handle ptterns and data</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: registrar will have to keep the values as well as the patterns. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>the more general the pattern, the lower it's priority correct?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>heh.. I'm noticing this is really supremely weirder than the windows registry.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>yeah that's what i'm thinking :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: well, I'm hoping the prioritization and resolution semantics in the XSL "pattern matching" section are sane and we can just use them.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: at least it's much more powerful :-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>windows registry is simply a data/value storage facility, there are no pattern matching routines... the application itself deals with patterns</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: hell yeah. I'm wondering if it can be made at all efficient. I mean, usually when you read a style sheet, you compile it into a form in memory which is almost directly executable. </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: al (xchat exiting..) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i'm thinking the same thing, how are you going to continually parse this sorta thing to make it run with any real speed</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: in this case, the whole registrar would have to be "recompiled" when you add new rules which alter the resolution priorities</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: well, I think it might not be too bad</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>basically, i could use a splay tree to optimize it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: cause there's 2 really major uses</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: the statc (literal) patterns can be matched swiftly in a hashtable or btree.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: and those are the ones, I think, which will change most often</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: the data base is a subject which notifies all observers about changes. Beside that, I don't see any need to reparse it 20 times per second...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: the complex matching patterns, I suspect, will change less often. and there'll be fewer</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: no, not to reparse 20 times a second; but if I add a new rule, internally I might need to shuffle around how I am representing the rules</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: if I represent them as some sort of sorted matching engine</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>so you want me basically to store X style resource configurations in the registrar and do all the pattern matching internally</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hmmm</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: that'd certainly be groovy. again, I'm not sure if it's remotely efficient.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>so when an application rquests "/titlebar/font" and *font=helvitica, i'd return helvitica</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I'd like to think some more on this, and maybe talk to some stylesheet gurus I might happen to know :), but I have to go now.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>or something :0</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: yeah</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i guess i should research X resource configs</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: look into the Xlib implementation</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: see if you can grok the specification of the XSL pattern language too, as it's worth $90,000 :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>man, I have an incredibly hard time reading Xlib :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: fine. then let's stop here. I feel the most urgent has been said.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>alright, i get it... i'm going to read the fresco manual</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>then i'll go readup on resource configs and how applications request settings</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>then i'll figure something out :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: read the StyleValue/Context/Implementation etc. sources too, but be warned, it's more difficult to read than Xlib :-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: cool. read the tutorial actually. it's quite helpful. If you have questions do it in public on the ML and we can maybe get some confusion resolved. I suspect the "offsets" will throw you off. At least, I was confused :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>ok, I"m closing trhe log</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>no problem</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Unknown command: LOG </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i'm going to head out</td></tr>
+</table></body></html>

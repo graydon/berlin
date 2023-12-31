@@ -1,0 +1,1433 @@
+<html><head><title>Fresco IRC meeting log</title></head>
+<body bgcolor="white">
+[08:58:07] &lt;<font color="green">hunger</font>&gt; <hunger> IRC MEETING LOG STARTS HERE. Just so I can grep for this one;-)<br>
+[08:58:56] <i> * <font color="blue">stefan</font> wanders in </i><br>
+[08:59:09] &lt;<font color="green">hunger</font>&gt; <hunger> Hi stefan.<br>
+[08:59:17] &lt;<font color="blue">stefan</font>&gt; <stefan> hey hunger<br>
+[08:59:22] &lt;<font color="red">dsevill4</font>&gt; <dsevill4> hi, stefan<br>
+[08:59:24] &lt;<font color="red">dsevill4</font>&gt; <dsevill4> how are you?<br>
+[08:59:36] &lt;<font color="blue">stefan</font>&gt; <stefan> dsevill4: hey. Thanks. Good to see you here !<br>
+[08:59:59] &lt;<font color="red">dsevill4</font>&gt; <dsevill4> I'm happy to see you too :)<br>
+[09:01:47] <i> * <font color="green">hunger</font> shivers. </i><br>
+[09:02:08] <font color="brown">BenB</font> has joined #fresco<br>
+[09:02:20] &lt;<font color="brown">BenB</font>&gt; <benb> hey :-)<br>
+[09:02:20] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> hi BenB<br>
+[09:02:25] &lt;<font color="green">hunger</font>&gt; <hunger>
+ My xterm has 5000 lines scrollback buffer... and that's not enough to hold
+all the errormessages I get from gcc trying to build my string class:-(<br>
+[09:02:26] &lt;<font color="blue">stefan</font>&gt; <stefan> velco: heh, you are here, too ?!?<br>
+[09:02:38] &lt;<font color="gray">velco</font>&gt; <velco> stefan: yeah, kinda :)<br>
+[09:02:53] &lt;<font color="blue">stefan</font>&gt; <stefan> velco: awesome ! (kinda ;-)<br>
+[09:03:01] &lt;<font color="gray">velco</font>&gt; <velco> heh<br>
+[09:03:04] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> hunger: make 2&gt;&amp;1 | less<br>
+[09:03:04] &lt;<font color="red">dsevill4</font>&gt; <dsevill4> hunger: haha. Don't worry. Normally you fix one line and 90% or the errors dissapear<br>
+[09:03:28] &lt;<font color="green">hunger</font>&gt; <hunger> oxygene: I know. It's just so depressing having to do that;-)<br>
+[09:03:49] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: I reworked the bug and task cgi forms somewhat. Could you have a look ? They should now fit nicely into a page...<br>
+[09:05:30] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: Looks very nice.<br>
+[09:05:53] <font color="purple">neiljp</font> has joined #fresco<br>
+[09:05:59] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: I did everything to make the forms less wide...<br>
+[09:06:08] &lt;<font color="blue">stefan</font>&gt; <stefan> hey neiljp<br>
+[09:06:19] &lt;<font color="brown">BenB</font>&gt; <benb> hunger: thanks for the reminder on the ML, BTW, I would have forgotten it otherwise.<br>
+[09:06:23] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: I think we can close <a href="http://issues.fresco.org/bug21">bug21</a> then.<br>
+[09:06:26] &lt;<font color="purple">neiljp</font>&gt; <neiljp> stefan: Hey :)<br>
+[09:06:30] &lt;<font color="purple">neiljp</font>&gt; <neiljp> ...and everyone else :)<br>
+[09:06:43] &lt;<font color="blue">stefan</font>&gt; <stefan> neiljp: did you get in contact with wiggy ? What's your 'status<br>
+[09:06:45] &lt;<font color="blue">stefan</font>&gt; <stefan>  now ?<br>
+[09:06:50] &lt;<font color="green">hunger</font>&gt; <hunger> BenB: You are welcome.<br>
+[09:06:52] &lt;<font color="purple">neiljp</font>&gt; <neiljp> ooh, 28 people :)<br>
+[09:07:09] &lt;<font color="red">dsevill4</font>&gt; <dsevill4> hi, neiljp<br>
+[09:07:14] &lt;<font color="blue">stefan</font>&gt; <stefan> neiljp: yeah, and nicholas and alexander are still missing :)<br>
+[09:07:29] &lt;<font color="purple">neiljp</font>&gt; <neiljp> dsevill4: oh, hi...long time no see :)<br>
+[09:07:36] &lt;<font color="purple">neiljp</font>&gt; <neiljp> stefan: boh!<br>
+[09:07:44] &lt;<font color="red">dsevill4</font>&gt; <dsevill4> neiljp: I know... sorry.<br>
+[09:07:56] &lt;<font color="purple">neiljp</font>&gt; <neiljp> dsevill4: no problem...good to see you :)<br>
+[09:08:15] &lt;<font color="slategray">njs</font>&gt; <njs> stefan: so should we wait another 5 minutes?<br>
+[09:08:17] &lt;<font color="green">hunger</font>&gt; <hunger> Anybody but me logging?<br>
+[09:08:32] <i> * <font color="purple">neiljp</font> examines xchat for logging options </i><br>
+[09:08:41] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: may be.<br>
+[09:08:56] &lt;<font color="blue">stefan</font>&gt; <stefan> does anybody here have experience with donations ?<br>
+[09:09:00] &lt;<font color="brown">BenB</font>&gt; <benb> hunger: yes, me, always.<br>
+[09:09:00] &lt;<font color="gray">velco</font>&gt; <velco> neiljp: Sewtting -&gt;IRC-&gt;Logging<br>
+[09:09:10] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: define "experience"<br>
+[09:09:13] &lt;<font color="green">hunger</font>&gt; <hunger> neiljp: Settings-&gt;IRC-&gt;Logging<br>
+[09:09:35] &lt;<font color="blue">stefan</font>&gt; <stefan> BenB: well, ever received some; knows how to deal with them legally, etc.<br>
+[09:09:47] &lt;<font color="green">hunger</font>&gt; <hunger> neiljp: You can just turn it on and it will spam your HD with all the conversation you ever happened to listen in on:-)<br>
+[09:09:50] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: I got soem money for Mozilla work.<br>
+[09:10:01] &lt;<font color="purple">neiljp</font>&gt; <neiljp> yes, I appear to be logging :)<br>
+[09:10:01] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: that was dedicated to a certain task, though.<br>
+[09:10:20] &lt;<font color="blue">stefan</font>&gt; <stefan> BenB: you as BenB or you as 'Beonex' (?) ?<br>
+[09:10:25] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: Shouldn't we wait for nicholas and Alexander before getting down to busines?<br>
+[09:10:27] &lt;<font color="purple">neiljp</font>&gt; <neiljp> velco: yeah, just didn't know where the log files were :)<br>
+[09:10:31] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: well, legally, that's the same<br>
+[09:10:38] &lt;<font color="purple">neiljp</font>&gt; <neiljp> hunger: I noticed ;)<br>
+[09:10:50] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: well, we can warm up a bit, can't we ? We are not going to decide anything yet :-)<br>
+[09:10:55] &lt;<font color="brown">BenB</font>&gt; <benb> neiljp: ~/.xchat/xchatlogs/<br>
+[09:11:02] &lt;<font color="blue">stefan</font>&gt; <stefan> BenB: is it ? That would surprize me.<br>
+[09:11:05] &lt;<font color="purple">neiljp</font>&gt; <neiljp> BenB: exactly :)<br>
+[09:11:17] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: there is no company "Beonex".<br>
+[09:11:24] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: I am a Freelancer<br>
+[09:11:28] &lt;<font color="green">hunger</font>&gt; <hunger> BenB: You don't need a company.<br>
+[09:11:33] &lt;<font color="brown">BenB</font>&gt; <benb> ("selbstständig")<br>
+[09:11:42] &lt;<font color="green">hunger</font>&gt; <hunger> BenB: You need a legal personality...<br>
+[09:12:06] &lt;<font color="green">hunger</font>&gt; <hunger> BenB: Something like a company, a "Verein" or so. Being Freelance is like having a company anyway.<br>
+[09:12:13] &lt;<font color="brown">BenB</font>&gt; <benb> hunger: I meant "company" = juristical (non-natural) person<br>
+[09:12:31] &lt;<font color="brown">BenB</font>&gt; <benb> hunger: not really, I am personally liable etc.<br>
+[09:12:32] &lt;<font color="green">hunger</font>&gt; <hunger> BenB: Do you have a 'Gewerbeschein'?<br>
+[09:12:35] &lt;<font color="brown">BenB</font>&gt; <benb> hunger: yes.<br>
+[09:12:36] <i> * <font color="purple">neiljp</font> likes the thinner bug display </i><br>
+[09:12:42] &lt;<font color="slategray">njs</font>&gt; <njs>
+ stefan: depending on the amount of money involved, we could always just
+wing it.  Have someone send the money to you, and trust that you'll use it
+responsibly, or whatever.  It doesn't have the framework to make sure things
+are accountable and deal with taxes and all that, but for smaller sums that's
+probably okay.<br>
+[09:12:54] <font color="indigo">steveh</font> has joined #fresco<br>
+[09:13:10] &lt;<font color="green">hunger</font>&gt; <hunger> BenB: Then you do have a company. That yoiu didn't pick a "Rechtsform" that does not make you personally liable is your fault.<br>
+[09:13:18] &lt;<font color="brown">BenB</font>&gt; <benb> njs: agreed.<br>
+[09:13:23] &lt;<font color="blue">stefan</font>&gt; <stefan>
+ njs: yeah, I thought about that. But I wanted to get an idea about how much
+*would* be involved if ever we'd want to make it more formal.<br>
+[09:13:28] &lt;<font color="slategray">njs</font>&gt; <njs> (as compared to a company, where there's all this framework with a board of directors, etc.)<br>
+[09:13:28] &lt;<font color="blue">stefan</font>&gt; <stefan> hey steveh<br>
+[09:13:38] &lt;<font color="indigo">steveh</font>&gt; <steveh> Hi<br>
+[09:14:13] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: you have to create a legal entity, like a Verein.<br>
+[09:14:18] &lt;<font color="purple">neiljp</font>&gt; <neiljp> well, abi[source,word] handle it ok with...how much?<br>
+[09:14:20] &lt;<font color="blue">stefan</font>&gt; <stefan>
+ njs: and yes, there isn't much money involved, as far as I'm aware of. Someone
+just asked me some weeks ago where to put the 50$ he wanted to donate...<br>
+[09:14:32] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: a Verein is advanturous, because it doesn't need base capital.<br>
+[09:14:41] &lt;<font color="green">hunger</font>&gt; <hunger>
+ stefan: The easiest thing would be to fund a "Verein" in Germany. Only requirement:
+3 people and some paperwork. I don't know how the 'international cooperation'
+works for a Verein though.<br>
+[09:14:53] &lt;<font color="blue">stefan</font>&gt; <stefan> BenB: you are thinking too much in German jurisdiction :-)<br>
+[09:15:12] &lt;<font color="brown">BenB</font>&gt; <benb>
+ stefan: other forms, like GmbH etc. usually need a substantional amount
+of base capital (10000-100000DM), which you have to invest into the company.<br>
+[09:15:25] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> stefan: don't think any other country (except .at and .ch) have "verein" as legal entity<br>
+[09:15:36] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: I am talking solely about German jurisdiction. can't talk abouto USA or canada.<br>
+[09:15:39] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: We'd need to settle for some juristdication...<br>
+[09:16:03] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: well, yeah, that's part of the question.<br>
+[09:16:13] <font color="darkcyan">bughunter_away</font> changes name to <font color="darkcyan">bughunter</font><br>
+[09:16:21] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: I'd prefer that not to be the one in the US;-)<br>
+[09:16:29] &lt;<font color="brown">BenB</font>&gt; <benb> hunger: I think you need more people for a Verein.<br>
+[09:16:29] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> stefan: the good thing is, that ben, tobias and I are about 100-200km away from each other, and only 3 people are needed...<br>
+[09:16:31] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: why ?<br>
+[09:16:46] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> BenB: no, tobias explained that already - it's a relict of the "skatvereine" ;)<br>
+[09:16:56] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: I don't have much faith in anything US-based nowadays.<br>
+[09:17:13] &lt;<font color="slategray">njs</font>&gt; <njs>
+ stefan: well, dunno.  it depends, I think, on what we want to do with it
+-- if we're hiring someone to do work, then we'd probably have to deal with
+taxes.  If we're just using it for one off things (maybe paying for someone
+to go to a conference, or renewing DNS), then organization isn't a hassle
+and probably the first real limit is when you start dealing with quantities
+large enough that its effect on your personal taxes are a serious worry.<br>
+[09:17:24] &lt;<font color="brown">BenB</font>&gt; <benb> well, for 50$, it's totally pointless to found a verein. the paperwork alone costs considerably more.<br>
+[09:17:25] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: Definitly not enough to have money there;-)<br>
+[09:17:27] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: well, it was just a question. The US are as good as any other place.<br>
+[09:17:31] <font color="teal">rajan</font> has joined #fresco<br>
+[09:17:40] &lt;<font color="teal">rajan</font>&gt; <rajan> did i missed the meeting? did i?<br>
+[09:17:43] &lt;<font color="slategray">njs</font>&gt; <njs> The US is a pretty bad place, really, considering that I'm the only one here :-)<br>
+[09:17:48] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> rajan: you're just right :)<br>
+[09:17:51] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> hi rajan<br>
+[09:17:57] &lt;<font color="teal">rajan</font>&gt; <rajan> hi oxygene<br>
+[09:18:02] &lt;<font color="green">hunger</font>&gt; <hunger> rajan: No, we just started to talk about what would be needed to accept donations.<br>
+[09:18:06] <font color="green">starseeker</font> has joined #fresco<br>
+[09:18:06] <i> * <font color="purple">neiljp</font> should talk to his Dad...an accountant... </i><br>
+[09:18:07] &lt;<font color="slategray">njs</font>&gt; <njs> rajan: yeah, it turned out we only had 14 minutes worth of stuff to talk about after all :-P<br>
+[09:18:14] &lt;<font color="teal">rajan</font>&gt; <rajan> njs: well, in that case, the same for me.<br>
+[09:18:35] &lt;<font color="blue">stefan</font>&gt; <stefan>
+ njs: oh, good point ! As far as those 50$ are concerned, we may just throw
+it mourad's way, as he had the most important expenses last year when we
+tried to get rid of verisign.<br>
+[09:18:41] &lt;<font color="teal">rajan</font>&gt; <rajan>
+ hunger: IIRC, you would need to open up a non-profit organization, and to
+do that, you need a lawyer. and those are expensive creatures<br>
+[09:19:10] &lt;<font color="slategray">njs</font>&gt; <njs>
+ actually setting up a corporation is a serious hassle and not cheap at all,
+and makes no sense until you're talking serious money.<br>
+[09:19:24] &lt;<font color="blue">stefan</font>&gt; <stefan> well, I'm part of a choir that is a <br>
+[09:19:30] &lt;<font color="blue">stefan</font>&gt; <stefan> non-profit organization<br>
+[09:19:42] &lt;<font color="blue">stefan</font>&gt; <stefan> it's not *that* hard at least to apply for it.<br>
+[09:19:47] &lt;<font color="slategray">njs</font>&gt; <njs> (for free software values of serious, of course, but still :-))<br>
+[09:19:55] &lt;<font color="green">starseeker</font>&gt; <starseeker> you can code and sing???<br>
+[09:20:00] &lt;<font color="teal">rajan</font>&gt; <rajan> njs: well, from what I see from osnews.com is that there is a lot of people interested in supporting Fresco, but can't<br>
+[09:20:11] <font color="blue">soyt</font> has joined #fresco<br>
+[09:20:15] &lt;<font color="green">hunger</font>&gt; <hunger> Can't we ask SPI to handle things for us?<br>
+[09:20:33] &lt;<font color="slategray">njs</font>&gt; <njs>
+ if SPI ever gets their act together again, we could refer people to them,
+considering that their whole purpose is to be a legal umbrella for projects
+like ours<br>
+[09:20:36] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: do we want that ? I don't know what that actually means...<br>
+[09:20:38] &lt;<font color="purple">neiljp</font>&gt; <neiljp> rajan: what do you mean? 'lots' want to donate?<br>
+[09:20:45] &lt;<font color="teal">rajan</font>&gt; <rajan>
+ hunger: you can, but remember, we are giving SPI enough hassles already,
+and now from what I hear from rumours, they are having internal problems<br>
+[09:20:46] &lt;<font color="slategray">njs</font>&gt; <njs> but they're in a bit of shambles right now, I'd wait to see what happens<br>
+[09:21:34] &lt;<font color="teal">rajan</font>&gt; <rajan>
+ neiljp: I don't know. but it is easy to find out. fresco has a huge PR following
+at OSNews, and I can easily convince Eugenia to have a poll asking for input
+on that regard<br>
+[09:21:41] &lt;<font color="brown">BenB</font>&gt; <benb> njs: "shambles"?<br>
+[09:21:51] &lt;<font color="teal">rajan</font>&gt; <rajan> neiljp: but my point, it is possible.<br>
+[09:22:02] &lt;<font color="slategray">njs</font>&gt; <njs> BenB: total disarray, non-functioning board, etc.<br>
+[09:22:08] &lt;<font color="purple">neiljp</font>&gt; <neiljp> rajan: I must search osnews :)<br>
+[09:22:19] &lt;<font color="purple">neiljp</font>&gt; <neiljp> rajan: I remember there was an article there, but not sure whether I read the comments :)<br>
+[09:22:22] &lt;<font color="brown">BenB</font>&gt; <benb> njs: nod :-(<br>
+[09:22:47] &lt;<font color="teal">rajan</font>&gt; <rajan> neiljp: mostly negative. all about the slow moment of fresco. but it was a piece of cake explaining it to them<br>
+[09:22:47] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: did you get up early, or stand up late ?<br>
+[09:22:52] &lt;<font color="purple">neiljp</font>&gt; <neiljp> well as long as purcel still runs...thats ok :)<br>
+[09:23:01] &lt;<font color="slategray">njs</font>&gt; <njs>
+ BenB: enough of their board members are unable to spend any time on SPI
+stuff that they haven't managed to achieve quorum for months, there are proposals
+to lower the quorum requirements to start fixing this but it's pretty controversial,
+etc.<br>
+[09:23:02] &lt;<font color="teal">rajan</font>&gt; <rajan> well, i would suggest slashdot if it wasn't so negative towards fresco<br>
+[09:23:07] &lt;<font color="slategray">njs</font>&gt; <njs> stefan: stay up late :-)<br>
+[09:23:23] &lt;<font color="green">hunger</font>&gt; <hunger> So far we have the option to fund a non-profit organisation in canada, a Verein in germany or ask SPI.<br>
+[09:23:27] &lt;<font color="green">hunger</font>&gt; <hunger> Anything else?<br>
+[09:23:28] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: how big is their quorum ?<br>
+[09:23:31] &lt;<font color="teal">rajan</font>&gt; <rajan> njs: movement, not moment :-)<br>
+[09:23:50] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: yes, not do anything at all, just send the money (if there is any) to individuals.<br>
+[09:23:53] &lt;<font color="slategray">njs</font>&gt; <njs> stefan: 2/3 of board<br>
+[09:23:54] &lt;<font color="purple">neiljp</font>&gt; <neiljp> well...there may be something that could be done in the UK...but... ;)<br>
+[09:24:08] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: ...and how big is the board ?<br>
+[09:24:10] &lt;<font color="slategray">njs</font>&gt; <njs> rajan: parse error<br>
+[09:24:13] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: I don't particularly like that...<br>
+[09:24:14] &lt;<font color="purple">neiljp</font>&gt; <neiljp> uh, someone change the topic? :)<br>
+[09:24:19] &lt;<font color="slategray">njs</font>&gt; <njs> stefan: umm, 8<br>
+[09:24:19] &lt;<font color="brown">BenB</font>&gt; <benb> hunger: or do nothing<br>
+[09:24:24] <font color="brown">njs</font> changed the topic to <b>The Fresco Windowing System -- IRC meeting NOW!</b><br>
+[09:24:30] <i> * <font color="purple">neiljp</font> grins </i><br>
+[09:24:30] &lt;<font color="teal">rajan</font>&gt; <rajan>
+ hunger: setting up a non-profit org in malaysia is easy too, and i probably
+could get my aunt's (accountant at central bank) and uncle (famous lawyer,
+mostly civil) to help<br>
+[09:25:03] &lt;<font color="slategray">njs</font>&gt; <njs> rajan: I think we can wait on that poll until we actually come up with something to do with the money :-)<br>
+[09:25:08] <i> * <font color="blue">stefan</font> thinks if ever fresco becomes a legal entity it should be near a place with a high concentration of developers </i><br>
+[09:25:34] &lt;<font color="green">hunger</font>&gt; <hunger>
+ So far we have the option to fund a non-profit organisation in canada or
+malaysia, a Verein in germany, ask SPI, or ask people to send money to developers
+directly.<br>
+[09:25:36] &lt;<font color="slategray">njs</font>&gt; <njs> stefan: yeah, Canada or Germany for sure (unless the developer mix changes radically between now and then, I suppose :-))<br>
+[09:25:38] &lt;<font color="purple">neiljp</font>&gt; <neiljp> stefan: so that's Canada or Germany then? ;)<br>
+[09:25:47] &lt;<font color="blue">stefan</font>&gt; <stefan> ok, if I propose to that nice guy to send a check to mourad for his expenses with verisign, would there be any objections ?<br>
+[09:25:59] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: No.<br>
+[09:26:00] &lt;<font color="slategray">njs</font>&gt; <njs> no<br>
+[09:26:05] &lt;<font color="teal">rajan</font>&gt; <rajan>
+ njs: well, there is a number of users. like giving it all to rajan. and
+of course giving it all to rajan. did i mention giving it all to rajan? serious,
+SPI is in bad shape now, we should brace for any event. money serves that
+purpose<br>
+[09:26:42] &lt;<font color="purple">neiljp</font>&gt; <neiljp> what are the details of the verisign thing? absence of being emailed about that ;)<br>
+[09:26:45] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: I'd object if you'd ask for a nice 3D card to send to someone:-)<br>
+[09:26:47] &lt;<font color="brown">BenB</font>&gt; <benb> stefan: no, good idea<br>
+[09:26:47] &lt;<font color="slategray">njs</font>&gt; <njs>
+ rajan: mm, I don't think they're in that bad shape, having read up on it
+a bit.  Serious organizational issues, yes, but they're not going to simply
+disappear.<br>
+[09:26:49] <i> * <font color="blue">stefan</font> takes a note to get in touch with mourad... </i><br>
+[09:27:02] &lt;<font color="teal">rajan</font>&gt; <rajan> well, between Canada and Germany, I would say Germany because it is more friendly to poor non-profit orgs....<br>
+[09:27:39] &lt;<font color="teal">rajan</font>&gt; <rajan> njs: well, we would never know. what happens if the board all starts disagreeing and leave?<br>
+[09:27:43] &lt;<font color="brown">BenB</font>&gt; <benb> hunger: why? I'd find that great. even if the person in question is not me *g*<br>
+[09:27:50] &lt;<font color="brown">BenB</font>&gt; <benb> hunger: great motivation ;-)<br>
+[09:27:51] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: well, hardware such as 3D cards is a gadget, as far as fresco is concerned. We are not going to develop drivers...<br>
+[09:28:09] &lt;<font color="green">hunger</font>&gt; <hunger>
+ rajan: Not really:-) But we have the concept of a "Verein" which is basically
+a legal entity trying to further some goal (like sports, music, etc.).<br>
+[09:28:11] &lt;<font color="teal">rajan</font>&gt; <rajan> stefan: none<br>
+[09:28:13] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: input devices is already different, because it allows us to actually experiment<br>
+[09:28:18] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: (or PDAs for that matter)<br>
+[09:28:26] &lt;<font color="purple">neiljp</font>&gt; <neiljp> hunger: uh, charity?<br>
+[09:28:27] &lt;<font color="teal">rajan</font>&gt; <rajan> hunger: ahh, okay<br>
+[09:28:41] &lt;<font color="slategray">njs</font>&gt; <njs> rajan: SPI's too important for that; they pay for lots of _debian_'s hosting.  No-one's going to let that happen.<br>
+[09:28:47] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> neiljp: hard to explain, it goes in that direction I think<br>
+[09:28:57] &lt;<font color="green">hunger</font>&gt; <hunger>
+ rajan: The cool thing is that if you get registered to be "Gemeinnützig"
+(good for the public), you get fines set by courts send your way;-)<br>
+[09:29:16] &lt;<font color="purple">neiljp</font>&gt; <neiljp> stefan: like that strange device like a pen like an anglepoise lamp [/cryptic] :)<br>
+[09:29:29] &lt;<font color="brown">BenB</font>&gt; <benb> neiljp: it's basically a bunch of people meeting, formally.<br>
+[09:29:34] &lt;<font color="brown">BenB</font>&gt; <benb> neiljp: with a goal.<br>
+[09:29:36] <i> * <font color="darkcyan">bughunter</font> wonders, what are the _technical_ topics... </i><br>
+[09:29:46] &lt;<font color="slategray">njs</font>&gt; <njs>
+ stefan: well, if we end up with money, I could imagine sending a 3d card
+to one of the kgi developers being a good investment :-)<br>
+[09:29:48] <i> * <font color="purple">neiljp</font> grins </i><br>
+[09:30:01] <i> * <font color="purple">neiljp</font> thinks bughunter wakes up round about now </i><br>
+[09:30:02] &lt;<font color="blue">stefan</font>&gt; <stefan> bughunter: just defining the goals for the upcoming milestone(s)<br>
+[09:30:04] <i> * <font color="red">philbo</font> agrees with njs :-) </i><br>
+[09:30:08] <i> * <font color="purple">neiljp</font> lol </i><br>
+[09:30:13] &lt;<font color="slategray">njs</font>&gt; <njs> philbo: thought you might :-)<br>
+[09:30:14] &lt;<font color="blue">stefan</font>&gt; <stefan> bughunter: unfortunately, the main contributor is still absent :-/<br>
+[09:30:33] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: yes, definitely<br>
+[09:31:09] &lt;<font color="slategray">njs</font>&gt; <njs> Should we stick a tip jar on the web site, though, do you think?<br>
+[09:31:31] &lt;<font color="purple">neiljp</font>&gt; <neiljp> njs: not paypal...from what I've heard... ;|<br>
+[09:31:35] &lt;<font color="green">hunger</font>&gt; <hunger> njs: sending the tip where?<br>
+[09:31:38] &lt;<font color="slategray">njs</font>&gt; <njs> neiljp: yeah :-(<br>
+[09:31:39] &lt;<font color="blue">stefan</font>&gt; <stefan>
+ njs: in fact - but that is a different topic - it would be interesting to
+meet with these people (kgi, ggi, etc.) to see how we can support each other
+better, i.e. collaborate to enhance visibility.<br>
+[09:31:46] &lt;<font color="purple">neiljp</font>&gt; <neiljp> njs: abiword probs...<br>
+[09:31:48] &lt;<font color="teal">rajan</font>&gt; <rajan> hunger: lol, really?<br>
+[09:31:51] &lt;<font color="slategray">njs</font>&gt; <njs> neiljp: well, paypal's okay as long as you don't actually let them keep any of your money for you<br>
+[09:31:53] &lt;<font color="brown">BenB</font>&gt; <benb> neiljp, njs: know any alternatives to paypal, by chance, btw?<br>
+[09:32:00] &lt;<font color="purple">neiljp</font>&gt; <neiljp> stefan: include omniorb in that?<br>
+[09:32:04] &lt;<font color="green">hunger</font>&gt; <hunger> rajan: Really what?<br>
+[09:32:13] &lt;<font color="slategray">njs</font>&gt; <njs> BenB: there's one...<br>
+[09:32:14] &lt;<font color="purple">neiljp</font>&gt; <neiljp> BenB: uh, well, not OTTOMH :)<br>
+[09:32:24] &lt;<font color="green">starseeker</font>&gt; <starseeker> Is there somewhere with a good explanation of KGI vs GGI?<br>
+[09:32:31] &lt;<font color="blue">stefan</font>&gt; <stefan>
+ neiljp: yes, possibly. I suggested to Duncan already that I'd like to help
+implement the messaging QoS specs...we could make good use of that.<br>
+[09:32:35] &lt;<font color="purple">neiljp</font>&gt; <neiljp> njs: nod<br>
+[09:32:42] &lt;<font color="teal">rajan</font>&gt; <rajan> BenB: well, i heard of a company named PayPal. pretty similar to PayPal. address at paypal.com<br>
+[09:33:01] &lt;<font color="slategray">njs</font>&gt; <njs> BenB: http://www.paypalwarning.com/Alternatives/Default.htm<br>
+[09:33:10] &lt;<font color="teal">rajan</font>&gt; <rajan> starseeker: KGI: made for the Linux kernel. GGI: not made for the Linux kernel specifically<br>
+[09:33:29] &lt;<font color="purple">neiljp</font>&gt; <neiljp>
+ stefan: I brought up the somewhat interesting ( ahem) idea, depending how
+much money we got...if we *needed* an omni feature, we could get omni to
+make it...but that's purely my imaginings :)<br>
+[09:33:36] &lt;</neiljp><font color="red">philbo</font>&gt; <philbo> starseeker: KGI kernel level interface, GGI user level interface supporting KGI and many others<br>
+[09:34:12] &lt;</philbo><font color="slategray">njs</font>&gt; <njs>
+ starseeker: GGI is the _general_ graphics interface -- it's a generic 2d
+imaging API, that you can write your programs to use, and they'll display
+on most anything.<br>
+[09:34:17] </njs><i> * </i><font color="blue">stefan</font> waits impatiently for nicholas to join in <br>
+[09:34:18] &lt;<font color="purple">neiljp</font>&gt; <neiljp> philbo: so KGI will support more than linux? :)<br>
+[09:34:25] &lt;</neiljp><font color="teal">rajan</font>&gt; <rajan>
+ well, if paypal if out of the question, i would push billpoint because it
+is the only altenative that have support for malaysian donors<br>
+[09:34:33] &lt;</rajan><font color="green">starseeker</font>&gt; <starseeker> So it works like KGI-&gt;GGI-&gt;Fresco on Linux?<br>
+[09:34:40] &lt;</starseeker><font color="brown">BenB</font>&gt; <benb> njs: hehe, thanks<br>
+[09:34:40] &lt;</benb><font color="slategray">njs</font>&gt; <njs>
+ starseeker: KGI is a set of kernel drivers that GGI will hopefully be able
+to use at some point to get accelerated console display.<br>
+[09:34:42] &lt;</njs><font color="red">philbo</font>&gt; <philbo> neiljp: there is FreeBSD and OpenBSD port being worked on actuvely<br>
+[09:34:51] &lt;</philbo><font color="purple">neiljp</font>&gt; <neiljp> philbo: cool :)<br>
+[09:34:59] &lt;</neiljp><font color="green">starseeker</font>&gt; <starseeker> Neat.<br>
+[09:35:00] &lt;</starseeker><font color="purple">neiljp</font>&gt; <neiljp> philbo: the drivers are independent modules?<br>
+[09:35:00] &lt;</neiljp><font color="teal">rajan</font>&gt; <rajan> philbo: really? cool<br>
+[09:36:06] &lt;</rajan><font color="green">starseeker</font>&gt; <starseeker>
+ Now that people are getting close to having threads on Hurd, does anyone
+know what other barriors there would be to running there?<br>
+[09:36:28] &lt;</starseeker><font color="red">philbo</font>&gt; <philbo>
+ neiljp: yes, kgi is setup so that the drivers are perfectly portable. Right
+now there are bits here and there that are linux specific but that's mostly
+because it really runs on Linux only right now. Once other ports are functional
+I'm sure the maintainers will come after the people writing the dirvers and
+get them to fix it<br>
+[09:36:31] &lt;</philbo><font color="green">hunger</font>&gt; <hunger> starseeker: Markus brinkman said a port should be possible after looking into Prague.<br>
+[09:37:27] &lt;</hunger><font color="green">starseeker</font>&gt; <starseeker> Cool.  Now that would be a real next generation system :-)<br>
+[09:37:28] &lt;</starseeker><font color="brown">BenB</font>&gt; <benb> rajan: ebay = paypal (now), ebay = billpoint<br>
+[09:37:30] &lt;</benb><font color="blue">stefan</font>&gt; <stefan>
+ is any of you actively working on fresco right now ? If so, on what ? If
+not, what would you like to be worked on ? (short and medium term)<br>
+[09:37:49] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> stefan: stability :)<br>
+[09:37:59] &lt;</neiljp><font color="maroon">oxygene</font>&gt; <oxygene> starseeker: let them fix their microkernel first - but well, different topic<br>
+[09:38:01] &lt;</oxygene><font color="blue">stefan</font>&gt; <stefan> neiljp: yeah, those darn cleanup things<br>
+[09:38:01] &lt;</stefan><font color="teal">rajan</font>&gt; <rajan> stefan: as i said on the mailing list, i'm working on a UI proposal...<br>
+[09:38:03] &lt;</rajan><font color="purple">neiljp</font>&gt; <neiljp> stefan: aka asynchronous client calls...[digs out bug number]<br>
+[09:38:16] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> stefan: I'm still fixing Babylon and merging the bidir stuff I hacked into the commandkit into Babylon.<br>
+[09:38:27] &lt;</hunger><font color="green">starseeker</font>&gt; <starseeker> oxygene:  yes, they need L4.  <br>
+[09:38:31] &lt;</starseeker><font color="blue">stefan</font>&gt; <stefan>
+ neiljp: by the way, I experimented a bit last night, and can confirm the
+problem with uncought TRANSIENT exceptions. Dunno how that slipped in...<br>
+[09:38:44] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> I'd like to get that test framework up and running, and in the longer term work out the deCORBAfication of the scene graph<br>
+[09:38:50] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> stefan: from what/where?<br>
+[09:38:52] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> neiljp: possibly because at the time I made the code exception safe omniORB only threw OBJECT_NOT_EXIST<br>
+[09:39:01] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> stefan: oh! *that*!<br>
+[09:39:22] &lt;</neiljp><font color="purple">neiljp</font>&gt; <neiljp> stefan: we solve that how? do we want to support only omni4?<br>
+[09:39:38] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> neiljp: well, one thing to do is go over *all* the code, and wherever we catch CORBA::OBJECT_NOT_EXIST, catch TRANSIENT, too.<br>
+[09:39:42] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> neiljp: ...as a start<br>
+[09:39:45] &lt;</stefan><font color="brown">BenB</font>&gt; <benb>
+ stefan: well, you know my state, I'd like to work on widgetkit, esp. trees/lists
+and related stuff, but that's mid-to-long-term, if anything<br>
+[09:39:54] &lt;</benb><font color="purple">neiljp</font>&gt; <neiljp> ah, </neiljp><a href="http://issues.fresco.org/task77">task77</a>, I'd like that...after <a href="http://issues.fresco.org/bug82">bug82</a>/<a href="http://issues.fresco.org/task57">task57</a> ;)<br>
+[09:39:57] &lt;<font color="blue">stefan</font>&gt; <stefan> neiljp: huh ? There's nothing omni4 specific<br>
+[09:39:59] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> afterwards I'd like to fix </hunger><a href="http://issues.fresco.org/bug9">bug9</a> (have a fix for that lying around somewhere, need to update it a bit).<br>
+[09:40:18] <font color="brown">bigthor</font> has joined #fresco<br>
+[09:40:20] &lt;<font color="purple">neiljp</font>&gt; <neiljp> stefan: true...I suppose...so catch for *both* in all places?<br>
+[09:40:25] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> neiljp: yes<br>
+[09:40:37] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> stefan: fine<br>
+[09:40:59] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan>
+ neiljp: in fact,  we have to catch even more. As you may know from python
+scripting, we have to be prepared for things as bad as marshall errors<br>
+[09:41:04] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> stefan: do you have a bug/task for that? :)<br>
+[09:41:14] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs>
+ oh, and also on my list for after I get some breathing room: write the big
+rant the convinces everyone once and for all about what the Right Way to
+do server resolution is :-)<br>
+[09:41:28] &lt;</njs><font color="blue">stefan</font>&gt; <stefan>
+ neiljp: that can happen when the server calls into the client with a method
+that returns non-void, and the return value is incorrect.<br>
+[09:41:29] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> s/rant the/rant that/<br>
+[09:41:54] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> stefan: I sense a function wrapper of some sort being useful :)<br>
+[09:42:12] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger>
+ stefan: We usually do not catch everything H&amp;V say can be thrown...
+We should make sure about that when going over those exceptions anyway.<br>
+[09:42:12] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> njs: do you have any ideas as to your availability ? Specifically, for the qmtest stuff...<br>
+[09:42:20] </stefan><i> * </i><font color="purple">neiljp</font> readies his lightsaber for battle with njs ;) <br>
+[09:42:24] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: I think that would really be a booster<br>
+[09:42:27] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: well, my last paper is due Wednesday.<br>
+[09:42:34] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: (think about how much we gain from the new website/infrastructure)<br>
+[09:42:43] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: so end of this week/this weekend, I'm hoping.<br>
+[09:43:21] &lt;</njs><font color="slategray">njs</font>&gt; <njs>
+ stefan: getting it minimally functional really shouldn't be that hard, though
+I may want some handholding to figure out where stuff goes in the build system
+and how to make sure it works.<br>
+[09:43:36] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: cool. Just make a proposal as to how people (hunger and me, in particular) could hook up unit tests to such a framework.<br>
+[09:43:58] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan>
+ njs: Prague already contains a couple of examples that could easily be converted
+to tests, and I think Babylon isn't that far off either.<br>
+[09:44:13] &lt;</stefan><font color="green">starseeker</font>&gt; <starseeker> If I might insert one more dumb question...  I was wondering how one does secure communication between Fresco clients?<br>
+[09:44:14] &lt;</starseeker><font color="green">hunger</font>&gt; <hunger> stefan, njs: So does Babylon.<br>
+[09:44:26] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> njs: then we can think about how to set that up on volunteer machines, so we can test on different platforms.<br>
+[09:44:38] </stefan><i> * </i><font color="green">hunger</font> thinks it would be nice to have a tested and known-stable base to build on;-) <br>
+[09:45:03] &lt;<font color="green">hunger</font>&gt; <hunger> starseeker: CORBA has a security service for that.<br>
+[09:45:23] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> so...talking of donations...security service impl? ;D<br>
+[09:45:23] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs>
+ starseeker: currently we have no systematic way for clients to communicate
+with each other; it's something we've hardly thought about, though we know
+we'll have to eventually.<br>
+[09:45:31] &lt;</njs><font color="blue">stefan</font>&gt; <stefan>
+ starseeker: depends. You can do it low level, with CORBA-over-ssl, or you
+can add high-level mechanisms to add authentication etc. to the interfaces.<br>
+[09:45:47] &lt;</stefan><font color="green">hunger</font>&gt; <hunger>
+ starseeker: Basically there's not much fresco can do itself: The communication
+is encapsulated in the ORB, so that's the instance that has to make sure
+encryption is used and objects are properly authenticated.<br>
+[09:46:02] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan>
+ starseeker: also, there are CORBA 'interceptors' that can be used per request.
+Thought they are pretty expensive performance-wise<br>
+[09:46:07] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: nod<br>
+[09:46:26] &lt;</njs><font color="green">hunger</font>&gt; <hunger> stefan: You cannot add authentication to the fresco interfaces in any meaningful way.<br>
+[09:46:41] &lt;</hunger><font color="brown">BenB</font>&gt; <benb> starseeker: first step would be to define what "secure" means for Fresco.<br>
+[09:46:46] &lt;</benb><font color="green">starseeker</font>&gt; <starseeker> hunger:  Isn't that a problem?<br>
+[09:46:56] &lt;</starseeker><font color="green">hunger</font>&gt; <hunger> starseeker: What?<br>
+[09:47:10] &lt;</hunger><font color="brown">BenB</font>&gt; <benb> starseeker: for example, does the server trust clients? how far? like Windows? like X11? like webbrowser? like emacs?<br>
+[09:47:13] &lt;</benb><font color="blue">stefan</font>&gt; <stefan>
+ njs: I'd prefer a simple 'HOWTO' to be able to set up qmtest on any machine,
+and hook it up with fresco. All the other jazz for automatically generate
+tests (did you suggest synopsis ?) could follow once that is settled.<br>
+[09:47:20] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ stefan: qmtest should be able to handle that well.  Also, Mark Mitchell
+is looking for success stories, and Zack (zwol) (who I know IRL, for those
+following along at home) is one of the developers, so I suspect we'll have
+good support on that end.<br>
+[09:47:24] &lt;</njs><font color="green">starseeker</font>&gt; <starseeker> hunger:  Wouldn't you want to be able to authenticate interfaces?<br>
+[09:47:44] &lt;</starseeker><font color="green">hunger</font>&gt; <hunger> starseeker: The CORBA security service can be set up to authenticate each object.<br>
+[09:47:49] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> njs: yes, figured.<br>
+[09:47:56] </stefan><font color="teal">rajan</font> changes name to <font color="teal">rajanBRB</font><br>
+[09:48:07] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: that's very good, and we should take advantage of that situation<br>
+[09:48:11] &lt;</stefan><font color="green">starseeker</font>&gt; <starseeker>
+ BenB:  I was mainly thinking avoiding someone being able to spoof a client
+between your server and terminal, or read the Corba communications to get/subtly
+alter your information.<br>
+[09:48:17] &lt;</starseeker><font color="slategray">njs</font>&gt; <njs>
+ stefan: well, the idea is to use synopsis to make writing tests _really
+easy_ for developers -- just a matter of creating a single standard C++ file,
+and letting the framework do all the annoying boilerplate.<br>
+[09:48:19] &lt;</njs><font color="green">hunger</font>&gt; <hunger>
+ starseeker: Since fresco has no control of what is actually send over the
+wire (not even when something is send over the wire) a encryption layer in
+fresco is not possible.<br>
+[09:48:46] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan>
+ njs: do you think anything of that could be done for the next milestone
+? Or is that something to be done in parallel, but without much visibility
+?<br>
+[09:48:49] &lt;</stefan><font color="brown">BenB</font>&gt; <benb> starseeker: connection-level security should fix that, not?<br>
+[09:48:50] &lt;</benb><font color="slategray">njs</font>&gt; <njs>
+ (hmm.  If I disappear suddenly, it's probably just a brownout and I'll be
+back shortly.  Unless the magic smoke gets out, anyway.)<br>
+[09:49:02] &lt;</njs><font color="green">starseeker</font>&gt; <starseeker> hunger:  so it's up to the ORB then?<br>
+[09:49:41] &lt;</starseeker><font color="green">hunger</font>&gt; <hunger>
+ starseeker: That's the only option I see. At least there is a formal specification
+for that (although I'm not aware of any free implementation).<br>
+[09:49:49] </hunger><i> * </i><font color="maroon">sdt</font> sneaks in <br>
+[09:49:52] &lt;<font color="green">starseeker</font>&gt; <starseeker>
+ BenB:  In theory yes, if it is used all the time.  I was wondering if it
+would be used internally as well as over the net.  If the calls are expensive
+there would be a temptation to not use them on a local system.<br>
+[09:49:53] &lt;</starseeker><font color="maroon">oxygene</font>&gt; <oxygene> hi sdt :)<br>
+[09:49:54] &lt;</oxygene><font color="slategray">njs</font>&gt; <njs>
+ stefan: you mean the synopsis specific part?  sure.  To be minimally functional,
+all I need to write is a little python class that scans a synopsis AST to
+figure out the names of classes/methods, and then fills those into a template.<br>
+[09:50:16] &lt;</njs><font color="maroon">oxygene</font>&gt; <oxygene> hunger: omni knows ssl...<br>
+[09:50:18] &lt;</oxygene><font color="blue">stefan</font>&gt; <stefan>
+ ok, let's try to fix 'M2' to be released end of February. What do we want
+to ship it with ? What bugs should be fixed by then ? What features added
+?<br>
+[09:50:26] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: the C++ part of the framework is written, as is the qmtest "Test" module that lets qmtest talk to the tests I create.<br>
+[09:50:30] &lt;</njs><font color="green">hunger</font>&gt; <hunger> oxygene: That's *NOT* a security service.<br>
+[09:50:38] &lt;</hunger><font color="maroon">oxygene</font>&gt; <oxygene> hunger: well, for tapping the line it's enough<br>
+[09:50:43] &lt;</oxygene><font color="green">hunger</font>&gt; <hunger> oxygene: That's just tunneling the normal connection over SSL.<br>
+[09:51:03] &lt;</hunger><font color="green">starseeker</font>&gt; <starseeker>
+ hunger:  It might pay to bother the omni people about adding that someday
+- if Fresco every goes production its going to need good security.<br>
+[09:51:04] &lt;</starseeker><font color="green">hunger</font>&gt; <hunger> oxygene: It does not do authentication on object level, etc.<br>
+[09:51:08] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan>
+ njs: well, I'd actually propose to wait with that part. I for one would
+prefer to experiment with qmtest manually, before automatizing anything.<br>
+[09:51:27] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: well, if you like.<br>
+[09:51:34] &lt;</njs><font color="green">starseeker</font>&gt; <starseeker> s/every/ever<br>
+[09:51:54] &lt;</starseeker><font color="slategray">njs</font>&gt; <njs>
+ stefan: the files I generate are really simple; they mostly just avoid the
+horrible macrology required by every other C++ unit testing framework.<br>
+[09:52:04] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> stefan: for me, I'd go with server stability :)<br>
+[09:52:14] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan>
+ njs: I'm not trying to stop you to work on anything, by all means. But -
+as always - I'd like to make the underlying mechanisms transpareny before
+adding convenience layers.<br>
+[09:52:15] &lt;</stefan><font color="green">hunger</font>&gt; <hunger>
+ njs: I'd like to be able to write some simple tests (mostly shellscripts
+diffing the output of a programm against a file) for Babylon asap.<br>
+[09:52:16] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> stefan: but we can talk about the technical details some other time; I'd be happy to tell you about it.<br>
+[09:52:30] </njs><i> * </i><font color="purple">neiljp</font> wonders what else to look at <br>
+[09:52:34] <i> * </i><font color="maroon">sdt</font> suggests fixing the current visual bugs <br>
+[09:52:39] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: sure<br>
+[09:52:41] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> (I will be happy to help with this)<br>
+[09:52:48] &lt;</sdt><font color="blue">stefan</font>&gt; <stefan> sdt: visual bugs ?<br>
+[09:52:58] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> sdt: clipping etc. ?<br>
+[09:53:01] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> stefan: eg rotations being wrong...<br>
+[09:53:03] &lt;</neiljp><font color="maroon">sdt</font>&gt; <sdt> well, all the problems with rotation, etc.<br>
+[09:53:08] &lt;</sdt><font color="maroon">sdt</font>&gt; <sdt> clipping might be a little more difficult<br>
+[09:53:09] &lt;</sdt><font color="blue">stefan</font>&gt; <stefan> ah<br>
+[09:53:09] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> sdt : :)<br>
+[09:53:15] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> hmm, that'd be nice.  Clipping is hard, though.<br>
+[09:53:20] &lt;</njs><font color="green">starseeker</font>&gt; <starseeker> Is anyone else able to crash Fresco fairly easily if they rotate a terminal in 3D enough?<br>
+[09:53:21] &lt;</starseeker><font color="maroon">sdt</font>&gt; <sdt> although perhaps we could get clipping working at least on OpenGL...<br>
+[09:53:30] &lt;</sdt><font color="green">hunger</font>&gt; <hunger> sdt: I'd like to see some debugging/testing tools first. That would make debugging so much easier.<br>
+[09:53:40] &lt;</hunger><font color="maroon">sdt</font>&gt; <sdt> starseeker: I can crash fresco pretty easily by rotating most things enough...<br>
+[09:53:44] &lt;</sdt><font color="red">philbo</font>&gt; <philbo>
+ I'm curious how far has text support progressed. Last time I tried writing
+a Fresco application it wasn't even possible to change the text of a text
+widget<br>
+[09:53:46] &lt;</philbo><font color="blue">stefan</font>&gt; <stefan> yeah, and please don't forget that libart has only limitted support for clipping. <br>
+[09:53:50] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> starseeker: Happens with the LibArtDK. Bug in libart:-(<br>
+[09:53:56] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> stefan: ooh, </neiljp><a href="http://issues.fresco.org/task68">task68</a>: update python module for new server-resolution :)<br>
+[09:53:57] &lt;<font color="maroon">sdt</font>&gt; <sdt> stefan: exactly.<br>
+[09:54:00] &lt;</sdt><font color="green">starseeker</font>&gt; <starseeker> hunger:  Ah.<br>
+[09:54:19] &lt;</starseeker><font color="green">starseeker</font>&gt; <starseeker> Has anyone else tried the Debian packages?<br>
+[09:54:31] &lt;</starseeker><font color="blue">stefan</font>&gt; <stefan>
+ sdt: I wouldn't try to compensate for libarts limitations. It would be more
+interesting (if the time has come) to write a 'FitzDrawingKit<br>
+[09:54:31] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> philbo: No progress at all in that area:-(<br>
+[09:54:36] &lt;</hunger><font color="green">starseeker</font>&gt; <starseeker> For me the fonts are messed up.<br>
+[09:54:57] &lt;</starseeker><font color="maroon">sdt</font>&gt; <sdt> hunger: well, at least for the rotation bugs, I'm fairly sure I have some idea of what's going on<br>
+[09:55:00] &lt;</sdt><font color="green">hunger</font>&gt; <hunger> starseeker: It uses the first font it finds... even if that's broken:-(<br>
+[09:55:12] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> I for one would love to work on event and focus management stuff. (daVinci will help me there)<br>
+[09:55:18] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> stefan: yes, yes, I fully agree. Which is why I said, we could at least fix the clipping for OpenGL<br>
+[09:55:24] &lt;</sdt><font color="purple">neiljp</font>&gt; <neiljp> hunger: well, excepting BERLIN_FONT_CHOOSER, but that's hacky...<br>
+[09:55:25] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> but that's long term goal and I don't know how much I can line that up with M2<br>
+[09:55:31] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ it _might_ make sense to push clipping and such off to be done after the
+Great DeCORBAification of the scene graph, since that'll require some rewriting
+of the layout stuff anyway, and let us be much more flexible if we like (since
+we won't be stuck using exposed CORBA interfaces for everything).  But putting
+things off forever isn't good...<br>
+[09:55:38] &lt;</njs><font color="green">starseeker</font>&gt; <starseeker> hunger:  Oh, no wonder...<br>
+[09:55:50] &lt;</starseeker><font color="green">hunger</font>&gt; <hunger>
+ sdt: I had a graph-dumper a while back that turned the scenegraph into a
+dot-generated PS-file. That was a real help to see where things went astray.<br>
+[09:55:52] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> at some point I'd love to fix the focus stuff at least enough so we can work on menus<br>
+[09:56:00] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> (and I'm not sure that we've fully committed to the great deCORBAification plan, though I know I'm convinced.)<br>
+[09:56:09] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: :-)<br>
+[09:56:14] </stefan><i> * </i><font color="maroon">sdt</font> agrees strongly with stefan <br>
+[09:56:19] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: indeed, we have to discuss about that.<br>
+[09:56:25] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> anyone care to answer philbo's question about text?<br>
+[09:56:28] &lt;</sdt><font color="green">hunger</font>&gt; <hunger>
+ sdt: I'd like to add that to the server, but without a meaningful description
+attached to each graphic it does not make sense to have it.<br>
+[09:56:36] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> njs knows how to be controversial :)<br>
+[09:56:38] &lt;</neiljp><font color="red">philbo</font>&gt; <philbo> sdt: hunger did<br>
+[09:56:43] &lt;</philbo><font color="maroon">sdt</font>&gt; <sdt> oh, I missed it:)<br>
+[09:56:51] &lt;</sdt><font color="blue">stefan</font>&gt; <stefan> sdt: I wonder whether we have a task for that focus stuff. We may discuss there...<br>
+[09:56:51] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> oh, ok.<br>
+[09:56:59] </sdt><i> * </i><font color="maroon">sdt</font> looks <br>
+[09:57:07] &lt;<font color="green">hunger</font>&gt; <hunger> sdt: And stefan is dead set against adding 'debug methods' to the interfaces.<br>
+[09:57:21] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> sdt: collect use cases etc....just to see what situations we need to support as far as focus arbitration goes.<br>
+[09:57:42] </stefan><i> * </i><font color="maroon">sdt</font> notes the CSS doesn't seem to be working on issues for him <br>
+[09:57:43] &lt;<font color="blue">stefan</font>&gt; <stefan> sdt: it's a bit tricky, but I believe there is a clean and concise solution<br>
+[09:57:46] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ hunger: you should be pushing for the GdCification, then, since non-CORBA-exposed
+interfaces will give you more flexibility with things like that :-)<br>
+[09:57:47] </njs><font color="teal">rajanBRB</font> changes name to <font color="teal">rajan</font><br>
+[09:57:51] &lt;<font color="teal">rajan</font>&gt; <rajan> what did I miss?<br>
+[09:58:05] </rajan><font color="teal">rajan</font> changes name to <font color="teal">rajanr</font><br>
+[09:58:11] &lt;<font color="slategray">njs</font>&gt; <njs> rajanr: just read your scrollback :-)<br>
+[09:58:18] &lt;</njs><font color="green">hunger</font>&gt; <hunger> njs: It needs to be CORBA exposed! Or it will not work with remote objects which would be a shame.<br>
+[09:58:23] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> Should we pause for a moment to propose things we want to talk about today?<br>
+[09:58:37] &lt;</njs><font color="teal">rajanr</font>&gt; <rajanr> njs: right... :-)<br>
+[09:58:40] &lt;</rajanr><font color="blue">stefan</font>&gt; <stefan> njs: good idea.<br>
+[09:59:09] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> njs: should we work on a wiki page in parallel to generate a list of bugs/tasks ?<br>
+[09:59:22] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> stefan: for m2?<br>
+[09:59:25] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> njs: (in parallel == write and save it while we are talking)<br>
+[09:59:43] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> neiljp: yes, and possibly m3, if the stuff is too involved to fit into a timeframe for M2<br>
+[09:59:45] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> is there a task for this deCORBIification?<br>
+[10:00:03] &lt;</sdt><font color="slategray">njs</font>&gt; <njs>
+ hunger: well, my counterargument is that 1) remote objects are never a good
+idea anyway, for all sorts of reasons (stability, speed, etc.), beyond simple
+prototyping, and 2) there are robustness issues that just _can't_ be solved
+while the scene graph is exposed via CORBA.  But now you're distracting me
+from the agenda-making :-)<br>
+[10:00:17] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> sdt: no. We only agreed that we need to reconsider the whole traversal stuff. It's highly non-efficient.<br>
+[10:00:20] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: might be tricky; the wiki doesn't deal well with multiple concurrent writers.  Someone just take notes?<br>
+[10:00:26] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> velco: remember, you were already looking into it years ago :-)<br>
+[10:00:34] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> njs: Agreed. But certainly you want to be able to debug your prototype?<br>
+[10:00:41] &lt;</hunger><font color="maroon">sdt</font>&gt; <sdt> stefan: ah, good idea.<br>
+[10:00:41] &lt;</sdt><font color="blue">stefan</font>&gt; <stefan> velco: (a global scene graph lock, etc.)<br>
+[10:01:20] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> sdt: there is one thing we may have to do, but I'm a bit reluctant (for obvious reasons):<br>
+[10:01:26] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> Too bad chalky is not here...<br>
+[10:01:41] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> sdt: right now the traversal is a visitor, i.e. with a whole round-trip per visit.<br>
+[10:01:44] </stefan><font color="gray">rubberpaw</font> has joined #fresco<br>
+[10:01:53] <i> * </i><font color="slategray">njs</font>
+ is dubious about the global scene graph lock too, but deCORBAifying at least
+fixes the more obvious problems, maybe someone cleverer than me can fix the
+other ones... I think we'll hit horrible contention, though. <br>
+[10:02:03] <i> * </i><font color="green">hunger</font> wants to talk about debugging/testing, text in the scenegraph and new traversal. Not necessarily in this order. <br>
+[10:02:10] &lt;<font color="blue">stefan</font>&gt; <stefan> sdt: in fresco (orig) the traversal 'type' is an enum. That is less clean, but avoids two methods per node.<br>
+[10:02:31] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> Shall we start with the scnegraph global locking/deCORBAification?<br>
+[10:02:34] </hunger><i> * </i><font color="maroon">sdt</font> nods <br>
+[10:02:36] &lt;<font color="blue">stefan</font>&gt; <stefan> sdt: there's still a 'visit', but that's only used if the enum is 'other'. Read: 'draw' and 'pick' are 'fast paths'.<br>
+[10:03:05] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan>
+ hunger: no, I don't think today is the right time to talk about that. We
+could brainstorm that, but an irc meeting doesn't seem a good place. <br>
+[10:03:59] </stefan><i> * </i><font color="slategray">njs</font> adds "write up big rant about why we want to deCORBAify" to his list of things to do this vacation <br>
+[10:04:01] <i> * </i><font color="darkcyan">bughunter</font> is curious, when <a href="http://issues.fresco.org/bug183">bug183</a> and <a href="http://issues.fresco.org/bug89">bug89</a> will get closed... :-) <br>
+[10:04:07] &lt;<font color="blue">stefan</font>&gt; <stefan>
+ hunger: ok, let's talk about debugging/testing and the requirements this
+puts on traversals. But let's be specific to that problem. We won't come
+up with a generic solution<br>
+[10:04:14] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: There's talk about it for a while, haven't seen much on the ML about it and not a single page in the wiki.<br>
+[10:04:15] </hunger><i> * </i><font color="purple">neiljp</font> looks at bughunter bugs... <br>
+[10:04:28] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: We should come out in the open with it for a change;-)<br>
+[10:04:36] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> hunger: well, I'm the main one arguing for it, IIRC, and I haven't had a chance to write down the arguments.<br>
+[10:04:59] &lt;</njs><font color="green">hunger</font>&gt; <hunger> njs: nicholas (where is he?) has some issues too.<br>
+[10:05:04] </hunger><i> * </i><font color="slategray">njs</font> hopes he hasn't _forgotten_ the arguments <br>
+[10:05:19] &lt;<font color="brown">BenB</font>&gt; <benb> njs: lol<br>
+[10:05:21] &lt;</benb><font color="green">hunger</font>&gt; <hunger> OK, so it's debugging/testing then:-)<br>
+[10:05:37] &lt;</hunger><font color="slategray">njs</font>&gt; <njs>
+ hunger: nod.  IIRC we had different approaches, though; he was more worried
+about speed (which I think is not a real worry), and I'm more worried about
+robustness.<br>
+[10:05:51] &lt;</njs><font color="green">hunger</font>&gt; <hunger> Anyone knows what those named objects are I stumbled over recently? I think Chalky introduced those.<br>
+[10:06:05] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: yes, they add some verbosity for logging<br>
+[10:06:13] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: How so?<br>
+[10:06:19] </hunger><font color="gray">rubberpaw</font> has left #fresco<br>
+[10:06:23] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: I don't like much how it is done, but I didn't come up with anything better<br>
+[10:06:44] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> hunger: look into the Tracer stuff, that's where it is used<br>
+[10:06:56] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> hunger: (and then look into Berlin/modules/Layout/Box.cc)<br>
+[10:07:16] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: The Tracer is not very useful anyway...<br>
+[10:07:33] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: you don't find it very useful. That's not the same.<br>
+[10:07:35] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: Slows things down so much that all the problems I see don't happen with the tracer turned on:-(<br>
+[10:08:06] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: ok, there is a bug/task for that. Let's keep the discussion there.<br>
+[10:08:30] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: OK.<br>
+[10:08:33] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> so what *are* we discussing ? :)<br>
+[10:08:59] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs>
+ So, the things I've heard suggested for talking about today: (1) M2 goals,
+(2) M3 goals, (3) debugging/testing support, (4) text in the scene graph,
+(5) new traversal, (6) decorbaification/global locking, (7) testing<br>
+[10:09:03] &lt;</njs><font color="blue">stefan</font>&gt; <stefan>
+ hunger, neiljp: what changes you think the traversal needs to add debugging
+features (generate a scene graph diagram, for example)<br>
+[10:09:09] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: So how can we identify Graphics we hold a reference to?<br>
+[10:09:14] &lt;</hunger><font color="teal">rajanr</font>&gt; <rajanr> neiljp: on useless debates that never change anything...<br>
+[10:09:36] &lt;</rajanr><font color="purple">neiljp</font>&gt; <neiljp> rajanr: ooh, harsh :)<br>
+[10:09:37] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> stefan: Only one: Some way to get a description of the graphc traversed.<br>
+[10:09:53] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> stefan: mebbe you'd like to change the topic...<br>
+[10:10:03] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> Of these, (6) is probably better to hold off on, (7) likewise except as a part of (1)/(2).  opinions on the rest?<br>
+[10:10:17] &lt;</njs><font color="maroon">oxygene</font>&gt; <oxygene> hunger: a type attribute?<br>
+[10:10:25] </oxygene><font color="green">starseeker</font> has quit ("Client Exiting")<br>
+[10:10:27] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> njs: for (4) it would probably be useful to have mourad around...<br>
+[10:10:35] &lt;</oxygene><font color="green">hunger</font>&gt; <hunger> oxygene: More a label like "hbox", ...<br>
+[10:10:51] &lt;</hunger><font color="green">hunger</font>&gt; <hunger> oxygene: You can figure out the type (Controller or Graphci) allready.<br>
+[10:11:14] &lt;</hunger><font color="slategray">njs</font>&gt; <njs>
+ oxygene: nod.  I'm not sure about the utility of full meetings for technical
+discussions; it seems like policy and making sure everyone is on the same
+page are the main things they're good for.<br>
+[10:11:19] &lt;</njs><font color="maroon">oxygene</font>&gt; <oxygene> hunger: that's what I meant<br>
+[10:11:42] &lt;</oxygene><font color="maroon">oxygene</font>&gt; <oxygene> njs: right...<br>
+[10:12:17] &lt;</oxygene><font color="slategray">njs</font>&gt; <njs> hunger: is this discussion something that you and stefan should rather discuss some other time?<br>
+[10:13:02] &lt;</njs><font color="maroon">oxygene</font>&gt; <oxygene> njs: for the technical discussion we sould probably establish some rfc-like protocol, to push them forward<br>
+[10:13:33] &lt;</oxygene><font color="green">hunger</font>&gt; <hunger>
+ stefan: Everything else can be done without a change to the traversal code,
+even though changing it to allow for 'generic traversal' like nicholas proposed
+is certainly the nicer solution.<br>
+[10:13:52] &lt;</hunger><font color="slategray">njs</font>&gt; <njs>
+ oxygene: well, not sure about that; highly formal processes can hurt more
+than they help.  The Wiki and tracker seem to be working okay so far, when
+people find time to actually write their ideas down...<br>
+[10:14:25] </njs><font color="purple">crimsun</font> has quit (""Woman who cooks carrots and pees in same pot is unsanitary."")<br>
+[10:14:25] &lt;<font color="maroon">sdt</font>&gt; <sdt> oxygene: I've seen that idea fail miserably before...<br>
+[10:15:03] &lt;</sdt><font color="slategray">njs</font>&gt; <njs>
+ Ok...  I suggest that for the bulk of this meeting, we focus on the question
+of "What do we want to do with M2 (and maybe M3)?".<br>
+[10:15:35] </njs><i> * </i><font color="maroon">sdt</font> nods <br>
+[10:15:42] &lt;<font color="green">hunger</font>&gt; <hunger> Can someone change the topic then?<br>
+[10:15:57] </hunger><font color="green">sdt</font> changed the topic to <b>The Fresco Windowing System -- IRC meeting: Goals for M2 (and perhaps M3)</b><br>
+[10:16:34] &lt;<font color="slategray">njs</font>&gt; <njs>
+ What should be the focus for M2?  Lots of little fixes?  should we throw
+in some small but noticeable feature additions?  if so, which should we be
+targeting?  And for post-M2, what are the longer-term projects and how do
+we want to fit them into milestones?<br>
+[10:16:47] &lt;</njs><font color="slategray">njs</font>&gt; <njs> (that's a lot of questions, and hopefully we can discuss all of them in turn?)<br>
+[10:16:53] &lt;</njs><font color="green">hunger</font>&gt; <hunger> njs: I'd like to focus on stabelising things.<br>
+[10:17:10] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> hunger: what do you mean by that?<br>
+[10:17:15] </njs><i> * </i><font color="purple">neiljp</font> agrees with hunger <br>
+[10:17:28] &lt;<font color="purple">neiljp</font>&gt; <neiljp> njs: making server more stable/robust<br>
+[10:17:32] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> njs: Add debugging, testing, fix bugs.<br>
+[10:17:34] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> hunger: fixing annoying crashes and silly bugs, getting better error output when possible, etc.?<br>
+[10:17:47] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> njs: eg. catching more exceptions in server (from clients and elsewhere)<br>
+[10:17:59] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> njs: So that we have a more stable basis to build upon.<br>
+[10:17:59] </hunger><i> * </i><font color="purple">neiljp</font> wonders if anyone is making a list <br>
+[10:18:03] &lt;<font color="slategray">njs</font>&gt; <njs>
+ hunger: and are you thinking of this as a goal for M2 in particular, or
+just your feeling for the sort of work we should be doing these days?<br>
+[10:18:03] </njs><i> * </i><font color="purple">neiljp</font> nods <br>
+[10:18:14] &lt;<font color="slategray">njs</font>&gt; <njs> neiljp: trying, sorta :-)<br>
+[10:18:21] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> njs: good :)<br>
+[10:18:43] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> njs: Whenever I touch something I find some annoying bugs in some other code that keep distracting me:-)<br>
+[10:18:56] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> njs: </neiljp><a href="http://issues.fresco.org/task77">task77</a>, <a href="http://issues.fresco.org/task68">task68</a> :)<br>
+[10:19:16] &lt;<font color="green">hunger</font>&gt; <hunger>
+ njs: You cannot get that out of the way completly of course, but right now
+I'm flying on the assumption that something else is broken whenever my code
+does not work right away;-)<br>
+[10:19:39] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> hunger: nod<br>
+[10:19:48] &lt;</njs><font color="slategray">njs</font>&gt; <njs> hunger: so I think that makes testing a priority for M2 :-)<br>
+[10:19:48] &lt;</njs><font color="green">hunger</font>&gt; <hunger> njs: I'd like to get that a bit reduced and have some better ways to debug things.<br>
+[10:19:59] &lt;</hunger><font color="green">hunger</font>&gt; <hunger> njs: To me it does, yes.<br>
+[10:20:17] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> njs: list of bugs/tasks to be added to m2/3, you are making?<br>
+[10:20:26] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> neiljp: okay<br>
+[10:20:40] &lt;</njs><font color="green">hunger</font>&gt; <hunger>
+ njs: My graph-dumper showed me at one glance where some coordinates went
+astray... That's nearly impossible to spot without that tool.<br>
+[10:20:57] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> hunger: nod, right<br>
+[10:21:17] &lt;</njs><font color="green">hunger</font>&gt; <hunger> njs: We should introduce some better tools for debugging before extending the codebase IMHO.<br>
+[10:21:23] &lt;</hunger><font color="slategray">njs</font>&gt; <njs>
+ hunger: of course, I think better debugging/visualization tools will be
+something we're always working on.  But if you have some particular ones
+for this milestone...<br>
+[10:21:43] </njs><i> * </i><font color="maroon">sdt</font> wouldn't mind a scene graph dumper. <br>
+[10:21:44] &lt;<font color="green">hunger</font>&gt; <hunger> Sure.<br>
+[10:21:58] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> </neiljp><a href="http://issues.fresco.org/bug92">bug92</a> is something I'd like to get sorted: afaict its causing all kinds of problems with using clients...[Kit/POA garbage-collection]<br>
+[10:22:01] &lt;<font color="slategray">njs</font>&gt; <njs> hunger: (is there a task for making your graph visualizer work?)<br>
+[10:22:09] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> (whether by me or other :)<br>
+[10:22:52] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> njs: Dunno.<br>
+[10:23:04] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> hunger: well, if not, then file it so we can put it on the list :-P<br>
+[10:23:04] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> sorry, got distracted (by work :-)<br>
+[10:23:14] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> njs: I'<br>
+[10:23:18] </stefan><i> * </i><font color="purple">neiljp</font> wonders if nicholas is going to turn up <br>
+[10:23:20] &lt;<font color="teal">rajanr</font>&gt; <rajanr> well, guys, love to start and die of boredom, but gotta go<br>
+[10:23:25] &lt;</rajanr><font color="slategray">njs</font>&gt; <njs> stefan: figured :-)<br>
+[10:23:30] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> d like to work on an alternative WidgetKit (OpenLook). That's just for pleasure, though.<br>
+[10:23:31] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> rajanr: ;)<br>
+[10:23:32] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger>
+ njs: I think not. For it to be useful I need some way to identify graphics
+(aka. add a attribute to the CORBA interface) which stefan is dead set against.<br>
+[10:23:43] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> stefan: got any clue on </neiljp><a href="http://issues.fresco.org/bug92">bug92</a>? ;)<br>
+[10:23:56] &lt;<font color="brown">BenB</font>&gt; <benb> does anybody have a cellphone number for nicolas? I could call him...<br>
+[10:24:00] &lt;</benb><font color="slategray">njs</font>&gt; <njs> stefan: is that supposed to be an alternative, or a replacement?  It seems a waste to maintain multiple widgetkits ATM<br>
+[10:24:22] &lt;</njs><font color="blue">stefan</font>&gt; <stefan>
+ njs: as far as important fixes go, I'm totally with everybody else: stability.
+That's most importantly exception-safety, and cleanup stuff.<br>
+[10:24:40] </stefan><i> * </i><font color="purple">neiljp</font> nods <br>
+[10:24:56] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: no, not a replacement. We should be able to (visually) demonstrate that we are 'themable', and how we achieve that.<br>
+[10:25:25] &lt;</stefan><font color="brown">BenB</font>&gt; <benb> stefan: and nice looks make people take notice :)<br>
+[10:25:28] &lt;</benb><font color="slategray">njs</font>&gt; <njs> stefan: hmm, okay.  just don't let it get wet, or it'll bit-rot, though :-)<br>
+[10:25:51] &lt;</njs><font color="green">hunger</font>&gt; <hunger> Oh, I'd like to get on the way with the codeing-standardisation;-)<br>
+[10:25:58] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: what about a dictionary ? And as far as debugging goes, you could always use </stefan><typeinfo> to find out about type names.<br>
+[10:26:00] &lt;</typeinfo><font color="purple">neiljp</font>&gt; <neiljp> hunger: oh yes!<br>
+[10:26:15] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> stefan: Via CORBA?<br>
+[10:26:21] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: no<br>
+[10:26:36] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: Well, I only hold a CORBA reference to the objects.<br>
+[10:26:38] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> hunger: heh, that was the next thing I was going to bring up :-)<br>
+[10:27:28] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> hunger: but you are inside the server, where you could keep another global 'object map', similar to the AOMs the POAs keep<br>
+[10:27:47] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> hunger: this would be non-intrusive<br>
+[10:27:52] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ How do we want to do the transition to the coding standard?  Spread out
+gradually over the next few milestones, or in one big push before M2?  (I'm
+assuming that there are parts that will require manual intervention, so it
+won't be just a matter of invoking a giant 'indent' on the tree)<br>
+[10:27:57] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> hunger: or at least only minimally so<br>
+[10:28:12] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: ... und much more ugly then just adding a attribute to the interfaces:-)<br>
+[10:28:15] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> njs: IMO a 'giant indent patch' would be completely hellish<br>
+[10:28:35] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> stefan: At least till we have changed the Traversal to use less CORBA;-)<br>
+[10:28:40] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> njs: right. As far as I'm concerned, I did the transition for the code I touched. (_foo -&gt; my_foo, etc.)<br>
+[10:28:40] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> neiljp: well, yes, but 1000 tiny indent patches would also be pretty annoying...<br>
+[10:28:59] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> hunger: ugly ? Are you serious ? We don't have the same definition of uglyness then.<br>
+[10:29:24] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: I don't want to write a object dictionary!<br>
+[10:29:32] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> njs: depends how much you trust indent...<br>
+[10:29:45] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> hunger: you have to.<br>
+[10:30:03] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: I didn't so far;-)<br>
+[10:30:12] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: adding a type system on top of the CORBA type system is just ugly. Much more so than an object dictionary :-)<br>
+[10:31:06] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: Let me sleep this over...<br>
+[10:31:07] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: anyways, I'd much prefer to discuss this on issues.fresco.org in the appropriate task<br>
+[10:31:24] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> do we agree that this is important enough to go into M2 ?<br>
+[10:31:33] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> I don't think it is much work, once we agree on how to do it.<br>
+[10:31:40] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> so it can be done in time for M2<br>
+[10:31:47] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: As I said to njs earlier: IMHO we should focus on testing and debugging for M2.<br>
+[10:31:47] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> grr, stupid </njs><a href="http://issues.fresco.org/bug200">bug200</a><br>
+[10:32:09] &lt;<font color="maroon">sdt</font>&gt; <sdt> that would be </sdt><a href="http://issues.fresco.org/task40">task40</a>...<br>
+[10:32:12] &lt;<font color="purple">neiljp</font>&gt; <neiljp> njs: lol :)<br>
+[10:32:17] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> hunger: of course. Isn't that testing / debugging ? Or at least that's the context I see it in.<br>
+[10:32:36] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: Sure it is:-)<br>
+[10:33:25] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> Part of making the code debugable, incidentally, would be better comments.<br>
+[10:33:45] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: yes, right.<br>
+[10:33:47] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> do we have a task "write up a synopsis-comment-writing HOWTO" yet?<br>
+[10:34:10] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> njs: apparently not<br>
+[10:34:10] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> njs: don't think we have. Should go into the coding standard, no ?<br>
+[10:34:56] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ stefan: well, the standard says "write synopsis comments"; we need some
+documentation on _how_.  (And, honestly, some more support from synopsis
+for basic formatting stuff, @ref and all that.)<br>
+[10:35:09] &lt;</njs><font color="slategray">njs</font>&gt; <njs> stefan: so probably that should go in another document.  But it doesn't really matter either way.<br>
+[10:35:54] &lt;</njs><font color="green">hunger</font>&gt; <hunger> How shall we switch over to the coding standard?<br>
+[10:36:09] &lt;</hunger><font color="green">hunger</font>&gt; <hunger> I'd propose doing this one subsystem at a time.<br>
+[10:36:41] &lt;</hunger><font color="green">hunger</font>&gt; <hunger> Like Prague first, then Babylon (which will be mostly converted by my next commit anyway), etc.<br>
+[10:37:33] </hunger><i> * </i><font color="purple">neiljp</font> sees the new task interface and thinks its cool :) <br>
+[10:37:57] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: If we all agree to concentrate on debugging/testing/porting for M2, then I'd move </hunger><a href="http://issues.fresco.org/task63">task63</a> (OPenlook) to M3.<br>
+[10:38:10] <font color="teal">rajanr</font> has quit ()<br>
+[10:38:18] &lt;<font color="maroon">sdt</font>&gt; <sdt> er<br>
+[10:38:22] &lt;</sdt><font color="maroon">sdt</font>&gt; <sdt> sure you mean </sdt><a href="http://issues.fresco.org/task63">task63</a>?<br>
+[10:38:29] &lt;<font color="maroon">sdt</font>&gt; <sdt> "port fresco to FreeBSD"<br>
+[10:38:40] &lt;</sdt><font color="purple">neiljp</font>&gt; <neiljp> </neiljp><a href="http://issues.fresco.org/task62">task62</a> methinks<br>
+[10:38:44] &lt;<font color="green">hunger</font>&gt; <hunger> s/</hunger><a href="http://issues.fresco.org/task63">task63</a>/<a href="http://issues.fresco.org/task62">task62</a>/<br>
+[10:38:49] &lt;<font color="maroon">sdt</font>&gt; <sdt> ok<br>
+[10:39:26] &lt;</sdt><font color="maroon">sdt</font>&gt; <sdt> any thought on those "visual bugs"?<br>
+[10:39:40] &lt;</sdt><font color="blue">stefan</font>&gt; <stefan> ok, please have a look at http://wiki.fresco.org/M2<br>
+[10:39:45] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> and edit to your heart's content<br>
+[10:40:17] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> please also identify what you would like to work on, just so we know which things will evolve fastest :)<br>
+[10:40:19] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: can we edit Milestones now?<br>
+[10:40:23] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> stefan: uh, milestone2? :)<br>
+[10:40:52] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> stefan: You said you'd need to be coordinator to edit it.<br>
+[10:40:56] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> please insert links to all bugs and tasks you see fit<br>
+[10:41:18] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> hunger: dunno, haven't looked at that.<br>
+[10:41:51] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> oh, this brings up another topic: the issue tracker schema. I'd like to explain what I mean by 'bug' and 'task':<br>
+[10:41:59] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: I liked the idea of some central instance setting the milestones.<br>
+[10:42:09] </hunger><font color="purple">neiljp</font> has quit (Read error: 104 (Connection reset by peer))<br>
+[10:42:28] &lt;<font color="blue">stefan</font>&gt; <stefan> for me, a 'bug' is a concept a user refers to when communicating things to us. That can be a crash, or an enhancement.<br>
+[10:42:41] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> 'tasks', on the other hand, are means of the developers to coordinate their work.<br>
+[10:43:13] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: Can you please add that to the TrackerFAQ in the wiki (or some documentation in the tracker) so it won't get lost?<br>
+[10:43:45] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan>
+ it's a bit the same as with 'severity' and 'priority': 'severity' is used
+to quantify the impact on the user, while 'priority' is a way for developers
+to express how important a fix is, so it can be scheduled for a given milestone.<br>
+[10:44:05] &lt;</stefan><font color="brown">BenB</font>&gt; <benb> stefan: I thought that you introduced "task" specifically not to abuse the word "bug" for enhancements.<br>
+[10:44:11] &lt;</benb><font color="blue">stefan</font>&gt; <stefan> hunger: yes. I'd like to discuss with you so we can agree on that, then I'll add it to the issues site itself, as a doc page.<br>
+[10:44:26] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ I understand the distinction, more or less; in practice, though, it seems
+to just be annoying.  I find that for almost all operations I want to perform
+(look at recent work, file suggestions, look for things that need doing),
+they're interchangeable -- I'm not convinced the distinction is the relevant
+one for actually working with the tracker.<br>
+[10:44:33] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> BenB: hmm, well, may be I did. Then it shifted in my head :)<br>
+[10:44:43] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: I like that definition, it fits in well with my current practice to use the tracker;-)<br>
+[10:45:09] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: glad to hear that :)<br>
+[10:45:10] &lt;</stefan><font color="maroon">oxygene</font>&gt; <oxygene> njs: the freebsd port is a nice example for a task imho<br>
+[10:45:33] &lt;</oxygene><font color="green">hunger</font>&gt; <hunger> stefan: The bugtype RFE is a bit confusing then though...<br>
+[10:45:34] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> njs: I see your point. There is often a 1-1 mapping.<br>
+[10:45:58] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ oxygene: sure, I realize that there's a difference.  But there's also a
+difference between "design" and "porting" tasks, and we don't enshrine that
+difference in two separate database types.<br>
+[10:46:15] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> hunger: no, a user can ask us to enhance fresco. But we'll then create a task that coordinates the efford to solve it.<br>
+[10:46:19] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: Or are you suggesting that userrs fill in bugs while developers add tasks?<br>
+[10:46:32] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: yes, more somehting like that.<br>
+[10:46:38] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: With a mapping betwen both.<br>
+[10:46:51] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: yeah, though the mapping doesn't need to be 1:1<br>
+[10:46:57] &lt;</stefan><font color="brown">BenB</font>&gt; <benb>
+ stefan: so, by your definition, almost all bugs would have 2 entities? the
+bug thatr the user reported and the task the develop uses to track the work
+on the bug?<br>
+[10:47:09] &lt;</benb><font color="blue">stefan</font>&gt; <stefan> hunger: we don't need bug reports to create tasks.<br>
+[10:47:21] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ in practice, for me, it mostly means that everytime I want to do perform
+some operation, I have to do it twice in identical ways -- once for bugs,
+once for tasks.<br>
+[10:47:24] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> BenB: well, not necessarily. The two sides are not isomorphic<br>
+[10:47:30] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> hrm, wouldn't it be better to keep everything in one place?<br>
+[10:47:35] &lt;</sdt><font color="green">hunger</font>&gt; <hunger> stefan: Of course not... but you mandate a task for each bug?<br>
+[10:47:41] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> sdt: 'one place' ?<br>
+[10:47:46] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> well, either as a bug or a task<br>
+[10:48:06] &lt;</sdt><font color="brown">BenB</font>&gt; <benb>
+ stefan: say, I find a real bug in fresco and file it as bug. a develop wants
+to fix it. does he now also file a task to track his work?<br>
+[10:48:09] &lt;</benb><font color="blue">stefan</font>&gt; <stefan> hunger: no, I don't mandate anything. The tracker is there to support the way we like to work,  not to force us into anything.<br>
+[10:48:19] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> hunger: if you don't like it, don't use it.<br>
+[10:48:28] &lt;</stefan><font color="maroon">oxygene</font>&gt; <oxygene> BenB: he might also assign it to some existing task<br>
+[10:48:33] &lt;</oxygene><font color="maroon">oxygene</font>&gt; <oxygene> BenB: like "porting to architecture foobar"<br>
+[10:48:51] &lt;</oxygene><font color="slategray">njs</font>&gt; <njs>
+ and then you have to manage the mapping, and it doesn't work very well,
+and we have quasi-arbitrary requirements on which relationship links can
+point which ways...<br>
+[10:48:57] &lt;</njs><font color="brown">BenB</font>&gt; <benb> oxygene: I am talking about real bugs, and in many cases, there is nothing bigger to link it to.<br>
+[10:49:01] &lt;</benb><font color="green">hunger</font>&gt; <hunger> stefan: Give up on the tracker? NEVER;_)<br>
+[10:49:06] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan>
+ BenB: depends. If the efford is short lived, no task is needed. But if the
+thing needs some long term coordination, a task would be a good idea.<br>
+[10:49:35] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ and I notice that in practice, I've never heard of another BTS that had
+two separate entity types like this; everyone else calls them both "issues"
+and throws them in the database together.<br>
+[10:50:11] &lt;</njs><font color="slategray">njs</font>&gt; <njs>
+ stefan: but functionally, a task is just like a bug; any coordination you
+can do via a task you could do via a bug just as well.  Or you could just
+call them both "issues" and be done.<br>
+[10:50:20] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: well, nobody did use scene graphs the way we do. What's your conclusion ? :-)<br>
+[10:50:39] </stefan><font color="purple">neiljp</font> has joined #fresco<br>
+[10:50:41] &lt;<font color="slategray">njs</font>&gt; <njs> stefan: well, Fresco did :-)<br>
+[10:50:48] &lt;</njs><font color="maroon">sdt</font>&gt; <sdt> heh. I was just about to say that.<br>
+[10:50:49] &lt;</sdt><font color="brown">BenB</font>&gt; <benb>
+ I agree with njs in general, but looking at bugzilla.mozilla.org, some barrier
+from users can be a good idea, if fresco has lots of users.<br>
+[10:50:54] &lt;</benb><font color="purple">neiljp</font>&gt; <neiljp> bah, what just happened which was interesting? ;)<br>
+[10:50:56] &lt;</neiljp><font color="brown">BenB</font>&gt; <benb> (lots = 100000 and more)<br>
+[10:51:10] &lt;</benb><font color="blue">stefan</font>&gt; <stefan> njs: ok, well, I already identify 'we' with 'fresco' :-)<br>
+[10:51:12] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> is it really such a big deal right now?<br>
+[10:51:48] &lt;</sdt><font color="brown">BenB</font>&gt; <benb> sdt: users? no.<br>
+[10:51:55] </benb><font color="slategray">genesfra</font> has joined #fresco<br>
+[10:52:06] &lt;<font color="green">hunger</font>&gt; <hunger> Hi genesfra.<br>
+[10:52:08] &lt;</hunger><font color="maroon">sdt</font>&gt; <sdt> well, even the whole task/bug distinction? it seems to be working quite well...<br>
+[10:52:08] &lt;</sdt><font color="slategray">njs</font>&gt; <njs>
+ BenB: but I think you can implement that barrier by just adding some field
+that you can screen on, no?  We already have the distinction between "new"
+and "open" bugs, where the latter is supposed to be things that developers
+have actually decided are valid (though ATM we don't bother)<br>
+[10:52:15] &lt;</njs><font color="brown">BenB</font>&gt; <benb> sdt: but I do need to know the policy for the tracker, I don't know how to file RFEs.<br>
+[10:52:38] &lt;</benb><font color="maroon">sdt</font>&gt; <sdt> RFEs=?<br>
+[10:52:38] &lt;</sdt><font color="green">hunger</font>&gt; <hunger> njs: open are bugs somebody works on, isen't it?<br>
+[10:52:42] &lt;</hunger><font color="brown">BenB</font>&gt; <benb> njs: agreed<br>
+[10:52:49] &lt;</benb><font color="brown">BenB</font>&gt; <benb> sdt: request for enhancement<br>
+[10:53:00] &lt;</benb><font color="slategray">njs</font>&gt; <njs>
+ BenB: and splitting the two actually makes more work for me in practice;
+I often find myself searching first the bugs, and then the tasks, to find
+a particular issue that I remember, but don't remember whether it was filed
+as a bug or as a task.<br>
+[10:53:20] &lt;</njs><font color="maroon">sdt</font>&gt; <sdt>
+ those sound like tasks to me... anyways, do you really need policy to dictate
+that? the tracker's just a tool to provide convenient tracking of issues,
+yes?<br>
+[10:53:23] &lt;</sdt><font color="green">hunger</font>&gt; <hunger> njs: That's a good point.<br>
+[10:53:53] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> njs: hmm, we could automatize quite a bit there, with detectors<br>
+[10:53:56] &lt;</stefan><font color="brown">BenB</font>&gt; <benb> njs: yes, I understand your point (weeks ago when we first talked about it) and I gree.<br>
+[10:54:18] &lt;</benb><font color="maroon">sdt</font>&gt; <sdt> how about just being able to search for both bugs and tasks then?<br>
+[10:54:28] &lt;</sdt><font color="green">hunger</font>&gt; <hunger> stefan: Some detectors to setup default values and enforce some standards would help a lot.<br>
+[10:54:31] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> sdt: yes, that would help, too.<br>
+[10:54:37] &lt;</stefan><font color="brown">BenB</font>&gt; <benb> sdt: well, for a start, I can't file tasks right now. and I thought that rfes are supposed to be tasks.<br>
+[10:54:37] &lt;</benb><font color="blue">stefan</font>&gt; <stefan> hunger: yes<br>
+[10:55:05] &lt;</stefan><font color="green">hunger</font>&gt; <hunger>
+ stefan: What is the semantic for milestones? As I understood it first a
+coordinator set those. Now it looks like I (developer) can do so.<br>
+[10:55:28] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan>
+ BenB: no, 'rfe's are 'requests'. I.e. a user wants something. The 'task'
+is created and processed by developers. Because they know what they want
+/ are able to work on.<br>
+[10:55:28] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: Why did you change that? All I asked was for a message field so I could comment on what you did inside the tracker.<br>
+[10:55:44] &lt;</hunger><font color="slategray">njs</font>&gt; <njs>
+ Basically, my point is just that when it came down to getting work done,
+I have never found the distinction between bugs and tasks to be useful, and
+I have often found it to be REALLY ANNOYING.  So.<br>
+[10:55:49] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> hunger: dunno whether I changed that or somebody else.<br>
+[10:56:07] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: I still can't edit the milestones.<br>
+[10:56:11] &lt;</hunger><font color="green">hunger</font>&gt; <hunger> stefan: Just tried.<br>
+[10:56:24] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: so what did I change then ?<br>
+[10:56:26] </stefan><i> * </i><font color="blue">stefan</font> is confused <br>
+[10:56:33] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: Could you please add that message field? Then we could move the complete milestone discussions into the tracker.<br>
+[10:56:47] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: yes, will do.<br>
+[10:57:22] &lt;</stefan><font color="green">hunger</font>&gt; <hunger>
+ stefan: I used to get a list of bugs/tasks only. Now I get the buttons to
+actually change things with (und an error message if I try;-)<br>
+[10:57:26] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> either included in that or separately a 'please add/remove this task/bug' request :)<br>
+[10:57:35] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan>
+ ok, could everybody who is going to do some work please add that to the
+wiki page ? Just so we get an idea of where we are heading<br>
+[10:57:47] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> hunger: oh.<br>
+[10:57:47] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> stefan: what page?<br>
+[10:57:58] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> neiljp: uh, I created 'M2', didn't I ?<br>
+[10:58:03] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> I propose </njs><a href="http://issues.fresco.org/task82">task82</a>, <a href="http://issues.fresco.org/task83">task83</a>, <a href="http://issues.fresco.org/task84">task84</a>, <a href="http://issues.fresco.org/task85">task85</a>  (write a synopsis HOWTO and create indent/emacs/vim configs for the new style guide) for M2.<br>
+[10:58:22] &lt;<font color="blue">stefan</font>&gt; <stefan> njs: please make that proposal persistent in the wiki.<br>
+[10:58:32] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> njs: (and add yourself to the tasks you want to work on)<br>
+[10:58:54] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: well, part of the point of the discussion is to decide what we should work on, no?  :-)<br>
+[10:59:05] &lt;</njs><font color="green">hunger</font>&gt; <hunger> njs: Add them to the milestone.<br>
+[10:59:09] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> stefan: wiki?<br>
+[10:59:15] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> njs: ... once there's the message field.<br>
+[10:59:25] &lt;</hunger><font color="maroon">sdt</font>&gt; <sdt> neiljp: http://wiki.fresco.org/M2<br>
+[10:59:28] </sdt><font color="indigo">Phython</font> has joined #fresco<br>
+[10:59:30] &lt;<font color="purple">neiljp</font>&gt; <neiljp> ah...<br>
+[10:59:43] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> message fields are all well in good, but I still think we should discuss now while we're together :-)<br>
+[11:00:24] &lt;</njs><font color="green">hunger</font>&gt; <hunger> stefan: I'd prefer </hunger><a href="http://issues.fresco.org/task62">task62</a>(OpenLook) to be in M3.<br>
+[11:00:27] &lt;<font color="maroon">sdt</font>&gt; <sdt> just a moment<br>
+[11:00:28] &lt;</sdt><font color="blue">stefan</font>&gt; <stefan> njs: indeed. That's why we sit together :)<br>
+[11:00:33] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> hunger: why ?<br>
+[11:00:56] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: Didn't we decide to concentrate on testing/debugging/porting with M2?<br>
+[11:01:33] &lt;</hunger><font color="green">hunger</font>&gt; <hunger>
+ stefan: What has openlook to do with that? And it should be easier to do
+once you can dump a graph and see where you blotched up the coordinates too:-)<br>
+[11:01:56] </hunger><i> * </i><font color="maroon">sdt</font> suggests <a href="http://issues.fresco.org/bug82">bug82</a> and <a href="http://issues.fresco.org/task38">task38</a> (which, incidentally, work really well together) <br>
+[11:02:19] &lt;<font color="purple">neiljp</font>&gt; <neiljp> sdt: ...as long as you don't hit ESC on desktop...see last comment just added ;)<br>
+[11:02:34] &lt;</neiljp><font color="purple">neiljp</font>&gt; <neiljp> sdt: please try and replicate...later perhaps ;)<br>
+[11:02:55] &lt;</neiljp><font color="maroon">sdt</font>&gt; <sdt> ok<br>
+[11:03:22] &lt;</sdt><font color="maroon">sdt</font>&gt; <sdt> gah, now I can't find the bugs I was hoping to fix <br>
+[11:03:24] &lt;</sdt><font color="green">hunger</font>&gt; <hunger> stefan: I'd like </hunger><a href="http://issues.fresco.org/task30">task30</a> (unit test framework) and <a href="http://issues.fresco.org/task40">task40</a> (scenegraph debugging).<br>
+[11:03:47] &lt;<font color="maroon">sdt</font>&gt; <sdt> ah yes<br>
+[11:04:05] &lt;</sdt><font color="maroon">sdt</font>&gt; <sdt> </sdt><a href="http://issues.fresco.org/bug190">bug190</a>, possibly <a href="http://issues.fresco.org/bug191">bug191</a><br>
+[11:04:14] &lt;<font color="slategray">njs</font>&gt; <njs> *skimming scrollback* So how _are_ we planning to do the coding guidelines transition?<br>
+[11:04:23] &lt;</njs><font color="maroon">sdt</font>&gt; <sdt> I'm willing to work on those<br>
+[11:04:26] &lt;</sdt><font color="maroon">sdt</font>&gt; <sdt> and related issues<br>
+[11:04:27] &lt;</sdt><font color="green">hunger</font>&gt; <hunger> stefan: And </hunger><a href="http://issues.fresco.org/bug9">bug9</a><br>
+[11:04:32] &lt;<font color="slategray">njs</font>&gt; <njs> one component at a time, as hunger suggested?<br>
+[11:04:36] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> njs: uh, is there a bug for that? :)<br>
+[11:04:41] &lt;</neiljp><font color="purple">neiljp</font>&gt; <neiljp> njs: :)<br>
+[11:04:59] &lt;</neiljp><font color="purple">neiljp</font>&gt; <neiljp> njs: add that to the list for m2, then discuss there...but one per module sounds fine to me<br>
+[11:05:10] &lt;</neiljp><font color="green">hunger</font>&gt; <hunger> njs: One component at a time, no changes but the reformating in the same commit would be the best way to go IMHO.<br>
+[11:05:24] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> hunger: okay.  let's go with that, then, if there are no objections.<br>
+[11:05:26] </njs><i> * </i><font color="purple">neiljp</font> plans to do lots of little tidying <br>
+[11:06:21] &lt;<font color="purple">neiljp</font>&gt; <neiljp>
+ eg. perhaps 176, 178, 188, 192...depends how many 'simple' bugs we want
+to leave open for newbies, and how much we want to get, er, working :)<br>
+[11:06:36] &lt;</neiljp><font color="purple">neiljp</font>&gt; <neiljp> 153, 143<br>
+[11:08:33] &lt;</neiljp><font color="maroon">sdt</font>&gt; <sdt> wow, those really are easy<br>
+[11:08:40] </sdt><i> * </i><font color="green">hunger</font> wonders where the task for implementing the coding style guide went. <br>
+[11:08:46] &lt;<font color="purple">neiljp</font>&gt; <neiljp> well, some are bitesize...<br>
+[11:08:52] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> hunger: </njs><a href="http://issues.fresco.org/task8">task8</a>, <a href="http://issues.fresco.org/task9">task9</a><br>
+[11:11:06] &lt;<font color="blue">stefan</font>&gt; <stefan> any *bsd people here ?<br>
+[11:11:11] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: I'd like tasks8, 9, 30, 40 added and </hunger><a href="http://issues.fresco.org/task62">task62</a> moved to M3.<br>
+[11:11:37] &lt;<font color="purple">neiljp</font>&gt; <neiljp> hunger: hum...wiki page?<br>
+[11:11:45] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan>
+ the freeBSD port should be done, but there are some bugs left. However,
+they seem to be the same bugs we see elsewhere, i.e. we may as well consider
+the FreeBSD port to be complete.<br>
+[11:12:15] </stefan><font color="darkcyan">LordVan</font> has quit (Excess Flood)<br>
+[11:12:20] &lt;<font color="blue">stefan</font>&gt; <stefan> hunger: ok. Well, we can always remove a task when it blocks the release of M2.<br>
+[11:12:34] </stefan><font color="darkcyan">LordVan</font> has joined #fresco<br>
+[11:12:46] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: That sucks! We do have the tracker to be able to do some planing.<br>
+[11:13:02] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> stefan: did they ever manage to get the demo window to appear on bsd?<br>
+[11:13:07] &lt;</njs><font color="green">hunger</font>&gt; <hunger> stefan: Shifting things around when they become inconvininet is not the way to go.<br>
+[11:13:18] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan>
+ hunger: sure. I didn't say the contrary. But I still hope to be able to
+work on that. Or better: I *want* to work on that, so why should I remove
+it ?<br>
+[11:13:39] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: You can work on it, no problem with that!<br>
+[11:13:40] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> stefan: well, is it a goal of yours to have it done by m2?<br>
+[11:13:49] &lt;</njs><font color="slategray">njs</font>&gt; <njs> stefan: that's the question, really.<br>
+[11:13:51] &lt;</njs><font color="teal">waldi</font>&gt; <waldi> hi<br>
+[11:14:03] &lt;</waldi><font color="blue">stefan</font>&gt; <stefan> njs: yes, though I'm ready to drop that goal when I see the M2 can't be released because of it.<br>
+[11:14:16] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> stefan: Nobody is arguing that it shouldn't be done. I'm just arguing that it shouldn't be part of M2.<br>
+[11:14:20] &lt;</hunger><font color="green">hunger</font>&gt; <hunger> waldi: Hi!<br>
+[11:14:23] &lt;</hunger><font color="brown">BenB</font>&gt; <benb> somebody fixed the bug that the scrollbar thumb is not in sync with the mouse, right?<br>
+[11:14:31] </benb><font color="blue">soyt</font> has quit ("Client Exiting")<br>
+[11:14:44] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: Nobody stops you working (or even closing) tasks later then the current one, do they?<br>
+[11:14:44] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> BenB: a while back iirc...though not sure about rotated windows and that...or is that a separate bug?<br>
+[11:14:55] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan>
+ hunger: I'd like to have at least a *bit* of visual change for the next
+release, so we can show something to people, beside reiterating how much
+it got enhanced internally.<br>
+[11:15:03] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> BenB: I fixed that bug for most cases<br>
+[11:15:08] &lt;</sdt><font color="brown">BenB</font>&gt; <benb> neiljp: dunno, just going through the old SF bug (most of them mine)<br>
+[11:15:11] &lt;</benb><font color="maroon">sdt</font>&gt; <sdt> BenB: it's still there for y rotation (</sdt><a href="http://issues.fresco.org/bug190">bug190</a>)<br>
+[11:15:21] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: I'd prefer to get M2 out asap.<br>
+[11:15:23] &lt;</hunger><font color="brown">BenB</font>&gt; <benb> sdt: nod, thanks. Great that you fixed it! ;-)<br>
+[11:15:23] &lt;</benb><font color="purple">neiljp</font>&gt; <neiljp> BenB: the exception-catching bug is ported already :)<br>
+[11:15:25] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs>
+ This brings up the thing that I think we still should talk about, before
+totally dissolving the meeting: what's the relation between big ongoing tasks
+(text, events, etc.) and milestones?<br>
+[11:15:38] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> hunger: well, we aligned for February, didn't we ?<br>
+[11:15:50] &lt;</stefan><font color="brown">BenB</font>&gt; <benb> neiljp: I know about bug 180, that made me start :)<br>
+[11:15:53] &lt;</benb><font color="green">hunger</font>&gt; <hunger> stefan: Did we? Never knew that.<br>
+[11:15:55] &lt;</hunger><font color="purple">neiljp</font>&gt; <neiljp> BenB: ah :)<br>
+[11:15:58] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> njs: hmm, tricky.<br>
+[11:16:08] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> stefan: well, you proposed, iirc ;)<br>
+[11:16:17] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs>
+ stefan: well, arguably, that's something we could do for M3 -- M1 is our
+"okay, let's get going again" release, M2 is where we show that we can release
+again in a few months with actual fixes in, M3 is where we start getting
+more ambitious.  But that's just one possible story :-)<br>
+[11:16:38] &lt;</njs><font color="blue">stefan</font>&gt; <stefan>
+ njs: almost none, I'd say. I think it is important to state what (long term)
+tasks we are working on, but they don't need to show up in a milestone (we
+have http://issues.fresco.org/reports/tasks.html for that)<br>
+[11:16:39] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> njs: sounds feasible...just as long as you don't want exponential growth ;)<br>
+[11:17:04] &lt;</neiljp><font color="brown">BenB</font>&gt; <benb> neiljp: actually, that </benb><a href="http://issues.fresco.org/bug180">bug180</a> sounds like a task, while my bug would be a real bug :)<br>
+[11:17:13] &lt;<font color="purple">neiljp</font>&gt; <neiljp> BenB: argh!<br>
+[11:17:16] </neiljp><i> * </i><font color="purple">neiljp</font> runs from BenB <br>
+[11:17:20] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: We could just have more milestones in the tracker and assign the longterm goals to them...<br>
+[11:17:21] &lt;</hunger><font color="brown">BenB</font>&gt; <benb> neiljp: lol<br>
+[11:17:21] &lt;</benb><font color="slategray">njs</font>&gt; <njs>
+ (Maybe I'm being silly, but I sorta feel like doing right M2 is Important
+-- that it'll "set our rhythm" for future milestones.)<br>
+[11:17:45] &lt;</njs><font color="blue">stefan</font>&gt; <stefan>
+ njs: of course, at some point we want to have even the most long term tasks
+fixed, so may be M12 will contain the 'get text working' task :-)<br>
+[11:17:52] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: well, but part of the point of milestones is to have concrete goals to work towards, and measurable steps.<br>
+[11:18:07] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: yes. I don't see your point.<br>
+[11:18:08] &lt;</stefan><font color="green">hunger</font>&gt; <hunger>
+ stefan: A bit of longterm planning wouldn't hurt. Which release should have
+font selection, which full support for styled text, which a complete TextKit,
+etc.<br>
+[11:18:18] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> njs: how can we measure advancements with the TextKit *now* ?<br>
+[11:18:19] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ stefan: so I think we should try to have _some_ connection between those
+giant tasks and milestones, or we're likely to let them slip.<br>
+[11:18:29] &lt;</njs><font color="slategray">njs</font>&gt; <njs> stefan: well, it's hard.<br>
+[11:18:40] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: well, yes. We need 'deliverables', as management likes to call them :-)<br>
+[11:18:52] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> stefan: developers cannot change milestones, right?<br>
+[11:18:58] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> stefan: my proposal on -devel a while back was; for M, have _some_ revamped text system, _some_ revamped event system.<br>
+[11:19:05] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: but that can be requirement specs, design specs, whatever.<br>
+[11:19:15] &lt;</stefan><font color="brown">BenB</font>&gt; <benb>
+ hunger: but without anybody working on it, it's hard. same effect in bugzilla.mozilla.org.
+milestones are set and routinely pushed forward, and people complain, because
+it looks like an unkept promise.<br>
+[11:19:35] &lt;</benb><font color="blue">stefan</font>&gt; <stefan> njs: well, that makes sense as soon as you can replace 'some' with something less fuzzy<br>
+[11:19:44] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ stefan: ie, not complete solutions that are perfect, but it seems to me
+that these tasks are so big and so hard that we can't even begin to see where
+to go next.<br>
+[11:19:58] &lt;</njs><font color="maroon">sdt</font>&gt; <sdt> er, so should </sdt><a href="http://issues.fresco.org/task40">task40</a> be added to M2<br>
+[11:20:12] &lt;<font color="slategray">njs</font>&gt; <njs> stefan: so what we should be doing is building the ones we'll throw away, and that way learn how to the real system will work.<br>
+[11:20:22] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> sdt: well hunger mentioned that one, didn't he? hunger?<br>
+[11:20:38] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs>
+ stefan: hence the "some" -- I'm not looking for something perfect, but something
+that plausibly tries to solve some of the problems, and actually works, and
+I don't care about warts.<br>
+[11:20:45] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> njs: 'code to requirements, nothing more' ?<br>
+[11:20:56] &lt;</neiljp><font color="maroon">sdt</font>&gt; <sdt> yes, he did<br>
+[11:20:56] &lt;</sdt><font color="purple">neiljp</font>&gt; <neiljp> njs: for now ;)<br>
+[11:21:05] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> neiljp: is that another way of saying YAGNI? :-)<br>
+[11:21:10] &lt;</njs><font color="maroon">sdt</font>&gt; <sdt> it just seems like you (neiljp) and I are the only ones adding stuff to that page<br>
+[11:21:23] &lt;</sdt><font color="purple">neiljp</font>&gt; <neiljp> njs: YAGNI?!<br>
+[11:21:30] &lt;</neiljp><font color="purple">neiljp</font>&gt; <neiljp> sdt: seems like it :)<br>
+[11:21:30] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> neiljp: it's not even that; we can't even figure out what the requirements _are_, in some sense.<br>
+[11:21:47] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> njs: oh sure<br>
+[11:22:00] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> neiljp: part of the XP philosophy: http://www.c2.com/cgi/wiki?YAGNI<br>
+[11:22:15] &lt;</njs><font color="slategray">njs</font>&gt; <njs> stefan: any opinion on this approach?<br>
+[11:22:21] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> njs: well maybe nicholas will spur that, since he has the FontKit idea following from the FT port<br>
+[11:22:55] &lt;</neiljp><font color="purple">neiljp</font>&gt; <neiljp> njs: uh, that page is empty?<br>
+[11:23:15] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> Here's my list of bugs/tasks proposed for M2: </njs><a href="http://issues.fresco.org/task77">task77</a>, <a href="http://issues.fresco.org/task68">task68</a>, <a href="http://issues.fresco.org/bug92">bug92</a>, <a href="http://issues.fresco.org/task40">task40</a>, <a href="http://issues.fresco.org/task82">task82</a>, <a href="http://issues.fresco.org/task83">task83</a>, <a href="http://issues.fresco.org/task84">task84</a>, <a href="http://issues.fresco.org/task85">task85</a>, <a href="http://issues.fresco.org/task30">task30</a>, <a href="http://issues.fresco.org/bug190">bug190</a>, <a href="http://issues.fresco.org/bug191">bug191</a>, <a href="http://issues.fresco.org/bug9">bug9</a>, <a href="http://issues.fresco.org/bug176">bug176</a>, <a href="http://issues.fresco.org/bug178">bug178</a>, <a href="http://issues.fresco.org/bug188">bug188</a>, <a href="http://issues.fresco.org/bug192">bug192</a>, <a href="http://issues.fresco.org/bug153">bug153</a>, <a href="http://issues.fresco.org/bug143">bug143</a><br>
+[11:23:30] &lt;<font color="slategray">njs</font>&gt; <njs> hmm, so it is; I just grabbed it out of my browser history :-<br>
+[11:23:48] &lt;</njs><font color="darkcyan">bughunter</font>&gt; <bughunter> njs: You missed </bughunter><a href="http://issues.fresco.org/bug183">bug183</a> and <a href="http://issues.fresco.org/bug89">bug89</a> :)<br>
+[11:23:49] &lt;<font color="purple">neiljp</font>&gt; <neiljp> njs: please add to M2 page :)<br>
+[11:23:50] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan>
+ njs, sdt: actually, as far as text is concerned, chances are I'm going to
+meet with nicholas in Toronto or nearby. There are a couple of fresco related
+people...<br>
+[11:23:58] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> here: http://www.c2.com/cgi/wiki?YouArentGonnaNeedIt<br>
+[11:23:59] &lt;</njs><font color="maroon">sdt</font>&gt; <sdt> oh, yay<br>
+[11:24:01] &lt;</sdt><font color="blue">stefan</font>&gt; <stefan> njs: so we may come up with a more detailed plan to attack all that...<br>
+[11:24:13] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> stefan: I've been asked to ask you to give a talk here at waterloo :)<br>
+[11:24:25] &lt;</sdt><font color="blue">stefan</font>&gt; <stefan> njs: nicholas has already some good ideas...<br>
+[11:24:34] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> sdt: oh ?<br>
+[11:24:44] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> yeah, for the computer science club. if you'd like<br>
+[11:25:05] </sdt><i> * </i><font color="purple">neiljp</font> wonders if he ought to move to Canada... <br>
+[11:25:10] &lt;<font color="blue">stefan</font>&gt; <stefan>
+ sdt: well, we should by all means organize a meeting,  at least with nicholas,
+golbez, graydon, and other local geeks that want to join in.<br>
+[11:25:20] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> sure<br>
+[11:25:22] &lt;</sdt><font color="purple">neiljp</font>&gt; <neiljp> njs: I know about XP...sorta :)<br>
+[11:25:25] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> sdt: why not ? Let's see...<br>
+[11:25:26] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> neiljp: heh, I've been wondering the same thing lately... though partly for political reasons, I'll admit :-)<br>
+[11:25:43] &lt;</njs><font color="maroon">sdt</font>&gt; <sdt> philbo won't be here next term, unfortunately, but golbez will.<br>
+[11:25:47] </sdt><font color="green">nicholas</font> has joined #fresco<br>
+[11:25:50] &lt;<font color="maroon">sdt</font>&gt; <sdt> yay<br>
+[11:25:51] </sdt><i> * </i><font color="green">hunger</font> feels left out just because he's german. <br>
+[11:25:51] &lt;<font color="purple">neiljp</font>&gt; <neiljp> njs: well, there are negative changes...but uk is getting equivalent bad for some reasons<br>
+[11:25:54] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> nicholas: !!!<br>
+[11:25:56] </stefan><i> * </i><font color="purple">neiljp</font> cheers for nicholas arriving :) <br>
+[11:25:57] <i> * </i><font color="red">philbo</font> has a car and a will to participate <br>
+[11:26:00] &lt;<font color="green">nicholas</font>&gt; <nicholas> zZzzZzzZz<br>
+[11:26:10] &lt;</nicholas><font color="maroon">sdt</font>&gt; <sdt> ah, well, even better<br>
+[11:26:12] &lt;</sdt><font color="green">nicholas</font>&gt; <nicholas> I'm really really really sorry.<br>
+[11:26:14] </nicholas><i> * </i><font color="purple">neiljp</font> feels left-out because he's English <br>
+[11:26:14] &lt;<font color="blue">stefan</font>&gt; <stefan> hey philbo, you, too, of course :)<br>
+[11:26:20] &lt;</stefan><font color="purple">neiljp</font>&gt; <neiljp> nicholas: [fwap] :)<br>
+[11:26:26] &lt;</neiljp><font color="maroon">sdt</font>&gt; <sdt> nicholas: http://wiki.fresco.org/M2 &lt;-- add here<br>
+[11:26:32] &lt;</sdt><font color="slategray">njs</font>&gt; <njs>
+ neiljp: it's interesting stuff, worth reading about, if you're interested
+in process.  Not directly relevant to OSS development, because they assume
+a _really_ different development context, but really interesting ideas.<br>
+[11:26:33] &lt;</njs><font color="green">hunger</font>&gt; <hunger> stefan: It all boils down on how to represent text in the scengraph to me.<br>
+[11:26:46] &lt;</hunger><font color="maroon">sdt</font>&gt; <sdt> nicholas: and the topic of a meeting somewhere around waterloo/toronto came up<br>
+[11:26:49] &lt;</sdt><font color="maroon">sdt</font>&gt; <sdt> just now<br>
+[11:26:57] &lt;</sdt><font color="green">nicholas</font>&gt; <nicholas> sdt: oh fantastic.<br>
+[11:27:04] </nicholas><i> * </i><font color="slategray">njs</font> really wishes he could attend such a meeting.  Alas. <br>
+[11:27:16] &lt;<font color="purple">neiljp</font>&gt; <neiljp> [aol] me too [/aol] :(<br>
+[11:27:27] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> nicholas: well, I mentioned that we discussed that, i.e. discussing TextKit related stuff.<br>
+[11:27:38] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: nod.<br>
+[11:27:41] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> hunger: well, no, it's quite a bit more involved.<br>
+[11:27:47] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: is it any closer to becoming a reality?<br>
+[11:28:00] &lt;</nicholas><font color="purple">neiljp</font>&gt; <neiljp> well just now that nicholas is here, I'm going to have to get ready for work ;|<br>
+[11:28:07] &lt;</neiljp><font color="blue">stefan</font>&gt; <stefan> hunger: for example, how much are glyphs / fonts encapsulated within the DrawingKits ?<br>
+[11:28:16] </stefan><i> * </i><font color="maroon">sdt</font> wonders if the CSC could obtain money to pay for people to come over to have a fresco "conference" :) <br>
+[11:28:17] &lt;<font color="green">hunger</font>&gt; <hunger> stefan: Sure. But once you have a good idea on how to store things in the SG much falls into place automatically.<br>
+[11:28:25] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> hunger: i.e. how 'portable' can it be done without compromizing quality ?<br>
+[11:28:37] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> hunger: I doubt. But we'll see...<br>
+[11:28:58] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> njs: wanna add your list to M2?<br>
+[11:29:23] &lt;</sdt><font color="green">hunger</font>&gt; <hunger>
+ stefan: It all boils down to "How much layout information do we need to
+store" which in turn is directly related to how the stuff gets stored in
+the SG.<br>
+[11:29:42] &lt;</hunger><font color="green">hunger</font>&gt; <hunger> stefan: ... or in a Graphic in the SG for that matter,.<br>
+[11:30:40] </hunger><font color="blue">JonasAm</font> has left #fresco<br>
+[11:30:43] &lt;<font color="blue">stefan</font>&gt; <stefan> nicholas: could you tell us a bit about your goals for M2 ?<br>
+[11:30:53] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: I'm playing with fonts.<br>
+[11:30:57] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> nicholas: (M2 == milestone to be released in about two months)<br>
+[11:31:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: that and </nicholas><a href="http://issues.fresco.org/task38">task38</a> of course.<br>
+[11:31:07] <i> * </i><font color="purple">neiljp</font> grins <br>
+[11:31:13] &lt;<font color="green">nicholas</font>&gt; <nicholas> stefan: I doubt if I can do a full FT2--&gt;PSDK system in that time.<br>
+[11:31:20] &lt;</nicholas><font color="slategray">njs</font>&gt; <njs> hmm, nicholas should really read the logs, if someone has them...<br>
+[11:31:35] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> nicholas: oh and btw, see the </neiljp><a href="http://issues.fresco.org/task38">task38</a> comment I made...<br>
+[11:31:37] &lt;<font color="blue">stefan</font>&gt; <stefan> nicholas: njs suggested we get a more fine-grained definition of 'make text work'...<br>
+[11:31:41] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> neiljp: yeah i got it.<br>
+[11:31:50] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> stefan: i'm starting with just fonts.<br>
+[11:32:08] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> stefan: the deal being that everything will revolve around using a freetype2 face to render.<br>
+[11:32:16] &lt;</nicholas><font color="brown">BenB</font>&gt; <benb> why is the comment field so small (5 rows)?<br>
+[11:32:18] &lt;</benb><font color="maroon">sdt</font>&gt; <sdt> neiljp: I can't reproduce that<br>
+[11:32:32] &lt;</sdt><font color="maroon">sdt</font>&gt; <sdt> neiljp: pressing ESC doesn't quit the client though, but I don't remember if that's normal.<br>
+[11:32:37] &lt;</sdt><font color="slategray">njs</font>&gt; <njs> nicholas: wait, freetype solves font unification?<br>
+[11:32:38] &lt;</njs><font color="green">nicholas</font>&gt; <nicholas>
+ stefan: what we're going to do after that, is pull the freetype2 face out
+of the drawingkit, and into corba-space, by writing a wrapper around nearly
+*all* of the face functions.<br>
+[11:32:48] &lt;</nicholas><font color="slategray">njs</font>&gt; <njs> nicholas: (I'm assuming that's what a "face" is)<br>
+[11:32:51] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> sdt: no, that's </neiljp><a href="http://issues.fresco.org/task57">task57</a> iirc<br>
+[11:32:52] &lt;<font color="green">hunger</font>&gt; <hunger> njs: Nope.<br>
+[11:32:56] &lt;</hunger><font color="green">nicholas</font>&gt; <nicholas> njs: no, a face is just a font.<br>
+[11:32:57] &lt;</nicholas><font color="maroon">sdt</font>&gt; <sdt> ok.<br>
+[11:33:00] &lt;</sdt><font color="maroon">sdt</font>&gt; <sdt> then I can't reproduce<br>
+[11:33:03] &lt;</sdt><font color="slategray">njs</font>&gt; <njs> nicholas: oh, okay.<br>
+[11:33:13] &lt;</njs><font color="green">hunger</font>&gt; <hunger> njs: STSF and some others do.<br>
+[11:33:18] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> hunger: nod<br>
+[11:33:19] &lt;</njs><font color="purple">neiljp</font>&gt; <neiljp> sdt: ok, I'll have to try again...later ;|<br>
+[11:33:29] &lt;</neiljp><font color="green">nicholas</font>&gt; <nicholas>
+ stefan: then, we have ourselves a FontKit which prouces these CORBAized
+objects for the DrawingKits to use. This might also be the place to put font
+virtualization in, I'm not sure yet.<br>
+[11:33:29] &lt;</nicholas><font color="slategray">njs</font>&gt; <njs> (yay, stow got installed on purcel)<br>
+[11:34:08] &lt;</njs><font color="green">nicholas</font>&gt; <nicholas> stefan: then either the textkit or fontkit will provide decorators for font selection. (probably the textkit.)<br>
+[11:34:29] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: What is the task the fontkit solves?<br>
+[11:34:43] &lt;</hunger><font color="green">nicholas</font>&gt; <nicholas> hunger: unified rendering across CORBA-space.<br>
+[11:34:57] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> hunger: all drawingkits render that corba object, basically.<br>
+[11:34:57] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: CORBA space?<br>
+[11:35:16] &lt;</hunger><font color="green">nicholas</font>&gt; <nicholas> hunger: right. so you can load a font on a different machine than the one that renders it.<br>
+[11:35:19] </nicholas><i> * </i><font color="slategray">njs</font> starts editing the M2 page, nobody else touch it for a bit... <br>
+[11:35:48] &lt;<font color="green">hunger</font>&gt; <hunger> nicholas: That assumes all DKs can render the same fonts exposed via the FontKit?<br>
+[11:35:53] &lt;</hunger><font color="green">nicholas</font>&gt; <nicholas> hunger: because you just call "rendertobitmap" on the corba object. (or whatever the ft2 people called it, i forget.)<br>
+[11:36:00] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> hunger: yes. they all will, by definintion.<br>
+[11:36:15] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> hunger: that's what i'm doing. making everything render freetype2 fonts and discarding anything else.<br>
+[11:36:21] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: Is rendertobitmap enough?<br>
+[11:36:25] &lt;</hunger><font color="green">nicholas</font>&gt; <nicholas> hunger: no.<br>
+[11:36:35] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> hunger: which is why we're wrapping *all* of the FTFont API.<br>
+[11:36:42] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: How do you want to habdle effects on fonts?<br>
+[11:36:50] </hunger><i> * </i><font color="slategray">njs</font>
+ shudders at the amount of stuff that has to be exposed via CORBA if we continue
+to insist on rendering over it... it's even worse if we want color support
+too. <br>
+[11:37:08] &lt;<font color="green">nicholas</font>&gt; <nicholas> hunger: not sure. you mean like underlined text?<br>
+[11:37:35] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: Like perspective projection of text, etc.<br>
+[11:37:52] &lt;</hunger><font color="green">nicholas</font>&gt; <nicholas> hunger: oh! oh. Like we (don't currently) support perspective projection of anything else.<br>
+[11:37:53] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: All those nasty non-affine transformations Corel Draw allows:-)<br>
+[11:38:02] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> what's the "no font -&gt; weird crash" bug?<br>
+[11:38:08] &lt;</njs><font color="green">nicholas</font>&gt; <nicholas> hunger: which will be to set the projection matrix in the drawingkit3d.<br>
+[11:38:34] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> nicholas: ah, speaking of projection...<br>
+[11:38:55] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> nicholas: I don't think it's such a good idea to leave that to the 3DDK...<br>
+[11:38:59] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> does anybody have plans for work on 3D stuff (picking, perspective drawing, PrimitiveKit, etc.)<br>
+[11:39:02] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> hunger: wrapping text around a circle isn't really well defined, as far as I can find.<br>
+[11:39:14] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> stefan: not me, not soon.<br>
+[11:39:23] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: You will want to have a voctor drawing application outside the 3DDK too, don't you?<br>
+[11:39:38] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> steveh: want to get involved in fresco ? :-)<br>
+[11:40:02] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> hunger: Well, if you want to be the guy who supports this in libartDK, go right ahead...<br>
+[11:40:38] &lt;</nicholas><font color="indigo">steveh</font>&gt; <steveh> stefan: maybe :) I'll see if I have time.. need to see how big a job it is to add the OBBs<br>
+[11:40:54] </steveh><i> * </i><font color="purple">neiljp</font> wonders what an OBB is <br>
+[11:40:56] &lt;<font color="maroon">oxygene</font>&gt; <oxygene> njs: change your font path to an empty directory<br>
+[11:41:02] &lt;</oxygene><font color="indigo">steveh</font>&gt; <steveh> Oriented Bounding Box<br>
+[11:41:02] &lt;</steveh><font color="maroon">oxygene</font>&gt; <oxygene> njs: try to start a client using fonts<br>
+[11:41:07] &lt;</oxygene><font color="purple">neiljp</font>&gt; <neiljp> steveh: ah :)<br>
+[11:41:24] &lt;</neiljp><font color="slategray">njs</font>&gt; <njs> oxygene: I know what happens, I'm wonderin gthe bug number :-)<br>
+[11:41:25] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> steveh: if so, let us know, so we can work out 'bytesize' chunks so it can be done one thing at a time.<br>
+[11:41:48] </stefan><font color="purple">neiljp</font> changes name to <font color="purple">neilp_afk</font><br>
+[11:41:50] &lt;<font color="blue">stefan</font>&gt; <stefan> steveh: i.e. you don't need to commit to a work that takes months<br>
+[11:42:01] &lt;</stefan><font color="indigo">steveh</font>&gt; <steveh> stefan: will do<br>
+[11:42:05] &lt;</steveh><font color="green">nicholas</font>&gt; <nicholas> stefan: we need to change the region to be an obb anyways.<br>
+[11:42:06] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> steveh: ...and others can join in, too.<br>
+[11:42:08] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: to fix clipping.<br>
+[11:42:09] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: Why do you want to keep the FontKit separate from the DrawingKit? Code reuse?<br>
+[11:42:10] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> steveh: excellent !<br>
+[11:42:23] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> nicholas: yeah, I know.<br>
+[11:42:39] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> hunger: device independent rendering?<br>
+[11:42:46] &lt;</njs><font color="green">nicholas</font>&gt; <nicholas> hunger: no. Because a Real Client should be able to get access to these things.<br>
+[11:42:54] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: Is that really a Kit at all? We'll want to have several such 'Kits' I think.<br>
+[11:43:01] &lt;</hunger><font color="slategray">njs</font>&gt; <njs> nicholas: that's not enough to fix clipping; we need basically arbitrary clipping regions for that...<br>
+[11:43:02] &lt;</njs><font color="green">nicholas</font>&gt; <nicholas> hunger: and they're not drawingKit specific anyways. So why hide them in that interface?<br>
+[11:43:15] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> njs: true. i know. i don't know what to do about it.<br>
+[11:43:17] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> njs: right, but there is no clipping without.<br>
+[11:43:17] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> nicholas: Right.<br>
+[11:43:45] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> njs: or are you thinking of these 'micro tile arrays' again ? :-)<br>
+[11:44:04] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: ?<br>
+[11:44:23] &lt;</njs><font color="brown">BenB</font>&gt; <benb> ok, I moved all open bugs on SF to the new issuetracker<br>
+[11:44:25] &lt;</benb><font color="blue">stefan</font>&gt; <stefan> njs: oh sorry, that wasn't related to clipping, or was it ?<br>
+[11:44:29] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> "</njs><stefan> njs: right, but there is no clipping without." &lt;-- don't understand this at all<br>
+[11:44:35] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> njs: (graydon brought that up once)<br>
+[11:44:53] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> njs: ah. Well, real clipping needs oriented bounding boxes<br>
+[11:44:53] &lt;</stefan><font color="indigo">steveh</font>&gt; <steveh> stefan: what's graydon up to these days?<br>
+[11:45:07] &lt;</steveh><font color="blue">stefan</font>&gt; <stefan> steveh: no idea. Working on compiler stuff for RedHat.<br>
+[11:45:12] &lt;</stefan><font color="indigo">steveh</font>&gt; <steveh> stefan: nice<br>
+[11:45:14] &lt;</steveh><font color="slategray">njs</font>&gt; <njs>
+ stefan: micro tile arrays are neat, and I think we _might_ be able to use
+them effectively (though not while drawing is CORBAified), but they're for
+imprecise damage calculation, not precise clipping.<br>
+[11:45:19] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> steveh: it has been a while since I last talked to him.<br>
+[11:45:28] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: real clipping needs a lot more than oriented bounding boxes, is what I was saying.<br>
+[11:45:32] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: yeah<br>
+[11:43:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> PostScript allows you to clip to anything you can draw to.<br>
+[11:43:00] &lt;</nicholas><font color="indigo">steveh</font>&gt; <steveh> are we talking about clipping or culling?<br>
+[11:43:00] &lt;</steveh><font color="blue">stefan</font>&gt; <stefan> njs: yes, and I replied that it needs obbs too. Even though that is not enough.<br>
+[11:43:00] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> steveh: clipping<br>
+[11:44:00] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: ah<br>
+[11:44:00] &lt;</njs><font color="green">nicholas</font>&gt; <nicholas> which includes stuff like text. so you can draw patterns in text this way.<br>
+[11:44:00] &lt;</nicholas><font color="indigo">steveh</font>&gt; <steveh> ok<br>
+[11:44:00] &lt;</steveh><font color="blue">stefan</font>&gt; <stefan> nicholas: ideally we'd be able to do the same for all DrawingKits. But for that we need a much better Region implementation.<br>
+[11:44:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: and a much better clipping API.<br>
+[11:45:00] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> nicholas: i.e. not only oriented bb, but shaped one, too. I guess that's what njs is alluding to all the time :-)<br>
+[11:45:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: yep.<br>
+[11:45:00] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> stefan: in 3-space, too<br>
+[11:45:00] &lt;</nicholas><font color="indigo">steveh</font>&gt; <steveh> heh, you're not asking much are you? :)<br>
+[11:45:00] &lt;</steveh><font color="blue">stefan</font>&gt; <stefan> nicholas: uh, what can't a 'clipping API' just be a Region interface with drawingkit-&gt;clipping(my_region) ?<br>
+[11:45:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: that depends. what's a region?<br>
+[11:45:00] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> nicholas: s/what/why/<br>
+[11:46:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: because if it's an entirely arbitrary shape, we can replace drawpath with draw_region too.<br>
+[11:46:00] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> stefan: and the same with draw_char while we're at it.<br>
+[11:46:00] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> nicholas: ouch<br>
+[11:46:00] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> nicholas: :)<br>
+[11:46:00] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> ok, let's get back to earth, before we get totally lost.<br>
+[11:46:00] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> bah !<br>
+[11:47:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> did we already discuss receiving donations?<br>
+[11:47:00] &lt;</nicholas><font color="slategray">njs</font>&gt; <njs> nicholas: yes; any thoughts?<br>
+[11:47:00] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> nicholas: yes, a little. The point came up because someone wanted to send me 50 $.<br>
+[11:48:00] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> nicholas: I suggested to just send the money to mourad, as he had the most expenses for verisign last year.<br>
+[11:48:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas>
+ it's just that the FSF has us listed as a GNU project on some page, complete
+with a link to donate.fsf.org. But that $$ wouldn't get to us since we declined
+to be a GNU project, would it.<br>
+[11:48:00] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> nicholas: though that doesn't answer the real question...<br>
+[11:48:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: good idea.<br>
+[11:48:00] &lt;</nicholas><font color="slategray">njs</font>&gt; <njs> nicholas: ?  what page?<br>
+[11:48:00] &lt;</njs><font color="green">nicholas</font>&gt; <nicholas> njs: just a second...<br>
+[11:48:00] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> huh ?<br>
+[11:48:00] &lt;</stefan><font color="teal">waldi</font>&gt; <waldi> hmm, doesn't spi do that work?<br>
+[11:48:00] &lt;</waldi><font color="blue">stefan</font>&gt; <stefan> we should complain about that then.<br>
+[11:48:00] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> www.gnu.org/directory/GUI/fresco.html<br>
+[11:48:00] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> no........<br>
+[11:49:00] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> yeah, there it is. at the very very bottom.<br>
+[11:49:00] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> "Please consider donating to the FSF to help support this project."<br>
+[11:49:00] &lt;</nicholas><font color="slategray">njs</font>&gt; <njs> waldi: that's an option, but they're in such disarray right now that it's not really feasible.<br>
+[11:51:53] &lt;</njs><font color="green">hunger</font>&gt; <hunger>
+ nicholas: We should sit down and hammer out the Texthandling once and for
+all (or at least for the next couple of milestones) one of these days.<br>
+[11:51:56] &lt;</hunger><font color="slategray">njs</font>&gt; <njs>
+ nicholas: that's the sentence after "The FSF provides this directory as
+a service to the free software community."  "this project" == "the directory",
+not fresco.<br>
+[11:52:00] &lt;</njs><font color="maroon">sdt</font>&gt; <sdt> hm, I think missed some<br>
+[11:52:04] &lt;</sdt><font color="blue">stefan</font>&gt; <stefan> nicholas: bah. That's a bit, uhm, demagogical, isn't it ?<br>
+[11:52:20] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> njs: hm. i suppose...<br>
+[11:52:23] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> njs: yes, but that isn't really clear.<br>
+[11:52:29] &lt;</stefan><font color="green">hunger</font>&gt; <hunger> What did I miss?<br>
+[11:52:35] &lt;</hunger><font color="green">nicholas</font>&gt; <nicholas> hunger: http://www.gnu.org/directory/GUI/fresco.html<br>
+[11:52:45] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> nicholas: I know that link:-)<br>
+[11:52:46] &lt;</hunger><font color="green">nicholas</font>&gt; <nicholas> hunger: at the bottom of the page, they say "Please consider donating to the FSF to help support this project."<br>
+[11:52:50] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> hunger: oh, we just decided to start over from scratch, and change the project name while we are at it.<br>
+[11:52:52] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> hunger: but we're not a GNU project.<br>
+[11:53:04] &lt;</nicholas><font color="maroon">oxygene</font>&gt; <oxygene> hunger: what about collecting everything about the textkit we already have and posting it as RFC?<br>
+[11:53:05] &lt;</oxygene><font color="green">nicholas</font>&gt; <nicholas> hunger: njs points out that the "project' they're refering to isn't us, but the directory system.<br>
+[11:53:05] &lt;</nicholas><font color="slategray">njs</font>&gt; <njs> but as I pointed out, nicholas is misreading it :-)<br>
+[11:53:32] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: well, it's actually quite easy to misread it :-/<br>
+[11:53:50] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> njs: since we are listed as  GNU project, people will think that the money will find its way to us.<br>
+[11:53:57] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> okay, lots of changes to http://wiki.fresco.org/M2 saved, other people can edit it now :-)<br>
+[11:54:12] &lt;</njs><font color="slategray">njs</font>&gt; <njs> stefan: we aren't listed as a GNU project.<br>
+[11:54:21] &lt;</njs><font color="slategray">njs</font>&gt; <njs> "Licensed under LGPL terms. This is not a GNU package."<br>
+[11:54:24] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: ah, nice (the M2 page)<br>
+[11:54:35] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> which reminds me. I'd like some help with the Freetype2+openGL system, wrt. performence.<br>
+[11:54:44] &lt;</nicholas><font color="green">hunger</font>&gt; <hunger> oxygene: There's lots of Wiki-Pages about the TExtKit.<br>
+[11:54:56] &lt;</hunger><font color="green">hunger</font>&gt; <hunger> oxygene: Nobody ever bothers to read them I think...<br>
+[11:54:59] </hunger><font color="purple">neilp_afk</font> has joined #fresco<br>
+[11:54:59] <font color="gray">velco</font> has joined #fresco<br>
+[11:54:59] <font color="red">golbez</font> has joined #fresco<br>
+[11:55:03] &lt;<font color="green">nicholas</font>&gt; <nicholas>
+ Currently, we re-render every character every time, even when we don't need
+to. This needs to be cached. Who knows how this stuff works?<br>
+[11:55:13] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> (where render = freetype rasterize)<br>
+[11:55:19] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> nicholas: oh.<br>
+[11:55:29] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> nicholas: well, the libart DK shows how to cache the glyphs<br>
+[11:55:44] &lt;</stefan><font color="slategray">njs</font>&gt; <njs>
+ stefan: and the donate link is in the footer text, after a hline and a whole
+paragraph that's entirely about the directory and explicitly _not_ about
+the project.<br>
+[11:55:46] &lt;</njs><font color="green">nicholas</font>&gt; <nicholas> stefan: ok. they cache per character-size too?<br>
+[11:55:57] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> nicholas: may be we can generalize that little glyph rendering framework...<br>
+[11:56:04] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> nicholas: yes, and per matrix<br>
+[11:56:10] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> stefan: excellent.<br>
+[11:57:19] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> stefan: are you the person to bother when I can't make it work right?<br>
+[11:57:20] &lt;</nicholas><font color="slategray">njs</font>&gt; <njs>
+ raph levien has been known to opine that caching screen parallel glyphs
+makes sense, caching non-screen parallel glyphs generally doesn't.<br>
+[11:57:38] &lt;</njs><font color="blue">stefan</font>&gt; <stefan>
+ nicholas, njs: we should make the 'textkit' task dependent on this task,
+so people can see that we get along, one sub-task at a time.<br>
+[11:57:49] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: yes<br>
+[11:58:01] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: why ? because they are rare ?<br>
+[11:58:07] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> Who has logs and can format them in HTML?<br>
+[11:58:10] &lt;</njs><font color="slategray">njs</font>&gt; <njs> stefan: yes<br>
+[11:58:17] &lt;</njs><font color="blue">stefan</font>&gt; <stefan> njs: that's something a caching strategy should take care of, i.e. it should be parametrizable.<br>
+[11:58:24] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> stefan: it doesn't make sense to waste memory caching things that happen that rarely :-)<br>
+[11:58:28] &lt;</njs><font color="green">hunger</font>&gt; <hunger> njs: Mine are incomplete due to the netsplit.<br>
+[11:58:49] &lt;</hunger><font color="blue">stefan</font>&gt; <stefan> njs: but that 'decision' can be left to a strategy, such as 'LFU', 'LRU', etc.<br>
+[11:59:03] &lt;</stefan><font color="blue">stefan</font>&gt; <stefan> njs: (i.e. an evictor...)<br>
+[11:59:04] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> I have a slight gap<br>
+[11:59:50] &lt;</sdt><font color="green">nicholas</font>&gt; <nicholas> hunger: I'll mail you the bit in the gap...<br>
+[11:59:52] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> sdt: ?<br>
+[12:16:38] &lt;</stefan><font color="maroon">sdt</font>&gt; <sdt> in perl if you don't mind, it's been too long for python :)<br>
+[12:16:39] &lt;</sdt><font color="brown">BenB</font>&gt; <benb> nicholas: you<br>
+[12:16:44] &lt;</benb><font color="blue">stefan</font>&gt; <stefan> BenB: I hope you coordinated with hunger, who moved all bugs from sf to fresco, too.<br>
+[12:16:50] &lt;</stefan><font color="green">nicholas</font>&gt; <nicholas> BenB: i forget. i'll see about it. later.<br>
+[12:16:54] &lt;</nicholas><font color="green">nicholas</font>&gt; <nicholas> BenB: me?<br>
+[12:17:04] &lt;</nicholas><font color="blue">stefan</font>&gt; <stefan> sdt: I don't care :-)<br>
+[12:17:07] &lt;</stefan><font color="brown">BenB</font>&gt; <benb> stefan: hunger told me that he didn't touch my bugs.<br>
+[12:17:17] &lt;</benb><font color="blue">stefan</font>&gt; <stefan> BenB: ah, good, so you did coordinate :-)<br>
+[12:17:24] &lt;</stefan><font color="slategray">njs</font>&gt; <njs> hunger left all BenB's bugs, though, IIRC<br>
+[12:17:25] &lt;</njs><font color="brown">BenB</font>&gt; <benb> nicholas: you should close that last SF bug, it's yours.<br>
+[12:17:38] &lt;</benb><font color="green">nicholas</font>&gt; <nicholas> wow. it worked.<br>
+[12:17:38] &lt;</nicholas><font color="brown">BenB</font>&gt; <benb> stefan: heh<br>
+[12:17:57] </benb><i> * </i><font color="blue">stefan</font> goes out for lunch <br>
+[12:18:16] &lt;<font color="blue">stefan</font>&gt; <stefan> thanks for joining in ! It's fun to meet you all, and sure a motivation boost :-)<br>
+</stefan></rajan></njs></rajan></neiljp></stefan></starseeker></neiljp></njs></hunger></neiljp></benb></njs></rajan></neiljp></stefan></njs></hunger></neiljp></njs></stefan></stefan></njs></stefan></njs></benb></benb></neiljp></hunger></oxygene></njs></rajan></neiljp></stefan></stefan></rajan></hunger></stefan></benb></benb></rajan></rajan></njs></benb></hunger></neiljp></rajan></njs></hunger></stefan></neiljp></njs></hunger></njs></rajan></benb></njs></neiljp></hunger></njs></stefan></neiljp></njs></stefan></rajan></stefan></hunger></hunger></njs></rajan></njs></neiljp></stefan></rajan></benb></neiljp></neiljp></njs></rajan></benb></rajan></njs></rajan></neiljp></stefan></njs></hunger></rajan></starseeker></njs></stefan></stefan></stefan></njs></rajan></stefan></rajan></njs></hunger></rajan></oxygene></oxygene></njs></rajan></stefan></hunger></benb></njs></hunger></oxygene></stefan></oxygene></benb></hunger></stefan></hunger></benb></oxygene></benb></stefan></hunger></benb></stefan></neiljp></benb></steveh></stefan></njs></stefan></benb></hunger></njs></benb></hunger></benb></benb></hunger></hunger></benb></hunger></benb></benb></neiljp></stefan></benb></stefan></neiljp></benb></neiljp></hunger></stefan></benb></neiljp></benb></hunger></stefan></hunger></benb></velco></benb></stefan></stefan></hunger></njs></neiljp></dsevill4></neiljp></neiljp></stefan></dsevill4></neiljp></hunger></stefan></stefan></neiljp></neiljp></hunger></benb></stefan></stefan></hunger></stefan></hunger></dsevill4></oxygene></velco></stefan></velco></stefan></hunger></oxygene></benb></dsevill4></stefan></dsevill4></dsevill4></stefan></hunger></hunger><h3>Participants</h3>
+<table>
+<tbody><tr><th>Nick</th><th>First occurence at</th><th>Number of messages</th></tr>
+<tr bgcolor="brown"><td><font color="white">BenB</font></td><td><font color="white">09:02:08</font></td><td><font color="white">64</font></td></tr>
+<tr bgcolor="blue"><td><font color="white">JonasAm</font></td><td><font color="white">11:30:40</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="darkcyan"><td><font color="white">LordVan</font></td><td><font color="white">11:12:15</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="indigo"><td><font color="white">Phython</font></td><td><font color="white">10:59:28</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="brown"><td><font color="white">bigthor</font></td><td><font color="white">09:40:18</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="darkcyan"><td><font color="white">bughunter_away</font></td><td><font color="white">09:16:13</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="purple"><td><font color="white">crimsun</font></td><td><font color="white">10:14:25</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="red"><td><font color="white">dsevill4</font></td><td><font color="white">08:59:22</font></td><td><font color="white">6</font></td></tr>
+<tr bgcolor="slategray"><td><font color="white">genesfra</font></td><td><font color="white">10:51:55</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="red"><td><font color="white">golbez</font></td><td><font color="white">11:54:59</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="green"><td><font color="white">hunger</font></td><td><font color="white">08:58:07</font></td><td><font color="white">170</font></td></tr>
+<tr bgcolor="purple"><td><font color="white">neiljp</font></td><td><font color="white">09:05:53</font></td><td><font color="white">129</font></td></tr>
+<tr bgcolor="green"><td><font color="white">nicholas</font></td><td><font color="white">11:25:47</font></td><td><font color="white">65</font></td></tr>
+<tr bgcolor="slategray"><td><font color="white">njs</font></td><td><font color="white">09:08:15</font></td><td><font color="white">161</font></td></tr>
+<tr bgcolor="maroon"><td><font color="white">oxygene</font></td><td><font color="white">09:02:20</font></td><td><font color="white">23</font></td></tr>
+<tr bgcolor="red"><td><font color="white">philbo</font></td><td><font color="white">09:30:04</font></td><td><font color="white">7</font></td></tr>
+<tr bgcolor="teal"><td><font color="white">rajan</font></td><td><font color="white">09:17:31</font></td><td><font color="white">24</font></td></tr>
+<tr bgcolor="gray"><td><font color="white">rubberpaw</font></td><td><font color="white">10:01:44</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="maroon"><td><font color="white">sdt</font></td><td><font color="white">09:49:49</font></td><td><font color="white">70</font></td></tr>
+<tr bgcolor="blue"><td><font color="white">soyt</font></td><td><font color="white">09:20:11</font></td><td><font color="white">0</font></td></tr>
+<tr bgcolor="green"><td><font color="white">starseeker</font></td><td><font color="white">09:18:06</font></td><td><font color="white">20</font></td></tr>
+<tr bgcolor="blue"><td><font color="white">stefan</font></td><td><font color="white">08:58:56</font></td><td><font color="white">247</font></td></tr>
+<tr bgcolor="indigo"><td><font color="white">steveh</font></td><td><font color="white">09:12:54</font></td><td><font color="white">9</font></td></tr>
+<tr bgcolor="gray"><td><font color="white">velco</font></td><td><font color="white">09:02:38</font></td><td><font color="white">3</font></td></tr>
+<tr bgcolor="teal"><td><font color="white">waldi</font></td><td><font color="white">11:13:51</font></td><td><font color="white">2</font></td></tr>
+</tbody></table>
+</body></html>

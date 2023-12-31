@@ -1,0 +1,825 @@
+<html><head><title>IRC Meeting Log on #berlin (Fri Mar 12 20:51:43 1999)</title><body bgcolor="white"><h2>#berlin (Fri Mar 12 20:51:43 1999)</h2><table><tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>hi :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  jonas [c98ja1@erie.cs.cse.dmu.ac.uk] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>ehlo everyone</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hi Jonas !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>seems a lot are in early :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>whois crashcut?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>&lt;- spectator ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>i've been fiddling around with povray a bit to make a trailer for berlin</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>....</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: did you play a bit with DrawingKits and such ? What about my version ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>I got the archive from you, looks pretty good. I've been pretty bugged by coursework lately :(</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>a <u>lot</u> of directories in src/ now :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>whatis src/Figure ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: yeah, understand. I ment in the time before your move.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>Ah, I did simple preliminary work on extracting the drawing into a drawingKit (using GGI), I sent a patch to graydon but it seems it has been imported.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>The most interesting thing was my work on commands and messages</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: Figure is ment to keep all the <em>real</em> structured graphics primitives (lines, circles, etc.) together with a unidraw port, manipulators, tools, visitors etc.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>started working with out-of-libwarsaw messages and commands (partic. the skeletons)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>Figure, don't really understand.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: hmmm, what we want is a nice blending of structured graphics and widgets related stuff. Well, the basic types and algorithms go into the Berlin directory, the widgets into the WidgetKit, the geometry things (incl. Editor framework like unidraw) go into the FigureKit. Well, it doesn't matter that much at the moment, it is a separated Kit which not everyone needs to use, so...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>So the FigureKit (unidraw) is another layer on top of DrawingKit?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: historically in Interviews there was a special library (a Kit) for structured graphics. Then came the framework for domain specific editors (unidraw). Fresco seems to have unified both together into the FigureKit</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: no !!! Figures are dirived from Graphic. That means they <em>use</em> a DrawingKit for redrawing themselvs, they have nothing to do with DK otherwise.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>Ahh, so I can create a circle object instead of telling my drawingKit to draw a circle?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: right. The difference is that the circle object is intelligent. It knows all the protocols I implemented in Graphic, it is a real node of a scene graph while a circle from DrawingKit is nothing but a round path filled with a certain color.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>pre-uni, I also did some work on composites - making a composite command for distributing events to "child"-widgets instead of widgets having to check their coords</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>also translated the event into widget-space</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>pretty simple, but showed me we still need some work on allowing to plug in new messages,commands, etc</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>stefan, ok I understand FigureKit now :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: hmm, with respect to event delivery: I think there are two types of events: pointer based or focus based.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>woops</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>you know i forgot about this meeting</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>oh wait, it's not for 15 minutes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>bbiab :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>Jordy: not startd yet, we</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>we're just going ahead :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: focus based is simple since the server knows which widget has the focus so which widget should receive a KeyEvent for example. But it's difficult with positional events. Then the (composite) will start a PickTraversal to find the child widget which should receive the event. With this information the parent can send the event to the respective child if it's interested.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>stefan, correct this was compositeClickCommand.so - also showed me how we should change some of our ctors to call parent ctors in order to bind their default commands.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>my compositClick simply bound to all three click and release messages and either sent it on or called a "ImTheRecipient" command</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: are you already logging ? If not, could you do it ?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Alain [Woody@66-107.dr.cgocable.ca] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td><em>testbla</em></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Alain: fine, thanks !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>ok... i logged everything since 20:15</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>(local time)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  mccaffrey.openprojects.net 921285552 17278  Friday March 12 1999 -- 14:51 -05:00 </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>So if anyone has any questions with respect to the new code, it's all my fault...;-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>umm...i don't think i have any,just wanted to check how's the development is going</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>alrighty</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>back</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>ordered pizza</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: after the last mail from Graydon in the Repository thread I had a look into the XSL documentation. What do you think about this kind of storage model ?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Jordy has changed the topic on channel #berlin to: Meeting at 3:00 PM EST, 8:00 PM UTC, 12:00 PM PST </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>only time zones i know :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i thought XSL was a style sheets extension for XML and had to do with positioning and the "look" rather than the definition</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>stefan, I think we should do a killer XSL and then get the $90K for the Berlin consortium ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: :-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>XML being the actual definition, XSL being complimentary to it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>stefan, did you see the slashdot post? :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>look like i'll have to learn how to code a ggi driver for my chipset,there's nothing for SiS on the ggi cvs tree</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i am lucky, i have a Matrox, i have FB and GGI drivers</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>Alain: coding it is the easy part - getting the driver spec, now that takes a man! :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: not that I understood anything but my impression was that XSL can store (scoped) attributes. That's all we need, isn't it ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>jordy--forgot the fb dev,my card does support vesa 2.0</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>alian: that'll work, just run fbdev, and libggi with target for fbdev</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>stef: well that's what DOM is for isn't it? :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>all these technologies get confusing</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: oh yes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>XSL is a style sheet technology</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>jonas--i think the spec are released,xfree 3.3.3 does have a driver for my chipset</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>XSL stands for Extensible Stylesheet Language</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>so we know it's for style sheets, which describe the "look" of a document</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>XML describes the actual data</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and DOM provides a storage model</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: the point is that it's used in different contexts. I thought that we could use the same engine (XSL) to read docs and to read/write the repository.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>the CVS repository?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>you know there's another new technology that they want to replace that with :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>that they want to use for everything from web page development to code development</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: from an abstract point of view it can be used just to store attributes, even if not related to documents at all.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: no, I ment the registrar data base :-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>oh</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>that's what you are talking about</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Jordy isn't quite "here" </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>did anybody see /usr/bin (I think) on BeOS - it contains a registrar exe. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>well the problem is flat file databases simply don't work for anything &gt; 2000 settings to store persistant data</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>jonas: really?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>might need to rename it :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i was thinking of calling it SettingsKit :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: :-)))</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i still need to implement the virtual database layer so you can plug in different backends</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>once i get wine to run some windows apps i can actually do that :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>why wine?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i need ms access on a daily basis</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i hate rebooting</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>ic</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>last question (after that,i'm in lurker mode),is there a place to get deb's or rpm who's isn't in the debian (or RH) distribution (like the xserver-fbdev) ??</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>is there no ms access equivalent for unix?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: but seriously: I thought (until the post from Graydon) that an IDL interface similar to that of Fresco with the types StyleContext and StyleValue would give a sufficient interface to the registrar, that's why my post about that...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>crash: nothing which can read the actual database files, my problem is people send me access database files, then i need to export them to my mysql database</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>wtf what is the fresco web page?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>er</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>where is</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>typing one question then i typed another</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>wher eis the fresco web page</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i need to read up on it, you people keep making references to it and i don't quite understand :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: just follow the link from <em>our</em> home page :-) And then follow the link to documentation, you'll be amazed !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>oh, haha</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Jordy doesn't go to our we page much :) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>here we go</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i'm trying to migrate to emacs, but man</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: be warned, the docs are created with sgml tools, so the hard copy versions are a bit buggy (figures which don't fit in the page etc.)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: get xemacs is much better (IMHO)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hard copy versions?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>jonas: that's what i mean, i'm not used to emacs in genearl :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>general even</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jorda: ps</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Jordy doesn't print anything :) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: you could download Fresco docs (ref man and tutorial) as postscript, pdf or html. Only html are clean.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>html good, postscript evil, pdf ok</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: it will take a little time - but you'll love it, many of the keybindings are <u>every</u> in Linux (bash, gnome, etc)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i don't mind pdf because the adobe viewer is actually legible</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>the berlin web site is down</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: just run the C-h C-t (ctrl+h, ctrl+t) I believe this will show a small tutorial</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>lots of mirrors alian</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  MenTaLguY [tcole@cc812197-a.owml1.md.home.com] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>www.de.berlin-consortium.org</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>good evening.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>jordy--ok (i got it)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>www.es.berlin-consortium.org</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  MenTaLguY looks around </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>alain: I'm using the main site right now</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hi Mentalguy !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>jonas--my first 2 request timed out but i got it on the 3rd</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>jonas: well i'm not used to hitting alt for anything but accessing menus, people might think this is odd, but i do most of my linux programming in windows :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>I can't stay past maybe four, as I have an appointment with the dentist, fwiw.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>Jordy: how do you manage? unless you write obscenely portable code... I can never develop without a relatively tight code/compile/code/compile cycle</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i don't compile it under windows</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: that is odd :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Jordy uses samba to mount his linux devel box </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>then i open it up under borland's IDE</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>which is actually a sane editor</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>ahh. it begins to make more sense.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>then i go switch to my linux box and type 'make and run it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i can deal with borland, er inprise's IDE</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: you should definitely try out xemacs with all its nice modes !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>bleah. this lag is awful (I'm using another account on a friend's box, and he apparently didn't have EPIC .. I had to hunt it down and install it)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: xemacs give you color hi-lighting too, but also auto-indention (press tab and it indents) I can't live without it anymore - instant error check</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>I mean, telnet lag, mind you. openprojects.net seems to be doing fine.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>jonas: yeah, that's what borland does, cept borland is more graphical, ie, search/replace gives nice little dialog boxes :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  smkl [sami@ppp97.dial-in.verkkotieto.com] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>how scriptable is Borland's interface, though?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>plus search/replace requires less keystroke and borland will do a little LXR tricks, search the entire project</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>mental: i don't need it to be scriptable, i just need to be able to edit and indent with color highlighting :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: a reason to learn Perl :-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>that's all i need in life :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>holy wars...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i'm probably just odd, i have to be one of the only linux developers who actually programs under windows :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>well, if you want holy wars, I basically use vi (or a derivative) exclusively</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>so do i <em>g</em></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: C-s gives you search without need to open all those windows :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Mentalguy: no I'm not argueing this one :-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>mental: yeah, my problem is i can't stand taking my fingers off my home row of keys... so vi doesn't work for me csince i hate reaching for escape :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>I have a very detailed indention scheme that looks nice, but gets screwed up by autoindent stuff ... actually it doesn't even seem to be safe from vi's indention stuff</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  jonas comes running with water to put out the fire </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  esac [tim@tim.Desert.NET] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>Jordy: on the other hand escape is the only special key you'll need</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>uh, csh user :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>ie borland search == ctrl-f/words/enter</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>or f3</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>but i like ctrl-f since it's obviously easier :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>aha, consistency not only does C-s initiate the search but also find next ! :) Enough of this - you may have the last word :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>Jordy: but can you do :%s/move_dir(\([A-Za-z0-9]*\), *\([A-Za-z0-9]*\)/move_dir(</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>err,,,</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td><em>lol</em></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>shoot. stupid backspace where I don't expect it...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>er, enter where I expect backslsh, I mean.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>I hate this keyborad.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>yeah let's go talk about regexps...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>the touch is much too firm, and I can't type straight</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>is this ircserver efnet btw?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>anyway, the latest time that vi saved my ass was I had to change maybe 200 occurrences of things like move_dir(blah, foo, bar) to move_dir(&amp;blah, &amp;foo, &amp;bar) (migrating C++ code to C, and thus switching from refernces to pointers)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>no</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>crash: no.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>what else?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>openprojects.net is its own IRC network, basically.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>&lt;- doesn't speak good english =(</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>do a /list -- it's pretty small</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>ah... i see</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>crashcut: Nicht als slemmer als meine deutch (you get the idea) :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jonas: :-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>ok i got it =)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>anyway, i'll read up on this fresco tutorial </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>so is anyone working on more advanced widgets?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i have the urge to move mozilla over to corba</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>that would be decidedly interesting.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>not that hard since their xpcom shows me what interfaces to export</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: might be <u>a couple of days</u> before you can compile on Berlin :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: I'm working on very basic widget related stuff, I think we have to redesign this whole thing...</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  jonas doesn't now much about mozilla, but likes it. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>the problem is that mozilla doesn't have a font renderer built in, so we need one in berlin first</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>mm.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: I just commited a couple of subjects widgets will be connected to (as the controlling device)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>stefan: not totally - but it still needs a lot of work to allow properly extension, etc.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>well someone should make a big container widget for the desktop itself</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>whatever happened to that initial work done with freetype + GGI?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>it doesn't have to do anything but draw a big box and contain other widgets</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>donno mental, i think graydon has all that stuff working on his box</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: isn't this the job of Moscow, to decide actually what a desktop <em>is</em> ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>btw, while we're on the subject of widgets ... I don't have time to do this myself, but does anyone remember the "scroll container" widget I was pushing on the list a while back</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>stef: exactly, we'd be starting moscow</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>moscow <em>is</em> the desktop widget basically :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>well i guess moscow could contain all the widgets</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>that would make it less difficult to grasp :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: then give us a couple of months (I'd guess till the end of summer) and we can seriously start thinking about that.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>desktop: while it's still part of warsaw (root window) we need a lot more work on layout and basic widget hierarchy before we can make anything sane!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>maybe we should define some sort of proto-moscow framework that we can test in, but is very minimal so we can rip it out later without too much pain?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>yup - summer will hopefully be a big booster (with 3 months of vacation - no excuse is good :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i still we need a good PR person</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>if anyone is up for the task</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: we very much do, as long as we don't shoot ourselves in the foot (some flaming salesman with no product!)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>I'm like majorly too busy already; in addition to GGI and Berlin, I've "adopted" several other free software projects now too :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hell if everyone started putting the berlin web page url in their .sig's on slashdot, that'd almost be enough :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>I could do that.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  MenTaLguY does that </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: i'd better stop ac'ing then :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>jonas: yeah, but we need a few more developers... i mean look at gnome</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>gnome has almost 15x more developers than us :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and it's a tiny project compared to ours</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  crashcut would *love* to join but hasn't enough time =(( </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon [gray@shell1.interlog.com] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon good</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: I think we need to settle the structure of the project so that people can work on sub projects (like individual kits)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>rehi</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: we just need to work harder :) Don't get me wrong - but already we're having problems explaining our ideas to everyone :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>hi graydon</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>hey gray</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hi Graydon !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon, were you the one with the working font renderer? :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>sorry I'm late</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>in some ways, it might almost be nice to merge with Gnome.  same license and all.  just a very random thought.  I think really our scope is too different, though.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>graydon: want the log?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>is someone keeping a log?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td><em>smile</em></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon is coming n through a *very* lagged telnet connection from campus, so is nt going to be particularly *in tune* with the conversation </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i'm not sure what gnome is, i'm running gnome... but all it does for me is give me a pretty little tray :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>plus I can't keep a log here, so please someone else keep a log open.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  crashcut does. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>thanks</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>gray: I know the feeling -- telnet lag is killing me</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>graydon: want it by mail or dcc?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>ok, s am I barging in on a conversation or can I commence rambling about what's been happening recently?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>crashcut: email once the meeting is finished, if you don't mind</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>ok</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>no, ramble on, oh great one :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>i begun logging</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: I think you can simply set the topic and start</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Ok, cool</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: ramble about emacs, a little PR, some work on more widgets and uh, gnome :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has changed the topic on channel #berlin to: new stuff from fresco in CVS </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>ooo, new stuff?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>cool</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>yes, stefan wrote a <em>lot</em> of new code and modified large chunks of fresco after our meeting in montreal</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>the principal changes are that we have reconciled our views on how layout should be done (or at least the framework in which layout strategies are executed) and written the basic structures of the drawing kit and redraw algorithms</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>they are quite different from the style of thing in the firse 0.0 berlin, I'm hoping to lay down some really good documentation; for the time being you have to stick with the fresco tutorial, which is actually not bad</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>so we have data structures in IDL which represent layout requirement information</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>nifty</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>and layout is done incrimentally based on signals from objects which want to redraw. it's similar in feel to the drawing system; in fact, layout and drawing take place concurrently.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>have we introduced ourselves to the fresco people yet?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>just curious if we can steal of few of their developers :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>basically an object can call needredraw() or needreshape() on itself, and the appropriate type of traversal will take place</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: I once discussed with Thomas Hiller, which is the current maintainer</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>how do "3rd party" widgets fit into the Kit way?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>afaik fresco development dried up a couple years ago, but there are people who worked on it, and we should definitely try to stay in touch</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>needredraw() needreshape() take box arguments for partial redraw?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Lupuz [noone@sdu142-73.ppp.algonet.se] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>they also have some nice tools like ixx, their stub compiler and interface documentation tool. it churns out docbook</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>nifty</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: he seemed interested in whether we could merge but I don't know whether he is willing to do as much changes as I already introduced (and more will follow...!)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>btw, i think i'm going to LXR our source</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and set it up on a box to cvs co every few hours</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>if anyone isn't familiar with LXR, check out www.mozilla.org</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>LXR is the ultimate in cross-referencing tools</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>Jordy: as I don't have CVS here - it's welcome :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: needredraw() and needresize() really just start traversals. the arguments about which areas are damaged etc. are retrieved by the traversal as it proceeds over the graph.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>litterly, i didn't realize that my life was complete until I found LXR</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>er was incomplete</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>er ,well,actually I guess they fetch the area they're  and apply damage directly ttheregn which begins a traversal but yeah, this all needs thurough documentation</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: basically need&lt;&gt;() just damages a region. The traversal is postponed.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>ok, so needredraw() marks it's viewable dirty and forced a redraw, when? immediately or does it queue?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: it queues.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>is there a way to force an immediate redraw is what i'm trying to ask</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>since that would be useful for a few things</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: which ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>specificially i <em>KNOW</em> for a fact that mozilla requires force redraws for things like scroll bar controls</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>since i put it in :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>shyte ths keyboard s brked. wll swtchwrkstatns. :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>speaking of scroll bars, does anyone remember my scroll container proposal?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff graydon: #berlin (Read error to graydon[shell1.interlog.com]: EOF from client) </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron [aaronv@va.debian.org] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: the point to queue is to be able to optimize.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron puffs </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron puffs again </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>ehlo aaron</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hi Aaron !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>stefan: i know, but we need a way to force it to redraw, lemme think of an example</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>man have I had a <em>difficult</em> day</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Jordy thinks </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron pipes down and listens. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>I only have an hour ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>animation is particular example, animation may require a referesh more freq then our main redraw loop goes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>in particular, animation usually wants to be synched with the monitor refreshes, so every 60 Hz or so </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>really, probably what you want is to queue until something is queud that indicates to the optimizer (either explicitly or implicitly) to "flush" the queued stuff</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>probably implicitly</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: Hmm, if you have a thread sitting around and waiting only for damages so it can start a DrawTraversal, how can you want to spead this up ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>so, in the case of animation, you'd be pushing "criticality" events or something onto the queue?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>right, i'm thinking, queuenbr = markdirty(region); forcequeue(queuenbr);</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>or something similar</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>which would force it to redraw a certain region immediately</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>MenTaLguY:  if the graphic calls 'needs_redraw()' then it knows a cached region needs to be re-fetched....</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: I think a flush is possible (at least in the context of a separate redraw thread)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>mmm.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>stefan:  ok, so we're talking about truly animated regions such as those that use, say , opengl?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>stefan: i only say this because i we probably don't want to run the refresh queue at monitor freqs, since we couldn't do any optimization if your loop is going at 100 hz</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>but some things, like games will NEED to be updated more often than your queue wil run</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>Jordy:  games would benefit from bypassing corba entirely</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>Jordy:  games don't like being run under an async refresh environment.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>jordy: also only the game's part should be updated - hmm, drawing flush with priorities? :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: right. So yes, there are different possibilities to do that.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>well any animation will want to run faster than our queue will go i'd assume</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>so, you write a GGI target to Berlin that uses some SHM extension.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>Aaron: that's less a corba thing than a design thing, isn't it?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>MenTaLguY:  yes.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon [gray@shell1.interlog.com] has joined #berlin </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon sighs </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>sorry</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>hi again Graydon and better luck !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>you know, sometimes games would in fact benefit from async updates, though</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>MenTaLguY:  I'm just saying apps that want to be redrawn frequently won't benefit from berlin's flexibility as much, but would benefit more from some local extension that uses shared memory instead of CORBA</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>especially in cases where the machine is too slow to keep up with one update an engine cycle or something</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>yep mental, i donno.. i just figured a way to force an application to mark a region dirty and then force a synchronous redraw might benefit some people :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>so, stefan also took the opportunity to (a) flyweight all the graphics, so they are shared (the scene graph is now a scene DAG) and (b) introduce some coding standards like naming conventions etc.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>Aaron: couldn't you abstract that in some manner?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>well, then, you can still use GGI for a SHM target to berlin. whether the target is used asychronously or not is up to the app</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i guess</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>dudes, this is way off topic. we're not writing a drawing layer, we're writing a wrapper <em>around</em> drawing layers</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  MenTaLguY nods </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: we drifted while you were gone :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>that's what I meant about abstraction</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>hehe</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>alright, so where were we</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>ok, so what's the topic?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron just got here </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>ok, so there is a set of data types and an interface (very primitive) for drawing</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>we also moved many of the interfaces into kits</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>difference between an interface and a kit is what?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>graydon, do we have a proposed spec for the api posted anywhere?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>so there are far fewer .idl files</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>namespace {}?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>oh yeah, the IDL ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>no, a kit is a specialized factory which has static methods</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I'll give an example</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>the command kit (might be merged with reactor kit) makes commands</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>rather than using the genericFactory to produce commands, you have one object which has say a dozen static methods on it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>each of which returns simply a "command" object</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>gotcha</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>all the subclasses (redrawCommand, sendMessageCommand) etc. are gone</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>they are the method names on the object</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>graydon:  and each of these 'kits' is running in its own thread, as a reactor?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>ooh. sounds nice</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>commandKit-&gt;sendMessage() returns a command</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Aaron: no, it's just a factory object you create</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>the benefits are as follows:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>libwarsaw is half as big</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>so, kits are not themselves static</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>the kits can contain some internal state they share between objects they create, if it helps optimize</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>is there someone who know exactly if it's the right xserver i need for fbdev,i furriously searched for any documentation on this server and there is NONE: XFree86 virtual frame buffer server</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>it's isn't the same server as the FBdev</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>oh, I also looked at hacking omniidl to plit its output into client/server portions. this would half the size of warsaw again.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>drop by XFree86.org -- should be an fbdev server availible</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>the API is simpler, since you don't need to access the genericFactory by interface name and then downcast and configure the object</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>mentalguy--not in rpm or deb's </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>fir instance you can make the constructor method on the kit take all the meaningful parameters in one call</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>graydon:  thats pretty slick</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>good, keep the marshalling down to a minimum</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>i.e. commandKit-&gt;sendMessage(messageA, targetB)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: plus it makes the client code much simpler</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">jonas:</font></td><td>duh, labs shutting down :( guess I'll have to go with the log - later all! </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>bye jonas</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>I'll have to leave for the dentist in ten minutes. ugh.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>bye jonas</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>By Jonas !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>the only disadvantage is that it reduces slightly the level of granularity at which we allow swapping of components</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>but you can always rewrite a kit in smaller pieces</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff jonas: #berlin (Leaving) </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  crashcut still has a log running since 20:51 (compared to 21:54 now) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>so I don't think it's too big a deal.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>graydon:  CORBA solves that problem for us tho...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>alright... sounds fine to me</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>uhm... offtopic...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>the new coding convention is that classes and types are all beginning with upper case</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>www.cs.tu-berlin.de/~crashcut/crashcut.mpg (the berlin trailer preview)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>so if you look in the CVS repository, stefan introduced directories named with upper-case first letters</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>oh man, you changed the coding convention?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>those are the new code</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>good, there's a coding convention now ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>in particular, /include/Warsaw contains all the new interfaces</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>aaron: well we had one before, no one followed it, but :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>Jordy:  I never saw it stated anywhere</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>aaron: old mailing list archives</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>and the implementations are in upper-case names in /src</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>aaron: you don't even want to know how long we argued on that</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>Jordy:  well, the list archive is huge ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I've ported much of the last libwarsaw to /include/Warsaw and am primarily working in there now</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>now you are working on the main tree right?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>and will commence adapting /src/libberlin to work in stefan's implementations when I get sufficient free time</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>not on berlin_0.0.1 tag?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>graydon:  does all the .idl live there now?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>crashcut: <u>NICE</u> ... however, I don't like the way the panels or whatever intersect as they move into their final orientation</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Aaron: yes. </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron wishes he had an mpeg player </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>So, um, that's the big new issue</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>mentalguy, right... i'm working on that... as well on the fact that the triangles move to left finally...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>sounds </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>aaron, i recommend mpeg_play (apt-get install mpeg_play i think)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>I would like to stress <em>one</em> thing -- this trailer has no proof of concept yet, nobody hype it up <em>please</em> -- that creates way too much heat</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>crashcut: you should try having them spread vertically as they spin along their individual axes, and then come together and fold out like a hand of cards</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I want to assuage people's fears about the layout system; it does <em>not</em> specify a particular packingalgorithm or anything. it's just a framework for communicating layout requirements and operating a layout algorithm procedurally over the resizing nodes in </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>Aaron: yes -- good point.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>Aaron: at this point in time; hype is bad</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>btw crash, that's pretty :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>hm... what exactly do you mean with a concept for a trailer?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>jordy, thanks =)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>what's the next order of business</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>graydon:  define the 'layout system' -- I prolly know what you're talking about ... but want to know exactly what your definition is ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>ok, I wrote an article on berlin for cscene magazine; www.cscene.org. it's probably not up yet, ut I am hoping it'll clarify how things are going</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>crashcut:  oh, it's not like, a bit of conceptual art of what berlin 'will' be like? That's what trailers sometimes are. Is it just like, a pretty animation...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>aaron: you know how Netscape positions HTML into places on a web page? :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>Jordy:  yes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>Aaron: this is is the sort of thing you might see on the Berlin splash screen</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>aaron: that's a layout engine... then the rendering engine displays it on the screen</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>Aaron: but still .. we probably don't want hype right now</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>Jordy:  so, the layout system has nothing to do with region management, but rather controls the flow of events to regions, and positioning regions?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>aaron: i was just making a simplified example :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>ok ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Aaron: layout of objects is positioning them and allocating space (including stretching or instructing them to stretch). it happens simultaneously with queueing up drawing commands.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>ok...</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  crashcut forks into the background thinking about the trailer concept... </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>crashcut: try writing that using the berlin drawing API, such that we render it live during startup.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: good idea</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>but we'd need it a bit bigger</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>graydon: i'm not that hard core in programming <em>g</em></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>ie, 640x480 </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>heh, yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>Jordy: povray can do any size... it's just an example</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>crash: oh you are using pov? bah, no problem :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>jordy; yeah well... it's not live though</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>we can convert that over with minimum of ease :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>ok, I need to make sure we get everything wrapped up by another hour or 2.. stefan: do you have anything else you wanted to discuss?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>jordy; hey that's cool... </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>someone take a screenshot of the trailer and post it somewhere?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron is curious </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>yeah just a second...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>maybe rather screenshots of keyframes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: well, there are a couple of things, like the granularity of kits and widget plugins for example</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>I love the spinning pyramid coming at the camera</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>btw, graydon, you wanna work on a little roadmap of where we are headed?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>no dates or anything, just what needs to be implemented in what order</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: yes, I was thinking today that it might be nice to make C++ classes for the subcomponents of some of the kits, and use the same dynamic plugin loader I have in genericFactory for customizing them at runtime. that would keep the interface in IDL sim</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>well, I've gotta run.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: good point ! I think that is one motivation for introducing kits, too. So we can factorize the project so everyone can look up his favorit toy...</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron_ [vanco@bolt.sonic.net] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>argl!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">MenTaLguY:</font></td><td>I guess I'll have to catch up via the logs</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>simple, but let the users have some ability to trade small bits of logic</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff MenTaLguY: #berlin (the dentist awaits) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: well, I want to see this drawing system working</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>a working system is better for a project than a half-finished, 'perfect' system</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: Let me give an example from X:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: after that, we need to progress towards a "standard" set of objects to go into our kit interfaces. it's important to get many ideas in there because the interfaces will be reasonably static</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>right, i'm just talking about a roadmap so we know what needs to be implemented and what to focus on.. i'm not saying now -&gt; end of project, i mean now -&gt; next release</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: I construct a Button, which is the factory for the Button::Look. So since the Button knows its StyleContext it can fetch the respective attribute for it's look and create it appropriately.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: yeah, I'd be happy setting the next packaging release at getting the new drawing system to the level the last one was at: i.e. showing simple little shapes and stuff. nothing complex. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>then, well, I'm totally satisfied with this drawing system, so I think we can proceed to build <em>on</em> that rather than repeatedly cutting the bottom out of the codebase</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: alright, that's all i wanted to know</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>stefan: Maybe this should go into mail, but I didn't completely understand the look/feel separation in your new interfaces...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>Aaron: www.cs.tu-berlin.de/~crashcut/povray/</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff Aaron: #berlin (BitchX - Main screen killed) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>so a series of releases following would just be enhanced and expanded kits, until we feel we have enough</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: in Berlin this would be similar: the WidgetKit::button(...) would look for the user preferences for the button's style and call the appropriate plugin. What do you think ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>someone killed my shell on va</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>those debian folks are overly... massichistic</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>aaron: it's those damn gnome developers</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>jordy: gnome has been kicked off va.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>oh, never mind then</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>gack! it's tga. I'm on a lab comp ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>what format do you need?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Aaron: never mind the look/feel separation, it was just to illustrate a point</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>ummm....may i propose jpg</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  crashcut feels uncomfortable disturbing the diskussion </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>awight</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: yes, that's a possibility. move the whole plugin loader down there.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>stefan: so basically, you have one (unchangeable' object, representing a specified widget's interface, and another that actually takes care of the drawing?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: it's just that what does the WidgetKit create (beside subjects) if not widgets ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>s/\'/)/</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Aaron: that's what I did in OffiX. What we will do in Berlin is a completely different story.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>stefan: ok, well, I look forward to seeing how it ends up ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>steffen: after I've finished this little prog with corba and ggi I'll be in a better spot to follow.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Aaron: since we use factories to create widgets anyway, we don't need to hide the look as a strategy behind the widget object, in the context of structured graphic, the look pretty much <em>is</em> the widget.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>then button(...) binda commands to the reactor it's given, and then provides that configured reactor to a particular graphic which it loads dynamically?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>stef, then how do you separate look/feel</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>s/binda/binds/</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>nevermind</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>I'll track cvs changes ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: yes, like that. button(...) would look for a StyleValue "Button.Style" or so and slider(...) would look for "Slider.Style"...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: hmm, I was worried that a local dynamic loader would use dynamic_cast&lt;&gt; way too muich -- this is interesting. do you think we could get away with locally <em>just</em> loading different graphics</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>using something like xpms or some type of easily recizable graphic for the look?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>that's what mozilla is doing</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>their "look" is implemented with jpegs specified by an RDF document</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>gack, no xpms</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: What do you mean ? You need dynamic_cast basically for every plugin once, don't you ? </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>we need something entirely scalable</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>aaron: like macromedia flash? :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>kJordy: no, dynamically loading objects, but all of the homogeneous type "graphic" </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>jord: no, that's where steffen's drawingKit comes in ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>alright, mmm</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron_:</font></td><td>graydon: so now, are composites history?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: i.e. avoiding the requirement of making another "anything loader" which doesn't even have the corba narrow() facility to make safe-ish downcasts</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: hmm</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron_ is now known as Aaron </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>speed things up a bit</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>'downcast' is casting an object to its base class?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron doesn't know the lingo </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: no, when you resolve a symbol in a dynamic object, you can resolve it by type. i.e. you can be resolving graphicImplFactory *getPlugin()</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>crash: looks great</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>merci...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>is there someone who's logging the discussion,i'll have to log out and change account (my security setting are too paranoid in the lame OS i'm running)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>i'm logging</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>crash is </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>crashcut--thanks</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>brb</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff Alain: #berlin (Leaving) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Aaron: downcasting being trying to resolve the type of an abstract object like a void* into something you merely "suspect" it is.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>graydon: ah</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>gray: wouldn't that simply be "casting" :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: right, then, why dynamic_cast ? If all those plugins which are loaded from widgetKit create 'widget' (I prefer 'controler') types, you don't need to cast.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: for instance in the current genericFactory, I know all the objects I'm loading are lifecycle objects, which I can safely use narrow() on.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: agreed. I'm happy about that. if it were a totally generic loader I'd need dynamic_cast. now I don't. I hate dynamic_cast.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: no, upcasting (taking a fooObject and casting to a void *) is safe. downcasting (narrowing) is not safe</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>graydon, how far did you get on the text subsystem?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Aaron: the info on the timeline page is accurate: interfaces donw to my satisfaction, implementation not done.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>if you downcast to the wrong type, an object gets control of an environment it wasn't supposed to...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Aaron: I'm waiting on making the drawing kit work</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: gotcha, can we wrap all objects in a generic container that holds the "type" of object?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>gray: gotcha</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Aaron: since there's really no way of talking about bitmaps until that exists</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: that would be what corba does, and what dynamic_cast does in C++, and what I want to avoid.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: ok. if that widget loader thing is settled, we need to speak about the StyleValue</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: yes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: did you have a look at the XSL processing model?</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron snickers </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: if you wanted something simple like a key=val style preferences system, I'd not mind a custom implementation</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>anybody here hear Al Gore's claim about having 'taken the initiative to create the internet'...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: I did. It looks good even though I read it more as a storage model for (nested) attributes. Is this useful for us in this context ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: but if you're talking overriding, contexts, wildcards, nesting, etc. then I start to think using someone else's standard would be better</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: well, the concept of "style sheet" and the concept of "widget style preference" has much in common</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: you write "selectors" which trigger "rules" based on the "instance"</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: does it make sense, then, to think whether the whole Registrar should be modeled that way ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: just change from a scene graph (in berlin) to a DOM node graph (in XML) and you have the same thing</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: agreed.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: you need to standardize on a selector syntax, a set of rule semantics (what a rule can do) and a prioritization standard for resolving multiple rules</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefa: I feel that it would be a shame to waste the XSL's effort in having done that</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>one second, i'll be back in 5 minutes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: I'm not sure if the registrar and the style system are of the same level of complexity</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  al [berlin@140.159.225.100] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: like, the user's email address is not really as complex as "load this class to render this object"</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon, Jordy: Right, I repeat my question: wouldn't it make sense to model the whole Registrar this way ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: but I agree it would be aesthetically pleasing to have them combined</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: and it would rock serious ass if we had a persistent style preferences system</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: attributes which are used by graphic objects and one day the Moscow desktop will make heavy use if this kind of nesting/wild card matching (I really think that the X resource manager is one of the good points about X)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: like, if you could write new XSL rules at runtime and they'd apply in future sessions... mmm</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>I could see that being taken as a yes ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: yes. I'll have to re-read the XSL spec and see how it could be possible to integrate them</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff Lupuz: #berlin (Read error to Lupuz[sdu142-73.ppp.algonet.se]: Connection reset by peer) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: then I vote for an evolution of the registrar to a XSL database manager</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>stefan: that doesn't sound entirely too difficult. unless my assumptions are wrong. but first, the registrar needs to be finished ;P</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>jordy, you about?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: yeah, if it makes sense in any way I would agree. again though, I'm a little unclear on how it will work :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>sorry about that</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>had a customer call</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon goes and starts the XSL spec printing </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>jordy, what points need to be worked on in registrar, before it's finished?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: the nice thing is that the interface would look identical (to StyleContext/StyleValue). For example a graphic node get's its complete StyleContext from it's position in the scene graph. This Context (coded into a string) would be used to fetch from the registrar some value (like the background color, the style value for widgets etc.)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>or at least useable</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: yes, that would be seriously good</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: and again, it would help clearing the API quite a lot !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: yes, yes, I am starting to see that as working.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>let me think</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: the trick is that the XSL <em>processing</em> model is to produce flow objects</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: in other words it's not designed around querying a node, it's designed around <em>processing</em> a node and all its children</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Alain [Woody@205.151.66.107] has joined #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>re</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i'm reading up on this XSL thing</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: and <em>emitting</em> a graphic which satisfies the style preferences</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: hmm, I see, so we would have some 'empty' document with nothing but attributes in it, right ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>how would you expect me to use XSL with the registrar?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>do you want to pass XSL to the registrar server to store/retrieve keys?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: that's exactly what we're trying to figure out</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>what's a URL for the XSL spec?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>http://www.w3.org/TR/WD-xsl</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  BitchX: Added HTTP/FTP grab [2] </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: the requirements seem eerily too similar to pass up this as an avenue of discussion</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i'm ust taking a look</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: this would, in fact, be more a document template than a document...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: I think we're thinking of passing a string representation of the attributed path to a given graphic to the registrar in order to retrieve keys</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i could have sworn XSL was created to develop the "look" of an XML document</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and that XML actually contains the data itself</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: using the XSL pattern language to look the keys up</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>graydon: if you could achive this with unicode, berlin could end up a hot corporate quality system</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>well i can implement regex matching in the registrar pretty easily</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: and manually constructing such a path when we're looking up something like the user's favourite flavour of icecream, which is <em>not</em> a particular node in the scene graph</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>that's not difficult at all because of all the billions of regex libs out there, i just need to match() the request to the items in a particular directory and return an array of results</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: you can get exact semantics for pattern matching, plus the source code to 2 reference implementations</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hmmm</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>plus $90k from sun :)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Jordy grins </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>got a question,is there someone working at embeding postscript displaying capability in berlin (i remember it being discussed a long time ago on the list) ??</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>yeah man, this would <em>totally</em> win the sun award!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hahah, graydon :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Alain: yeah, a postscript drawing kit will operate just the same as the OpenGL one, only it'll emit postscript :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>alain: that could easily be done by hijacking drawingKit and its components</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>the main thing is i don't want to have to implement my own XML/XSL parser to get this to work... and i'm actually going to <em>store</em> things in a flat file for obvious reasons</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>so i'm trying to figure out where XSL would come in handy</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>graydon--cool,if i think right (i could be wrong on that),it will allow the porting of GNUStep</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>jordy: you can get stylesheet settings from any node in the sscene graph, I gather</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>by dumping their preference info into registrar on an object-by-object basis</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Aaron:</font></td><td>gack I ahve to go</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Alain: oh, um, that's interesting.. I'm not really sure we have the adaptor going in the right direction. interpreting postscript inside berlin would not necessarily be easy. you'd have to alter your postscript display system</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: which would be XSL files then, yes. There seem to be a couple of XSL parsers out there, notably from J.Clark but written in Java.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Aaron waves to everyone </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>cu aaron</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Alain: we're talking about the other direction, berlin graphics -&gt; postscript</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>see ya aaron</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>have a nice day Aaron</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff Aaron: #berlin (later everyone) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>bye Aaron !</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>graydon--oups</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>is getKeys("&lt;xsl:template match="system"&gt;&lt;xsl:apply-templates select="system"&gt;&lt;xsl:sort select="name/Berlin"/&gt;&lt;/xsl:apply-templates&gt;&lt;/xsl:template&gt;"); easier than getKeys("/system/Berlin/*");</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>man that was ugly</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>graydon--at least,there's a display engine in GNUStep </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: no, we'd stick with a simple one like the latter, we're just talking about making something which could be used as a stylesheet-retriever in the context of an XML document processor, and as a graphics customizer in the context of the widget kit, and</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>will the log need running much more than 15 minutes? i've just received an invitation to a party... <em>ducks and runs</em></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>but again, XSL was designed to lay out information from an XML document... </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>crash: um, it would be nice obviously, but I think I need to motor pretty soon too</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>crashcut--i'm not logging,have to go in 5~10 minutes</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: but the XSL <em>pattern language</em> is good for navigating any sort of attributed tree. that's the point</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: Yes, I think we mentioned the most important things, all the rest can go in mail...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>ok... if everyone's leaving anyway i won't have to bother with that... ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: right, but so is regex :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and regex is consiterably simpler no?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>considerably</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: and since we have these 3 contexts for natvigating an attributed tree, and we know we'll need an XSL processor someday, this seems a nice fit</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hmmm</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i think it might be easier to expose mozilla via corba and use it :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>it has an XML processor, and they have base XSL stuff done</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: the thought has crossed my mind a number of times</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: well i'm to the point where i might as well just do it, the problem is berlin has no font renderer</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and there are a few hooks that need to be set in order for it to work</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: but I think you're wrong in your difficulty estimates. writing something to do XSL pattern language lookups is not as bad</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: you were talking about sponsoring: why not asking J.Clark to help us giving us a nice XSL parser written in C++ ?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>well,have to go,good bye</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>laters alain</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>bye Alain</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>bye crashcut and Stefan</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>XSL looks like it'd be good to use to disable information from a database on a web page</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Alain:</font></td><td>keep up the good work</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>btw... does anyone have an idea how to match control characters in sed? i'll have to clean up the log file...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>er to display</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff Alain: #berlin (Leaving) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>man what is up with my hands today, think one word and typing another</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>crashcut: I have a nice IRC prettifier in perl I used for the other meetings. just mail me the log and I'll make it nice</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>graydon: hm... i'd like to have such a script... ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>well, anhow someone asked what needs to be done to the registrar</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: well, it also has interesting applications in styling the composite widget (graphic) graph. For instance, first-of-type() and last-of-type() could be used to round the ends of rows of buttons (or rows of anythings)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>actually i think i have a TODO file in there</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>graydon: the idea of actually passing XSL text around seems.. odd</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: but you wouldn't pass this around, it's just the storage format.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>XML/XSL would make for a great way to create documents in a word processor, but i'm nto sure abut using it for general routines</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>storage format? i thought XML was the storage format and XSL was the view format</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: well, you'd only return a rule (or perhaps a compiled fragment) if you were matching against an XML doc. Otherwise the key would resolve to something more like a plugin name or a string or something</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hmmm, it'll give me something to think about</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: anyway, it's the back end. We'll have a simple idl interface to retrieve values based on contexts.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  topic unset by Jordy on #berlin </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: later, this XSL engine could be used when writing a whole document to a file, so to produce a real XML from the scene graph.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: heheh, now you're drifting off into the serialization API</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: right, but just to show the (potential) use of an XSL engine.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  esac , sitting in the back row, timidly raises a hand </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>Here is a perfect example of what XSL/XML does:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">esac:</font></td><td>I'd like to try writing an XSL parser in C++; I'd probably need to ask for some help now and then, but I think it sounds like a good place for me to start.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: well, basically what we're talking is the ability to pass a stringified representation of a path to a node in an attributed tree and have <em>some stuff</em> come back</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>For example, suppose an employee database has the form</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;employees&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;employee&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;name&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;first&gt;James&lt;/first&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;last&gt;Clark&lt;/last&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;/name&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;/employee&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;/employees&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>For example, suppose an employee database has the form</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;employees&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;employee&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;name&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;first&gt;James&lt;/first&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;last&gt;Clark&lt;/last&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;/name&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;/employee&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;/employees&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>shoot</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>stupid cut and paste</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>that's your XML data</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>folks... i'll leave in 15 minutes, sorry.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>then you use:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>Then a list of employees sorted by name could be generated using:</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i hate paste </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;xsl:template match="employee"&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;li&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;xsl:value-of select="name/first"/&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;xsl:text&gt; &lt;/xsl:text&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;xsl:value-of select="name/last"/&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;/li&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>&lt;/xsl:template&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>there</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>there's your pattern matching</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i'm not sure how i could use something like that, sure, i could write the frontend to the registrar using it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>but that isn't exactly practical</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>esac: well, I'm not sure which <em>part</em> of xsl we're thinking of parsing. it's actually a bunch of different languages, not all of which we need to gobble. I dunno.. the pattern language would be good. if you could compile those into thunks which matched ent</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>entries in the registrar, it's a step in the right direction I think</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: lets think about the requirements</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hmmm, alright :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: (1) scene graph customization</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: (2) processin stored XML into graphics</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: (3) looking up preferences with defaults and contexts</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>(1) involves passing paths to nodes in the scene graph, and having the <em>registrar</em> match XSL template rules against the node we give it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">esac:</font></td><td>graydon: I'll look over the registrar stuff a bit more (and the XSL pattern language), and write the list with ideas.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>(2) involves the same thing, only using XSM paths not paths through our scene graph</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>(3) involves constructing an artificial path</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  esac has to leave in a minute.  It's been nice listening in. </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hmmm</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>In each case, the returned value is an Any, I think</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>(1) returns the name of a graphic to load for the current "look"</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>yeah, it's too bad Any processing is so ugly</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>:)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>alright graydon, i'm starting to get it</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>(2) returns something which makes a flow object with its children not-yet-filled-in, a sort o parameterized constructor</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>(3) returns an int or a string or something small and simple</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>you guys are thinking of using the registrar for a lot more than what i was planning on :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: but it solves all the issues at once, I think. assuming the above outline is even possible</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I'm a little hesitant to say it is</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Jordy: yes, so it is really on of the basic foundations of berlin</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">esac:</font></td><td>it sounds exciting - worth thinking about!</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>since usually an XSL processor knows it's walking a DOM graph, and will walk it a little during the matching phase</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and i see what stefan wants to do with his resource style configs</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>now, if we could adapt out scene graph to <em>look</em> like a DOM graph, and make a dummy wrapper which makes a single straight graph for the preferences lookup, then we might be able to do it.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: may be a special Traversal for doing just that ? :-)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">esac:</font></td><td>Goodbye, all.  See you around.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Jordy sighs... man oh man, i'm just thinking about how radically different the registrar will be :) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>bye esac</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>like, if corel/app/registration-key could be faked to look like &lt;corel&gt;&lt;app&gt;&lt;registration-key/&gt;&lt;/app&gt;&lt;/corel&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>(not stringified, but at a node-navigation level)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>whoah, that's different than how i was thinking XML should look like</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>then the dom braph navigation would work, it would just think it was walking a really simple dom graph with no attributes.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i was thinking more on the lines of &lt;key parent=app name=registrarion-key&gt;</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>actually</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i did the heirarchy</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff esac: #berlin (Work, work, work) </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>it's uh, Test4</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>s/braph/graph/</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>if you run Test4 while Registrar is running, it'll spit out XML</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>or should :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: well, many encodings can be transformed into one another, it's not a big issue.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: the only problem with creating a strict berlin-&gt;DOM adaptor cursor is that the DOM model is a strict tree. multiple parents might really confuse a DOM walker.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i still don't want to store the data actually in XML itself, but i could apply XSL to the internal model that I have there.. but i'd need a good clean way to pass the XSL to the server for it to spit out records</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>and if it spits out records, the records would be in XML i guess</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: like if I write a rule which reaches up into "parent" to inspect some attribute.. a graphic occurs under 3 different parents.. which one does "parent" mean?</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: yeah, the only part which would even resemble the XSL template rules would be those entries designed to match on document nodes in an XML application</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>how would you recommend passing the XSL to Registrar? :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>XSL in C++ doesn't look nice :)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: right, hmmm, but from the point of view of the Traversal there <em>is</em> a tree since the stylecontext is part of the external state, too. </td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: the &lt;template&gt; tag needs a "match='pattern'" attribute. store the template under the pattern specified.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>mmm</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">stefan:</font></td><td>Graydon: so the question of parent has to be asked not to a node but to the StyleTraversal which simply looks up the parent from the current trail.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: ah, of course.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>stefan: yes, the DAG transforms into a tree under the traversal</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon smacks himself </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  crashcut has to go </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>anyone logging ? ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>/set log on someone...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i'd log, but i don't think anyone can deal with ansi in my logs</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>hold on, let me turn ansi off and reset</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>awight...</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>Jordy: really the big issue is to make it possible take a node path and hand it to registrar, and have registrar hand back a list of everything whose XSL pattern matches that path.</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon is logging now..  </font></td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>*** Starting logfile IrcLog</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>oh, damnit</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">Jordy:</font></td><td>i guess i can turn mine off</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>multiple logs is fine</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>ok... i'll mail the log to graydon tomorrow (MET)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>I have to go in 5 minutes anyway.l</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>have to clean up some msg things ;)</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">graydon:</font></td><td>crash: thanks.</td></tr>
+<tr><td align="right" valign="top"><font color="darkblue">crashcut:</font></td><td>bye =)</td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signon time  :    Fri Mar 12 20:16:10 1999 </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff time :    Fri Mar 12 23:20:28 1999 </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Total uptime :    0d  3h  4m 18s </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  SignOff: crashcut (relay) </font></td></tr>
+</table></body></html>

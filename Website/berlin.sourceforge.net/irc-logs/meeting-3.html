@@ -1,0 +1,3999 @@
+<html><head><title>IRC Meeting Log</title><body bgcolor="white"><table><tr><td>&nbsp;</td><td><font color="red" size="-1">  Logging Started : Fri Jun 05 18:40:21 EDT 1998 </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  anoq (anoq@msx-18-1-3.1033.cybercity.dk) has joined channel #berlin </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon greets anoq </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 hello!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Are we the only ones? Has the meething started
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 heh. I just left work and came home to do the meeting from here. Brent and I are here.. netgod is I think lurking but here ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 meeting hasn't started exactly, but feel free to talk
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Hi Brent!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Well... aren't we  almost 2 hours late?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: I'm not sure. It's possible this is all we're going to get. mentalguy was here an hour ago, and had to go.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I just got home from a birthday-party, and thought that I'd missed the whole thing... ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 today is my birthday -- I turned 21
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  anoq congratulates Graydon :) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Happy birthsday to you,... happy - ohh sorry :)
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon is having a pretty good day, but it would be better if I calculated times properly :( </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 It's fine with me :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Hey guys, I wasn't paying attention...
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: "Berlin meet -- Brent is back to life" </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: Berlin meet -- Brent is back to life </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Well...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anyone have a loot at the lifecycle implementation I did? I have yet to test it.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I've been too absorbed in learning openGL.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Happy birthday Graydon!  I think you're only 1 hour late, aren't you?  I had down 6pm EST, which is 3PM out here in California.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I think the problem is that I don't know whether I'm in EST or EDT, so I just pick one randomly, usually wrong.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Graydon: No, I haven't had the time :(
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I haven't looked at the lifecycle stuff.  I basically got berlin to compile, then got hung up when trying to get it to run in straight kgi when someone (*ahem*) "enhanced" the makefiles...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 It's a new parent for cloneable that makes us more COSS compliant.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I'm still a little frustrated that omni's lifecycle is nonstandard, but I can at least see why they did it.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I got TAO compiling, but there's *zero* documentation, so I can't exactly tell how to make it work.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I haven't even read the lifecycle docs yet... :(
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: It's really very simple: create_object(key), delete(), move(), copy(). .. thats it
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: but I wrote one which does demand-loading from shared object files!
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon grins mischeviously </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Graydon: OK! :) What is key?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 key is a typedef for COS_naming::Name .. it's one of those sequence<NameComponent> structures. Basically a fully qualified path name.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Path for a lib-file?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Anything-path. Naming is entirely abstract. I think we should define them as symbolic constants in a helper class.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Rogue strings in your code are bad -- just put up with a lot of that at work and it's not pretty.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Yearh... or a registrar entry?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: yeah, that'd be ideal.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Ok, out of curiosity, raise yet hand if you've had a look at OpenGL yet?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Helper class:  A "name safe" that you access to get a particular key?  e.g., key = myNameSafe.getkey(foo)?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Throw hand();
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Oopps... it raises a hand in C++ anyway :)
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  bfulgham Brent looks sheepishly at the floor.  He obviously has only visited some OpenGL websites and admired the graphics. </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: even    Namesafe::SomeSymbolicName   is better than nothing. At least your typos will be caught by the compiler.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Anoq:  Isn't it a hand exception?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 brent: yes...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I think it's "throw new hand()" in C++.. anyway you're all a bunch of geeks ;)
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon chuckles. I was just checking! </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Yup! :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 graydon: you forgot ;
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 he he!...
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon is a C++ loser. You can throw rotten vegetables at me now. </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 How do I do that in IRC?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 "use /me does something"
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 oops
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 BTW: Graydon: I agree with the compiler typo-stuff above...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 use "/me does something"
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  anoq out of rotten vegetables ;) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Ok, here was my original agenda:
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 * rundown of linux expo
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 * discussion of openGL
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 * TAO evaluation
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 * new lifecycle implementation
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 * other items you are interested in   
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		  
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Yes.  I agree with the namespace stuff above -- although using NAMESAFE::yadayada can get hard to read after awhile.  But, at least it's specific about where you're pulling information (no namespace collisions or accidental polymorphism)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: you have to use "inner classes" in egcs right now cause it's missing namespace support, or so I am told. Anyway it's something worth considering when we start handing out string-names for things.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 shall we assume this is all the people we'll get and then be pleasantly surprised if more show up?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I guess so
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 graydon:  Fine with me.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: "Berlin meet -- Linux Expo" </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: Berlin meet -- Linux Expo </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I guess I was the only one there, right?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Yes,
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I weren't there at least
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I mean yes.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I met up with some people who were on the berlin list, and were interested in having a BOF
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 BOF?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 "Birds of a Feather" -- informal meeting
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 ok
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 We had one, and as I said about a dozen people showed and asked lots of good questions
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Mostly about status and compatibility -- GNOME was showing off GTK+ a lot and it had everyone interested in GTK compatibility
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Then one guy whose name I did not get started to talk to me about OpenGL and how it already handles paths etc.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I went to see Bruce speak on behalf of pixar, and his big point was that without good 3d apps and good imaging, linux & X were goung to have a hard time competing against NT workstations.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Linux would essentialy be relegated to the position of "render farm"
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 So I was very encouraged in my quest to learn GL
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I went and talked to bruce about it, and he seemed excited by the prospect, asked me when we'd be ready to demo
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I said end of summer
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon grins </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  bfulgham Faints </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 DEMO.. not ready. I was clear on that. Just something that works a little. I don't think that's unreasonable.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  bfulgham Comes to... </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 We've got Mesa-GGI - right?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I talked a lot with jmcc, steffen and andreas about getting Mesa-GGI working. Steffen seemed a little bummed out but the other two were still very enthusiastic
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I am running Mesa-GGI right now in an X window.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 So Yeah, it's not a crazy timeline
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Cool!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Wrapping it in IDL shouldn't be too hard...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I'm experiementing with getting frame rate up by nocking out stages of the pipeline ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Agreed. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 How about optimize?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I mentionned real alpha channels and polygons to raster and he started foaming at the mouth ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: that's the real trick. I haven't looked long enough at mesa to know how easily it can be broken up. I intended to last night, but got dragged out for birthday party.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 It's critical that it call into hardware as soon as possible though.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 yes
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Now, OpenGL has this one problem, which is that it's decidedly unfriendly to OOP. It's more like a single enormous state machine. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 BTW: Mesa already does phong and gauraud shading right?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: yeah
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: it basically does anything you can think of, if you turn the feature on.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I mean, is it implemented yet?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Does it work?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: I believe so, yes. I run it in flat mode for testing but I think it's got a full set of shaders.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 cool!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 so I've been looking around for an OO toolkit to manage state encapsulation and whatnot, and to be honest i haven't found too much yet. There's one called "Apprentice" which is identical to open Inventor. Only problem is that the author has put it under "academic and noncommercial only" license. I'm contacting him to ask for a true GPL/LGPL release.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 If the author is amenable, that would be ideal.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Is it necessary with an oo-toolkit for this?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I'm surprised that such a toolkit doesn't already exist.  My OpenGL knowledge is lacking -- but does GLUT do any of that?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: not entirely. It's just that if we export openGL API directly through corba, it's 1 big (BIG!) interface and if a client mucks with it they are mucking with the entire display environment. That's no good. So we need to encapsulate in some way. Might be as minimal as providing one "context" object per app, although that's a little crude.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 GLUT seems to do some of it, yeah. I haven't gone too far in depth with GLUT yet, but I suspect it'll help. I've found some funny stuff actually, hang on.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 http://users.deltanet.com/~powerg/Apprentice/
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 That's the apprentice site
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 If you want proof that you can draw GUIs in OpenGL, look at http://reality.sgi.com/opengl/tips/mui/mui.html
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Isn't SGI's GUI entirely OpenGL?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 At least SoftImage's GUI is, but OK that's ugly too...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: possibly, I don't know. I know moonlight creator is 100% openGL. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I mean, they might be a little ugly, but that's no cause for alarm. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 nothing mandates "must look ugly" in openGL. God, I hope not!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Those examples on that site looks like IRIX's GUI...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I don't like it too much, but I think anything can be done with OpenGL...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 (I don't like = IRIX GUI)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 graydon:  OpenGL != ugly.  Usually, programmer.artistic == BAD is usually the problem.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 brent: Yes!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 yeah, agreed. We have a nice set of people with taste in the linux community so it should be no problem.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 And with pluggable L&F...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Frankly, it looks like you can make all kinds of widgets 'n stuff, so it's just a matter of someone with good skills to draw 'em up.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Well, OpenGL is just drawing commands :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Anoq:  Right.  We need a baseline "standard" mode, then user definable.  Think Java's Swing pluggable Look'n'feel.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: it's drawing *and* pixel management. You can use pixmaps if you like.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Yes, I know...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 But that's drawing too :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 cool, OK, so I guess the onus is on me now to make a groovy server which compiles and shows a window. Sigh..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: yeah, but you don't need a vector for every pixel, if you know what I mean. You can bulk import data at screen res if that's your style
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Yearh...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 So we all love OpenGL?
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon nods </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 OK, next issue I guess is TAO
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: "Berlin meet -- TAO" </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: Berlin meet -- TAO </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Tao is "The ACE Orb"
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ACE is "Adaptive Communications Environment"
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Tao is a nice fast ORB with no documentation.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I would like to maintain it as a possibility for future work.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 It allows realtime on communication channels which support it
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 it has event service as well as some sort of lifecycle service. I don't know how either works, because, you guessed it, no documentation.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I think it sounds very attractive too...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 for future work that is...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: agreed. It was too much hassle this time around to stall all work and switch. When we have more hands, it will be less work.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: "Berlin meet -- Lifecycle" </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: Berlin meet -- Lifecycle </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Yearh... getting something up and running would be goo...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 d
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Ok, I have implemented a new GenericFactory
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 GenericFactory is a thing which is found by a factoryFinder. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I still have not implemented a factoryFinder
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Client asks factoryFinder to find a factory and produce an object matching a key and some criteria
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 factoryFinder finds our genericFactory
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 how many different factories can it find?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 our GenericFactory looks into the /prototypes  name context for the key. If there's an object there, it clones it and returns the clone. If there's no object there, it tries to load one from disk.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: as many as you like. factoryFinder is abstract. Right now I intend for it to find the factory on the current display server.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 If it can't load from disk, an exception propagates back to the client.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Right now the list of key names is produced during startup by the display server scanning .so files in subdirectories.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 That has to be fleshed out a little, but that's the general idea.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 questions?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Sounds ok
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 What kind of things are considered "Factories"?  (Lack of ORB knowledge)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 factories are objects which satisfy the CORBA::Object_ptr create_object(key, criteria) method.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 The idea being that they encapsulate a method for making objects of some sort.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 the client does not need to know how the objects are produced.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Like an Objective-C factory method?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 They may be coming off disk from a persistent OODBMS, etc.. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Using the "new" operator is no good because the clients all need to be updated when you alter implementation.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 The factory then returns the object...I see.  This is very OO (which is IMHO a good thing), but what about Raster et. all who want to use C?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Heh
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: raster is using GTK right now. GTK looks *exactly* like the CORBA C binding.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 GTK is fully OO, it just happens to be C-based.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 They won't notice any difference imho.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Great.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Still sounds good...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 As for a C orb, that's an admitted problem that everyone who is C-only raised.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I have no answer. There's ILU, which is not perfectly licensed, and miguel said someone in GNOME is working on "ORBit", a C ORB. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I've noticed the ORBit discussion, but it's nowhere near being ready to use.  Besides -- I'd rather use an off-the-shelf item that someone else will have to maintain ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Isn't it just a matter of writing a new language-binding for omniORB, TAO or similar?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: yes. That's just not a small task. Nobody has one yet.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: but it's within the realm of reality. There's a custom-built perl ORB ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Don't know if it works well yet.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I'm more interested in ML... :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: you and me both
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 OpenGL in ML... YES!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 How tied are we to a particular ORB?  I mean, if someone had Mico or similar on their system could they use Berlin stuff?  Would they have to recompile everything to work with it?  I don't know too much about how this works...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: CORBA's type-parameterization semantics isn't strong enough to work for ML-> IDL, but you could do IDL->ML ok.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 ML =?  Machine Language?  Markup Language?  M?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ML == Meta Language
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Meta-language
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 What would ML->IDL be good for?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Brent: recompile? yes, rewrite? no
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: obviously you haven't seen products which scan java source code and automatically generate IDL, compile it, and link against the compiled stubs and skeletons yet. They're cool.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 No rewrite if the standards are followed
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: some rewriting will be necessary.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 graydon: sounds cool...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: the BOA interface is nonstandard
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 But I don't think I'll need it ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: but nothing too big. Basically not much more than a perl script could accomplish in 10 minutes.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I'm thinking of the Gnome stuff, which is severly tied to Mico.  I've played with hacking their makefiles somewhat to work with OmniORB, but I haven't had time to really spend messing with it.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 graydon: 10 minutes on a pentium? ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 That's as far as actually *running* berlin on mico. You can use mico to *talk* to berlin as it is now.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 9 minutes of writing correct code, 58 seconds to go to the bathroom, 2 seconds to rewrite all of our C++
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Graydon:  So I could have a Mico-based server somewhere that could speak to my OmniORB Berlin platform and serve up hot widget factories as requested, as long as the widget factory was mico-ish on the mico-server?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 at least, you *should* be able to use mico to talk to berlin now. Not sure it works. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 yes
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 it would possibly work in the future
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 bugfixes etc...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 the ORB implementation is *supposed* to be invisible to apps. Like your TCP vendor being invisible. Not always the case though..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 lifecycle defines interfaces for moving objects between ORBs while they are running. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 This is all blue-sky though. I should get to work. Any more things worth discussing?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I have noting really...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 david just mailed saying he wants to show up, so I'll stay here till he arrives. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I'm gonna start working on more GL code in background though.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Silk (billl@piccolo-39.synapse.net) has joined channel #berlin </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Graydon:  Let's talk ggi for a second.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 (Anoq too)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 ok
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I've been mucking around with their stuff, and as you know they have re-opened CVS (or will this weekend)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 yes, I'm very happy about that
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Anyway, I think they're getting fairly close to a point where we should start trying to run Berlin on top of KGI (kernel only, no X)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I haven't gotten this to work yet, myself, but got close.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 (hi)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I agree. I spent yesterday afternoon trying, and it didn't *quite* work.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Who is Silk?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I also want to modify the entry point on Berlin so it will take parameters to set mode.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Silk:  Greetings!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 anoq: just an interested layman
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: yeah. Yeah a set of command-line params would be good. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Silk: Cool! Hi!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: the main() is really dopey at the moment.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 That should be easy.  I may do it this evening, but I'm going on vacation next week (leaving crack of dawn tomorrow) so I'll have to use a pad of paper for the time being...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 You may have notices, brent, that I've charged you with the ungodly task of getting a match between GGI branches and the kernel.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 heh
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Heh heh.  I wish I knew what that meant!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Just kidding.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 yeah, it's a pain. Moving targets!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I'm sure it'll settle after the GGI meeting tonight. Anyone there right now?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I still think EvStack (now ggi Console) is the way to go.  The drivers are being ported now (to EvStack) and the library should follow soon.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Oops -- I don't know.  I haven't visited.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Anyway, degas will look a lot like dali to us.  It's the internals that are changing.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 yeah. jmcc talked about evstack in very good tones at Linux Expo. Especially encouraging that they have found that by using /dev/event they can move almost all the code out of the kernel. Makes the kernel developers much happier.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I also want to help with Mesa on ggi.  (*Must Learn OpenGL*)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Yep.  We need to get a critical mass so that Linus et. al. will be open to pulling stuff into the kernel.  The less the better.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Just a note: Do we still need NURBS with Mesa?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 The proceedings -- damn, I wish steffen had posted them. The proceedings of his talk were cool. They talked a lot about hot to accelerate drawing using a curcular buffer of commands.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: mesa has nurbs
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I've gotten a few mails that postulate that he doesn't want to add more to the kernel for fear that he will be left holding the "maintenance bag".
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 (oops.  He = Linus)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: mesaGLU (utility library) is missing NURBS trimming. You can work on that if you know NURBS :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: I believe you're right on that one. He's very bogged down.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I haven't read NURBS specs detailed yet, but I think I'm going to soon...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 brb -- washroom break
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 if anyone's interested in learning opengl, I'd heartily recommend "OpenGL Programming Guide: 2nd Ed" (the "Red Book"). It's very good.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Silk:  Do you know if there's much difference between 1.0 and 1.1?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I have got OpenGL reference manual. It's OK too, but it's just hard specs... :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 bfulgham: afaik texture mapping wasn't properly implemented in 1.0.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I bought the openGL programming guide this monday. Have been devouring it al week.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 Mesa 3.0 will cover the 1.2 spec though, so no worries
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Not worth it then.  All of the 1.0's books are cheaper (on sale?) heh
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I'll get the full 1.1
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: have you looked inside mesa?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: A bit.. I had a look at the texture mapping and camera code
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: is it cleanly modularized?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: not sure what you mean
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: or a big hairy mess? -- would it be easy to break off small portions and move them to hardware accel?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: oh.. well, I think Brian has a driver spec which allows you to replace the triangle drawers with your own implementations
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 that's how the mesa-glide driver works, I think
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 excellent. I should start talking to him actually.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: that runs setuid root right?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: yeah, glide is setuid.. though I hear the next version will have a /dev/3dfx which eliminates that need
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 cool
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon is reading the mesa sources at the moment, so will be slightly unresponsive </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I know Mesa's been moving toward hardware acceleration.  The Win32 S3/Virge driver already uses some, but not Linux *yet*.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 bfulgham: the 3d hardware market is too competitive right now.. I don't think we can count on robust opensource opengl drivers for a while yet, unless something changes
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 which is why it's (imo) important to get mesa running fast in software mode
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I dunno ... http://www.3dfx.com/software/download_openglbeta2.html
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Why?  Because of the moving target hardware-wise, or are the mfrs. not wanting to release specifications?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I agree we cannot *count* on hw accel, but we absolutely must *use* it when it's present.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 bfulgham: manufacturers not wanting to release specifications, mainly
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Silk: And that _is_ possible! :) I use LightWave with OpenGL on my NT
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 machine without 3D-hardware, and it's pretty OK fast...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 We might have to hand-code bottlenecks...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 anoq: try turning on texture mapping, and watch the speed grind way down =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 It doesn't do textures... :(
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Silk:  The Mesa page indicates that someone at S3 is doing the port, but who knows...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 so long as the design permits it, I suspect handcoding 3d routines in assembler will be a source of much joy and pride amongst young hackers.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 It's only LightWave5.0 :(
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Everyone:  What about pentium MMX routines and the new AMD K6-2 3D routines (drool...)  Compiler issue?  If we have to make stuff run fast in SW it might be useful.  I dunno.  Too hard to keep things portable.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 bfulgham: SGI OpenGL for Windows uses MMX instructions, which makes blending/tmapping several times faster, which is still pretty slow
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Oh, those are good instructions. I get sick of people bellyaching about them. MMX et all are very useful.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 graydon: Imagine the whole world of geeks hacking the OpenGL-engine... It should become the fastest software OpenGL on the planet :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: if they know what they're doing, yeah.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 agree...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 L00zer accidently fries the CPU by hitting the same register over and over...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 heh...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Not very attractive I guess...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mmm.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 tasty
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 The assembler is quite cleanly separated in mesa
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Graydon:  Then it's probably possible to create CPU-specific accelleration routines to use MMX and others.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 bfulgham: they already have started
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 the latest beta of Mesa includes some MMX code for blending
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Silk:  Fantastic!
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  bfulgham Brent decides it's finally time to update his old 75Mhz Pentium... </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 brent: Is it fast? ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 your new machine that is...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: this is probably going to sound naive, but how exactly are you proposing to draw a 2d-Xwindowish screen with OpenGL? texture mapping? gldrawpixels?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Silk: drawline, drawpolygon etc..?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: some of both. I'll be honest and say I don't know the relative merits well enough.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: I expect to use GL to do Z buffering (so we don't need to keep a complex, shaped window stack) and then just paint on the polygons as fast as I can.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Ooohhh shit... SoftImage on NT has an ugly OpenGL GUI, and it is _really_ slow...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I think hardware textures will give good speed for text
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Perhaps it is not suited for GUIs?
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  mass- (davewait@fn3.freenet.tlh.fl.us) has joined channel #berlin </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 hey dave
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 haha I knew I'd be late =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 hello
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 anoq: where are you seeing this?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Anoq:  Not fast, but not too bad.  I'm running on a 75Mhz. bus speed, which helps.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Dave --hello.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 anoq: well, as it stands, I personally don't think it is.. but it may be, eventually
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 hello all =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: do you have any suggestions?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 On a 166Mhz pentium with Matrox millenium, 4MB 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 96MB RAM
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 so have I missed anything in the first hour or so?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 hello david!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: optimise the pipeline for the 2dish needs of berlin
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 dave: a little, mostly discussing OpenGL and various ORBish things. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 ahh
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 right now, Mesa is more of a reference implementation for OpenGL
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: that's the intent. I hope it's possible.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I'm at work doing OpengL-ish stuff right now
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 dave: cool. I assume you know it better than I do.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 ie: so people can run their opengl programs on X-Windows
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: yeah, I got the feeling mesa deveopers see it as an "add on" to a windowing system..
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 mass-: Do you know anything about the OpenGL idea of fast-paths?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I'm learning =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 Right now I'm trying to find a way to convert triangles to triangle strips, it'll give me at least a 50% speed boost
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: well, afaik that's how it was originally conceived.. by silicon graphics to sell lots of x-windows boxs
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 mass-: what kinda model are you trying to convert into strips?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 a tooth, we are working on a dental visualization thing
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 the model has like 30k+ triangles, and we need more dynamic feedback than 1.5 seconds per frame =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 mass: Try an SGI octane with Maya... :)
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Fatal (pauld@titan.hutch.com.au) has joined channel #berlin </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 haha
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 hey paul
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 its for a commercial product though, on sonsumer systems
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 hey there
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 consumer
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I can't tell them all to buy Onyx2's now, can I?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Is there any lack of functionality in GGI-Mesa vs. x-windows mesa?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 hows the meeting coming along?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 mass: ohh.... I see...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Fatal- Hello
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 mass: Seriously, an O2 is quite cheap and quite speedy...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: there's a lack of acceleration according to jmcc, but that's not surprising.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 bfulgham: probably.. GGIMesa uses a small api to get graphics onto the screen, x-windows mesa uses glx-emulation
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 mass: but a PC with OpenGL board may still be better...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fatal: we're sorta in a free-for-all talk on OpenGL at the moment.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 hello Fatal!
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I think that GGI-mesa is the same thing. it just has hooks for using hardware acceleration
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 none of the hooks are used righ tnow, it just does putpixels
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 mass-: individually called putpixels? ouch
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I honestly don't know
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 S3/Virge is only a partial OpenGL implementation, with the rest in hardware.  I suspect texture mapping/etc is mising, but don't know.  Any recommendations on a bargain-basement OpenGL board?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mass: yeah, it pitpixels in strips. There's a macro called, I think, INNER_LOOP or something, that just lays down strips of pixels.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 since I'm going to be working in OpenGL all summer, I figured I could look at GGI-Mesa too =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 bfulgham: 3dfx is pretty much the only supported opengl hardware under linux
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I'm working 40 hrs/wk and taking 7 hours of summer classes though. There isn't that much freetime
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: I understand 3dfx has some support right now
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 glide
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: permedia and matrox boards have the hardware, but no linux drivers thru GGI yet.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 bfulgham: supposedly some people are working on rendition v2x00 and permedia support, but if/when they'll be released is anyone's guess
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 and someone wrote a 3dfx wrapper for mesa, it is pretty fast nowadays
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 I've seen a Diamond board that's supposed to be an add-on to your existing 2D board.  Anyone know if this thing works or is it a problem?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 how is all of this mesa stuff going to affect performance/code bloat? seems like we'll be getting bloatier than X :/
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 This uses the 3dfx chip, I understand.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I'm a know-it-all when it comes to 3d. I haven't had much real-world experience, but I understand the ways things work =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 3dfx boards are mostly like that, side-by-side with an existing 2d board. You flip it into 3d mode and it kills your 2d card's video signal. 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fatal: we have more features than X ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fatal: but yes, it's a concern.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 yes. 3dfx's next product, the Banshee line, is integrated 2d/3d, it supports multiple 3d views in windows too. Tre' cool
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 Thats supposed to come out in E3, I'm trying to get an eval though
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 err Q3
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 seems our goals have shifted quite heavily from the original berlin mission statement... but thats not  a bad thing
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fatal: I weigh it like this: an ORB = 1mb, Mesa = 600k, Our code = ?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 Fatal: what was that again? "Assembly language is hip!"? =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 haha
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 haha
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 seriously, I think this Mesa stuff could be really cool if it works out properly
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I think things are facing the right direction, I've just been too busy in the last few months to actually see how things are moving forward =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fatal: my X server = 2.7 megs, + 1.5 megs of X support libraries
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I am looking forward to getting Redhat 5.1 just because it gives me an excuse to reinstall
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Fatal brought two magazines last week which had corba articles in them so hopefully i'll be in better shape to assist when things reach a higher level </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I know some ActiveX because of work, I still don't know any Corba =P
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 I'm tired.... it's 2:45 am here, and I haven't slept much the last couple of days, so I think I'm leaving now...
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fatal: I think we're still on target. There was initial shock value to the size of the skeletons and stubs, but if you use a shared library ORB with good modularity the stubs are very small.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 ahh.. g'night
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 gnight anoq
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 bye anoq
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 thanks for coming
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 Nighty then! 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    anoq: </font>
+	      </td><td>
+		 You too - all
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: anoq (Leaving) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 forgot to tell all the newcomers: today is my birthday so I'm going out for cake soon with my brother ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 hehe happy bday graydon :)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 If you got any major burning questions you better get 'em over with now
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 yes.. wot timescale would u give before we have something 'up on the screen'? 3 months?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    bfulgham: </font>
+	      </td><td>
+		 Actually, I've got to run too.  See you all later.  Graydon:  I'm gone next week, so can't attend the Friday GGI/Berlin IRC.  Can you log it (if you can attend, that is) so I can read it?  Thanks for the great discussion guys.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 not that im bothered by the development at the moment.. i think its good that ya'all are designing this from the ground up
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 bfulgham: sure thing
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fatal: I promised bruce I could have a demonstrable thing (unspecified level of workingness) by end of summer.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Y'all can call be a big stinkin' liar if I don't.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 heh
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 fatal: might not be much more than a box that says hello though.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: what remains to be done in order for that to happen?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Fatal: </font>
+	      </td><td>
+		 graydon: as long as a lot of the underlying stuff is functional, it will give people something to work on
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: bfulgham (Leaving) </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: factoryfinder, a corba lifecycle interface, needs to be written. Then you just make a widget called "helloWidget" which does mesa calls.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 The tricky part is how to encapsulate mesa state between widgets
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 true
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 state changes are expensive
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 One option is to only export "drawing" commands, and not let the clients change global state (lighting, projection, etc) and then give each widget its own modelling matrix.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Push, draw, pop, etc.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: that's easiers
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 s/easiers/easiest/
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 But it's not terribly extensible or elegant imho
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 I'm going to talk to a guy who made an open inventor clone 
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 it's an interesting problem
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 he's released it under "academic and noncommercial only" license. I want to coerce him to the lgpl / gpl side of the force.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 most opengl apps are only concerned with themselves
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: exactly. Berlin is an openGL multiplexer, essentially, and openGL really only defines *1* state machine.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 there is more than one open inventor clone
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 There is the one linked to on teh Mesa page, but there is also one on (I think) www.sgi.com/Technology/OpenGL
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Fatal: if you speak openGL, I'm sure *any* UI stuff you can do, even utility functions for drawing buttons or that sort of thing, would be very welcome. You can experiment on that without the berlin server running.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mass: I found one called "apprentice" -- what others do you know of?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 hold on, I'll get the other one
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mass: there's one from the trolls, but erm, well, I'm afraid of them ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: can we design a 3d ui? =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 oh wow. an ie4.0 bug. Never would think I'd see one of those ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 hold on... ok, it is ftp.troll.no
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 afraid?? =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: I suppose. I mean, I'm mostly concerned with speed in mesa. Speed is the big issue right now. In 5 years, speed of 3d will not be a big issue. Right now, a perspective 3d GUI will be about as slow as a mac 128 imho.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: I'd be totally satisfied with a "painted polygons" approach
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 right
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mass: trolls wrote QT.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 hmm
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 you want to export opengl displaylists through corba, right?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: something like that.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 ahh
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: If we literally just make each widget a displaylist, I can make that interface in a single night.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  nickgone (marty@sod.student.umd.edu) has joined channel #berlin </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: push, callList()m pop. Simple for the server.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: I honestly haven't done any work whatsoever with displaylists, but it can't be that hard
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: How threadsafe is mesa? Not at all, I guess?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 Silk: no, displayLists are simple I think.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: afaik it's getting there
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 so how extensively do you want to use OpenGL? you want to use it for *all* 2d?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I'm not understanding where this is going =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon: people are working on it.. people are writing multithreaded mesa programs
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 mass-: pretty much, yes
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 ahh
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mass: I want to be able to run it in orthographic mode so it *looks* like a normal windowing system, and has nearly the speed of one.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mass: if people want texturized surfaces and 3d rotation in perspective mode, fine. I just don't want berlin to be "the 3d GUI" -- it will be met with a certain level of ridicule.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 I get you. What does that buy? I mean, as apposed to just implementing a 2d api?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 haha
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mass: just that -- we don't have to implement a 2d API.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 apparently you havent seen the "windows GDI2000"
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mass: I have. It's hilarious. I'm sure it'll be a hit.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 mass-; that thing looks downright scary
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 The windows are all boxes, you can move them closer, and can rotate them on their side so they are a horizontal bar.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 mass: gotta do something with those idle cycles
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 The scary thing is that they are telling hardware manufacturers that they need to support 2048x2048 textures. They just tell them this, and know the Microsoft power will sway them to start working on it
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: the trick with multithreading is that I would *like* it to be not-too-easy for a client to make the whole system look slow just by uploading a complex displaylist. heh.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 yes, you don't want things swapping between displays, it should stay on teh current one until it is nice and finished
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: might be infeasable given the openGL model. It seems kinda all-or-nothing.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 oh, yeah
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 that's one thing
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 I think opengl can only have one rendering thread
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  netgod is now known as n3tgod </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: yeah, so that might be a problem.
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Silk is considering whether that is a crippling limitation </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 It all sort of depends on how Fahrenheit pans out for Windows. Microsoft wants Fahrenheit to be a high-level API, and to be based on DirectX7 for windows platforms. SGI is planning on using OpenGL underneath Fahrenheit.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: ultimately we were going to have a single "composing" thread anyway to do all the blits. Might be OK.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 Consumer card manufacturers are going to gear up for whatever Microsoft tells them to; if microsoft doesn't write the OS to support their product, they will go out of business
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Napalm (kclark@dal284.cmpu.net) has joined channel #berlin </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 hey napalm
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 mass-; well.. Microsoft is still playing catchup to OGL for now
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Napalm nods </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 mass-; i think ms has finally realised that it has to make the api perform in a sane way for it to be accepted
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: yeah, OpenGL is way ahead in mind and market share
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: I'll be really sad if OpenGl suddenly becomes ClosedGL.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon; it won't
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 yeah. There are a lot of things that you can do in OpenGL that you still can't come close to in D3D. Even Glide, which was written by one guy (Brian Hook) as his first project can do a lot more than DX5, and is faster doing it.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 the question is whether it'll stagnate once fahrenheit comes out
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: we'll just have to clobber microsoft before that's an issue ;)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon; my thoughts exactly
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 if opengl can become well entrenched in the next two years, it'll be around for 10 whether ms likes it or not
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 Silk: Microsoft will continue to support OpenGL because it really wants SGI on the NT platform.  They don't ever plan on supporting it for normal end-users, which means there will be problems getting consumer-priced cards that support it.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 but anyways =)
+		  </td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  Signoff: Napalm (Napalm has no reason) </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: "Berlin meet -- OpenGL Love-In" </font></td></tr>
+<tr><td>&nbsp;</td><td><font color="red" size="-1">  graydon has set the topic: Berlin meet -- OpenGL Love-In </font></td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 Fahrenheit will be a high-level API. It can be built on top of either OGL or D3D.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 yep, this ms bashing doesn't really get you anywhere
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 There is actually suppsed to be a first draft of the Fahrenheit API coming out soon
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 I like opengl, opengl is supported under linux, and that's that
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 ok ok ok. I'm going to go mail the apprentice guys and then start coding a displaylist widget under tha assumption that they'll refuse my suggestion. Then I'm going out for birthday cake.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 ok, have fun =)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 This means I'm closing the log. Any last words for posterity?
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 graydon; i'll take a stab at doing some opengl widgets under x next week.. got a lot to do this weekend
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 so long, and thanks for all the fish
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    graydon: </font>
+	      </td><td>
+		 silk: would be much appreciated.
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    mass-: </font>
+	      </td><td>
+		 look at the Moonlight Creator source, it uses OpenGL for its widgets (dialogs, etc)
+		  </td></tr>
+
+      <tr>
+	<td align="right" valign="top">
+	  <font color="darkblue">
+	    Silk: </font>
+	      </td><td>
+		 later
+		  </td></tr>
+</table></body></html>
