@@ -1,3 +1,5 @@
+**Note**: the repository https://github.com/stefanseefeld/fresco is actually what you want to look at rather than this one (unless you want to see a crawl of an old website). I made this snapshot thinking sourceforge was the only residual source; but of course Stefan has already done a better job of preservation.
+
 # Berlin / Fresco
 
 From 1998 through 2003, myself, Stefan Seefeld, Nathaniel Smith and many others collaborated on a project to build a new windowing system for Unix systems.
