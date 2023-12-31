@@ -1,7 +1,7 @@
 # Berlin / Fresco
 
 From 1998 through 2003, myself, Stefan Seefeld, Nathaniel Smith and many others collaborated on a project to build a new windowing system for Unix systems.
-The project was started by others and was originally called "Berlin", and later it merged with an older codebase called "Fresco" and adopted that name.
+The project was started and briefly led by Jim Fetters and Matt Messier, and was originally called "Berlin", but later it merged with an older codebase called "Fresco" and adopted that name.
 
 The goal was to push _far_ beyond what the X window system of the time supported, providing a basis for the fabled future "year of the Linux desktop".
 It used a resolution-independent high-color imaging model rendered through OpenGL, supported antialiased Unicode text, and had a retained server-side scene graph.
