@@ -1,7 +1,7 @@
-/*$Id: DLL.hh,v 1.3 1999/05/19 17:01:24 gray Exp $
+/*$Id: DLL.hh,v 1.7 2001/03/21 06:28:22 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -27,29 +27,33 @@
 namespace Prague
 {
 
-/* @Class{DLL}
- *
- * @Description{DLL represents a dynamic library}
- */
+//. DLL represents a dynamic library
 class DLL
 {
 public:
+  //. create a nil library handle
   DLL() : handle(0) {}
-  DLL(const string &name, bool now = true) { open(name, now);}
+  //. create a library handle for the named library
+  DLL(const std::string &name, bool now = true) { open(name, now);}
   ~DLL() { close();}
-  void open(const string &, bool = true);
+  //. open the given library
+  void open(const std::string &, bool = true);
+  //. close the library
   void close();
-  void *resolve(const string &);
-  const string &name() const { return lib;}
-  const string &error() const { return err;}
+  //. resolve the given symbol
+  void *resolve(const std::string &);
+  //. return the library's name
+  const std::string &name() const { return lib;}
+  //. return the last error (should we replace that with an exception ?)
+  const std::string &error() const { return err;}
+  //. return true if the handle is valid
   operator bool () const { return handle;}
-protected:
 private:
-  string lib;
-  string err;
+  std::string lib;
+  std::string err;
   void *handle;
 };
 
-};
+}
 
-#endif /* _DLL_hh */
+#endif

@@ -1,7 +1,7 @@
-/*$Id: Warsaw.hh,v 1.1 1999/10/27 15:50:32 gray Exp $
+/*$Id: Warsaw.hh,v 1.4 2000/07/21 19:25:04 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,19 +22,24 @@
 #ifndef _Warsaw_hh
 #define _Warsaw_hh
 
-#include <Graphic.hh>
-#include <Region.hh>
+#include <Warsaw/config.hh>
+#include <Warsaw/resolve.hh>
+#include <Warsaw/ClientContextImpl.hh>
 #include <iostream>
 
-/*
- * here I start to put some utilities which are based only on top of
- * Warsaw types, so this stuff should be distributed with the server
- * *and* the client side... -stefan
- */
-
-ostream &operator << (ostream &, const Graphic::Requirement &);
-ostream &operator << (ostream &, const Graphic::Requisition &);
-ostream &operator << (ostream &, const Region::Allotment &);
-ostream &operator << (ostream &, Region_ptr);
+class Warsaw
+{
+public:
+  Warsaw(int, char **);
+  ~Warsaw();
+  template <class T>
+  typename T::_ptr_type resolve(const char *name) { return resolve_kit<T>(server, name);}
+  template <class T>
+  typename T::_ptr_type resolve(const char *name, const Kit::PropertySeq &p) { return resolve_kit<T>(server, name, p);}
+private:
+  CORBA::ORB_var orb;
+  ClientContextImpl *client;
+  ServerContext_var  server;
+};
 
 #endif /* _Warsaw_hh */

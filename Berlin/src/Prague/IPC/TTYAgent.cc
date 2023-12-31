@@ -1,7 +1,7 @@
-/*$Id: TTYAgent.cc,v 1.5 1999/11/17 02:03:18 stefan Exp $
+/*$Id: TTYAgent.cc,v 1.12 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,31 +21,34 @@
  */
 #include "Prague/IPC/ptybuf.hh"
 #include "Prague/IPC/TTYAgent.hh"
+#include "Prague/Sys/Tracer.hh"
 #include <unistd.h>
 #include <cstdio>
 
 using namespace Prague;
 
-TTYAgent::TTYAgent(const string &cmd, IONotifier *io, EOFNotifier *eof)
+TTYAgent::TTYAgent(const std::string &cmd, IONotifier *io, EOFNotifier *eof)
   : Coprocess(cmd, io, eof)
 {}
 
 TTYAgent::~TTYAgent()
 {
+  stop();
   shutdown(in|out|err);
 }
 
 void TTYAgent::start()
 {
-  if (id >= 0)
+  Trace trace("TTYAgent::start");
+  if (pid() >= 0)
     {
       terminate();
       ptybuf *pty  = new ptybuf;
       int fd = pty->openpty();
-      switch(id = fork())
+      switch(_id = fork())
 	{
 	case -1:
-	  id = 0;
+	  _id = 0;
 // 	  SystemError("cannot fork", true);
 	  return;
 	case  0:
@@ -60,7 +63,7 @@ void TTYAgent::start()
             const char *argv[4];
             argv[0] = "/bin/sh";
             argv[1] = "-c";
-            argv[2] = path.c_str();
+            argv[2] = _path.c_str();
             argv[3] = 0;
             execvp ("/bin/sh", (char**) argv);
             perror("/bin/sh");
@@ -69,17 +72,18 @@ void TTYAgent::start()
 	  }
 	default:
 	  pty->setup();
- 	  inbuf = outbuf = pty;
-	  errbuf = 0;
-	  inbuf->setnonblocking();
+ 	  _inbuf = _outbuf = pty;
+	  _errbuf = 0;
+	  _inbuf->async(true);
  	  break;
 	}
     }
+  _running = true;
   mask(out);
   Coprocess::start();
 };
 
-void TTYAgent::setWindowSize(unsigned short columns, unsigned short rows)
+void TTYAgent::set_window_size(unsigned short columns, unsigned short rows)
 {
 #if defined(HAVE_IOCTL)
   struct winsize ws;

@@ -1,0 +1,78 @@
+/*$Id: TextBuffer.idl,v 1.7 2001/04/15 15:31:39 tobias Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> ,
+ *               2001 Tobias Hunger <tobias@berlin-consortium.org>
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_TextBuffer_idl
+#define _Warsaw_TextBuffer_idl
+
+#include <Warsaw/Subject.idl>
+#include <Warsaw/Types.idl>
+
+module Warsaw
+{
+  interface TextBuffer : Subject
+    {
+      
+       //. This can change in a TextBuffer:
+      enum ChangeType {insert, remove, cursor};
+      
+      struct Change
+      {
+	  ChangeType type;    //.< What happened?
+	  unsigned long pos;  //.< Where did it happen?
+	  long len;           //.< How long was the change? This might be a negative number.
+      };
+      
+	//. The length of the TextBuffer.
+      readonly attribute long size;
+	//. The contents of the TextBuffer.
+      readonly attribute Unistring value;
+	//. Position of the Cursor.
+      attribute long position;
+	//. Get a substring of the Buffer starting at pos
+	//. and len characters long.
+      Unistring get_chars(in unsigned long pos, in unsigned long len);
+	//. Move the cursor forward for one character.
+      void forward();
+	//. Move the cursor backwards for one character.
+      void backward();
+      
+      void shift(in long d);
+	//. Insert a character at the current position.
+	//. Allways use insert_string since this
+	//. might lead to unexspected results when adding characters with
+	//. codevalues bigger then 0xFFFF!
+      void insert_char(in Unichar u);
+	//. Inserts a string into the Buffer. It gets inserted at the
+	//. current cursor position.
+      void insert_string(in Unistring u);
+	//. Removes d characters backward.
+	//. This is relative to the current cursor position.
+      void remove_backward(in long d);
+	//. Removes d characters forward.
+	//. This is relative to the current cursor position.
+      void remove_forward(in long d);
+	//. Clears the buffer. It will be empty afterwards.
+      void clear();
+    };
+};
+
+#endif

@@ -1,7 +1,7 @@
-/*$Id: ObjectCache.hh,v 1.1 1999/08/26 13:55:38 gray Exp $
+/*$Id: ObjectCache.hh,v 1.3 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -30,10 +30,10 @@
 template <class Remote, class Local>
 class ObjectCache
 {
-  typedef vector<Local *> bucket_t;
+  typedef std::vector<Local *> bucket_t;
   typedef long hash_t;
-  typedef map<hash_t, bucket_t> cache_t;
-  typedef list<Local *> counter_t;
+  typedef std::map<hash_t, bucket_t> cache_t;
+  typedef std::list<Local *> counter_t;
   struct Predicate
   {
     Predicate(Remote r) : remote(r) {}
@@ -41,15 +41,15 @@ class ObjectCache
     Remote remote;
   };
 public:
-  ObjectCache(int i, int b = 193) : items(i), buckets(b) {}
+  ObjectCache(int i, int b = 193) : _items(i), _buckets(b) {}
   ~ObjectCache() { reduce(0);}
   Local *lookup(Remote);
   void reduce(int);
 private:
-  int items;
-  int buckets;
-  cache_t cache;
-  counter_t counter;
+  int       _items;
+  int       _buckets;
+  cache_t   _cache;
+  counter_t _counter;
 };
 
 /*
@@ -62,8 +62,8 @@ private:
 template <class Remote, class Local>
 inline Local *ObjectCache<Remote, Local>::lookup(Remote r)
 {
-  hash_t hash = r->_hash(buckets);
-  bucket_t &bucket = cache[hash];
+  hash_t hash = r->_hash(_buckets);
+  bucket_t &bucket = _cache[hash];
   bucket_t::iterator i = find_if(bucket.begin(), bucket.end(), Predicate(r));
   if (i == bucket.end())
     {

@@ -1,7 +1,7 @@
-/*$Id: Agent.cc,v 1.5 1999/11/16 02:15:20 stefan Exp $
+/*$Id: Agent.cc,v 1.9 2000/12/14 15:28:19 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,48 +24,38 @@
 
 using namespace Prague;
 
-Agent::Agent()
-  : iomask(none), running(false)
-{}
-
-Agent::~Agent()
-{
-  if (running)
-    {
-      Dispatcher::instance()->release(this);
-      running = false;
-    }
-};
+Agent::Agent() : _refcount(1), _iomask(none), _running(false) {}
+Agent::~Agent() {}
 
 void Agent::start()
 {
-  running = true;
-  if (iomask & in && ibuf()) Dispatcher::instance()->bind(ibuf()->fd(), this, in);
-  if (iomask & out && obuf()) Dispatcher::instance()->bind(obuf()->fd(), this, out);
-  if (iomask & err && ebuf()) Dispatcher::instance()->bind(ebuf()->fd(), this, err);
+  _running = true;
+  if (_iomask & in && ibuf()) Dispatcher::instance()->bind(this, ibuf()->fd(), in);
+  if (_iomask & out && obuf()) Dispatcher::instance()->bind(this, obuf()->fd(), out);
+  if (_iomask & err && ebuf()) Dispatcher::instance()->bind(this, ebuf()->fd(), err);
 }
 
 void Agent::mask(short m)
 {
-  if (iomask == m) return;
-  if (running)
+  if (_iomask == m) return;
+  if (_running)
     {
-      if ((iomask ^ m) & in)
-	if (iomask & in && ibuf()) Dispatcher::instance()->release(ibuf()->fd());
-	else  Dispatcher::instance()->bind(ibuf()->fd(), this, in);
-      if ((iomask ^ m) & out)
-	if (iomask & out && obuf()) Dispatcher::instance()->release(obuf()->fd());
-	else  Dispatcher::instance()->bind(obuf()->fd(), this, out);
-      if ((iomask ^ m) & err)
-	if (iomask & err && ebuf()) Dispatcher::instance()->release(ebuf()->fd());
-	else  Dispatcher::instance()->bind(ebuf()->fd(), this, err);
+      if ((_iomask ^ m) & in)
+	if (_iomask & in && ibuf()) Dispatcher::instance()->release(this, ibuf()->fd());
+	else  Dispatcher::instance()->bind(this, ibuf()->fd(), in);
+      if ((_iomask ^ m) & out)
+	if (_iomask & out && obuf()) Dispatcher::instance()->release(this, obuf()->fd());
+	else  Dispatcher::instance()->bind(this, obuf()->fd(), out);
+      if ((_iomask ^ m) & err)
+	if (_iomask & err && ebuf()) Dispatcher::instance()->release(this, ebuf()->fd());
+	else  Dispatcher::instance()->bind(this, ebuf()->fd(), err);
     }
-  iomask = m;
+  _iomask = m;
 }
 
 void Agent::stop()
 {
   mask(none);
   Dispatcher::instance()->release(this);
-  running = false;
+  _running = false;
 }

@@ -1,7 +1,7 @@
-/*$Id: DataTypeManager.cc,v 1.5 1999/10/15 17:59:25 gray Exp $
+/*$Id: DataTypeManager.cc,v 1.8 2001/03/21 06:28:55 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,6 +22,7 @@
 #include "Prague/Sys/DataTypeManager.hh"
 #include "Prague/Sys/File.hh"
 #include "Prague/Sys/Memory.hh"
+#include <iostream>
 #include <fstream>
 #include <strstream>
 #include <algorithm>
@@ -29,10 +30,10 @@
 
 using namespace Prague;
 
-void stripcomment(string &line)
+void stripcomment(std::string &line)
 {
   bool quote = false;
-  for (string::iterator i = line.begin(); i != line.end(); i++)
+  for (std::string::iterator i = line.begin(); i != line.end(); i++)
     {
       if (*i == '\'') quote = !quote;
       else if (!quote && *i == '#')
@@ -43,13 +44,13 @@ void stripcomment(string &line)
     }
 }
 
-vector<unsigned char> getbytes(istream &is, unsigned short n)
+std::vector<unsigned char> getbytes(std::istream &is, unsigned short n)
 {
-  vector<unsigned char> bytes;
+  std::vector<unsigned char> bytes;
   unsigned short i = 0;
   do
     {
-      string token;
+      std::string token;
       while (isspace(is.peek())) is.ignore();
       /*
        * if it's a string, read all what is between the quote marks
@@ -74,23 +75,23 @@ vector<unsigned char> getbytes(istream &is, unsigned short n)
 	}
     }
   while (i < n);
-  return bytes.size() == n ? bytes : vector<unsigned char>();
+  return bytes.size() == n ? bytes : std::vector<unsigned char>();
 }
 
-string::const_iterator DataTypeManager::Type::Name::parse(string::const_iterator begin, string::const_iterator end)
+std::string::const_iterator DataTypeManager::Type::Name::parse(std::string::const_iterator begin, std::string::const_iterator end)
 {
-  istrstream iss(begin, end - begin);
+  std::istrstream iss(&*begin, end - begin);
   iss >> score;
   iss.ignore(end - begin, '\'');
-  string tmp;
+  std::string tmp;
   getline(iss, tmp, '\'');
   name = tmp;
   return iss && tmp.length() ? end : begin;
 }
 
-string::const_iterator DataTypeManager::Type::Magic::Part::parse(string::const_iterator begin, string::const_iterator end)
+std::string::const_iterator DataTypeManager::Type::Magic::Part::parse(std::string::const_iterator begin, std::string::const_iterator end)
 {
-  istrstream iss(begin, end - begin);
+  std::istrstream iss(&*begin, end - begin);
   iss >> offset;
   iss.ignore(end - begin, '[');
   iss >> length;
@@ -98,7 +99,7 @@ string::const_iterator DataTypeManager::Type::Magic::Part::parse(string::const_i
   if (!iss || length > 4096) return begin;
   data.resize(length);
   mask.resize(length, 0xff);
-  string token;
+  std::string token;
   iss >> token;
   if (token == "&")
     {
@@ -112,17 +113,17 @@ string::const_iterator DataTypeManager::Type::Magic::Part::parse(string::const_i
   return iss  ? end : begin;
 }
 
-string::const_iterator DataTypeManager::Type::Magic::parse(string::const_iterator begin, string::const_iterator end)
+std::string::const_iterator DataTypeManager::Type::Magic::parse(std::string::const_iterator begin, std::string::const_iterator end)
 {
-  string::const_iterator i = begin;
+  std::string::const_iterator i = begin;
   while (isspace(*i)) i++;
-  istrstream iss(i, end - i);
+  std::istrstream iss(&*i, end - i);
   iss >> score;
   while (!isspace(*i)) i++;
   while (1)
     {
       Part part;
-      string::const_iterator j = part.parse(i, end);
+      std::string::const_iterator j = part.parse(i, end);
       if (i == j) return begin;
       begin = i = j;
       parts.push_back(part);
@@ -130,16 +131,16 @@ string::const_iterator DataTypeManager::Type::Magic::parse(string::const_iterato
   return begin;
 }
 
-bool DataTypeManager::Type::parse(const string &line)
+bool DataTypeManager::Type::parse(const std::string &line)
 {
   if (line.substr(0, 5) == "type:")
     {
-      istrstream iss(line.begin() + 5, line.length() - 5);
+      std::istrstream iss(&*line.begin() + 5, line.length() - 5);
       iss >> type;
     }
   else if (line.substr(0, 5) == "mime:")
     {
-      istrstream iss(line.begin() + 5, line.length() - 5);
+      std::istrstream iss(&*line.begin() + 5, line.length() - 5);
       iss >> mime;
     }
   else if (line.substr(0, 5) == "name:")
@@ -160,26 +161,26 @@ bool DataTypeManager::Type::parse(const string &line)
   return true;
 }
 
-void DataTypeManager::merge(const string &file)
+void DataTypeManager::merge(const std::string &file)
 {
-  ifstream ifs(file.c_str());
+  std::ifstream ifs(file.c_str());
   unsigned int lineno = 0;
   Type *type = 0;
   while (ifs && ++lineno)
     {
-      string line;
-      getline(ifs, line);
+      std::string line;
+      std::getline(ifs, line);
       stripcomment(line);
       if (line.empty()) continue;
       if (line.substr(0, 5) == "type:")
 	{
-	  if (type) { types.push_back(*type); delete type;}
+	  if (type) { _types.push_back(*type); delete type;}
 	  type = new Type;
 	}
       if (!type || !type->parse(line))
-	cerr << "DataTypeManager::merge: error in line " << lineno << " of file " << file << endl;
+	std::cerr << "DataTypeManager::merge: error in line " << lineno << " of file " << file << std::endl;
     }
-  if (type) { types.push_back(*type); delete type;}
+  if (type) { _types.push_back(*type); delete type;}
 }
 
 short DataTypeManager::compare(unsigned short name1, unsigned short magic1, unsigned short name2, unsigned short magic2)
@@ -193,11 +194,11 @@ short DataTypeManager::compare(unsigned short name1, unsigned short magic1, unsi
   if ((magic1 > magic2 && name1 >= name2) || (name1 > name2 && magic1 >= magic2)) return 1;
   if ((magic2 > magic1 && name2 >= name1) || (name2 > name1 && magic2 >= magic1)) return -1;
   
-  if (max(name1, magic1) > max(name2, magic2)) return  1;
-  if (max(name2, magic2) > max(name1, magic1)) return -1;
+  if (std::max(name1, magic1) > std::max(name2, magic2)) return  1;
+  if (std::max(name2, magic2) > std::max(name1, magic1)) return -1;
   
-  if (min(name1, magic1) > min(name2, magic2)) return  1;
-  if (min(name2, magic2) > min(name1, magic1)) return -1;
+  if (std::min(name1, magic1) > std::min(name2, magic2)) return  1;
+  if (std::min(name2, magic2) > std::min(name1, magic1)) return -1;
   
   if (magic1 > magic2) return  1;
   if (magic2 > magic1) return -1;
@@ -205,17 +206,17 @@ short DataTypeManager::compare(unsigned short name1, unsigned short magic1, unsi
   return 0;
 }
 
-unsigned short DataTypeManager::Type::Name::match(const string &file)
+unsigned short DataTypeManager::Type::Name::match(const std::string &file)
 {
   return name.match(file) > 0 ? score : 0;
 }
 
-unsigned short DataTypeManager::Type::matchName(const string &file)
+unsigned short DataTypeManager::Type::match_name(const std::string &file)
 {
   unsigned short best = 0;
-  for (vector<Name>::iterator i = names.begin(); i != names.end(); i++)
+  for (std::vector<Name>::iterator i = names.begin(); i != names.end(); i++)
     {
-      best = max(best, (*i).match(file));
+      best = std::max(best, (*i).match(file));
     }
   return best;
 }
@@ -230,32 +231,32 @@ bool DataTypeManager::Type::Magic::Part::match(const unsigned char *d, int l)
 
 unsigned short DataTypeManager::Type::Magic::match(const unsigned char *data, int length)
 {
-  for (vector<Part>::iterator i = parts.begin(); i != parts.end(); i++)
+  for (std::vector<Part>::iterator i = parts.begin(); i != parts.end(); i++)
     if (!(*i).match(data, length)) return 0;
   return score;
 }
 
-unsigned short DataTypeManager::Type::matchMagic(const unsigned char *data, int length)
+unsigned short DataTypeManager::Type::match_magic(const unsigned char *data, int length)
 {
   unsigned short best = 0;
-  for (vector<Magic>::iterator i = magics.begin(); i != magics.end(); i++)
-    best = max(best, (*i).match(data, length));
+  for (std::vector<Magic>::iterator i = magics.begin(); i != magics.end(); i++)
+    best = std::max(best, (*i).match(data, length));
   return best;
 }
 
-string DataTypeManager::match(const string &file, const unsigned char *data, unsigned int length)
+std::string DataTypeManager::match(const std::string &file, const unsigned char *data, unsigned int length)
 {
-  vector<Type>::iterator best = types.end();
+  std::vector<Type>::iterator best = _types.end();
   unsigned short bestName = 0;
   unsigned short bestMagic = 0;
-  for (vector<Type>::iterator i = types.begin(); i != types.end(); i++)
+  for (std::vector<Type>::iterator i = _types.begin(); i != _types.end(); i++)
     {
       unsigned short name  = 0;
       unsigned short magic = 0;
-      if (file.length()) name = (*i).matchName(file);
-      if (data && length) magic = (*i).matchMagic(data, length);
+      if (file.length()) name = (*i).match_name(file);
+      if (data && length) magic = (*i).match_magic(data, length);
       if (name == 0 && magic == 0) continue;
-      if (best == types.end())
+      if (best == _types.end())
 	{
 	  best = i;
 	  bestName  = name;
@@ -270,29 +271,29 @@ string DataTypeManager::match(const string &file, const unsigned char *data, uns
 	  continue;
 	}
     }
-  if (best == types.end()) return "binary";
+  if (best == _types.end()) return "binary";
   else return (*best).type;
 }
 
-string DataTypeManager::match(const string &file)
+std::string DataTypeManager::match(const std::string &file)
 {
-  ifstream ifs(file.c_str());
-  string name = File::base(file);
-  unsigned char data[4096];
-  ifs.read(data, 4096);
+  std::ifstream ifs(file.c_str());
+  std::string name = File::base(file);
+  char unsigned data[4096];
+  ifs.read(reinterpret_cast<char *>(data), 4096);
   return match(name, data, ifs.gcount());
 }
 
-string DataTypeManager::TypeToMime(const string &type)
+std::string DataTypeManager::type_to_mime(const std::string &type)
 {
-  for (vector<Type>::iterator i = types.begin(); i != types.end(); i++)
+  for (std::vector<Type>::iterator i = _types.begin(); i != _types.end(); i++)
     if ((*i).type == type) return (*i).mime;
-  return string();
+  return std::string();
 }
 
-string DataTypeManager::MimeToType(const string &mime)
+std::string DataTypeManager::mime_to_type(const std::string &mime)
 {
-  for (vector<Type>::iterator i = types.begin(); i != types.end(); i++)
+  for (std::vector<Type>::iterator i = _types.begin(); i != _types.end(); i++)
     if ((*i).mime == mime) return (*i).type;
-  return string();
+  return std::string();
 }

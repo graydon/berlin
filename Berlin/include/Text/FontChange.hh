@@ -1,7 +1,7 @@
 #ifndef _FontChange_hh
 #define _FontChange_hh
 //
-// $Id: FontChange.hh,v 1.1 1999/04/26 03:43:45 gray Exp $
+// $Id: FontChange.hh,v 1.2 1999/12/22 16:53:39 stefan Exp $
 //
 // This source file is a part of the Berlin Project.
 // Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
@@ -26,17 +26,16 @@
 #include "Warsaw/config.hh"
 #include "Warsaw/Text.hh"
 #include "Berlin/GraphicImpl.hh"
-#include "Warsaw/Style.hh"
 
 class FontChange : public virtual GraphicImpl {
 public:
-  FontChange(const Text::FontDescriptor & f, const Style::Spec &sty);	    
+//   FontChange(const Text::FontDescriptor & f, const Style::Spec &sty);	    
   virtual void draw(DrawTraversal_ptr dt);
   virtual void request(Requisition &);
 
 protected:
   const Text::FontDescriptor myFontDescriptor;
-  const Style::Spec myStyle;
+//   const Style::Spec myStyle;
 };
 
 

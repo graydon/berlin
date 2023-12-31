@@ -1,14 +1,9 @@
-/*$Id: LayoutManager.hh,v 1.5 1999/11/06 20:23:08 stefan Exp $
+/*$Id: LayoutManager.hh,v 1.11 2000/11/11 14:23:04 velco Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,9 +23,9 @@
 #ifndef _LayoutManager_hh
 #define _LayoutManager_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/Graphic.hh"
-#include "Warsaw/Region.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/Graphic.hh>
+#include <Warsaw/Region.hh>
 
 class RegionImpl;
 
@@ -43,110 +38,112 @@ public:
   virtual ~LayoutManager();
   virtual LayoutManager *clone() = 0;
 
-  virtual void request(long n, Graphic::Requisition *requests, Graphic::Requisition &result) = 0;
-  virtual void allocate(long n, Graphic::Requisition *requests, Region_ptr given, LayoutManager::Allocations result) = 0;
+  virtual void request(long n, Warsaw::Graphic::Requisition *requests, Warsaw::Graphic::Requisition &result) = 0;
+  virtual void allocate(long n, Warsaw::Graphic::Requisition *requests, Warsaw::Region_ptr given, LayoutManager::Allocations result) = 0;
 
-  static void setSpan(RegionImpl *r, Axis a, Coord origin, Coord length, Alignment align);
+  static void set_span(RegionImpl *r, Warsaw::Axis a, Warsaw::Coord origin, Warsaw::Coord length, Warsaw::Alignment align);
 };
 
 class LayoutAlign : public LayoutManager
 //. LayoutAlign -- align positions along an axis
 {
 public:
-  LayoutAlign(Axis, bool = false);
+  LayoutAlign(Warsaw::Axis);
   virtual ~LayoutAlign();
   virtual LayoutManager *clone();
 
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
 private:
-  Axis axis;
-  bool relaxed;
+  Warsaw::Axis axis;
 };
 
 class LayoutCenter : public LayoutManager
 //. LayoutCenter -- center positions along an axis
 {
 public:
-  LayoutCenter(Axis, Alignment a);
+  LayoutCenter(Warsaw::Axis, Warsaw::Alignment a);
   virtual ~LayoutCenter();
 
   virtual LayoutManager* clone();
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
 private:
-  Axis axis;
-  Alignment alignment;
+  Warsaw::Axis axis;
+  Warsaw::Alignment alignment;
 };
 
 class LayoutFixed : public LayoutManager
 //. LayoutFixed -- set size along an axis
 {
 public:
-  LayoutFixed(Axis, Coord size);
+  LayoutFixed(Warsaw::Axis, Warsaw::Coord);
   virtual ~LayoutFixed();
 
   virtual LayoutManager* clone();
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
 private:
-  Axis axis;
-  Coord size;
+  Warsaw::Axis axis;
+  Warsaw::Coord size;
 };
 
 class LayoutVariable : public LayoutManager
 //. LayoutVariable -- allow flexibility along an axis
 {
 public:
-  LayoutVariable(Axis, Coord stretch, Coord shrink);
+  LayoutVariable(Warsaw::Axis, Warsaw::Coord stretch, Warsaw::Coord shrink);
   virtual ~LayoutVariable();
 
   virtual LayoutManager* clone();
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
 private:
-  Axis axis;
-  Coord stretch;
-  Coord shrink;
+  Warsaw::Axis axis;
+  Warsaw::Coord stretch;
+  Warsaw::Coord shrink;
 };
 
 class LayoutNatural : public LayoutManager
 //. LayoutNatural -- set the natural size along an axis
 {
 public:
-  LayoutNatural(Axis, Coord natural);
+  LayoutNatural(Warsaw::Axis, Warsaw::Coord);
   virtual ~LayoutNatural();
 
   virtual LayoutManager* clone();
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
 private:
-  Axis axis;
-  Coord natural;
+  Warsaw::Axis axis;
+  Warsaw::Coord natural;
 };
 
 class LayoutMargin : public LayoutManager
 //. LayoutMargin -- leave a margin around the sides
 {
 public:
-  LayoutMargin(Coord);
-  LayoutMargin(Coord, Coord);
-  LayoutMargin(Coord, Coord, Coord, Coord);
-  LayoutMargin(Coord, Coord, Coord, Coord, Coord, Coord, Coord, Coord, Coord, Coord, Coord, Coord);
+  LayoutMargin(Warsaw::Coord);
+  LayoutMargin(Warsaw::Coord, Warsaw::Coord);
+  LayoutMargin(Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
+  LayoutMargin(Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord,
+	       Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord,
+	       Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
   virtual ~LayoutMargin();
 
   virtual LayoutManager* clone();
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
 private:
-  Coord lnatural, lstretch, lshrink;
-  Coord rnatural, rstretch, rshrink;
-  Coord bnatural, bstretch, bshrink;
-  Coord tnatural, tstretch, tshrink;
-  Graphic::Requisition requisition;
+  Warsaw::Coord lnatural, lstretch, lshrink;
+  Warsaw::Coord rnatural, rstretch, rshrink;
+  Warsaw::Coord bnatural, bstretch, bshrink;
+  Warsaw::Coord tnatural, tstretch, tshrink;
+  Warsaw::Graphic::Requisition requisition;
 
-  void allocateAxis(Axis, Coord, Coord, Coord, Coord, Coord, Coord, LayoutManager::Allocations);
-  static Coord span(Coord, Graphic::Requirement &, Coord, Coord, Coord);
+  void allocate_axis(Warsaw::Axis, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord,
+		     Warsaw::Coord, Warsaw::Coord, LayoutManager::Allocations);
+  static Warsaw::Coord span(Warsaw::Coord, Warsaw::Graphic::Requirement &, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
 };
 
 class LayoutSuperpose : public LayoutManager
@@ -158,8 +155,8 @@ public:
   virtual ~LayoutSuperpose();
   virtual LayoutManager *clone();
 
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
 private:
   LayoutManager *first;
   LayoutManager *second;
@@ -170,38 +167,38 @@ class LayoutTile : public LayoutManager
 //. LayoutTile -- side-by-side, first-to-last along an axis
 {
 public:
-  LayoutTile(Axis);
+  LayoutTile(Warsaw::Axis);
   virtual ~LayoutTile();
   virtual LayoutManager *clone();
 
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
 
-  static void computeRequest(Axis, Alignment, long, Graphic::Requisition *, Graphic::Requisition &);
-  static void computeAllocations(Axis, Graphic::Requisition &, bool, long, Graphic::Requisition *,
-				 Region_ptr, LayoutManager::Allocations);
-  static Coord computeLength(const Graphic::Requirement &, const Region::Allotment &);
-  static float computeSqueeze(const Graphic::Requirement &, Coord);
+  static void compute_request(Warsaw::Axis, Warsaw::Alignment, long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  static void compute_allocations(Warsaw::Axis, Warsaw::Graphic::Requisition &, bool, long, Warsaw::Graphic::Requisition *,
+				  Warsaw::Region_ptr, LayoutManager::Allocations);
+  static Warsaw::Coord compute_length(const Warsaw::Graphic::Requirement &, const Warsaw::Region::Allotment &);
+  static Warsaw::Coord compute_squeeze(const Warsaw::Graphic::Requirement &, Warsaw::Coord);
 private:
-  Axis axis;
-  Graphic::Requisition requisition;
+  Warsaw::Axis axis;
+  Warsaw::Graphic::Requisition requisition;
 };
 
 class LayoutTileReversed : public LayoutManager
 //. LayoutTileReversed -- side-by-side, last-to-first
 {
 public:
-  LayoutTileReversed(Axis);
+  LayoutTileReversed(Warsaw::Axis);
   virtual ~LayoutTileReversed();
   virtual LayoutManager *clone();
 
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
-  static void computeReversedAllocations(Axis, Graphic::Requisition &, bool, long, Graphic::Requisition *,
-					 Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
+  static void compute_reversed_allocations(Warsaw::Axis, Warsaw::Graphic::Requisition &, bool, long, Warsaw::Graphic::Requisition *,
+					   Warsaw::Region_ptr, LayoutManager::Allocations);
 private:
-  Axis axis;
-  Graphic::Requisition requisition;
+  Warsaw::Axis axis;
+  Warsaw::Graphic::Requisition requisition;
 };
 
 
@@ -209,16 +206,16 @@ class LayoutTileFirstAligned : public LayoutManager
 //. LayoutTileFirstAligned -- like Tile but use first element's origin
 {
 public:
-  LayoutTileFirstAligned(Axis);
+  LayoutTileFirstAligned(Warsaw::Axis);
   virtual ~LayoutTileFirstAligned();
   virtual LayoutManager *clone();
 
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
-  static void computeRequestFirstAligned(Axis, long, Graphic::Requisition *, Graphic::Requisition &);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
+  static void compute_request_first_aligned(Warsaw::Axis, long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
 private:
-  Axis axis;
-  Graphic::Requisition requisition;
+  Warsaw::Axis axis;
+  Warsaw::Graphic::Requisition requisition;
 };
 
 class LayoutTileReversedFirstAligned : public LayoutManager
@@ -226,15 +223,15 @@ class LayoutTileReversedFirstAligned : public LayoutManager
 //. but use first element's origin
 {
 public:
-  LayoutTileReversedFirstAligned(Axis);
+  LayoutTileReversedFirstAligned(Warsaw::Axis);
   virtual ~LayoutTileReversedFirstAligned();
   virtual LayoutManager *clone();
 
-  virtual void request(long, Graphic::Requisition *, Graphic::Requisition &);
-  virtual void allocate(long, Graphic::Requisition *, Region_ptr, LayoutManager::Allocations);
+  virtual void request(long, Warsaw::Graphic::Requisition *, Warsaw::Graphic::Requisition &);
+  virtual void allocate(long, Warsaw::Graphic::Requisition *, Warsaw::Region_ptr, LayoutManager::Allocations);
 private:
-  Axis axis;
-  Graphic::Requisition requisition;
+  Warsaw::Axis axis;
+  Warsaw::Graphic::Requisition requisition;
 };
 
-#endif /* _LayoutManager_hh */
+#endif

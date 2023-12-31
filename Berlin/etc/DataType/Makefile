@@ -1,7 +1,7 @@
-# $Id: Makefile,v 1.1 1999/07/19 18:14:57 gray Exp $
+# $Id: Makefile,v 1.2 2000/09/23 19:15:13 stefan Exp $
 #
 # This source file is a part of the Berlin Project.
-# Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+# Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
 # http://www.berlin-consortium.org
 #
 # This library is free software; you can redistribute it and/or

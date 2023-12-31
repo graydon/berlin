@@ -1,13 +1,8 @@
-/*$Id: GridImpl.hh,v 1.6 1999/09/13 21:22:06 gray Exp $
+/*$Id: GridImpl.hh,v 1.13 2001/04/18 06:07:26 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on code from Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -30,92 +25,87 @@
 #include <Warsaw/config.hh>
 #include <Warsaw/Grid.hh>
 #include <Berlin/GraphicImpl.hh>
-#include <Berlin/CloneableImpl.hh>
 #include <vector>
 
 class GridImpl;
 
-struct GridDimension
+class GridImpl : public virtual POA_Layout::Grid,
+		 public GraphicImpl
 {
-  void init(long count, long n)
+  struct Dimension
+  {
+    void init(long count, long n)
     {
       children.resize(count);
-      for (vector<vector<Graphic_var> >::iterator i = children.begin(); i != children.end(); i++)
+      for (std::vector<std::vector<Warsaw::Graphic_var> >::iterator i = children.begin(); i != children.end(); ++i)
 	(*i).resize(n);
       requirements.resize(count);
     }
-  CORBA::Long size() { return children.size();}
-  vector<vector<Graphic_var> > children;
-  vector<Graphic::Requirement> requirements;
-};
-
-class GridImpl : implements(Grid), public GraphicImpl
-{
-  struct Span
-  {
-    Coord lower;
-    Coord upper;
-    Alignment align;
+    CORBA::Long size() { return children.size();}
+    std::vector<std::vector<Warsaw::Graphic_var> > children;
+    std::vector<Warsaw::Graphic::Requirement> requirements;
   };
 public:
-  GridImpl(const Index &upper);
+  struct Span
+  {
+    Warsaw::Coord lower;
+    Warsaw::Coord upper;
+    Warsaw::Alignment align;
+  };
+  GridImpl(const Layout::Grid::Index &upper);
   ~GridImpl();
 
-  virtual void append(Graphic_ptr);
-  virtual void prepend(Graphic_ptr);
+  virtual void append_graphic(Warsaw::Graphic_ptr);
+  virtual void prepend_graphic(Warsaw::Graphic_ptr);
 
-  virtual void request(Requisition &);
-  virtual void traverse(Traversal_ptr);
-  virtual void needResize();
-  virtual void allocate(Tag, const Allocation::Info &);
+  virtual void request(Warsaw::Graphic::Requisition &);
+  virtual void traverse(Warsaw::Traversal_ptr);
+  virtual void need_resize();
+  virtual void allocate(Warsaw::Tag, const Warsaw::Allocation::Info &);
 
-  virtual void replace(Graphic_ptr, const Grid::Index &i);
-  virtual Grid::Index find(Traversal_ptr);
-  virtual void allocateCell(Region_ptr, const Grid::Index &, Region_ptr);
-  virtual void requestRange(Graphic::Requisition &, const Grid::Range &);
-  virtual void traverseRange(Traversal_ptr, const Grid::Range &);
-  virtual Grid::Index findRange(Traversal_ptr, const Grid::Range &);
-  virtual void rangePosition(Region_ptr, const Grid::Range &, Vertex &);
-  virtual Grid::Index upper();
+  virtual void replace(Warsaw::Graphic_ptr, const Layout::Grid::Index &);
+  virtual Layout::Grid::Index find(Warsaw::Traversal_ptr);
+  virtual void allocate_cell(Warsaw::Region_ptr, const Layout::Grid::Index &, Warsaw::Region_ptr);
+  virtual void request_range(Warsaw::Graphic::Requisition &, const Layout::Grid::Range &);
+  virtual void traverse_range(Warsaw::Traversal_ptr, const Layout::Grid::Range &);
+  virtual Layout::Grid::Index find_range(Warsaw::Traversal_ptr, const Layout::Grid::Range &);
+  virtual void range_position(Warsaw::Region_ptr, const Layout::Grid::Range &, Warsaw::Vertex &);
+  virtual Layout::Grid::Index upper();
 
  private:
-  Tag  index2tag(Grid::Index index)
+  Warsaw::Tag index_to_tag(const Layout::Grid::Index &index) { return (index.col << 16) + index.row;}
+  Layout::Grid::Index tag_to_index(Warsaw::Tag tag)
     {
-      return index.col << 16 + index.row;
-    }
-  Grid::Index tag2index(Tag tag)
-    {
-      Grid::Index index;
+      Layout::Grid::Index index;
       index.col = tag >> 16;
       index.row = tag & 0xffff;
       return index;
     }
-  void cacheRequest();
-  void partialRequest(Axis axis, long lower, long, Graphic::Requirement &);
-  void fullRequest(Axis, Axis);
-  Span *fullAllocate(Axis, Region_ptr);
-  void traverseWithAllocation(Traversal_ptr, Region_ptr, const Grid::Range &);
-  void traverseWithoutAllocation(Traversal_ptr, const Grid::Range &);
+  void cache_request();
+  void partial_request(Warsaw::Axis axis, long lower, long, Warsaw::Graphic::Requirement &);
+  void full_request(Warsaw::Axis, Warsaw::Axis);
+  Span *full_allocate(Warsaw::Axis, Warsaw::Region_ptr);
+  void traverse_with_allocation(Warsaw::Traversal_ptr, Warsaw::Region_ptr, const Layout::Grid::Range &);
+  void traverse_without_allocation(Warsaw::Traversal_ptr, const Layout::Grid::Range &);
 
-  GridDimension dimensions[2];
+  Dimension _dimensions[2];
+  Layout::Grid::Index _cursor;
 
-  Grid::Index cursor;
-
-  bool requested;
-  Requisition requisition;
+  bool _requested;
+  Warsaw::Graphic::Requisition _requisition;
 };
 
 class SubGridImpl : public GraphicImpl
 {
 public:
-  SubGridImpl(Grid_ptr, const Grid::Range &);
+  SubGridImpl(Layout::Grid_ptr, const Layout::Grid::Range &);
   ~SubGridImpl();
 
-  virtual void request(Requisition &);
-  virtual void traverse(Traversal_ptr);
+  virtual void request(Warsaw::Graphic::Requisition &);
+  virtual void traverse(Warsaw::Traversal_ptr);
 private:
-  Grid_var child;
-  Grid::Range range;
+  Layout::Grid_var _child;
+  Layout::Grid::Range _range;
 };
 
-#endif /* _GridImpl_hh */
+#endif

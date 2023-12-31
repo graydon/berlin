@@ -1,0 +1,142 @@
+/*$Id: Primitive.idl,v 1.1 2000/09/08 14:46:18 nickelm Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 2000 Niklas Elmqvist <elm@3dwm.org>
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+
+#ifndef _Primitive_idl
+#define _Primitive_idl
+
+#include <Warsaw/Graphic.idl>
+#include <Warsaw/Types3D.idl>
+
+module Warsaw {
+
+  interface Primitive : Graphic {
+
+    // @@@ I'm going to have to abstract this all into an Appearance
+    // (or similar), a'la Java3D.
+    attribute Rasters textures;
+    attribute MaterialAttr material;
+    //attribute TextureMode texmode;
+    
+    void resize();
+  };
+
+  // @@@ We're going to refactor the whole primitive hierarchy since
+  // it makes more sense to use transforms for scaling and
+  // translation, and then just have a single instance for the
+  // different primitives using the flyweight pattern. -elm
+  module Primitives {
+    
+    interface Sphere : Graphic {
+      attribute Vertex position;
+      attribute Coord radius;
+    };
+    
+    // "Rectangular parallelepiped" is the correct name, but it is
+    // horribly long and complex.
+    interface Box : Graphic {
+      attribute Vertex pt1, pt2;
+    };
+    
+    // Again, we should use "tetrahedron", but it is too obscure.
+    interface Pyramid : Graphic {
+      attribute Vertex pt1, pt2;
+      attribute Coord height;
+    };
+    
+    interface Cone : Graphic {
+      attribute Vertex base, top;
+      attribute Coord radius;
+    };
+    
+    /*
+      // Static geometry cannot be altered once created. This allows for
+      // some useful optimizations in some contexts (such as using
+      // display lists or CVAs in OpenGL).
+      interface StaticGeometry : Graphic {
+      Vertices getVertices();
+      };
+
+      interface StaticTriangleGeometry : StaticGeometry {
+      };
+    */
+    
+    interface Geometry : Graphic {
+      
+      exception OutOfRange { };
+      
+      attribute long vertexnumber;
+      
+      void setVertex(in long index, in Vertex v);
+      Vertex getVertex(in long index) raises (OutOfRange);
+      
+      void setVertices(in long index, in Vertices vs);
+      Vertices getVertices(in long index, in long len) raises (OutOfRange);
+    };
+
+    interface PointGeometry : Geometry { };    
+
+    interface LineGeometry : Geometry {
+      
+      struct Line {
+	long a, b;
+      };
+      typedef sequence<Line> Lines;	
+      
+      attribute long linenumber;
+      
+      void setLine(in long index, in Line l);
+      Line getLine(in long index) raises (OutOfRange);
+      
+      void setLines(in long index, in Lines ls);
+      Lines getLines(in long index, in long len) raises (OutOfRange);
+    };
+    
+    interface TriangleGeometry : Geometry {
+      
+      struct Triangle {
+	long a, b, c;
+      };
+      
+      attribute long trianglenumber;
+      
+      void setTriangle(in long index, in Triangle t);
+      Triangle getTriangle(in long index);
+      
+      void setTexCoord(in long index, in TexCoord tc);
+      TexCoord getTexCoord(in long index) raises (OutOfRange);
+      
+      void setTexCoords(in long index, in TexCoords tcs);
+      TexCoords getTexCoords(in long index, in long len)
+	raises (OutOfRange);
+      
+      void setNormal(in long index, in Vertex n);
+      Vertex getNormal(in long index);
+      
+      void setNormals(in long index, in Vertices ns);
+      Vertices getNormals(in long index, in long len) raises (OutOfRange);
+    };
+    
+  };
+  
+};
+
+#endif /* Primitive.idl */

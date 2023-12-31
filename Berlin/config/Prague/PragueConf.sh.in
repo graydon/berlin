@@ -1,0 +1,10 @@
+#! /bin/sh
+
+module_name=Prague
+module_description="The Berlin Utility Library"
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+module_includes="-I@includedir@ @CPPFLAGS@"
+module_libdir="-L@libdir@"
+module_libs="-lPrague @LIBS@"
+module_version="@SH_VERSION@"

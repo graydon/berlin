@@ -1,13 +1,8 @@
-/*$Id: Glue.cc,v 1.3 1999/10/21 20:23:51 gray Exp $
+/*$Id: Glue.cc,v 1.6 2000/09/19 21:11:08 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,15 +21,17 @@
  */
 #include "Layout/Glue.hh"
 
+using namespace Warsaw;
+
 Glue::Glue(Axis a, Coord natural, Coord stretch, Coord shrink, Alignment align)
 {
-  GraphicImpl::initRequisition(requisition);
-  Graphic::Requirement *r = GraphicImpl::requirement(requisition, a);
+  GraphicImpl::init_requisition(requisition);
+  Warsaw::Graphic::Requirement *r = GraphicImpl::requirement(requisition, a);
   if (r != 0) GraphicImpl::require(*r, natural, stretch, shrink, align);
 }
 
-Glue::Glue(const Graphic::Requisition &r) { requisition = r;}
+Glue::Glue(const Warsaw::Graphic::Requisition &r) { requisition = r;}
 Glue::~Glue() {}
 
-void Glue::request(Requisition &r) { r = requisition;}
+void Glue::request(Warsaw::Graphic::Requisition &r) { r = requisition;}
 

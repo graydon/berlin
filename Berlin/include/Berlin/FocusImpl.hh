@@ -1,7 +1,7 @@
-/*$Id: FocusImpl.hh,v 1.6 1999/11/11 16:14:20 stefan Exp $
+/*$Id: FocusImpl.hh,v 1.15 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -23,36 +23,32 @@
 #define _FocusImpl_hh
 
 #include <Warsaw/config.hh>
-#include <Warsaw/Focus.hh>
-#include <Warsaw/Controller.hh>
 #include <Warsaw/Region.hh>
-#include <Prague/Sys/Thread.hh>
-#include <Berlin/ImplVar.hh>
+#include <Warsaw/Focus.hh>
+#include <stack>
 #include <vector>
 
-class PickTraversalImpl;
-class ScreenImpl;
-
-class FocusImpl : implements(Focus)
+class FocusImpl : public virtual POA_Warsaw::Focus,
+                  public virtual PortableServer::RefCountServantBase
 {
-  typedef vector<Controller_var> cstack_t;
- public:
-  FocusImpl(ScreenImpl *);
-  virtual ~FocusImpl();
+  typedef std::stack<Warsaw::Input::Filter_var> fstack_t;
+  typedef std::vector<size_t> memento_t;
+  friend class EventManager;
+public:
+  FocusImpl(Warsaw::Input::Device dd) : d(dd) {}
+  virtual ~FocusImpl() {}
+  virtual Warsaw::Input::Device device() { return d;}
 
-  virtual void grab();
-  virtual void ungrab();
-  virtual void addFilter(Event::Filter_ptr);
-
-  void request(Controller_ptr);
-  void damage(Region_ptr);
-  void dispatch(const Event::Pointer &);
- private:
-  ScreenImpl        *screen;
-  PickTraversalImpl *traversal;
-  cstack_t           controllers;
-  bool               grabbed;
-  Prague::Mutex      mutex;
+  virtual bool request(Warsaw::Controller_ptr) = 0;
+  virtual void restore(Warsaw::Region_ptr) = 0;
+  virtual void damage(Warsaw::Region_ptr) = 0;
+  virtual void dispatch(Warsaw::Input::Event &) = 0;
+protected:
+  virtual void activate_composite() {}
+private:
+  const Warsaw::Input::Device d;
+  fstack_t filters;
+  memento_t memento;
 };
 
-#endif /* _FocusImpl_hh */
+#endif

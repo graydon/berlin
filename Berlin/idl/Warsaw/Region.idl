@@ -1,0 +1,107 @@
+/*$Id: Region.idl,v 1.5 2000/09/19 21:11:02 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Region_idl
+#define _Warsaw_Region_idl
+
+#include <Warsaw/Types.idl>
+
+module Warsaw
+{
+  interface Transform;
+
+  //. A region is an area or volume within an object's coordinate
+  //. space.  A region may be described by a surface, curve, path,
+  //. or other geometric means.  Regions define an origin as a point
+  //. of reference (the origin is not required to be contained
+  //. inside the region).  A region implementation may choose
+  //. only to support a bounding box representation.
+  //.
+  //. Regions are used for a variety of purposes, including
+  //. the allocation an object receives as part of layout,
+  //. the extension that an object covers when drawn, the portion
+  //. of a window that needs to be updated, and the current
+  //. clipping area.  Some regions, such as the update area
+  //. in a window, are 2-dimensional and aligned to the xy-plane.
+  //. We refer to these regions as "xy-regions" and consider them
+  //. to have a z-coordinate with value zero and no thickness.
+  interface Region
+    {
+      //. An allotment is a one-dimensional coordinate range with
+      //. an origin value as a reference.  The begin, end, and
+      //. align fields define a bounding span.  The length is always
+      //. equal to end minus begin, and the origin is always equal
+      //. to begin plus length times align.
+      struct Allotment
+      {
+	Coord begin, end;
+	Alignment align;
+      };
+      //. Determine whether this region has already been initialized.
+      boolean defined();
+      //. Determine is a region intersects a point or
+      //. another region.  The contains_plane operation
+      //. only compares coordinates not
+      //. in the given axis.  For example, to test
+      //. if a given point is in the xy-plane
+      //. (therefore ignoring its z-coordinate),
+      //. one would pass zaxis as the second parameter.
+      boolean contains(in Vertex v);
+      boolean contains_plane(in Vertex v, in Axis a);
+      boolean intersects(in Region r);
+      //. Copy the given region into this region.  This operation
+      //. is equivalent to setting this region to the empty region and
+      //. then calling merge_union on the given region.
+      void copy(in Region r);
+      //. Modify a region to merge the values of another region.
+      //. The merge_intersect operation sets the region to be
+      //. the intersection of itself with the given region;
+      //. merge_union sets the region to cover both regions.
+      //. For both operations, the origin of the region is unchanged.
+      void merge_intersect(in Region r);
+      void merge_union(in Region r);
+      //. Set this region to be the difference between itself and
+      //. the intersection of itself and the given region.
+      //. The origin of the region is unchanged.
+      void subtract(in Region r);
+      //. Set this region to be the region that results from
+      //. the given transformation applied to the original region.
+      //. Because a region may be implemented using bounding boxes,
+      //. transformations are not necessarily invertible.  That is,
+      //. transforming a region first by a matrix and then by
+      //. the inverse of the matrix may yield a larger (but not smaller)
+      //. region that the original.
+      void apply_transform(in Transform t);
+      //. Return information about the region.  The bounds operation
+      //. returns two vertices that contain the lower and upper
+      //. coordinate values, respectively.  The center operation
+      //. is a convenient operation that returns the center of the
+      //. region. The origin operation returns the region's origin.
+      //. The span operation returns the span along a particular axis.
+      void bounds(out Vertex lower, out Vertex upper);
+      void center(out Vertex c);
+      void origin(out Vertex v);
+      void span(in Axis a, out Region::Allotment s);
+      void outline(out Path p);
+    };
+};
+
+#endif

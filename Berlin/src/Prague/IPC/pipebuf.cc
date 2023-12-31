@@ -1,7 +1,7 @@
-/*$Id: pipebuf.cc,v 1.2 1999/04/27 20:09:49 gray Exp $
+/*$Id: pipebuf.cc,v 1.5 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,15 +24,11 @@
 
 using namespace Prague;
 
-/* @Method{int pipebuf::open()}
- *
- * @Description{open the pipe and return the read or write end depending on the flag}
- */
 int pipebuf::open()
 {
   int fds[2];
   if (pipe(fds) < 0) return -1;
-  if (fl & ios::out) {data->fd = fds[1]; return fds[0];}
-  else  {data->fd = fds[0]; return fds[1];}
+  if (fl & std::ios::out) {fd(fds[1]); return fds[0];}
+  else  {fd(fds[0]); return fds[1];}
 };
 

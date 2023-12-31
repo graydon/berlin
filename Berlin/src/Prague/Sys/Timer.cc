@@ -1,7 +1,7 @@
-/*$Id: Timer.cc,v 1.7 1999/09/30 17:23:34 gray Exp $
+/*$Id: Timer.cc,v 1.10 2001/03/21 06:28:55 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,10 +24,10 @@
 
 using namespace Prague;
 
-vector<Timer *> Timer::timers;
-Thread          Timer::server(&Timer::start, 0);
-Mutex           Timer::mutex;
-Condition       Timer::condition(Timer::mutex);
+std::vector<Timer *> Timer::timers;
+Thread               Timer::server(&Timer::start, 0);
+Mutex                Timer::mutex;
+Condition            Timer::condition(Timer::mutex);
 
 void Timer::start(const Time &t, const Time &i)
 {
@@ -43,7 +43,7 @@ void Timer::stop()
 
 void *Timer::start(void *)
 {
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(mutex);
   while (true)
     {
       if (!timers.size()) condition.wait();
@@ -78,7 +78,7 @@ void Timer::expire()
 void Timer::schedule(Timer *timer)
 {
   if (server.state() != Thread::running) server.start();
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(mutex);
   timers.push_back(timer);
   push_heap(timers.begin(), timers.end(), comp());
   condition.signal();
@@ -86,7 +86,8 @@ void Timer::schedule(Timer *timer)
 
 void Timer::cancel(Timer *timer)
 {
-  MutexGuard guard(mutex);
-  timers.erase(find(timers.begin(), timers.end(), timer));
+  Prague::Guard<Mutex> guard(mutex);
+  std::vector<Timer *>::iterator i = find(timers.begin(), timers.end(), timer);
+  if (i != timers.end()) timers.erase(i);
   condition.signal();
 }

@@ -1,7 +1,7 @@
-/*$Id: ptybuf.svr4.cc,v 1.2 1999/04/27 20:09:49 gray Exp $
+/*$Id: ptybuf.svr4.cc,v 1.5 2001/02/24 19:53:40 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -31,8 +31,8 @@ extern int unlockpt(int);
 int ptybuf::openpty()
 {
   char *ptr;
-  strcpy(ptydev, "/dev/ptmx");	/* in case open fails */
-  int fdm = open(ptydev, O_RDWR);
+  ptydev = "/dev/ptmx";	/* in case open fails */
+  int fdm = open(ptydev.c_str(), O_RDWR);
   if (fdm < 0) return -1;
   if (grantpt(fdm) < 0)	/* grant access to slave */
     {
@@ -49,8 +49,8 @@ int ptybuf::openpty()
       close(fdm);
       return -4;
     }
-  strcpy(ptydev, ptr);	/* return name of slave */
-  data->fd = fdm;
+  ptydev = ptr;	/* return name of slave */
+  fd(fdm);
   return fdm;	     	/* return fd of master */
 }
 
@@ -58,7 +58,7 @@ int ptybuf::opentty()
 {
   int fds;
   /* following should allocate controlling terminal */
-  if ((fds = open(ptydev, O_RDWR)) < 0)
+  if ((fds = open(ptydev.c_str(), O_RDWR)) < 0)
     {
       close(fd());
       return(-5);

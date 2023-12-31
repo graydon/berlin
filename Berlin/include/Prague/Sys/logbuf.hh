@@ -1,7 +1,7 @@
-/*$Id: logbuf.hh,v 1.1 1999/05/25 18:28:58 gray Exp $
+/*$Id: logbuf.hh,v 1.5 2001/03/21 06:28:23 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -23,25 +23,24 @@
 #define _logbuf_hh
 
 #include <streambuf.h>
+#include <cstring>
 
 namespace Prague
 {
 
-class logbuf : public streambuf
+class logbuf : public std::streambuf
 {
   typedef char char_type;
   typedef int int_type;
 public:
-  logbuf(size_t size) : wrapflag(true), wrapped(false) { char_type *p = new char_type[size]; setp(p, p + size);}
+  logbuf(size_t size) : wrapped(false) { char_type *p = new char_type[size]; setp(p, p + size);}
   ~logbuf() { delete [] pbase();}
-  void wrap(bool flag) { wrapflag = flag;}
   void clear() { setp(pbase(), epptr()); wrapped = false;}
-  void dump(ostream &);
+  void dump(std::ostream &);
 
   int_type sputc(char_type c);
-  int_type xsputn(const char_type *s, streamsize n);
+  std::streamsize xsputn(const char_type *s, std::streamsize n);
 private:
-  bool wrapflag : 1;
   bool wrapped  : 1;
 };
 

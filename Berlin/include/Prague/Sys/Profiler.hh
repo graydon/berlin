@@ -1,8 +1,8 @@
-/*$Id: Profiler.hh,v 1.10 1999/09/22 16:15:46 gray Exp $
+/*$Id: Profiler.hh,v 1.17 2001/03/21 06:28:22 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Brent A. Fulgham <bfulgham@debian.org>
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca>
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@
  * MA 02139, USA.
  */
 
-#ifndef _Profiler_hh
-#define _Profiler_hh
+#ifndef _Prague_Profiler_hh
+#define _Prague_Profiler_hh
 
 #include <Prague/Sys/ntree.hh>
 #include <Prague/Sys/Thread.hh>
@@ -34,38 +34,31 @@
 namespace Prague
 {
 
-struct CheckPoint
-{
-  CheckPoint(const string &s) : name(s), count(0), start(0), stop(0), elapsed(0) {}
-  CheckPoint(CheckPoint *cp)
-    : name(cp->name),
-      count(cp->count),
-      start(cp->start),
-      stop(cp->stop),
-      elapsed(cp->elapsed)
-    {}
-  void indent(ostream &os, unsigned short ind) { while (ind--) os.put(' ');}
-  void output(ostream &os, unsigned short ind)
-    {
-      indent(os, ind);
-      os << name << ": " << setw(10) << count;
-      os << " Times.  Total Time: ";
-      os << setprecision(8) << setw(12);
-      os.setf( ios::fixed, ios::floatfield);
-      os << elapsed/CLOCKS_PER_SEC;
-      os  << "  Avg/Iter.: ";
-      os << setprecision(8) << setw(12);
-      os << elapsed/count/CLOCKS_PER_SEC << endl;
-    }
-  string name;
-  long count;
-  clock_t start;
-  clock_t stop;
-  double elapsed;
-};
- 
+//. a poor man's profiler. The basic idea is to use a guard object which measures
+//. the elapsed time between constructor and destructor and writes its findings into
+//. a profiler data base (a scope tree).
 class Profiler
 {
+public:
+  struct CheckPoint
+  {
+    CheckPoint(const std::string &s) : name(s), count(0), start(0), stop(0), elapsed(0) {}
+    CheckPoint(CheckPoint *cp)
+      : name(cp->name),
+	count(cp->count),
+	start(cp->start),
+	stop(cp->stop),
+	elapsed(cp->elapsed)
+    {}
+    void indent(ostream &os, unsigned short ind) { while (ind--) os.put(' ');}
+    void output(ostream &os, unsigned short ind);
+    std::string name;
+    long count;
+    clock_t start;
+    clock_t stop;
+    double elapsed;
+  };
+private:
   typedef ntree<CheckPoint *> table_t;
   typedef ntree<CheckPoint *>::node item_t;
   typedef ntree<CheckPoint *>::node::child_iterator child_iterator;
@@ -75,8 +68,8 @@ class Profiler
   {
     Guard()
       {
-	Profiler::table = new table_t(0);
-	Profiler::current = &Profiler::table->root();
+	Profiler::table = new table_t(new CheckPoint("RootEntry"));
+	Profiler::current = &table->root();
       }
     ~Guard()
       {
@@ -86,10 +79,10 @@ class Profiler
   };
   friend struct Guard;
 public:
-  Profiler(const string &name)
+  Profiler(const std::string &name)
     {
 #ifdef profile
-      MutexGuard guard(mutex);
+      Prague::Guard<Mutex> guard(mutex);
       child_iterator i = lookup(name);
       current = &*i;
       current->value->count++;
@@ -99,27 +92,22 @@ public:
   ~Profiler()
     {
 #ifdef profile
-      MutexGuard guard(mutex);
+      Prague::Guard<Mutex> guard(mutex);
       current->value->stop = clock();
       current->value->elapsed += (current->value->stop - current->value->start);
       up_iterator i = current->up_begin();
       current = &*++i;
 #endif /* profile */
     }
-  static void dump(ostream &os) { MutexGuard guard(mutex); dump(os, *current, 0);}
+  static void dump(std::ostream &);
 private:
-  static child_iterator lookup(const string &name)
+  static child_iterator lookup(const std::string &name)
     {
       for (child_iterator i = current->child_begin(); i != current->child_end(); i++)
 	if ((*i).value->name == name) return i;
       return current->push_back(new CheckPoint(name));
     }
-  static void dump(ostream &os, const item_t &root, unsigned short ind)
-    {
-      for (const_child_iterator i = root.child_begin(); i != root.child_end(); i++)
-	dump(os, *i, ind + 1);
-      if (root.value) root.value->output(os, ind);
-    }
+  static void dump(std::ostream &, const item_t &, unsigned short);
   static void clean(const item_t &root)
     {
       for (const_child_iterator i = root.child_begin(); i != root.child_end(); i++)
@@ -134,4 +122,4 @@ private:
 
 };
 
-#endif /* _Profiler_hh */
+#endif

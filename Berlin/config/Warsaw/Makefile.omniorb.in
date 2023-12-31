@@ -1,0 +1,141 @@
+# $Id: Makefile.omniorb.in,v 1.6 2001/04/26 01:39:42 stefan Exp $
+#
+# This source file is a part of the Berlin Project.
+# Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+# http://www.berlin-consortium.org/
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+SHELL		:= /bin/sh
+VERSION		:= @VERSION@
+
+top_srcdir	:= @topdir@
+srcdir		:= $(top_srcdir)/src/Warsaw
+idir		:= $(top_srcdir)/idl
+builddir	:= $(shell pwd | sed -e 's%/[^/][^/]*/[^/][^/]*$$%%')
+cdir		:= $(builddir)/config
+hdir		:= $(builddir)/include
+bdir		:= $(builddir)/bin
+
+include $(cdir)/local.mk
+
+IDLCXX		:= @IDLCXX@
+
+# nice trick to include all the OS dependent flags nonintrusively
+# into the omni generated sources...
+CPPFLAGS	+= @CPPFLAGS@ -include $(hdir)/Warsaw/config.hh
+CXXFLAGS	+= $(SO_CXXFLAGS)
+LDFLAGS		+= $(SO_LDFLAGS)
+LIBS		+= @LIBS@
+
+# Extra compilation and linking flags.
+IDLCXXFLAGS	:= -bcxx -nf -Wbkeep_inc_path -C$(builddir)/src/Warsaw -I.
+IDLDYNFLAGS	:= -Wba
+IDLTIEFLAGS	:= -Wbtp
+
+DYNINT		:= Types.idl TextBuffer.idl BoundedValue.idl BoundedRange.idl \
+		   Selection.idl
+STATINT		:= RefCountBase.idl Identifiable.idl ClientContext.idl Server.idl \
+		   Kit.idl Transform.idl Region.idl Allocation.idl Traversal.idl \
+		   PickTraversal.idl DrawTraversal.idl Graphic.idl Screen.idl \
+		   Input.idl Focus.idl Subject.idl Observer.idl Controller.idl View.idl \
+		   Drawable.idl DrawingKit.idl Grid.idl Viewport.idl Stage.idl LayoutKit.idl \
+		   Telltale.idl StreamBuffer.idl Trigger.idl Canvas.idl State.idl ToolKit.idl Choice.idl \
+		   WidgetKit.idl GadgetKit.idl Raster.idl ImageKit.idl Figure.idl \
+		   Image.idl FigureKit.idl Command.idl CommandKit.idl Metrics.idl \
+		   TextKit.idl Desktop.idl Window.idl DesktopKit.idl Types3D.idl \
+		   DrawingKit3D.idl Primitive.idl GGIKit.idl UnidrawKit.idl
+
+INT		:= $(DYNINT) $(STATINT)
+
+DYNSRC		:= $(patsubst %.idl, %DynSK.cc, $(DYNINT))
+DYNSTATSRC	:= $(patsubst %.idl, %SK.cc, $(DYNINT)) 
+STATSRC		:= $(patsubst %.idl, %SK.cc, $(STATINT))
+UTILSRC		:= IO.cc Unicode.cc ClientContextImpl.cc
+SRC		:= $(DYNSTATSRC) $(DYNSRC) $(STATSRC)
+
+DYNHDR		:= $(patsubst %.idl, $(hdir)/Warsaw/%.hh, $(DYNINT))
+STATHDR		:= $(patsubst %.idl, $(hdir)/Warsaw/%.hh, $(STATINT))
+HDR		:= $(DYNHDR) $(STATHDR)
+
+OBJ		:= $(patsubst %.cc, %.o, $(SRC) $(UTILSRC))
+
+TARGET		:= $(ldir)/libWarsaw.so
+
+vpath %.idl $(idir)/Warsaw
+vpath %.hh $(hdir)/Warsaw
+
+all: $(TARGET)
+
+# this split enforces that all idl code is translated
+# before the first source is compiled
+$(TARGET): $(SRC) $(OBJ)
+	@$(MAKE) sources
+	@$(MAKE) objects
+	@echo linking $(@F)
+	$(CXX) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
+
+
+sources:	$(SRC)
+objects:	$(OBJ)
+
+install:
+		$(INSTALL) -m755 $(TARGET) $(libdir)
+		$(INSTALL) -m755 $(bdir)/Warsaw-config $(bindir)
+
+clean:	
+		rm -f $(TARGET)
+		rm -f *.o *.d
+		rm -f $(SRC) $(HDR)
+
+distclean:	clean
+		rm -f Makefile $(hdir)/Warsaw/config.hh $(cdir)/Warsaw/subdirs.mk \
+			$(cdir)/Warsaw/config.log $(cdir)/Warsaw/config.status \
+			$(bdir)/Warsaw-config
+
+maintainer-clean: distclean
+		rm -f $(top_srcdir)/config/Warsaw/configure $(top_srcdir)/config/Warsaw/config.hh.in \
+			$(cdir)/Warsaw/aclocal.m4
+
+%.idl.d:	$(idir)/Warsaw/%.idl
+	@echo generating dependencies for $(<F)
+	$(SHELL) -ec '$(CXX) -x c++ $(DEPFLAGS) $(CPPFLAGS) -I$(idir) $< \
+	| sed "s/$*\\.idl\\.o[ :]*/$*\\.idl.d $*\\.hh $*SK\\.cc : /g" > $@'
+%SK.cc:	$(idir)/Warsaw/%.idl
+	@echo generating $(@F)
+	(cd $(idir) && $(IDLCXX) $(IDLCXXFLAGS) Warsaw/$(<F))
+	mv $*.hh $(hdir)/Warsaw
+%DynSK.cc:	$(idir)/Warsaw/%.idl
+	@echo generating $(@F)
+	(cd $(idir) && $(IDLCXX) $(IDLCXXFLAGS) $(IDLDYNFLAGS) Warsaw/$(<F))
+	mv $*.hh $(hdir)/Warsaw
+%.cc.d:	%.cc
+	@echo generating dependencies for $(<F)
+	$(SHELL) -ec '$(CXX) $(DEPFLAGS) $(CPPFLAGS) -I$(hdir) -I$(hdir)/Warsaw $< \
+	| sed "s/$*\\.o[ :]*/$*\\.cc.d $*\\.o : /g" > $@'
+%.o:	%.cc
+	@echo compiling $(@F)
+	$(CXX) $(CPPFLAGS) -I$(hdir) -I$(hdir)/Warsaw $(CXXFLAGS) $(SO_CXXFLAGS) -c $< -o $@
+%.o:	$(srcdir)/%.cc
+	@echo compiling $(@F)
+	$(CXX) $(CPPFLAGS) -I$(hdir) -I$(hdir)/Warsaw $(CXXFLAGS) $(SO_CXXFLAGS) -c $< -o $@
+
+ifeq ($(MAKECMDGOALS), sources)
+-include $(patsubst %, %.d, $(notdir $(INT)))
+endif
+ifeq ($(MAKECMDGOALS), objects)
+-include $(patsubst %, %.d, $(notdir $(SRC)))
+endif

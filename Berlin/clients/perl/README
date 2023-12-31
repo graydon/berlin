@@ -1,0 +1,44 @@
+This is the directory where perl demo stuff for Berlin goes.
+
+Requirements:
+  1) threaded perl
+     This is needed for CORBA callbacks to work right -- the boa has to run
+     in a separate thread.  On debian potato, just
+       apt-get install perl-5.005-thread
+     and you should be fine.
+  2) perl modules (read the bottom of this document before installing these,
+     or you'll just have to do it over again):
+    2a) COPE
+        This is the CORBA library that we use; see
+          http://www.lunatech.com/research/corba/cope/
+        for more details.  You'll need to get the Experimental::Exception
+        module as well, which is distributed from the same FTP directory.
+        For COPE itself, I use the CVS version, though 0.6 might work as
+        well.  0.5 will take major tweaking.
+        COPE itself requires an interface repository to work; the standard
+        one is included in ORBacus and called irserv, or there's a contrib
+        program in the COPE tree (COPE/compat/MICO/*) to let you use MICO's
+        interface repository instead.
+        (on debian, I just did:
+           cd compat/MICO
+           apt-get install mico-2.3.0-dev
+           g++ -o irior.cc -o irior -lmico-2.3.0 -ldl
+           cp irserv irior ~/bin
+         ~/bin is where store misc little programs like this, but you can
+         put the programs anywhere in your path.)
+    2b) Unicode::Map8, Unicode::String
+        We need these for text support in Berlin.  Get them from your
+        favorite CPAN mirror.
+
+  All of the perl modules _must_ be compiled and installed by the threaded
+  perl, not the normal perl, or they won't work.
+  This isn't too hard -- just go to the module build directory, and where
+  you would normally do
+    perl Makefile.PL; make; make install
+  you instead do
+    perl-thread Makefile.PL; make; make install
+  and things should be linked correctly and go to the right places.
+
+Once you have all the requirements installed, just start the server, and do
+  make; ./demo.pl
+and look at the pretty, alpha-rendered, picture.

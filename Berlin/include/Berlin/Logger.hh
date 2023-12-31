@@ -1,8 +1,8 @@
-/*$Id: Logger.hh,v 1.13 1999/11/08 17:37:44 stefan Exp $
+/*$Id: Logger.hh,v 1.14 2000/03/22 22:30:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -25,7 +25,6 @@
 
 #include "Warsaw/config.hh"
 #include "Prague/Sys/logstream.hh"
-#include "Prague/Sys/EventLogger.hh"
 #include "Prague/Sys/Time.hh"
 #include "Prague/Sys/Thread.hh"
 #include "Prague/Sys/Profiler.hh"
@@ -58,15 +57,6 @@ public:
   static void set(group g) { active[g] = true; }
   static void clear(group g) { active[g] = false; }
   static void setall() { for (int i = 0; i < numGroups; i++) active[i] = true;}
-  static void note(const char *c)
-    {
-      events.add(c, Prague::Time::currentTime() - start);
-    }
-  static void note(const char *t, const char *c)
-    {
-      events.add(t, c, Prague::Time::currentTime() - start);
-    }
-
   static streamlock log(group g)
     {
       streamlock slock(g);
@@ -99,27 +89,8 @@ private:
   static const char *groupname[numGroups]; 
   static Prague::logbuf buf;
   static Prague::logstream los;
-  static Prague::EventLogger events;    
   static Prague::Time start;
   static Prague::Mutex mutex;
 };
-
-#if 1
-class SectionLog
-{
-public:
-  SectionLog(const char *s) : section(s) { Logger::note("enter", section);}
-  ~SectionLog() { Logger::note("leave", section);}
-private:
-  const char *section;
-};
-#else
-class SectionLog
-{
-public:
-  SectionLog(const char *) {}
-  ~SectionLog() {}
-};
-#endif
 
 #endif /* _Logger_hh */

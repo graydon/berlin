@@ -1,7 +1,7 @@
-/*$Id: QuadTree.hh,v 1.13 1999/11/09 14:31:40 stefan Exp $
+/*$Id: QuadTree.hh,v 1.15 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,29 +19,26 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef QuadTree_hh
-#define QuadTree_hh
+#ifndef _QuadTree_hh
+#define _QuadTree_hh
 
 #include <Berlin/Geometry.hh>
 #include <vector>
 #include <algorithm>
 #include <functional>
 
-/*
- * this defines a binary space partitioning (BSP) algorithm
- * in 2D, suitable for object lookup on the screen
- *
- * the parametrization is as follows:
- *   - T is the Domain, most likely Coord or PixelCoord
- *   - I is the Item to store, can be anything which defines a method
- *     const Geometry::Rectangle<T> &I::bbox() returning the bounding box
- *     suitable for use in the quadtree
- */
-
+//. this defines a binary space partitioning (BSP) algorithm
+//. in 2D, suitable for object lookup on the screen
+//.
+//. the parametrization is as follows:
+//.  - T is the Domain, most likely Coord or PixelCoord
+//.  - I is the Item to store, can be anything which defines a method
+//.    const Geometry::Rectangle<T> &I::bbox() returning the bounding box
+//.    suitable for use in the quadtree
 template <class T, class I>
 class QTNode
 {
-  struct move_down : unary_function<I, bool>
+  struct move_down : std::unary_function<I, bool>
   {
     move_down(QTNode<T, I> *n) : node(n) {}
     bool operator()(I i)
@@ -67,24 +64,18 @@ public:
     lefttop = left|top,
     righttop = right|top
   };
-  typedef vector<I> list;
+  typedef std::vector<I> list;
   QTNode(const Geometry::Rectangle<T> &r)
     : region(r), elements(0) { quadrants[0] = quadrants[1] = quadrants[2] = quadrants[3] = 0;}
   ~QTNode() { free();}
   QTNode<T, I> *node(index i) { return quadrants[i];}
-  /*
-   * region owned by this node
-   */
+  //. region owned by this node
   const Geometry::Rectangle<T> &extension() const { return region;}
-  /*
-   * bounding box of objects in this node
-   */
+  //. bounding box of objects in this node
   const Geometry::Rectangle<T> &bbox() const { return boundingbox;}
   void insert(I);
   void remove(I);
-  /*
-   * number of objects in this node
-   */
+  //. number of objects in this node
   int  size() const { return elements;}
   void unfold();
   void collaps();
@@ -100,16 +91,18 @@ protected:
 
   Geometry::Rectangle<T> region;
   Geometry::Rectangle<T> boundingbox;
-  int          elements; // total count of objects at or below this level
-  list         items;    // items straddling the fence.
+  //. total count of objects at or below this level
+  int          elements;
+  //. items straddling the fence
+  list         items;
   QTNode<T, I> *quadrants[4];
   friend void dumpQuadNode(const QTNode<T,I> &node, short ind)
     {
-      for (short i = 0; i != ind; i++) cout.put(' ');
-      cout << "Node : " << node.elements << '(' << node.items.size() << ") elements, extension : " << node.region << endl;
+      for (short i = 0; i != ind; i++) std::cout.put(' ');
+      std::cout << "Node : " << node.elements << '(' << node.items.size() << ") elements, extension : " << node.region << std::endl;
       for (list::const_iterator i = node.items.begin(); i != node.items.end(); i++)
-	cout << (*i)->boundingbox << ';';
-      cout << endl;
+	std::cout << (*i)->boundingbox << ';';
+      std::cout << std::endl;
       if (!node.leaf()) for (short i = 0; i != 4; i++) dumpQuadNode(*node.quadrants[i], ind + 2);
     }
 };

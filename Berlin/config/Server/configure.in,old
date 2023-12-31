@@ -1,0 +1,255 @@
+dnl $Id: configure.in,v 1.25 2001/03/20 03:21:24 stefan Exp $
+dnl
+dnl This source file is a part of the Berlin Project.
+dnl Copyright (C) 2000 Håvard Skinnemoen <skinnemo@itk.ntnu.no>
+dnl Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+dnl http://www.berlin-consortium.org/
+dnl
+dnl This library is free software; you can redistribute it and/or
+dnl modify it under the terms of the GNU Library General Public
+dnl License as published by the Free Software Foundation; either
+dnl version 2 of the License, or (at your option) any later version.
+dnl
+dnl This library is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+dnl Library General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU Library General Public
+dnl License along with this library; if not, write to the
+dnl Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+dnl MA 02139, USA.
+dnl
+dnl Process this file with autoconf to produce a configure script.
+
+dnl ------------------------------------------------------------------
+dnl Autoconf initialization
+dnl ------------------------------------------------------------------
+AC_PREREQ(2.12)
+AC_REVISION($Revision: 1.25 $)
+
+AC_INIT(subdirs.mk.in)
+AC_VERSION(0, 2, 2, 0, 0)
+AC_SET_PATHS(../..)
+AC_CONFIG_HEADER($builddir/include/Berlin/config.hh:include/Berlin/config.hh.in)
+
+AC_DIVERT_PUSH(AC_DIVERSION_INIT)dnl
+AC_CONFIG_AUX_DIR(config)
+AC_DIVERT_POP()
+
+AC_HEADLINE(dnl
+Berlin Server, The Berlin Server, dnl
+[Copyright (c) 2000 The Berlin Project <berlin-design@lists.sourceforge.net>],
+VERSION)
+
+AC_PROG_MAKE_SET
+
+dnl ------------------------------------------------------------------
+dnl Options controlling what to build
+dnl ------------------------------------------------------------------
+
+AC_ARG_ENABLE(berlin,
+	[  --disable-berlin        Don't build libBerlin],[
+	enable_berlin="$enableval"],[
+	if test ".$enable_berlin" = . ; then
+		enable_berlin=yes
+	fi])
+AC_ARG_ENABLE(kits,
+	[  --enable-kits=LIST      Specify which kits to build (default: all)],
+[	if test ".$enableval" = .yes ; then
+		enable_kits=all
+	else
+		enable_kits="$enableval"
+	fi],[
+	if test ".$enable_kits" = . ; then	
+		enable_kits=all
+	fi])
+AC_ARG_ENABLE(drawing,
+	[  --enable-drawing=LIST   Specify which DrawingKits to build (default: all)], [
+	if test ".$enableval" = .yes ; then
+		enable_drawing_kits=all
+	else
+		enable_drawing_kits="$enableval"
+	fi],[
+	if test ".$enable_drawing_kits" = . ; then
+		enable_drawing_kits=all
+	fi])
+AC_ARG_ENABLE(server,
+	[  --disable-server        Don't build the server],[
+	enable_server="$enableval"],[
+	enable_server=yes])
+
+dnl ------------------------------------------------------------------
+dnl Text rendering
+dnl ------------------------------------------------------------------
+AC_MSG_PART(Text Rendering)
+
+dnl Dumb hard-wired check for freetype.  Change this to accept different
+dnl text rendering engines?
+
+AM_PATH_FREETYPE(6.1.0,,[AC_MSG_ERROR("can't compile Server without freetype")])
+
+dnl ------------------------------------------------------------------
+dnl Graphics environment
+dnl ------------------------------------------------------------------
+AC_MSG_PART(Graphics Environment)
+
+BERLIN_CONSOLE_CHECK(mandatory)
+
+if test ".$enable_drawing_kits" = .all ; then
+	enable_drawing_kits="libArt openGL PostScript"
+elif test ".$enable_drawing_kits" = .no ; then
+	enable_drawing_kits=
+else
+	dnl Handle comma-separated lists, too
+	enable_drawing_kits=["`echo $enable_drawing_kits | sed 's/[, ]\+/ /g'`"]
+fi
+
+for kit in $enable_drawing_kits ; do
+	if test -d $srcdir/src/Drawing/$kit ; then
+		eval enable_$kit=yes
+	else
+		eval enable_$kit=no
+	fi
+done
+
+# Must use the GLDrawingKit if we're on the GLUT or CAVELib console
+# (need a better way to do this later!)
+if test ".$CON_IMPL" = .GLUT; then
+	enable_libArt=no
+fi
+if test ".$CON_IMPL" = .CAVELIB; then
+	enable_libArt=no
+fi
+
+tested_drawing_kits=
+if test ".$enable_libArt" = .yes ; then
+	BERLIN_LIB_LIBART
+	if test ".$ac_cv_lib_libArt" = .yes ; then
+		tested_drawing_kits="$tested_drawing_kits Drawing/libArt"
+	fi
+fi
+if test ".$enable_openGL" = .yes ; then
+	if test ".$CON_IMPL" = .GGI ; then
+		BERLIN_LIB_GGIMESA
+		if test ".$ac_cv_lib_GGIMesa" = .yes ; then
+			tested_drawing_kits="$tested_drawing_kits Drawing/openGL"
+		fi
+	elif test ".$CON_IMPL" = .GLUT ; then
+		BERLIN_LIB_MESA(mandatory)
+		if test ".$ac_cv_lib_Mesa" = .yes ; then
+			tested_drawing_kits="$tested_drawing_kits Drawing/openGL"
+		fi
+	fi
+fi
+if test ".$enable_PostScript" = .yes ; then
+	tested_drawing_kits="$tested_drawing_kits Drawing/PostScript"
+fi
+
+dnl ------------------------------------------------------------------
+dnl other kits to build
+dnl ------------------------------------------------------------------
+
+dnl Enable all Kits present if $enable_kits == all (the default)
+if test ".$enable_kits" = .all ; then
+	enable_kits=
+	for kit in Layout Command Tool Image Figure Text Widget/Motif Gadget Desktop Unidraw
+	do
+		if test -d $srcdir/src/$kit ; then
+			enable_kits="$enable_kits $kit"
+		fi
+	done
+	enable_kits=["`echo $enable_kits | sed 's/^ //'`"]
+	if test ".$CON_IMPL" = .GGI; then
+		enable_kits="$enable_kits GGI"
+	fi
+elif test ".$enable_kits" = .no ; then
+	enable_kits=
+else
+	dnl Handle comma-separated lists, too
+	enable_kits=["`echo $enable_kits | sed 's/[, ]\+/ /g'`"]
+fi
+
+dnl ------------------------------------------------------------------
+dnl Prague and Warsaw
+dnl ------------------------------------------------------------------
+AC_PACKAGE(Prague, $VERSION)
+CPPFLAGS="$CPPFLAGS $Prague_CPPFLAGS"
+LIBS="$LIBS -lPrague $Prague_LIBS"
+AC_PACKAGE(Warsaw, $VERSION)
+CPPFLAGS="$CPPFLAGS $Warsaw_CPPFLAGS"
+LIBS="$LIBS -lWarsaw $Warsaw_LIBS"
+
+dnl ------------------------------------------------------------------
+dnl some helper utils
+dnl ------------------------------------------------------------------
+
+AC_ARG_WITH(jprof, [--with-jprof   enable profiling with the jprof tool],[ jprof="$withval"])
+
+dnl ------------------------------------------------------------------
+dnl Decisions
+dnl ------------------------------------------------------------------
+
+dnl Decide which additional subdirectories are needed
+BERLIN=
+if test ".$enable_berlin" = .yes ; then
+	BERLIN="src/Berlin"
+fi
+AC_SUBST(BERLIN)
+for kit in $tested_drawing_kits $enable_kits
+do
+	KITS="$KITS src/$kit"
+done
+AC_SUBST(KITS)
+
+SERVER="server"
+AC_SUBST(SERVER)
+
+JPROF=
+if test ".$jprof" != .yes ; then
+	jprof="no"
+else
+	JPROF="yes"
+	AC_SUBST(JPROF)
+fi
+
+dnl ------------------------------------------------------------------
+dnl Print a summary of what's going to be built
+dnl ------------------------------------------------------------------
+AC_MSG_PART(Summary)
+AC_MSG_RESULT([Build libBerlin:          $enable_berlin])
+AC_MSG_RESULT([Build Kits:              $tested_drawing_kits $enable_kits])
+AC_MSG_RESULT([Add profiling support:    $jprof])
+
+dnl ------------------------------------------------------------------
+dnl Output substitution
+dnl ------------------------------------------------------------------
+AC_MSG_PART(Output Substitution)
+
+mkdir -p $builddir/bin
+mkdir -p $builddir/lib
+mkdir -p $builddir/config/Server
+mkdir -p $builddir/include/Berlin
+mkdir -p $builddir/src/Berlin
+kit_output=
+for kit in $KITS ; do
+	mkdir -p $builddir/$kit
+	kit_output="$kit_output $builddir/$kit/Makefile:$kit/Makefile.in"
+done
+
+mkdir -p $builddir/server
+
+AC_OUTPUT([
+	$builddir/bin/Berlin-config:config/package-config.in
+	$builddir/config/Server/subdirs.mk:config/Server/subdirs.mk.in
+	$builddir/config/Server/local.mk:config/Server/local.mk.in
+	$builddir/config/Server/module.mk:config/Server/module.mk.in
+	$builddir/src/Berlin/Makefile:src/Berlin/Makefile.in
+	$kit_output
+	$builddir/server/Makefile:server/Makefile.in
+	$builddir/config/berlinrc:config/berlinrc.in
+],[
+	chmod +x $builddir/bin/Berlin-config
+],[
+	builddir=$builddir
+])

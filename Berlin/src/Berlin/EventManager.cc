@@ -1,7 +1,7 @@
-/*$Id: EventManager.cc,v 1.5 1999/10/13 21:32:31 gray Exp $
+/*$Id: EventManager.cc,v 1.28 2000/11/17 19:40:00 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,16 +22,78 @@
 
 #include "Berlin/EventManager.hh"
 #include "Berlin/ScreenImpl.hh"
-#include "Berlin/Logger.hh"
+#include "Berlin/NonPositionalFocus.hh"
+#include "Berlin/PositionalFocus.hh"
+#include "Berlin/Vertex.hh"
+#include <Prague/Sys/Tracer.hh>
 
-EventManager::EventManager(ScreenImpl *s)
-  : screen(s),
-    focus(new FocusImpl(screen))
-{}
+using namespace Prague;
+using namespace Warsaw;
 
-EventManager::~EventManager() {}
-void EventManager::requestFocus(Controller_ptr c) { focus->request(c);}
-void EventManager::damage(Region_ptr r) { focus->damage(r);}
-void EventManager::dispatch(const Event::Pointer &pointer) { focus->dispatch(pointer);}
-void EventManager::dispatch(const Event::Key &) {}
+inline void EventManager::activate(FocusImpl *focus)
+{
+  Prague::Trace trace("EventManager::activate");
+  PortableServer::POA_var poa = focus->_default_POA();
+  PortableServer::ObjectId *oid = poa->activate_object(focus);
+  focus->_remove_ref();
+  delete oid;
+  focus->activate_composite();
+}
+
+inline void EventManager::deactivate(FocusImpl *focus)
+{
+  Prague::Trace trace("EventManager::deactivate");
+  PortableServer::POA_var poa = focus->_default_POA();
+  PortableServer::ObjectId *oid = poa->servant_to_id(focus);
+  poa->deactivate_object(*oid);
+  delete oid;
+}
+
+EventManager::EventManager(Controller_ptr root, Region_ptr allocation)
+{
+  Trace trace("EventManager::EventManager");
+  _drawable = Console::drawable();
+  FocusImpl *keyboard = new NonPositionalFocus(0, root);
+  FocusImpl *mouse = new PositionalFocus(1, root, allocation);
+  activate(keyboard);
+  activate(mouse);
+  _foci.push_back(keyboard);
+  _foci.push_back(mouse);
+}
+
+EventManager::~EventManager()
+{
+  for (flist_t::iterator i = _foci.begin(); i != _foci.end(); i++) deactivate(*i);
+}
+
+bool EventManager::request_focus(Controller_ptr c, Input::Device d)
+{
+  Trace trace("EventManager::request_focus");
+  if (d < _foci.size()) return _foci[d]->request(c);
+  return false;
+}
+
+void EventManager::next_event()
+{
+  Trace trace("EventManager::next_event");
+  Input::Event *e = Console::next_event();
+  if (!e) return; // repair
+  Input::Event_var event(e);
+  /*
+   * the first item determines which focus to send this event to
+   */
+  try { if (event->length()) _foci[event[0].dev]->dispatch(event);}
+  catch (const CORBA::OBJECT_NOT_EXIST &) { cerr << "EventManager: warning: corrupt scene graph !" << endl;}
+  catch (const CORBA::BAD_PARAM &) { cerr << "EventManager: caught bad parameter" << endl;}
+}
+
+void EventManager::restore(Region_ptr r)
+{
+  for (flist_t::iterator i = _foci.begin(); i != _foci.end(); i++) (*i)->restore(r);
+}
+
+void EventManager::damage(Region_ptr r)
+{
+  for (flist_t::iterator i = _foci.begin(); i != _foci.end(); i++) (*i)->damage(r);
+}
 

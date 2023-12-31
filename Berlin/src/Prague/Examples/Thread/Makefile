@@ -1,8 +1,8 @@
 # Generated automatically from Makefile.in by configure.
-# $Id: Makefile,v 1.4 1999/09/30 17:23:34 gray Exp $
+# $Id: Makefile.in,v 1.2 2000/12/17 05:12:48 stefan Exp $
 #
 # This source file is a part of the Berlin Project.
-# Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+# Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
 # http://www.berlin-consortium.org
 #
 # This library is free software; you can redistribute it and/or
@@ -20,84 +20,60 @@
 # Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
 # MA 02139, USA.
 
-# Places to install libraries, binaries, etc.
-prefix      = /usr/local
-bindir      = $(prefix)/bin
-libdir      = $(prefix)/lib
-includedir  = $(prefix)/include
+SHELL		:= /bin/sh
 
-SHELL 	    = /bin/sh
-# The C and C++ compilers to use.
-CC          = gcc
-CXX         = g++
+top_srcdir	:= /home/stefan/Berlin/Berlin
+srcdir		:= $(top_srcdir)/src/Prague/Examples/Thread
+builddir	:= ../../../..
+cdir		:= $(builddir)/config
+hdir		:= $(top_srcdir)/include
 
-# Various programs used in compilation and running of the programs.
+include $(cdir)/local.mk
 
-AR	    = ar
-YACC	    = bison -y
-FLEX	    = flex
-INSTALL	    = /usr/bin/install -c
-LD	    = ld
-MAKEINFO    = makeinfo
-RANLIB      = ranlib
-TEXI2DVI    = texi2dvi
-TEXI2HTML   = texi2html
-TEX         = 
-DVIPS       = 
+bdir		:= $(builddir)/src/Prague/Examples/bin
 
-# Compilation and linking flags.
-CFLAGS	   	= -Wall -I../../../include -pthread
-CXXFLAGS   	= -Wall -I../../../../include -pthread
-LDFLAGS    	= -L../../../../lib
-OPTFLAGS	= -O3
-SOFLAGS		= -fpic
-GDBFLAGS	= -ggdb -DGDB
-PROFILEFLAGS	= -pg -Winline 
+CPPFLAGS	+=  -D_REENTRANT
+LDFLAGS		+= -L../../../../lib
+LIBS		+= -lPrague -ldl  -lpthread
 
-ipath		= ../../../../include
-lpath		= ../../../../lib
-dpath		= dep
-opath		= obj
-gpath		= gdb
-ppath		= prf
-rpath		= $(lpath)
+TARGETS		:=   $(patsubst %, $(bdir)/%, Thread Signal Timer Diner Queue ThreadPool)
 
-LIBS		= -lPrague -ldl -lz -lpthread
+all:		$(TARGETS)
 
-ALL        =   Thread Signal Timer Diner Queue ThreadPool
+%.o:		$(srcdir)/%.cc
+		@echo compiling $(@F)
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OPTFLAGS) -c $< -o $@
 
-world:		$(ALL)
-
-%.o:		%.cc
-		$(CXX) $(CXXFLAGS) $(OPTFLAGS) -c $< -o $@
-
-bug:		bug.o
+$(bdir)/Thread:	Thread.o
+		@echo linking $(@F)
 		$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-Thread:		Thread.o
+$(bdir)/Diner:	Diner.o
+		@echo linking $(@F)
 		$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-Diner:		Diner.o
+$(bdir)/Queue:	Queue.o
+		@echo linking $(@F)
 		$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-Queue:		Queue.o
+$(bdir)/ThreadPool:	ThreadPool.o
+		@echo linking $(@F)
 		$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-ThreadPool:	ThreadPool.o
+$(bdir)/Data:	Data.o
+		@echo linking $(@F)
 		$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-Data:		Data.o
+$(bdir)/Signal:	Signal.o
+		@echo linking $(@F)
 		$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-Signal:		Signal.o
-		$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
-
-Timer:		Timer.o
+$(bdir)/Timer:	Timer.o
+		@echo linking $(@F)
 		$(CXX) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 clean:	
-		$(RM) *.o *~
+		rm -f core *.o *~
 
 distclean:	clean
-		$(RM) $(ALL)
-
+		rm -f $(TARGETS) Makefile

@@ -1,5 +1,5 @@
 //
-// $Id: ReactorImpl.cc,v 1.6 1999/09/30 17:23:34 gray Exp $
+// $Id: ReactorImpl.cc,v 1.7 2001/02/06 19:46:16 tobias Exp $
 //
 // This source file is a part of the Berlin Project.
 // Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
@@ -36,7 +36,7 @@ using namespace Prague;
 void ReactorImpl::active(CORBA::Boolean r)
 {
   // we have to lock on something.. might as well use this
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(mutex);
   if (r)
     {
       if (running);  // do nothing, already running
@@ -51,7 +51,7 @@ void ReactorImpl::active(CORBA::Boolean r)
 
 CORBA::Boolean ReactorImpl::active()
 {
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(mutex);
   return running;
 }
 
@@ -114,7 +114,7 @@ void AsyncReactorImpl::active(CORBA::Boolean r)
 
 CORBA::Boolean AsyncReactorImpl::active()
 {
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(mutex);
   return running;
 }
 
@@ -157,7 +157,7 @@ AsyncReactorImpl::AsyncReactorImpl() : queue_mutex(), queue_cond(&queue_mutex) {
 
 void ReactorImpl::bind(CORBA::TypeCode_ptr ty, Command_ptr c)
 {  
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(mutex);
   Logger::log(Logger::command) << "ReactorImpl::bind binding new command to type " << ty->id() << endl;
   CORBA::TypeCode_var newTy = ty;
   Command_var com = Command::_duplicate(c);
@@ -172,7 +172,7 @@ void ReactorImpl::bind(CORBA::TypeCode_ptr ty, Command_ptr c)
 
 void ReactorImpl::unbind(CORBA::TypeCode_ptr ty, Command_ptr c)
 {
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(mutex);
   Command_var cmd = Command::_duplicate(c);
   Logger::log(Logger::command) << "ReactorImpl::unbind unbinding command from type " << ty->id() << endl;
   std::remove(commands[ty].begin(), commands[ty].end(), cmd);
@@ -184,7 +184,7 @@ void ReactorImpl::unbind(CORBA::TypeCode_ptr ty, Command_ptr c)
 
 void ReactorImpl::copy_react_map_to(Reactor_ptr r)
 {
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(mutex);
   for(dictionary_t::iterator i = commands.begin(); i != commands.end(); i++)
     for(clist_t::iterator j = i->second.begin(); j != i->second.end(); j++)
       r->bind(i->first, *j);

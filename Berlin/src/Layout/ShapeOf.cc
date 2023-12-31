@@ -1,13 +1,8 @@
-/*$Id: ShapeOf.cc,v 1.1 1999/02/19 14:06:22 gray Exp $
+/*$Id: ShapeOf.cc,v 1.4 2000/09/19 21:11:08 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on code from Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,11 +21,13 @@
  */
 #include "Layout/ShapeOf.hh"
 
+using namespace Warsaw;
+
 ShapeOf::ShapeOf(Graphic_ptr x, Graphic_ptr y, Graphic_ptr z)
 {
-  x = Graphic::_duplicate(x);
-  y = Graphic::_duplicate(y);
-  z = Graphic::_duplicate(z);
+  x = Warsaw::Graphic::_duplicate(x);
+  y = Warsaw::Graphic::_duplicate(y);
+  z = Warsaw::Graphic::_duplicate(z);
 }
 
 ShapeOf::~ShapeOf()
@@ -40,13 +37,13 @@ ShapeOf::~ShapeOf()
   CORBA::release(z);
 }
 
-void ShapeOf::request(Requisition &r)
+void ShapeOf::request(Warsaw::Graphic::Requisition &r)
 {
   if (CORBA::is_nil(y) && CORBA::is_nil(z)) x->request(r);
   else
     {
-      Graphic::Requisition req;
-      GraphicImpl::initRequisition(req);
+      Warsaw::Graphic::Requisition req;
+      GraphicImpl::init_requisition(req);
       if (!CORBA::is_nil(x))
 	{
 	  x->request(req);

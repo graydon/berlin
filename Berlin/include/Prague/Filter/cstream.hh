@@ -1,9 +1,9 @@
-/* $Id: cstream.hh,v 1.1 1999/04/22 14:44:58 gray Exp $ */
-#ifndef _cstream_h
-#define _cstream_h
+/* $Id: cstream.hh,v 1.2 2000/08/31 18:52:32 stefan Exp $ */
+#ifndef _cstream_hh
+#define _cstream_hh
 
-#include <iostream.h>
-#include <OffiX/Filter/cbuf.h>
+#include <iostream>
+#include <Prague/Filter/cbuf.hh>
 
 /*
  *	Class name : cstream
@@ -16,4 +16,4 @@ public:
   cstream(istream &is, char comment = '#') : istream(new cbuf(is.rdbuf(), comment)) {}
 };
 
-#endif /* _cstream_h */
+#endif

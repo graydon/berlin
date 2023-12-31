@@ -1,0 +1,4 @@
+This directory contains utility scripts useful to developers.
+
+- UnicodePluginGenerator.pl is used to create the blocks out of
+    the datafiles you can download from ftp.unicode.org

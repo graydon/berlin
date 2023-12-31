@@ -1,7 +1,7 @@
-/*$Id: DrawTraversalImpl.hh,v 1.10 1999/10/13 21:32:31 gray Exp $
+/*$Id: DrawTraversalImpl.hh,v 1.21 2000/10/20 17:45:01 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
  * http://www.berlin-consortium.org
  *
@@ -25,30 +25,31 @@
 
 #include <Warsaw/config.hh>
 #include <Warsaw/DrawTraversal.hh>
+#include <Berlin/ImplVar.hh>
 #include <Berlin/TraversalImpl.hh>
 #include <vector>
 
-declare_corba_ptr_type(DrawingKit)
-declare_corba_ptr_type(Drawable)
-declare_corba_ptr_type(Region)
-
-class DrawTraversalImpl : implements(DrawTraversal), virtual public TraversalImpl
+class DrawTraversalImpl : public virtual POA_Warsaw::DrawTraversal,
+                          public TraversalImpl
 {
 public:
-  DrawTraversalImpl(Graphic_ptr, Region_ptr, Transform_ptr, DrawingKit_ptr);
+  DrawTraversalImpl(Warsaw::Graphic_ptr, Warsaw::Region_ptr, Warsaw::Transform_ptr, Warsaw::DrawingKit_ptr);
   DrawTraversalImpl(const DrawTraversalImpl &);
   virtual ~DrawTraversalImpl();
-  virtual CORBA::Boolean intersectsAllocation();
-  virtual CORBA::Boolean intersectsRegion(Region_ptr);
-  virtual void traverseChild(Graphic_ptr, Tag, Region_ptr, Transform_ptr);
-  virtual void visit(Graphic_ptr);
-  virtual order direction() { return up;}
-  virtual CORBA::Boolean ok() { return true;}
-  virtual DrawingKit_ptr kit();
+  virtual CORBA::Boolean intersects_allocation();
+  virtual CORBA::Boolean intersects_region(Warsaw::Region_ptr);
+  virtual void traverse_child(Warsaw::Graphic_ptr, Warsaw::Tag, Warsaw::Region_ptr, Warsaw::Transform_ptr);
+  virtual void visit(Warsaw::Graphic_ptr);
+  virtual Warsaw::Traversal::order direction();
+  virtual CORBA::Boolean ok();
+  virtual Warsaw::DrawingKit_ptr drawing();
+  void init();
+  void finish();
 private:
-  DrawingKit_var drawingkit;
-  Drawable_var drawable;
-  Region_var clipping;
+  Warsaw::DrawingKit_var     _drawing;
+  Warsaw::Region_var         _clipping;
+  Impl_var<TransformImpl>    _id;
+  Warsaw::DrawTraversal_var __this;
 };
 
-#endif /* _DrawTraversalImpl_hh */
+#endif 

@@ -1,13 +1,8 @@
-/*$Id: Glue.hh,v 1.2 1999/04/22 14:44:58 gray Exp $
+/*$Id: Glue.hh,v 1.4 2000/08/31 18:52:32 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on code from Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -32,13 +27,13 @@
 class Glue : public GraphicImpl
 {
 public:
-  Glue(Axis, Coord, Coord, Coord, Alignment);
-  Glue(const Graphic::Requisition &);
+  Glue(Warsaw::Axis, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Alignment);
+  Glue(const Warsaw::Graphic::Requisition &);
   virtual ~Glue();
 
-  virtual void request(Graphic::Requisition &);
+  virtual void request(Warsaw::Graphic::Requisition &);
 private:
-  Graphic::Requisition requisition;
+  Warsaw::Graphic::Requisition requisition;
 };
 
-#endif /* _Glue_hh */
+#endif

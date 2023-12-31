@@ -1,0 +1,53 @@
+/*$Id: GadgetKit.idl,v 1.6 2000/08/31 18:51:47 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_GadgetKit_idl
+#define _Warsaw_GadgetKit_idl
+
+#include <Warsaw/Types.idl>
+#include <Warsaw/Kit.idl>
+
+module Warsaw
+{
+  interface BoundedValue;
+  interface Graphic;
+  
+  //. this kit provides some gadgets which allow fancy to do fancy things like modifying transparency 
+  //. or transforming a sub graph
+  //. this is a just-for-fun kit which is provided to demonstrate how to extend the server's capabilities
+  //. Nobody would actually make use of this kit in a serious application, eh ? ;)
+  interface GadgetKit : Kit
+    {
+      //. allows to manipulate the color settings of the sub graph
+      Graphic rgb(in Graphic body, in BoundedValue r, in BoundedValue g, in BoundedValue b);
+      //. allows to manipulate the translucency of the sub graph
+      Graphic alpha(in Graphic g, in BoundedValue v);
+      //. allows to manipulate the lighting of the sub graph
+      Graphic lighting(in Graphic body, in BoundedValue r, in BoundedValue g, in BoundedValue b);
+      //. allows to rotate the sub graph
+      Graphic rotator(in Graphic g, in BoundedValue v, in Axis a);
+      //. allows to zoom the sub graph
+      Graphic zoomer(in Graphic g, in BoundedValue v);
+    };
+};
+
+#endif
+

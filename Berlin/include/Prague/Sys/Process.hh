@@ -1,7 +1,7 @@
-/*$Id: Process.hh,v 1.3 1999/10/15 17:59:07 gray Exp $
+/*$Id: Process.hh,v 1.5 2001/01/15 02:49:18 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _Process_hh
-#define _Process_hh
+#ifndef _Prague_Process_hh
+#define _Prague_Process_hh
 
 #include <cstdio>
 #include <cerrno>
@@ -31,20 +31,22 @@
 namespace Prague
 {
 
+//. provide process information
 class Process
 {
 public:
   Process() { update();}
   ~Process() {}
-  double CPU() const { return 0.;}
-  long Memory() const { return usage.ru_idrss;}
-  void update() { if (getrusage(RUSAGE_SELF, &usage) == -1) perror("Process::update:");}
+  double cpu() const { return 0.;}
+  long memory() const { return _usage.ru_idrss;}
+  void update() { if (getrusage(RUSAGE_SELF, &_usage) == -1) perror("Process::update:");}
+  //. return the process' id
   static pid_t id() { return getpid();}
 protected:
 private:
-  rusage usage;
+  rusage _usage;
 };
 
 };
 
-#endif /* _Process_hh */
+#endif

@@ -1,7 +1,7 @@
-/*$Id: Plugin.hh,v 1.7 1999/11/01 21:31:32 gray Exp $
+/*$Id: Plugin.hh,v 1.13 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,20 +19,24 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _Plugin_hh
-#define _Plugin_hh
+#ifndef _Prague_Plugin_hh
+#define _Prague_Plugin_hh
 
-#include "DLL.hh"
+#include <Prague/Sys/DLL.hh>
 
-namespace Prague {
+namespace Prague
+{
 
+//. a special kind of a smart pointer which implements a plugin behavior.
+//. It assumes a special layout of the library, with a special factory
+//. that manufactures objects of type T.
 template <class T>
 class Plugin : public DLL
-//. a special kind of a smart pointer
-//. which implements a plugin behavior
 {
 public:
-  Plugin(const string &file, const string &loader = "load") : DLL(file)
+  //. create a Plugin from the fiven file, using a factory with name loader
+  //. to create the actual object
+  Plugin(const std::string &file, const std::string &loader = "load") : DLL(file)
     {
       typedef T *(* DL) ();
       DL dl = (DL) resolve(loader);
@@ -41,14 +45,13 @@ public:
   ~Plugin() { delete t;}
   T &operator *() const { return *t;}
   T *operator->() const { return  t;}
-  operator T *() { return t; }
-protected:
+  T *get() const { return t;}
 private:
   T *t;
 };
 
-}; // namespace
+}
 
 #define dload(T) extern "C" T *load() { return new T;}
 
-#endif /* _Plugin_hh */
+#endif

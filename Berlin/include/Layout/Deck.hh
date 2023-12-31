@@ -1,13 +1,8 @@
-/*$Id: Deck.hh,v 1.3 1999/04/22 14:44:58 gray Exp $
+/*$Id: Deck.hh,v 1.6 2000/09/19 21:11:04 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on code from Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -35,14 +30,14 @@ public:
   Deck();
   virtual ~Deck();
 
-  virtual void request(Requisition &);
-  virtual void extension(const Allocation::Info &, Region_ptr);
+  virtual void request(Warsaw::Graphic::Requisition &);
+  virtual void extension(const Warsaw::Allocation::Info &, Warsaw::Region_ptr);
 
-  virtual void traverse(Traversal_ptr);
+  virtual void traverse(Warsaw::Traversal_ptr);
 
 protected:
-  bool requested;
-  Graphic::Requisition requisition;
+  bool _requested;
+  Warsaw::Graphic::Requisition _requisition;
 };
 
-#endif /* _Deck_hh */
+#endif

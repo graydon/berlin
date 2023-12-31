@@ -1,0 +1,71 @@
+# $Id: Makefile.in,v 1.4 2001/01/31 15:21:12 stefan Exp $
+#
+# This source file is a part of the Berlin Project.
+# Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+# http://www.berlin-consortium.org
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+SHELL	= /bin/sh
+
+top_srcdir	:= @topdir@
+srcdir		:= $(top_srcdir)/src/Prague
+builddir	:= ../../..
+cdir		:= $(builddir)/config
+idir		:= $(top_srcdir)/idl
+ddir		:= $(builddir)/doc/RefManual/html
+stylesheet      := $(top_srcdir)/doc/RefManual/style.css
+
+include $(cdir)/local.mk
+include $(cdir)/Docs/local.mk
+
+INT		:= Types.idl TextBuffer.idl BoundedValue.idl BoundedRange.idl \
+		   Selection.idl \
+		   RefCountBase.idl Identifiable.idl ClientContext.idl Server.idl \
+		   Kit.idl Transform.idl Region.idl Allocation.idl Traversal.idl \
+		   PickTraversal.idl DrawTraversal.idl Graphic.idl Screen.idl \
+		   Input.idl Focus.idl Subject.idl Observer.idl Controller.idl View.idl \
+		   Drawable.idl DrawingKit.idl Grid.idl Viewport.idl Stage.idl LayoutKit.idl \
+		   Telltale.idl StreamBuffer.idl Trigger.idl Canvas.idl State.idl ToolKit.idl Choice.idl \
+		   WidgetKit.idl GadgetKit.idl Raster.idl ImageKit.idl Figure.idl \
+		   Image.idl FigureKit.idl Command.idl CommandKit.idl Metrics.idl \
+		   TextKit.idl Desktop.idl Window.idl DesktopKit.idl Types3D.idl \
+		   DrawingKit3D.idl Primitive.idl GGIKit.idl UnidrawKit.idl
+
+SYN		:= $(patsubst %.idl, %.syn, $(INT))
+
+TARGET		:= $(ddir)/Warsaw
+
+all:	$(TARGET)
+
+$(TARGET):	$(SYN)
+		@echo formatting $(@F)
+		$(SYNOPSIS) -f HTML -Wf,-s,style.css,-C,ssd,-S,$(stylesheet),-t,Warsaw.toc -o $@ $(SYN)
+		touch $@
+
+%.syn:	$(idir)/Warsaw/%.idl
+	@echo compiling $(@F)
+	$(SYNOPSIS) -p IDL -Wp,-K -I$(idir) -o $@ $?
+
+clean:	
+	rm -fr *.syn $(TARGET)
+
+distclean maintainer-clean:	clean
+	rm -f Makefile
+
+install:
+	install -m755 $(TARGET) $(libdir)
+

@@ -1,7 +1,7 @@
-/*$Id: ptybuf.hh,v 1.2 1999/04/27 20:11:10 gray Exp $
+/*$Id: ptybuf.hh,v 1.5 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -28,27 +28,24 @@
 namespace Prague
 {
 
-/* @Class{ptybuf : public ipcbuf}
- *
- * @Description{a streambuf which uses a pty for communication. Reading is done via fgets since tty use line buffered mode normally.}
- */
 class ptybuf : public ipcbuf
 {
   class backup;
 public:
   ptybuf();
   virtual ~ptybuf();
-  const string &name() const { return ptydev;}
+  virtual std::streamsize sys_read(char *, std::streamsize);
+  const std::string &name() const { return ptydev;}
   int openpty();
   int opentty();
   void setup();
 protected:
-  string ptydev;
-  string ttydev;
+  std::string ptydev;
+  std::string ttydev;
 private:
   backup *save;
 };
 
 };
 
-#endif /* _ptybuf_hh */
+#endif

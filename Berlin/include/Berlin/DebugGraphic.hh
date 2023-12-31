@@ -1,13 +1,8 @@
-/*$Id: DebugGraphic.hh,v 1.6 1999/11/06 20:23:07 stefan Exp $
+/*$Id: DebugGraphic.hh,v 1.10 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -28,24 +23,27 @@
 #define _DebugGraphic_hh
 
 #include "Berlin/MonoGraphic.hh"
-#include "Warsaw/Region.hh"
+#include <Warsaw/Region.hh>
+#include <iostream>
 #include <string>
 
 class DebugGraphic : public MonoGraphic
 {
 public:
   enum Flags {none = 0x0, requests = 0x1, draws = 0x2, picks = 0x4, traversals = 0x7};
-  DebugGraphic(const string &, unsigned int f = traversals);
+  DebugGraphic(std::ostream &, const std::string &, unsigned int f = traversals);
   virtual ~DebugGraphic();
 
-  virtual void request(Requisition &);
-  virtual void traverse(Traversal_ptr);
-  virtual void draw(DrawTraversal_ptr);
-  virtual void pick(PickTraversal_ptr);
+  virtual void request(Warsaw::Graphic::Requisition &);
+  virtual void traverse(Warsaw::Traversal_ptr);
+  virtual void draw(Warsaw::DrawTraversal_ptr);
+  virtual void pick(Warsaw::PickTraversal_ptr);
+  virtual void allocate(Warsaw::Tag, const Warsaw::Allocation::Info &);
 private:
-  string       message;
-  unsigned int flags;
   void         heading(const char *);
+  std::ostream &_os;
+  std::string   _message;
+  unsigned int  _flags;
 };
 
-#endif /* _DebugGraphic_hh */
+#endif 

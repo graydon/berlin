@@ -1,4 +1,0 @@
-This directory contains configuration scripts used to control the
-build process under various architectures.  Currently, only Linux is
-supported.  There are plans to support a wide variety of platforms in the
-future.

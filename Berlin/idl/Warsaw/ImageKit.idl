@@ -1,0 +1,48 @@
+/*$Id: ImageKit.idl,v 1.3 2000/08/31 18:51:47 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Brent Fulgham <bfulgham@debian.org>
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org>
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+
+#ifndef _Warsaw_ImageKit_idl
+#define _Warsaw_ImageKit_idl
+
+#include <Warsaw/Types.idl>
+#include <Warsaw/Kit.idl>
+#include <Warsaw/Raster.idl>
+
+module Warsaw
+{
+  /*
+   * Raster holds the detailed image data corresponding to a picture
+   * or texture mapping on the screen (or in memory).
+   *
+   * It is generally contained within an Image object, which handles
+   * all of the nasty details related to layout and so forth.
+   *
+   */
+  interface ImageKit : Kit
+    {
+      Raster empty();				// Returns a null raster
+      Raster create(in string file);		// Create from a file
+    };
+};
+
+#endif

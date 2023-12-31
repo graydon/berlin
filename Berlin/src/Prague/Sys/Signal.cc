@@ -1,7 +1,7 @@
-/*$Id: Signal.cc,v 1.5 1999/11/16 02:15:20 stefan Exp $
+/*$Id: Signal.cc,v 1.8 2000/11/08 20:59:35 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,13 +19,15 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
+#include "Prague/config.hh"
 #include "Prague/Sys/Signal.hh"
+#include <cstring>
 #include <algorithm>
 #include <cstdio>
 
 namespace Prague
 {
-typedef void (*sighnd_type) (...);
+typedef void (*sighnd_type) (int);
 void sighandler (int signo)
 {
   /*
@@ -48,7 +50,6 @@ using namespace Prague;
 Signal::dict_t     Signal::notifiers;
 Thread::Queue<int> Signal::queue(32);
 Thread             Signal::server(&Signal::run, 0);
-extern "C" char *strsignal(int signo);
 
 bool Signal::set (int signum, Signal::Notifier *notifier)
 {
@@ -173,7 +174,7 @@ bool Signal::ispending (int signo)
   return false;
 }
 
-char *Signal::name(int signum)
+const char *Signal::name(int signum)
 {
   return strsignal(signum);
 }

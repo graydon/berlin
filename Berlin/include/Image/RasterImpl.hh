@@ -1,8 +1,8 @@
-/*$Id: RasterImpl.hh,v 1.14 1999/10/19 21:07:52 gray Exp $
+/*$Id: RasterImpl.hh,v 1.18 2000/09/19 21:11:04 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Brent Fulgham <bfulgham@debian.org>
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -26,26 +26,29 @@
 
 #include <Warsaw/config.hh>
 #include <Warsaw/Raster.hh>
+#include <Berlin/SubjectImpl.hh>
 #include <Image/PNG.hh>
 
-class RasterImpl : implements(Raster)
+class RasterImpl : public virtual POA_Warsaw::Raster,
+		   public SubjectImpl
+						  
 {  	
 public:
   RasterImpl();
   RasterImpl(const char* file);
   virtual ~RasterImpl();
-  virtual Info header();
+  virtual Warsaw::Raster::Info header();
   virtual void clear();
-  virtual void loadData(const Raster::Data &);
-  virtual void storeData(Raster::Data *&);
-  virtual void loadPixel(const Index &, const Color &);
-  virtual void storePixel(const Index &, Color &);
-  virtual void loadPixels(const Index &, const Index &, const Raster::ColorSeq &);
-  virtual void storePixels(const Index &, const Index &, Raster::ColorSeq *&);
+  virtual void load_data(const Warsaw::Raster::Data &);
+  virtual void store_data(Warsaw::Raster::Data_out);
+  virtual void load_pixel(const Warsaw::Raster::Index &, const Warsaw::Color &);
+  virtual void store_pixel(const Warsaw::Raster::Index &, Warsaw::Color &);
+  virtual void load_pixels(const Warsaw::Raster::Index &, const Warsaw::Raster::Index &, const Warsaw::Raster::ColorSeq &);
+  virtual void store_pixels(const Warsaw::Raster::Index &, const Warsaw::Raster::Index &, Warsaw::Raster::ColorSeq_out);
   void write(const char *);
  private:
-  PNG png;
-  unsigned char **rows;
+  PNG _png;
+  unsigned char **_rows;
 };
 
 #endif

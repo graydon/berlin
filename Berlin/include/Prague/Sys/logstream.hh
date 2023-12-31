@@ -1,7 +1,7 @@
-/*$Id: logstream.hh,v 1.1 1999/05/25 18:28:58 gray Exp $
+/*$Id: logstream.hh,v 1.3 2001/04/18 06:07:26 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -28,13 +28,13 @@
 namespace Prague
 {
 
-class logstream : public ostream
+class logstream : public std::ostream
 {
 public:
-  logstream(logbuf *lb) : ios(lb) {}
-  logbuf *rdbuf () { return static_cast<logbuf *> (ios::rdbuf()); }
-  logbuf *operator -> () { return rdbuf(); }
-  void dump(ostream &os) { rdbuf()->dump(os);}
+  logstream(logbuf *lb) : std::ostream(lb) {}
+  logbuf *rdbuf () { return static_cast<logbuf *> (std::ostream::rdbuf());}
+  logbuf *operator -> () { return rdbuf();}
+  void dump(std::ostream &os) { rdbuf()->dump(os);}
 private:
 };
 

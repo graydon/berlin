@@ -1,0 +1,77 @@
+# $Id: Makefile.in,v 1.3 2001/03/31 16:15:27 stefan Exp $
+#
+# This source file is a part of the Berlin Project.
+# Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+# http://www.berlin-consortium.org
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+SHELL	= /bin/sh
+
+top_srcdir	:= @topdir@
+builddir	:= ../../..
+cdir		:= $(builddir)/config
+hdir		:= $(top_srcdir)/include
+ddir		:= $(builddir)/doc/RefManual/html
+stylesheet      := $(top_srcdir)/doc/RefManual/style.css
+
+include $(cdir)/local.mk
+include $(cdir)/Docs/local.mk
+include $(cdir)/Server/local.mk
+
+CPPFLAGS	+= @CPPFLAGS@
+Wp		:= -Wp,
+CPPFLAGS	:= $(patsubst %, $(Wp)%, $(CPPFLAGS))
+
+# don't know how to deal with those, as we need to pass flags to select them
+# (how should we treat '-pthread' for example ?)
+#GGI.hh CAVE.hh GLUT.hh SDL.hh 
+HDR		:= Console.hh Pointer.hh Color.hh Event.hh GapBuffer.hh Geometry.hh \
+		   ImplVar.hh Math.hh ObjectCache.hh Provider.hh Pool.hh QuadTree.hh RefCountVar.hh Vertex.hh LRUCache.hh \
+		   Logger.hh ServantBase.hh IdentifiableImpl.hh \
+		   RefCountBaseImpl.hh RegionImpl.hh TransformImpl.hh TraversalImpl.hh \
+		   AllocationImpl.hh Provider.hh GraphicImpl.hh MonoGraphic.hh PolyGraphic.hh \
+		   Allocator.hh Requestor.hh DebugGraphic.hh \
+		   DrawTraversalImpl.hh PickTraversalImpl.hh ControllerImpl.hh \
+		   DesktopImpl.hh ScreenImpl.hh ScreenManager.hh EventManager.hh \
+		   PositionalFocus.hh NonPositionalFocus.hh FilterImpl.hh SubjectImpl.hh \
+		   KitImpl.hh KitFactory.hh ServerContextImpl.hh ServerImpl.hh RCManager.hh
+SYN		:= $(patsubst %.hh, %.syn, $(HDR))
+
+TARGET	= $(ddir)/Berlin
+
+all:	$(TARGET)
+
+$(TARGET):	$(SYN)
+		@echo formatting $(@F)
+		$(SYNOPSIS) -Wl,-M,C++toIDL -f HTML -Wf,-s,style.css,-C,ssd,-S,$(stylesheet),-r,"../Prague/Prague.toc|../Prague",-r,"../Babylon/Babylon.toc|../Babylon",-r,"../Warsaw/Warsaw.toc|../Warsaw" -o $@ $(SYN)
+		touch $@
+
+vpath %.hh  $(hdir)/Berlin
+
+%.syn:	$(hdir)/Berlin/%.hh
+	@echo compiling $(@F)
+	$(SYNOPSIS) -p C++ -Wp,-m -Wp,-g $(CPPFLAGS) -o $@ $?
+
+clean:
+	rm -fr *.syn $(TARGET)
+
+distclean maintainer-clean:	clean
+	rm -f Makefile
+
+install:
+	install -m755 $(TARGET) $(libdir)
+

@@ -1,0 +1,209 @@
+#!/usr/bin/env python
+# Python Berlin client that implements a client-side Graphic
+# Copyright (c) 2000 by Stephen Davies
+# This file is licensed for use under the GPL.
+#
+# Tabstop is 8, SoftTabStop is 4, ShiftWidth is 4 (as per last line)
+#
+
+import sys, string, time, math, thread, threading
+from omniORB import CORBA
+
+# Import berlin client lib
+import berlin
+from berlin import Label, Callback, nullAny
+
+# Import the Warsaw stubs
+import Warsaw, Unidraw
+import Warsaw__POA
+
+# Import Warsaw lib
+import pywarsaw
+
+class TickGraphic (pywarsaw.PyGraphic):
+    "Simple graphic that draws a 'tick'"
+    def request(self): # --> void
+	x = Warsaw.Graphic.Requirement(1, 2000., 3000., 100., 0.)
+	y = Warsaw.Graphic.Requirement(1, 2000., 3000., 100., 0.)
+	z = Warsaw.Graphic.Requirement(1, 0., 0., 0., 0.)
+	req = Warsaw.Graphic.Requisition(x, y, z, 0)
+	return req
+    def draw(self, drawTraversal):
+	dk = drawTraversal.drawing()
+	#print "dk is: ", dk
+	transform = drawTraversal.current_transformation()
+	region = drawTraversal.current_allocation()
+	bounds_lower, bounds_upper = region.bounds()
+	dk.save()
+	dk._set_transformation(transform)
+	# Draw background
+	dk._set_foreground(Warsaw.Color(0.9, 0.9, 0.9, 1.0))
+	dk._set_surface_fillstyle(Warsaw.DrawingKit.solid)
+	dk.draw_rectangle(bounds_lower, bounds_upper)
+	# Draw tick
+	bounds_delta = (bounds_upper.x - bounds_lower.x,
+	    bounds_upper.y - bounds_lower.y)
+	def scale(point, low=bounds_lower, delta = bounds_delta):
+	    return Warsaw.Vertex(point[0] * delta[0] + low.x, point[1] * delta[1] + low.y, low.z)
+	path = map(scale, [(.2,.6),(.4,.7),(.9,.1),(.4,.8),(.2,.6)])
+	dk._set_foreground(Warsaw.Color(0.2, 0.9, 0.9, 1.0))
+	dk.draw_path(path)
+	dk.restore()
+
+
+class ClockGraphic (pywarsaw.PyGraphic):
+    "Simple graphic that draws a clock"
+    def __init__(self):
+	pywarsaw.PyGraphic.__init__(self)
+	thread.start_new_thread(self._run_update_thread, ())
+	self._offset = 0. #angular offset
+	self._lock = threading.Lock()
+    def _run_update_thread(self):
+	# FIXME: calibrate
+	while 1:
+	    time.sleep(1)
+	    self._lock.acquire()
+	    self.need_redraw()
+	    self._lock.release()
+    def request(self): # --> Requisition
+	x = Warsaw.Graphic.Requirement(1, 2000., 3000., 100., 0.)
+	y = Warsaw.Graphic.Requirement(1, 2000., 3000., 100., 0.)
+	z = Warsaw.Graphic.Requirement(1, 0., 0., 0., 0.)
+	req = Warsaw.Graphic.Requisition(x, y, z, 0)
+	return req
+    def rotate(self, angle, path):
+	"Rotates all elements in the path by angle radians"
+	angle = angle + self._offset
+	m = (( math.cos(angle),-math.sin(angle)),
+	     ( math.sin(angle), math.cos(angle)))
+	ret = []
+	for x,y in path:
+	    ret.append( (x*m[0][0]+y*m[0][1], x*m[1][0]+y*m[1][1]) )
+	return ret
+    def draw(self, drawTraversal):
+	rotate = self.rotate
+	dk = drawTraversal.drawing()
+	transform = drawTraversal.current_transformation()
+	region = drawTraversal.current_allocation()
+	# Some useful numbers
+	bounds_lower, bounds_upper = region.bounds()
+	bounds_delta = (bounds_upper.x - bounds_lower.x,
+	    bounds_upper.y - bounds_lower.y)
+	bounds_middle = Warsaw.Vertex((bounds_upper.x + bounds_lower.x)/2,
+	    (bounds_upper.y + bounds_lower.y)/2, 0)
+	bounds_halfdelta = (bounds_delta[0]/2, bounds_delta[1]/2)
+	dk.save()
+	dk._set_transformation(transform)
+	def scale(point, mid=bounds_middle, delta = bounds_halfdelta):
+	    "Scales a normalised vector [-1:1] to the whole graphic"
+	    return Warsaw.Vertex(point[0] * delta[0] + mid.x, point[1] * delta[1] + mid.y, mid.z)
+	# Draw background first
+	dk._set_foreground(Warsaw.Color(0.9, 0.9, 0.9, 1.0))
+	dk._set_surface_fillstyle(Warsaw.DrawingKit.solid)
+	dk.draw_rectangle(bounds_lower, bounds_upper)
+	# Draw hour-ticks
+	path = [(-.05,-.8),(.05,-.8),(.05,-.7),(-.05,-.7),(-.05,-.8)]
+	dk._set_foreground(Warsaw.Color(0.2, 0.3, 0.5, 1.0))
+	circle = math.pi*2
+	for i in range(12):
+	    dk.draw_path(map(scale, rotate(i*circle/12, path)))
+	# Get time
+	times = time.localtime(time.time())
+	hours, mins, secs = times[3], times[4], times[5]
+	# Hours
+	path = [(-.03,.03),(0,-.6),(.03,.03),(-.03,.03)]
+	dk.draw_path(map(scale, rotate(hours*circle/12, path)))
+	# Minutes
+	path = [(-.02,.02),(0,-.8),(.02,.02),(-.02,.02)]
+	dk.draw_path(map(scale, rotate(mins*circle/60, path)))
+	# Seconds
+	path = [(-.01,.01),(0,-.95),(.01,.01),(-.01,.01)]
+	dk.draw_path(map(scale, rotate(secs*circle/60, path)))
+	dk.restore()
+
+class ClockController (pywarsaw.PyController):
+    def __init__(self):
+	pywarsaw.PyController.__init__(self, 0)
+	self.clock = ClockGraphic()
+	self._set_body(self.clock._this())
+	self._rot = 0.
+	self._curr_rot = 0.
+	print "ClockController started."
+	print "Drag the clock face around its middle!"
+	print "Press a key (in the berlin window) to reset the angle"
+
+    def traverse(self, traversal):
+	pywarsaw.PyController.traverse(self, traversal)
+    def press(self, pickTraversal, input_event):
+	print "Press"
+	self.clock._lock.acquire()
+	pywarsaw.PyController.press(self, pickTraversal, input_event)
+	self._pos = pywarsaw.get_position(input_event)
+	self._rot = self.clock._offset
+	self._start_rot = None
+	self._curr_rot = self._rot
+    def release(self, pickTraversal, input_event):
+	print "Release"
+	pywarsaw.PyController.release(self, pickTraversal, input_event)
+	pos = pywarsaw.get_position(input_event)
+	bounds = pickTraversal.current_allocation().bounds()
+	bounds = map(pickTraversal.current_transformation().transform_vertex, bounds)
+	self.do_drag(bounds, pos)
+	self.clock._lock.release()
+    def drag(self, pickTraversal, input_event):
+	pos = pywarsaw.get_position(input_event)
+	bounds = pickTraversal.current_allocation().bounds()
+	bounds = map(pickTraversal.current_transformation().transform_vertex, bounds)
+	self.do_drag(bounds, pos)
+    def radius_angle(self, vertex):
+	d = math.hypot(vertex.x, vertex.y)
+	if d < 100.: return d,0
+	if vertex.y >= 0.: return d, math.acos(vertex.x / d)
+	else: return d, math.pi*2 - math.acos(vertex.x / d)
+    def do_drag(self, bounds, pos):
+	pos.x = pos.x - (bounds[0].x + bounds[1].x)*.5
+	pos.y = pos.y - (bounds[0].y + bounds[1].y)*.5
+	d, a = self.radius_angle(pos)
+	if d >= 100.:
+	    if self._start_rot is None:
+		self._start_rot = a
+	    else:
+		self._curr_rot = self._rot + a - self._start_rot
+		self.clock._offset = self._curr_rot
+		self.clock.need_redraw()
+    def key_press(self, input_event):
+	print "Key press: resetting"
+	self.clock._lock.acquire()
+	self.clock._offset = 0.
+	self.clock.need_redraw()
+	self.clock._lock.release()
+
+class GraphicApp (berlin.App):
+    def run(self):
+	clock = ClockController()._this()
+	clock_group = kits.tool.group(clock)
+	clock_group.append_controller(clock)
+	self.window = kits.desktop.shell(clock_group)
+
+	#kits.desktop.shell(kits.tool.group(TickGraphic()._this()))
+
+
+def main():
+    # Create singletons
+    global app, kits, connection
+    connection = berlin.get_connection()
+    kits = berlin.get_kits()
+    app = GraphicApp()
+
+    app.run()
+
+    # Wait for the quit event
+    app.quit.wait()
+
+    # Tell the orb to shutdown (and wait for pending calls to complete)
+    connection.orb.shutdown(1)
+
+if __name__ == '__main__':
+    main()
+
+# vim: ts=8:sts=4:sw=4

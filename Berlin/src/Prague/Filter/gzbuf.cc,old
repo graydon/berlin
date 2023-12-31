@@ -1,0 +1,167 @@
+/*$Id: gzbuf.cc,v 1.3 2000/08/31 18:52:33 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * this file defines a C++ interface to zlib
+ * written by Kevin Ruland <kevin@rodin.wustl.edu>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#include <memory.h>
+#include "Prague/Filter/gzbuf.hh"
+
+using namespace Prague;
+
+gzbuf::gzbuf() : _file(0), _owner(false) {}
+gzbuf::~gzbuf()
+{
+  sync();
+  if (_owner) close();
+}
+
+gzbuf *gzbuf::open(const char *name, int io_mode)
+{
+  if (is_open()) return 0;
+  char char_mode[10];
+  char *p;
+  memset(char_mode,'\0',10);
+  p = char_mode;
+  if (io_mode & std::ios::in)
+    {
+      *p++ = 'r';
+      char_type *gbuf = new char_type [BUFSIZ];
+      setg(gbuf, gbuf + BUFSIZ, gbuf + BUFSIZ);
+    }
+  else if (io_mode & (std::ios::out|std::ios::app))
+    {
+      if (io_mode & std::ios::app) *p++ = 'a';
+      else *p++ = 'w';
+      char_type *pbuf = new char_type [BUFSIZ];
+      setp(pbuf, pbuf + BUFSIZ);
+    }
+  if (io_mode & std::ios::binary) *p++ = 'b';
+  if (io_mode & (std::ios::out|std::ios::app)) *p++ = '9';
+  if ((_file = gzopen(name, char_mode)) == 0) return 0;
+  _owner = true;
+  return this;
+}
+
+gzbuf *gzbuf::attach(int fd, int io_mode)
+{
+  if (is_open()) return 0;
+  char char_mode[10];
+  char *p;
+  memset(char_mode,'\0',10);
+  p = char_mode;
+  if (io_mode & std::ios::in)
+    {
+      *p++ = 'r';
+      char_type *gbuf = new char_type [BUFSIZ];
+      setg(gbuf, gbuf + BUFSIZ, gbuf + BUFSIZ);
+    }
+  else if (io_mode & (std::ios::app | std::ios::out))
+    {
+      if (io_mode & std::ios::app) *p++ = 'a';
+      else *p++ = 'w';
+      char_type *pbuf = new char_type [BUFSIZ];
+      setp(pbuf, pbuf + BUFSIZ);
+    }
+  if (io_mode & std::ios::binary) *p++ = 'b';
+  if (io_mode & (std::ios::out|std::ios::app)) *p++ = '9';
+  if ((_file = gzdopen(fd, char_mode)) == 0) return 0;
+  _owner = false;
+  return this;
+}
+
+gzbuf *gzbuf::close()
+{
+  if (is_open())
+    {
+      sync();
+      gzclose(_file);
+      _file = 0;
+    }
+  return this;
+}
+
+int gzbuf::setcompressionlevel(short comp_level)
+{
+  return gzsetparams(_file, comp_level, -2);
+}
+
+int gzbuf::setcompressionstrategy(short comp_strategy)
+{
+  return gzsetparams(_file, -2, comp_strategy);
+}
+
+std::streampos gzbuf::seekoff(std::streamoff off, std::ios::seekdir dir, int which)
+{
+  return std::streampos(EOF);
+}
+
+int gzbuf::underflow()
+{
+  // If the file hasn't been opened for reading, error.
+  if (!is_open() || !eback()) return EOF;
+  // if a buffer doesn't exists, allocate one.
+  if (in_avail()) return (unsigned char) *gptr();
+  if (fillbuf() == EOF) return EOF;
+  return (unsigned char) *gptr();
+}
+
+int gzbuf::overflow(int c)
+{
+  if (!is_open() || !pbase()) return EOF;
+  if (pptr() - pbase() && flushbuf() == EOF) return EOF;
+  if (c != EOF)
+    {
+      *pptr() = c;
+      pbump(1);
+    }
+  return 0;
+}
+
+int gzbuf::sync()
+{
+  if (!is_open()) return EOF;
+  if (pptr() - pbase()) return flushbuf();
+  return 0;
+}
+
+int gzbuf::flushbuf()
+{
+  int n;
+  char *q;
+  q = pbase();
+  n = pptr() - q;
+  if (gzwrite(file, q, n) < n) return EOF;
+  setp(0,0);
+  return 0;
+}
+
+int gzbuf::fillbuf()
+{
+  int required;
+  char *p;
+  p = base();
+  required = blen();
+  int t = gzread(file, p, required);
+  if (t <= 0) return EOF;
+  setg(base(), base(), base()+t);
+  return t;
+}

@@ -1,7 +1,7 @@
-/*$Id: Stopwatch.cc,v 1.2 1999/04/27 20:09:50 gray Exp $
+/*$Id: Stopwatch.cc,v 1.7 2001/03/31 09:37:10 tobias Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -28,76 +28,52 @@
 
 using namespace Prague;
 
-clock_t Stopwatch::ticks = 0;
+clock_t Stopwatch::_ticks = 0;
 
-/* @Method{Stopwatch::Stopwatch()}
- *
- * @Description{}
- */
 Stopwatch::Stopwatch()
-  : s(undef)
+  : _state(undef)
 {
-  if (!ticks) ticks = CLK_TCK;
+  if (!_ticks) _ticks = CLOCKS_PER_SEC;
   start();
 };
 
-/* @Method{void Stopwatch::start()}
- *
- * @Description{}
- */
 void Stopwatch::start()
 {
-  s = running;
+  _state = running;
   struct tms cpt;
-  realbegin = times(&cpt);
-  cpubegin  = cpt.tms_utime;
-  sysbegin  = cpt.tms_stime;
-  if (realbegin == -1) perror("Stopwatch::start");
+  _real.begin = times(&cpt);
+  _cpu.begin  = cpt.tms_utime;
+  _sys.begin  = cpt.tms_stime;
+  if (_real.begin == -1) perror("Stopwatch::start");
 };
 
-/* @Method{void Stopwatch::stop()}
- *
- * @Description{}
- */
 void Stopwatch::stop()
 {
-  s = stopped;
+  _state = stopped;
   struct tms cpt;
-  realend = times(&cpt);
-  cpuend  = cpt.tms_utime;
-  sysend  = cpt.tms_stime;
-  if (realend == -1) perror("Stopwatch::stop");
+  _real.end = times(&cpt);
+  _cpu.end  = cpt.tms_utime;
+  _sys.end  = cpt.tms_stime;
+  if (_real.end == -1) perror("Stopwatch::stop");
 };
 
-/* @Method{double Stopwatch::realStopwatch()}
- *
- * @Description{}
- */
-double Stopwatch::realTime()
+double Stopwatch::real_time()
 {
-  if (s == undef) cerr << "Stopwatch::realTime: no starting point set" << endl;
-  else if (s == running) stop();
-  return (double) (realend - realbegin)/ticks;
+  if (_state == undef) return 0.;
+  else if (_state == running) stop();
+  return (double) (_real.end - _real.begin)/_ticks;
 };
 
-/* @Method{double Stopwatch::cpuTime()}
- *
- * @Description{}
- */
-double Stopwatch::cpuTime()
+double Stopwatch::cpu_time()
 {
-  if (s == undef) cerr << "Stopwatch::cpuTime: no starting point set" << endl;
-  else if (s == running) stop();
-  return (double) (cpuend - cpubegin)/ticks;
+  if (_state == undef) return 0.;
+  else if (_state == running) stop();
+  return (double) (_cpu.end - _cpu.begin)/_ticks;
 };
 
-/* @Method{double Stopwatch::sysTime()}
- *
- * @Description{}
- */
-double Stopwatch::sysTime()
+double Stopwatch::sys_time()
 {
-  if (s == undef) cerr << "Stopwatch::sysTime: no starting point set" << endl;
-  else if (s == running) stop();
-  return (double) (sysend - sysbegin)/ticks;
+  if (_state == undef) return 0.;
+  else if (_state == running) stop();
+  return (double) (_sys.end - _sys.begin)/_ticks;
 };

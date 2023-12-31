@@ -1,7 +1,8 @@
-# $Id: Makefile,v 1.55 1999/11/16 02:35:41 stefan Exp $
+# Generated automatically from Makefile.in by configure.
+# $Id: Makefile.in,v 1.6 2000/12/14 15:28:19 stefan Exp $
 #
 # This source file is a part of the Berlin Project.
-# Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+# Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
 # http://www.berlin-consortium.org
 #
 # This library is free software; you can redistribute it and/or
@@ -21,28 +22,27 @@
 
 SHELL	= /bin/sh
 
-subdirs	= Sys Thread IPC Filter Network
+top_srcdir	:= /home/stefan/Berlin/Berlin
 
-all:
-	@for dir in ${subdirs}; do \
-	  (cd $$dir && $(MAKE)) \
-	  || case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
+subdirs		:= Sys Thread IPC Filter Network
+
+
+# Overridden by the clean-targets, allowing the same subdirs-rule to be used
+# for everything.
+action	:= all
+
+.PHONY: all $(subdirs) inverse
+.PHONY: depclean clean distclean maintainer-clean dist clean
+
+all:	$(subdirs)
+
+$(subdirs):
+	@echo making $(action) in $@
+	$(MAKE) -C $@ $(action)
 
 clean:
-	/bin/rm -f *~
-	@for dir in ${subdirs}; do \
-	  (cd $$dir && $(MAKE) clean) \
-	  || case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
+	$(MAKE) all action="clean"
 
 distclean:
-	@for dir in ${subdirs}; do \
-	  (cd $$dir && $(MAKE) distclean) \
-	  || case "$(MFLAGS)" in *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
-
-install:
-	@for dir in ${subdirs}; do \
-	  (cd $$dir && $(MAKE) install); \
-	done
+	$(MAKE) all action="distclean"
+	rm -f Makefile

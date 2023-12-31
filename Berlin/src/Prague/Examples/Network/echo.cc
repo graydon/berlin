@@ -7,12 +7,12 @@ int main (int argc, char **argv)
 {
   if (argc < 3)
     {
-      cerr << "Usage : " << argv[0] << " remote-host portno string...\n";
+      std::cerr << "Usage : " << argv[0] << " remote-host portno string...\n";
       return 1;
     }
   int portno = atoi (argv[2]);
   echo e(protocol::tcp);
-  cout << e->rfc_name() << ' ' << e->rfc_doc() << endl;
+  std::cout << e->rfc_name() << ' ' << e->rfc_doc() << std::endl;
   try
     {
       if (portno == 0) e->connect(argv[1]);
@@ -20,16 +20,16 @@ int main (int argc, char **argv)
     }
   catch (sockerr &se)
     {
-      cerr << "Error : " << se.errstr() << endl;
-      exit(0);
+      std::cerr << "Error : " << se.errstr() << std::endl;
+      return 0;
     }
   for (int i = 3; i < argc; i++)
     {
       char reply[256];
-      cout << "sending: " << argv[i] << endl;
-      e << argv[i] << endl;
+      std::cout << "sending: " << argv[i] << std::endl;
+      e << argv[i] << std::endl;
       e.getline(reply, 255);
-      cout << "got back: " << reply << endl;
+      std::cout << "got back: " << reply << std::endl;
     }
   return 0;
 }

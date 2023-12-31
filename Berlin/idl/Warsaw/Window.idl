@@ -1,0 +1,50 @@
+/*$Id: Window.idl,v 1.6 2000/09/19 21:11:02 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Window_idl
+#define _Warsaw_Window_idl
+
+#include <Warsaw/Controller.idl>
+#include <Warsaw/Stage.idl>
+
+module Warsaw
+{
+  interface Command;
+  
+  //. a Window is a top level controller, i.e. one which
+  //. is directly contained in the Desktop. It contains
+  //. methods to manipulate its position in the Desktop.
+  interface Window : Controller
+    {
+      const short left = 1;
+      const short right = 2;
+      const short top = 4;
+      const short bottom = 8;
+      
+      attribute Vertex position;
+      attribute Vertex size;
+      attribute Layout::Stage::Index layer;
+      attribute boolean mapped;
+    };
+  
+};
+
+#endif

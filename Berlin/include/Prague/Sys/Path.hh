@@ -1,7 +1,7 @@
-/*$Id: Path.hh,v 1.2 1999/04/27 20:11:11 gray Exp $
+/*$Id: Path.hh,v 1.8 2001/04/10 01:49:29 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,41 +19,60 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _Path_hh
-#define _Path_hh
+#ifndef _Prague_Path_hh
+#define _Prague_Path_hh
 
+#include <Prague/Sys/File.hh>
 #include <string>
 #include <vector>
 
 namespace Prague
 {
 
-/* @Class{Path}
- *
- * @Description{represents a search path for easy file look up}
- */
+//. Path implements the Unix Path functionality, i.e. file lookup.
 class Path
 {
-  typedef vector<string> rep_type;
-  typedef rep_type::iterator iterator;
+  typedef std::vector<std::string> rep_type;
+  struct Predicate { bool operator()(const std::string &name) { File file(name); return file.access() & File::ru;}};
 public:
-  struct predicate { virtual bool operator()(const string &name) const = 0;};
-  Path(char c = ':') : paths(0), separator(c) {}
-  Path(const string &, char c = ':');
-  ~Path();
-  void append(const string &path) { paths.push_back(path);}
-  string lookupFile(const string &, predicate * = 0) const;
-  static string expandUser(const string &);
-  iterator begin() { return paths.begin();}
-  iterator end() { return paths.end();}
-  size_t size() { return paths.size();}
-  const string &operator [] (size_t i) { return paths[i];}
-protected:
-  rep_type paths;
-  char separator;
+  typedef rep_type::iterator iterator;
+  //. construct an empty path
+  Path() {}
+  //. construct a list of directories, using the given separator to tokenize the string
+  Path(const std::string &path, char separator = ':');
+  ~Path() {}
+  //. append a directory
+  void append(const std::string &directory) { _directories.push_back(directory);}
+  //. look up a file, using the predicate functor, if non-zero
+//   template <typename Predicate = dummy_predicate>
+  std::string lookup_file(const std::string &) const;
+  //. expand a directory, if it is provided as '~joe/foo'
+  static std::string expand_user(const std::string &);
+  //. return begin iterator
+  iterator begin() { return _directories.begin();}
+  //. return end iterator
+  iterator end() { return _directories.end();}
+  //. return the size, i.e. the number of directories contained in the path
+  size_t size() { return _directories.size();}
+  //. return ith directory
+  const std::string &operator [] (size_t i) { return _directories[i];}
 private:
+  rep_type _directories;
+};
+
+// template <typename Predicate>
+inline std::string Path::lookup_file(const std::string &name) const
+{
+  if (name.empty() || name[0] == '/') return name;
+  Predicate predicate;
+  for (std::vector<std::string>::const_iterator i = _directories.begin(); i != _directories.end(); i++)
+    {
+      std::string result = *i + "/" + name;
+      if (predicate(result)) return result;
+    }
+  return std::string();
 };
 
 };
 
-#endif /* _Path_hh */
+#endif

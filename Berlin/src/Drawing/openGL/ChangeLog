@@ -1,3 +1,8 @@
+2000-02-05  graydon@pobox.com  <graydon@venge.net>
+
+	* 
+	
+
 1999-05-08  graydon@pobox.com  <graydon@pobox.com>
 
 	* Pointer.cc ("C"): fixed a bug which was causing overwrites of the

@@ -1,0 +1,10 @@
+#! /bin/sh
+
+module_name=Warsaw
+module_description="The Berlin Protocol"
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+module_includes="-I@includedir@ @CPPFLAGS@ @ORB_CPPFLAGS@"
+module_libdir="-L@libdir@"
+module_libs="-lWarsaw @LIBS@ @ORB_LIBS@"
+module_version="@SH_VERSION@"

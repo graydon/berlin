@@ -1,0 +1,124 @@
+/*$Id: Controller.idl,v 1.5 2000/09/19 21:11:01 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Controller_idl
+#define _Warsaw_Controller_idl
+
+#include <Warsaw/Graphic.idl>
+#include <Warsaw/Telltale.idl>
+#include <Warsaw/Input.idl>
+
+module Warsaw
+{
+  interface PickTraversal;
+  interface Focus;
+  interface Controller;
+  
+  //. A ControllerIterator is a reference to a controller within an composite controller
+  interface ControllerIterator
+    {
+      //. Return the child controller to which the iterator currently refers
+      Controller child();
+      //. Advance to the next child
+      void next();
+      //. Go back to the previous child
+      void prev();
+      //. Insert the given controller into the composite after the current iterator position
+      void insert(in Controller c);
+      //. Put the given controller in place of the controller at this position
+      //. The replace operation is equivalent to an atomic transaction
+      //. that removes the old controller and inserts the new one.
+      void replace(in Controller c);
+      //. Take the controller at the current position out of the composite.  The
+      //. iterator will now refer to the following controller. If the iterator
+      //. refers to the end of the composite, then this operation
+      //. will have no effect.
+      void remove();
+      //. destroy the iterator
+      void destroy();
+    };
+  //. The Controller interface defines the mechanisms for the logical
+  //. composition of user interface objects. Controller is a Graphic subtype
+  //. and can delegate the presentation and geometry of the
+  //. controller to another graphic using Graphic::body.
+  //.
+  //. A controller implementation should define the pick operation to be
+  //. opaque in the sense that the controller should appear as a leaf Graphic
+  //. relative to pick calls.  This approach hides the controller's
+  //. structure from surrounding objects.
+  //.
+  //. Unlike graphics, which may be organized with sharing to form
+  //. a directed-acyclic graph, controllers must be organized in
+  //. a strict hierarchy.  Using a hierarchy simplifies
+  //. input handling and focus management.
+  interface Controller : Graphic, Telltale
+    {
+      typedef ControllerIterator Iterator;
+      const Mask enabled = 0x1;
+      const Mask pressed = 0x2;
+      const Mask active  = 0x4;
+      const Mask toggled = 0x8;
+      const Mask running = 0x10;
+      const Mask stepping = 0x20;
+      //. These operations modify the controller hierarchy
+      //. adding a child at the beginning or end of this controller's
+      //. list of children.
+      void append_controller(in Controller c);
+      void prepend_controller(in Controller c);
+      void remove_controller(in Controller c);
+      void set_parent_controller(in Controller c);
+      void remove_parent_controller();
+      Controller parent_controller();
+      Iterator first_child_controller();
+      Iterator last_child_controller();
+      //. Ask for input focus.  Normally, a controller will call this
+      //. operation on its parent. The parent, in turn, may propagate
+      //. the call to its parent. The original caller passes
+      //. itself as the requestor, and the same requesting controller
+      //. is passed if the call is propagated.
+      boolean request_focus(in Controller c, in Input::Device d);
+      //. Notify a controller that it has acquired input focus.
+      //. The operation returns whether the controller accepts
+      //. the input focus. If the controller does accept, then
+      //. it should perform the appropriate operations
+      //. on the focus object, such as installing key translations.
+      boolean receive_focus(in Focus f);
+      //. Notify a controller that it is losing input focus.
+      void lose_focus(in Input::Device d);
+      //. These operations ask that this controller "move" the input
+      //. focus inside itself, such as navigating through the children
+      //. in the hierarchy. The first_focus and last_focus
+      //. operations ask focus to enter the controller at the beginning
+      //. or end, respectively. The next_focus and prev_focus
+      //. operations ask to move focus to the right or left sibling,
+      //. respectively.
+      boolean first_focus(in Input::Device d);
+      boolean last_focus(in Input::Device d);
+      boolean next_focus(in Input::Device d);
+      boolean prev_focus(in Input::Device d);
+      //. used for event dispatching. If this Controller holds the focus
+      //. for a given device, it will reveice events associated with it
+      boolean handle_positional(in PickTraversal t, in Input::Event e);
+      boolean handle_non_positional(in Input::Event e);
+    };
+};
+
+#endif

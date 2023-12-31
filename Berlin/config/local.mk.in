@@ -1,7 +1,8 @@
-# $Id: local.mk.in,v 1.5 1999/11/26 18:29:40 graydon Exp $
+# @configure_input@
+# $Id: local.mk.in,v 1.13 2000/11/08 20:59:34 stefan Exp $
 #
 # This source file is a part of the Berlin Project.
-# Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+# Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
 # http://www.berlin-consortium.org
 #
 # This library is free software; you can redistribute it and/or
@@ -19,45 +20,48 @@
 # Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
 # MA 02139, USA.
 
-# Places to install libraries, binaries, etc.
-prefix		= @prefix@
-bindir		= $$DESTDIR$(prefix)/bin
-libdir		= $$DESTDIR$(prefix)/lib
-includedir	= $$DESTDIR$(prefix)/include
-moddir		= $$DESTDIR$(prefix)/lib/Berlin
-confdir		= $$DESTDIR/etc
+# This file defines common variables for the entire source tree.
+# It requires the variable $(top) to be set to the path of Berlin's
+# root directory in the including Makefile.
+#
+# ALL Makefiles should include this file near the beginning, because a lot
+# of variables are initialized here. After that, the variables CPPFLAGS and
+# DEPFLAGS should only be appended to.
 
-# Various programs used in compilation and running of the programs.
-@SET_MAKE@
-IDL		= @IDL@
-CXX		= @CXX@
-AR		= @AR@
-YACC		= @YACC@
-FLEX		= @LEX@
-INSTALL		= @INSTALL@
-LD		= @LD@
-RANLIB		= @RANLIB@
+# Places to install libraries, binaries, etc, from Autoconf's info page
+prefix		:= @prefix@
+exec_prefix	:= @exec_prefix@
+bindir		:= @bindir@
+sbindir		:= @sbindir@
+libexecdir	:= @libexecdir@
+datadir		:= @datadir@
+sysconfdir	:= @sysconfdir@
+sharedstatedir	:= @sharedstatedir@
+localstatedir	:= @localstatedir@
+libdir		:= @libdir@
+includedir	:= @includedir@
+oldincludedir	:= @oldincludedir@
+infodir		:= @infodir@
+mandir		:= @mandir@
 
-# Compilation and linking flags.
-IDLFLAGS	= @IDLFLAGS@
-LCIDLFLAGS	= @LCIDLFLAGS@
-DYNIDLFLAGS	= @DYNIDLFLAGS@
-ORBFLAGS	= @ORBFLAGS@
-ORBCPPFLAGS	= @ORBCPPFLAGS@
-ORBOPTFLAGS	= -fno-default-inline -fomit-frame-pointer -fnonnull-objects
-ORBLIBS		= @ORBLIBS@
+# Where the different parts of the source tree are located
+top_srcdir	:= @topdir@
 
-GGI_INCLUDES	= @GGI_INCLUDES@
-GGI_LIBS	= @GGI_LIBS@
+# Where to put the target files
+bdir		:= $(builddir)/bin
+ldir		:= $(builddir)/lib
+mdir		:= $(builddir)/modules
 
-GL_INCLUDES	= @GL_INCLUDES@
-GL_LIBS		= @GL_LIBS@
+# Programs -- should perhaps add checks for them in configure.in
+SHELL		:= /bin/sh
 
-OPTFLAGS	= -O3
-SOFLAGS		= -fpic
-GDBFLAGS	= -ggdb -DGDB
-PROFILEFLAGS	= -pg -Winline 
-CFLAGS	   	= -pthread -Wall -Dprofile $(OPTFLAGS)
-CXXFLAGS   	= -pthread -Wall -Dprofile $(OPTFLAGS)
-LDFLAGS    	=
-LIBS		= -lpthread
+# Compiler and linker flags used when building a shared library.
+SO_CXXFLAGS	:= @SO_CXXFLAGS@
+SO_LDFLAGS	:= @SO_LDFLAGS@
+
+# Various global flags
+CPPFLAGS	:= -I$(builddir)/include -I$(top_srcdir)/include
+DEPFLAGS	:= @DEPFLAGS@
+CFLAGS		:= @CFLAGS@
+CXXFLAGS	:= @CXXFLAGS@
+LIBS		:= -L$(ldir)

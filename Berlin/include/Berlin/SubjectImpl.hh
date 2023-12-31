@@ -1,7 +1,7 @@
-/*$Id: SubjectImpl.hh,v 1.10 1999/09/30 17:23:33 gray Exp $
+/*$Id: SubjectImpl.hh,v 1.19 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,25 +22,31 @@
 #ifndef _SubjectImpl_hh
 #define _SubjectImpl_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/Subject.hh"
-#include "Prague/Sys/Thread.hh"
-#include <list>
+#include <Warsaw/config.hh>
+#include <Warsaw/Subject.hh>
+#include <Warsaw/Observer.hh>
+#include <Prague/Sys/Thread.hh>
+#include "Berlin/RefCountBaseImpl.hh"
+#include "Berlin/IdentifiableImpl.hh"
+#include <vector>
 
-class SubjectImpl : implements(Subject)
+class SubjectImpl : public virtual POA_Warsaw::Subject,
+		    public virtual RefCountBaseImpl,
+                    public virtual IdentifiableImpl
 {
+  typedef std::vector<Warsaw::Observer_var> olist_t;
 public:
   SubjectImpl();
-  void attach(Observer_ptr);
-  void detach(Observer_ptr);
+  void attach(Warsaw::Observer_ptr);
+  void detach(Warsaw::Observer_ptr);
   void notify(const CORBA::Any &);
   virtual void notify();
-  void block(CORBA::Boolean b);  
-protected:
-  list<Observer_var> observers;
-  CORBA::Boolean blocked;
-  Prague::Mutex observerMutex;
-  Prague::Mutex myMutex;
+  void block(CORBA::Boolean);  
+private:
+  olist_t        _observers;
+  CORBA::Boolean _blocked;
+  Prague::Mutex  _mutex;
+  Prague::Mutex  _observerMutex;
 };
 
-#endif /* _SubjectImpl_hh */
+#endif 

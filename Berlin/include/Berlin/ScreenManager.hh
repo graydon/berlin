@@ -1,7 +1,8 @@
-/*$Id: ScreenManager.hh,v 1.10 1999/09/30 17:23:33 gray Exp $
+/*$Id: ScreenManager.hh,v 1.21 2001/02/03 17:21:03 tobias Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * Copyright (C) 2000 Graydon Hoare <graydon@pobox.com> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,43 +23,38 @@
 #ifndef _ScreenManager_hh
 #define _ScreenManager_hh
 
-#include "Warsaw/config.hh"
-
-extern "C" {
-#include <ggi/ggi.h>
-}
-
-#include "Warsaw/Region.hh"
-#include "Warsaw/Event.hh"
-#include "Prague/Sys/Thread.hh"
+#include <Prague/Sys/Thread.hh>
+#include <Warsaw/config.hh>
+#include <Warsaw/Region.hh>
+#include <Warsaw/Graphic.hh>
+#include <Warsaw/Input.hh>
+#include <Warsaw/DrawingKit.hh>
+#include <Berlin/ImplVar.hh>
+#include <Berlin/Console.hh>
+#include <Berlin/EventManager.hh>
+#include <Berlin/DrawTraversalImpl.hh>
 #include <vector>
 
-class GLDrawingKit;
-class Pointer;
-class ScreenImpl;
-class EventManager;
 class RegionImpl;
 
 class ScreenManager
 {
-  typedef vector<RegionImpl *> dlist_t;
 public:
-  ScreenManager(ScreenImpl *, EventManager *, GLDrawingKit *);
-  ~ScreenManager();
-  void damage(Region_ptr);
-  void repair();
-  void nextEvent();
-  void run();
+    ScreenManager(Warsaw::Graphic_ptr, EventManager *, Warsaw::DrawingKit_ptr);
+    ~ScreenManager();
+    void damage(Warsaw::Region_ptr);
+    void repair();
+    //. Main event loop.
+    void run();
 private:
-  long ptrPositionX;
-  long ptrPositionY;
-  ScreenImpl *screen;
-  EventManager *emanager;
-  GLDrawingKit *drawing;
-  Pointer *pointer;
-  ggi_visual_t visual;
-  dlist_t damages;
-  Prague::Mutex mutex;
+    Warsaw::Graphic_var         _screen;
+    EventManager               *_emanager;
+    Warsaw::DrawingKit_var      _drawing;
+    Console::Drawable          *_drawable;
+    Impl_var<RegionImpl>        _theDamage;
+    Impl_var<RegionImpl>        _tmpDamage;
+    Impl_var<DrawTraversalImpl> _traversal;
+    Prague::Mutex               _mutex;
 };
 
-#endif /* _ScreenManager_hh */
+#endif

@@ -1,13 +1,8 @@
-/*$Id: Allocator.hh,v 1.7 1999/10/13 21:32:31 gray Exp $
+/*$Id: Allocator.hh,v 1.13 2000/09/19 21:11:02 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on code from Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,45 +22,58 @@
 #ifndef _Allocator_hh
 #define _Allocator_hh
 
-#include <Berlin/MonoGraphic.hh>
 #include <Berlin/ImplVar.hh>
+#include <Berlin/MonoGraphic.hh>
 
+//. An Allocator is a graphic that always gives its child
+//. an allocation that matches the child's requisition.
+//. This functionality is useful as a gateway between
+//. figure objects, which ignore their allocation, and
+//. layout objects.
 class Allocator : public MonoGraphic
 {
 public:
   Allocator();
   virtual ~Allocator();
 
-  virtual void request(Requisition &);
+  virtual void request(Warsaw::Graphic::Requisition &);
 
-  virtual void traverse(Traversal_ptr);
+  virtual void traverse(Warsaw::Traversal_ptr);
 
-  virtual void allocate(Tag, const Allocation::Info &);
-  virtual void needResize();
-protected:
-  bool requested;
-  Graphic::Requisition requisition;
-  Impl_var<RegionImpl> natural;
-  Impl_var<RegionImpl> extension;
+  virtual void allocate(Warsaw::Tag, const Warsaw::Allocation::Info &);
+  virtual void need_resize();
+// private:
+  bool _requested : 1;
+  bool _allocated : 1;
+  Warsaw::Graphic::Requisition _requisition;
+  Impl_var<RegionImpl> _natural;
+  Impl_var<RegionImpl> _extension;
   
-  void updateRequisition();
-  void needDamage(RegionImpl *, Allocation_ptr);
+  void cache_requisition();
+  void cache_allocation();
+  void need_damage(RegionImpl *, Warsaw::Allocation_ptr);
+  static void natural_allocation(const Warsaw::Graphic::Requisition &, RegionImpl &);
 };
 
 class TransformAllocator : public Allocator
+//. A TransformAllocator maps its allocate to a translation
+//. during traversal and always gives its child the child's
+//. natural allocation.  This functionality is useful
+//. as a gateway between layout objects and figure objects
+//. (which ignore their allocation).
 {
 public:
-  TransformAllocator(Alignment, Alignment, Alignment, Alignment, Alignment, Alignment);
+  TransformAllocator(Warsaw::Alignment, Warsaw::Alignment, Warsaw::Alignment, Warsaw::Alignment, Warsaw::Alignment, Warsaw::Alignment);
   ~TransformAllocator();
 
-  virtual void request(Requisition &);
-  virtual void traverse(Traversal_ptr);
-  virtual void allocate(Tag, const Allocation::Info &);
+  virtual void request(Warsaw::Graphic::Requisition &);
+  virtual void traverse(Warsaw::Traversal_ptr);
+  virtual void allocate(Warsaw::Tag, const Warsaw::Allocation::Info &);
 protected:
-  Alignment xparent, yparent, zparent;
-  Alignment xchild, ychild, zchild;
+  Warsaw::Alignment _xparent, _yparent, _zparent;
+  Warsaw::Alignment _xchild, _ychild, _zchild;
 
-  void computeDelta(const Vertex &, const Vertex &, Vertex &);
+  void compute_delta(const Warsaw::Vertex &, const Warsaw::Vertex &, Warsaw::Vertex &);
 };
 
-#endif /* _Allocator_hh */
+#endif 

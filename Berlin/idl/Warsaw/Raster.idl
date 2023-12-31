@@ -1,0 +1,74 @@
+/*$Id: Raster.idl,v 1.5 2000/09/19 21:11:02 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Brent Fulgham <bfulgham@debian.org>
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org>
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Raster_idl
+#define _Warsaw_Raster_idl
+
+#include <Warsaw/Types.idl>
+#include <Warsaw/Subject.idl>
+
+module Warsaw
+{
+  //. A raster is a two-dimensional pixel array
+  //. Raster is based on the W3C PNG specs, see
+  //. <http://www.w3.org/TR/REC-png> for details
+  interface Raster : Subject
+    {
+      struct Info
+	//. the image header (IHDR chunk)
+      {
+	unsigned long  width;       // 4 bytes
+	unsigned long  height;      // 4 bytes
+	unsigned short depth;       // 1 byte
+	unsigned short colortype;   // 1 byte
+	unsigned short compression; // 1 byte
+	unsigned short filter;      // 1 byte
+	unsigned short interlace;   // 1 byte
+      };
+      typedef sequence<octet> Data;
+      struct Index { unsigned long x, y;};
+      typedef sequence<Color> ColorSeq;
+      
+      //. access the header information (the PNG IHDR chunk)
+      Info header();
+      
+      //. clear the Raster
+      void clear();
+      
+      //. these methods are suitable to transfer the Raster.
+      //. the used format follows the PNG specs
+      void load_data(in Data d);
+      void store_data(out Data d);
+      
+      //. access and modify individual pixel values
+      void load_pixel(in Index i, in Color c);
+      void store_pixel(in Index i, out Color c);
+      
+      //. access and modify ranges of pixels.
+      //. the length of the ColorSeq in load_pixels must at least correspond 
+      //. to the given width times the given height
+      void load_pixels(in Index lower, in Index upper, in ColorSeq s);
+      void store_pixels(in Index lower, in Index upper, out ColorSeq s);
+    };
+};
+
+#endif

@@ -1,0 +1,125 @@
+# $Id: Makefile.in,v 1.4 2001/01/09 21:35:10 tobias Exp $
+#
+# This source file is a part of the Berlin Project.
+# Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+# http://www.berlin-consortium.org
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+SHELL		:= /bin/sh
+VERSION		:= @VERSION@
+
+top_srcdir	:= @topdir@
+srcdir		:= $(top_srcdir)/src/Prague
+builddir	:= ../..
+cdir		:= $(builddir)/config
+hdir		:= $(top_srcdir)/include
+bdir		:= $(builddir)/bin
+
+define makedep
+@echo generating dependencies for $(<F)
+$(SHELL) -ec '$(CXX) $(DEPFLAGS) $(CPPFLAGS) $< | sed "s/$*\\.o[ :]*/$*\\.d $*\\.o : /g" > $@'
+endef
+
+define compile
+@echo compiling $(@F)
+$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OPTFLAGS) $(SOFLAGS) -c $< -o $@
+endef
+
+include $(cdir)/local.mk
+
+CPPFLAGS	+= @CPPFLAGS@
+CXXFLAGS	+= $(SO_CXXFLAGS)
+LDFLAGS		+= $(SO_LDFLAGS)
+LIBS		+= @LIBS@
+
+Sys		:= logbuf.cc Tracer.cc regex.cc User.cc Stopwatch.cc Profiler.cc Time.cc \
+	  	   File.cc Directory.cc Path.cc GetOpt.cc DataTypeManager.cc \
+	  	   DLL.cc MMap.cc SHM.cc Thread.cc Timer.cc Signal.cc Fork.cc
+IPC		:= ipcbuf.cc pipebuf.cc sockbuf.cc ptybuf.cc mmapbuf.cc \
+	  	   Agent.cc Dispatcher.cc Coprocess.cc PipeAgent.cc TTYAgent.cc SocketAgent.cc
+Filter		:= gzbuf.cc# xdrbuf.cc #bzbuf.cc 
+Network		:= protocol.cc echo.cc ftp.cc smtp.cc url.cc
+SAX		:= AttributeListImpl.cc ParserImpl.cc
+
+SRC		:= $(patsubst %, Sys/%, $(Sys))
+SRC		+= $(patsubst %, IPC/%, $(IPC))
+SRC		+= $(patsubst %, Filter/%, $(Filter))
+SRC		+= $(patsubst %, Network/%, $(Network))
+#SRC		+= $(patsubst %, SAX/%, $(SAX))
+DEP		:= $(patsubst %.cc, %.d, $(notdir $(SRC)))
+OBJ		:= $(patsubst %.cc, %.o, $(notdir $(SRC)))
+
+TARGET		:= $(ldir)/libPrague.so
+#EXPAT		:= $(ldir)/libexpat.so
+
+vpath %.hh  $(hdir)/Prague/Sys $(hdir)/Prague/IPC $(hdir)/Prague/Filter $(hdir)/Prague/Network # $(hdir)/Prague/SAX
+
+.PHONY: clean distclean maintainer-clean dist install
+
+all:	$(TARGET)
+
+$(TARGET):	$(EXPAT) $(OBJ)
+		@echo linking $(@F)
+		$(CXX) $(LDFLAGS) -o $@ $(OBJ) $(LIBS) -lz
+
+$(EXPAT):
+		cd SAX/expat; $(MAKE);
+
+install:
+		$(INSTALL) -m755 $(EXPAT) $(libdir)
+		$(INSTALL) -m755 $(TARGET) $(libdir)
+		$(INSTALL) -m755 $(bdir)/Prague-config $(bindir)
+
+clean:	
+		rm -f $(TARGET)
+		rm -f *.o *.d
+#		cd SAX/expat; $(MAKE) clean;
+#		cd Examples; $(MAKE) clean;
+
+distclean:	clean
+		rm -f Makefile $(hdir)/Prague/config.hh $(cdir)/Prague/subdirs.mk \
+			$(cdir)/Prague/config.log $(cdir)/Prague/config.status \
+			$(bdir)/Prague-config
+#		cd Examples; $(MAKE) distclean
+
+maintainer-clean: distclean
+		rm -f $(top_srcdir)/config/Prague/configure $(top_srcdir)/config/Prague/config.hh.in \
+			$(top_srcdir)/config/Prague/aclocal.m4
+
+%.d:	$(srcdir)/Sys/%.cc $(hdir)/Prague/Sys/%.hh
+	$(makedep)
+%.d:	$(srcdir)/IPC/%.cc $(hdir)/Prague/IPC/%.hh
+	$(makedep)
+%.d:	$(srcdir)/Filter/%.cc $(hdir)/Prague/Filter/%.hh
+	$(makedep)
+%.d:	$(srcdir)/Network/%.cc $(hdir)/Prague/Network/%.hh
+	$(makedep)
+%.o:	$(srcdir)/Sys/%.cc
+	$(compile)
+DataTypeManager.o:	$(srcdir)/Sys/DataTypeManager.cc
+	@echo compiling $(@F)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OPTFLAGS) $(SOFLAGS) -ftemplate-depth-23 -c $< -o $@
+%.o:	$(srcdir)/IPC/%.cc
+	$(compile)
+%.o:	$(srcdir)/Filter/%.cc
+	$(compile)
+%.o:	$(srcdir)/Network/%.cc
+	$(compile)
+
+ifeq (,$(findstring $(MAKECMDGOALS), clean distclean maintainer-clean))
+-include $(DEP)
+endif

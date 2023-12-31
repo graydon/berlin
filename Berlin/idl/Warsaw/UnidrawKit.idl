@@ -1,0 +1,81 @@
+/*$Id: UnidrawKit.idl,v 1.5 2000/12/21 21:05:43 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+
+#ifndef _UnidrawKit_idl
+#define _UnidrawKit_idl
+
+#include <Warsaw/Controller.idl>
+#include <Warsaw/Subject.idl>
+#include <Warsaw/Command.idl>
+#include <Warsaw/Kit.idl>
+
+module Unidraw
+{
+  interface View;
+  interface Model : Warsaw::RefCountBase
+    {
+      View create_view();
+    };
+  interface View : Warsaw::Controller
+    {
+      // add attributes to indicate selection, highlighting, etc.
+      readonly attribute Model subject;
+    };
+  interface Command
+    {
+      void execute();
+      // memento protocol...
+      void store(in Model m, in any a);
+      any recall(in Model m);
+      void destroy();
+    };
+//   interface Manipulator
+//     {
+//       boolean grasp(in Warsaw::PickTraversal t, in Warsaw::Input::Event e);
+//       boolean manipulate(in Warsaw::PickTraversal t, in Warsaw::Input::Event e);
+//       void effect(in Warsaw::PickTraversal t, in Warsaw::Input::Event e);
+//       void destroy();
+//     };
+  interface Tool : Warsaw::RefCountBase
+    {
+      boolean grasp(in Warsaw::Controller c, in Warsaw::PickTraversal t, in Warsaw::Input::Event e);
+      boolean manipulate(in Warsaw::PickTraversal t, in Warsaw::Input::Event e);
+      Command effect(in Warsaw::PickTraversal t, in Warsaw::Input::Event e);
+//       Manipulator create_manipulator(in Warsaw::Controller c, in Warsaw::PickTraversal t, in Warsaw::Input::Event e);
+//       Command interpret_manipulator(in Manipulator m);
+    };
+  interface Editor : Warsaw::RefCountBase
+    {
+      void append_tool(in Tool t, in Warsaw::Graphic g);
+      attribute Tool current_tool;
+      Warsaw::Controller create_viewer(in Model m, in Warsaw::Coord width, in Warsaw::Coord height);
+      Warsaw::Controller toolbar();
+    };
+  interface UnidrawKit : Warsaw::Kit
+    {
+      Tool   select_tool();
+      Editor create_editor();
+      View   create_view(in Warsaw::Graphic g, in Model m);
+    };
+};
+
+#endif

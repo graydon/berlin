@@ -1,8 +1,0 @@
-#ifndef __NOTMYCHILDEXCEPTION__
-#define __NOTMYCHILDEXCEPTION__
-
-// module DOM {	
-  exception NotMyChildException {};
-// };
-
-#endif

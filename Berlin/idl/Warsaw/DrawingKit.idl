@@ -1,0 +1,123 @@
+/*$Id: DrawingKit.idl,v 1.12 2000/10/31 18:15:28 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_DrawingKit_idl
+#define _Warsaw_DrawingKit_idl
+
+#include <Warsaw/Kit.idl>
+#include <Warsaw/Graphic.idl>
+
+module Warsaw
+{
+  interface Transform;
+  interface Region;
+  interface Raster;
+  interface Drawable;
+  interface DrawingKit3D;
+  
+  interface DrawingKit : Kit
+    {
+      //.all values are in 1/64th of a pixel
+      struct FontMetrics
+      {
+	long ascender;      /* ascender in 26.6 frac. pixels          */
+	long descender;     /* descender in 26.6 frac. pixels         */
+	long height;        /* text height in 26.6 frac. pixels       */
+	long max_advance;   /* max horizontal advance, in 26.6 pixels */
+      };
+      //.all values are in 1/64th of a pixel
+      struct GlyphMetrics
+      {
+	long width;         /* glyph width  */
+	long height;        /* glyph height */
+	long horiBearingX;  /* left side bearing in horizontal layouts */
+	long horiBearingY;  /* top side bearing in horizontal layouts  */
+	long horiAdvance;   /* advance width for horizontal layout     */
+	long vertBearingX;  /* left side bearing in vertical layouts */
+	long vertBearingY;  /* top side bearing in vertical layouts  */
+	long vertAdvance;   /* advance height for vertical layout    */
+      };
+      //.matrix to derive arbitrary quadrics from circle segments
+      typedef Coord Quadric[3][3];
+      
+      enum Endstyle { butt, cap, round};
+      enum Fillstyle { outlined, solid, textured, gradient};
+      
+      void save();
+      void restore();
+      
+      // general drawing state
+      attribute Transform transformation;
+      attribute Region clipping;
+      attribute Color foreground;
+      attribute Color lighting;
+      attribute Coord point_size;
+      attribute Coord line_width;
+      attribute Endstyle line_endstyle;
+      attribute Fillstyle surface_fillstyle;
+      attribute Raster texture;
+      
+      // font state
+      attribute unsigned long font_size;
+      attribute unsigned long font_weight;
+      attribute Unistring font_family;
+      attribute Unistring font_subfamily;
+      attribute Unistring font_fullname;
+      attribute Unistring font_style;
+      
+      // detailed font state
+      readonly attribute FontMetrics font_metrics;
+      GlyphMetrics glyph_metrics(in Unichar uc);
+      void font_attribute(in NVPair nvp);
+      any get_font_attribute(in Unistring name);
+      
+      // imperative commands
+      Coord resolution(in Axis a);
+      void draw_path(in Path p);
+      //   void drawPatch(in Patch p);
+      void draw_rectangle(in Vertex lower, in Vertex upper);
+      void draw_quadric(in Quadric q, in Coord begin, in Coord end);
+      void draw_ellipse(in Vertex lower, in Vertex upper);
+      void draw_image(in Raster r);
+      
+      void draw_text(in Unistring s);
+      void allocate_text(in Unistring s, inout Graphic::Requisition req);
+      void draw_char(in Unichar c);
+      void allocate_char(in Unichar c, inout Graphic::Requisition req);
+      
+      void copy_drawable(in Drawable d, in PixelCoord x, in PixelCoord y, in PixelCoord w, in PixelCoord h);
+      //. Initialize drawing kit for a rendering pass. Called before
+      //. each pass.
+      void init();
+      
+      //. Finish the rendering pass. Called after each pass.
+      void finish();
+      
+      //. Flush the drawing kit.
+      void flush();
+
+      //. 3D drawing extensions
+      readonly attribute DrawingKit3D dk3D;
+    };
+};
+
+#endif

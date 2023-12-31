@@ -1,7 +1,7 @@
-/*$Id: Timer.hh,v 1.7 1999/09/30 17:23:33 gray Exp $
+/*$Id: Timer.hh,v 1.9 2001/03/21 06:28:22 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -48,7 +48,7 @@ private:
   static void expire();
   static void schedule(Timer *);
   static void cancel(Timer *);
-  static vector<Timer *> timers;
+  static std::vector<Timer *> timers;
   static Thread server;
   static Mutex mutex;
   static Condition condition;

@@ -1,7 +1,7 @@
-/*$Id: PickTraversalImpl.hh,v 1.17 1999/11/06 20:23:07 stefan Exp $
+/*$Id: PickTraversalImpl.hh,v 1.29 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
  * http://www.berlin-consortium.org
  *
@@ -23,77 +23,89 @@
 #ifndef _PickTraversalImpl_hh
 #define _PickTraversalImpl_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/Event.hh"
-#include "Warsaw/Controller.hh"
-#include "Warsaw/PickTraversal.hh"
-#include "Warsaw/Transform.hh"
-#include "Warsaw/Focus.hh"
-#include "Berlin/TraversalImpl.hh"
-#include "Berlin/RegionImpl.hh"
-#include "Berlin/Logger.hh"
-#include "Berlin/Vertex.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/Input.hh>
+#include <Warsaw/Controller.hh>
+#include <Warsaw/PickTraversal.hh>
+#include <Warsaw/Transform.hh>
+#include <Berlin/TraversalImpl.hh>
+#include <Berlin/RegionImpl.hh>
+#include <Berlin/Vertex.hh>
+#include <Prague/Sys/Tracer.hh>
 
-class PickTraversalImpl : implements(PickTraversal), public TraversalImpl
+class PositionalFocus;
+
+class PickTraversalImpl : public virtual POA_Warsaw::PickTraversal,
+                          public TraversalImpl
 {
-  typedef vector<Controller_var> cstack_t;
-  typedef vector<size_t> pstack_t;
- public:
-  PickTraversalImpl(Graphic_ptr, Region_ptr, Transform_ptr, const Event::Pointer &, Focus_ptr);
-  //. to be used when starting from root level
-  ~PickTraversalImpl();
-  void visit(Graphic_ptr g) { g->pick(PickTraversal_var(_this()));}
-  order direction() { return down;}
-  CORBA::Boolean ok() { return !mem;}
-  CORBA::Boolean intersectsAllocation();
-  CORBA::Boolean intersectsRegion(Region_ptr);
-  void enterController(Controller_ptr);
-  void leaveController();
-  void hit();
-  void popController();
-  CORBA::Boolean picked() { return mem;}
-  void grab() { focus->grab();}
-  void ungrab() { focus->ungrab();}
-
-  Controller_ptr topController();
-  const vector<Controller_var> &controllerStack() const { return controllers;}
-  PickTraversalImpl   *memento() { PickTraversalImpl *m = mem; mem = 0; return m;}
-  void reset(const Event::Pointer &);
-  void debug();
- private:
+  typedef std::vector<Warsaw::Controller_var> cstack_t;
+  typedef std::vector<size_t> pstack_t;
+public:
+  PickTraversalImpl(Warsaw::Graphic_ptr, Warsaw::Region_ptr, Warsaw::Transform_ptr, PositionalFocus *);
   PickTraversalImpl(const PickTraversalImpl &);
-  //. to be used to create the memento
-  cstack_t           controllers;
-  pstack_t           positions;
-  Event::Pointer     pointer;
-  Focus_var          focus;
-  PickTraversalImpl *mem;
+  ~PickTraversalImpl();
+  PickTraversalImpl &operator = (const PickTraversalImpl &);
+  virtual Warsaw::PickTraversal_ptr _this();
+  virtual Warsaw::Region_ptr current_allocation();
+  virtual Warsaw::Transform_ptr current_transformation();
+  virtual Warsaw::Graphic_ptr current_graphic();
+  virtual void traverse_child(Warsaw::Graphic_ptr, Warsaw::Tag, Warsaw::Region_ptr, Warsaw::Transform_ptr);
+  virtual void visit(Warsaw::Graphic_ptr);
+  virtual Warsaw::Traversal::order direction();
+  virtual CORBA::Boolean ok();
+  virtual CORBA::Boolean intersects_allocation();
+//   virtual CORBA::Boolean intersects_region(Warsaw::Region_ptr) = 0;
+  virtual void enter_controller(Warsaw::Controller_ptr);
+  virtual void leave_controller();
+  virtual void hit() = 0;
+  virtual CORBA::Boolean picked() = 0;
+  virtual Warsaw::Focus_ptr get_focus();
+  virtual CORBA::Boolean forward();
+  virtual CORBA::Boolean backward();
+
+  void pop_controller();
+  Warsaw::Controller_ptr top_controller();
+  const std::vector<Warsaw::Controller_var> &controllers() const { return _controllers;}
+  void reinit();
+protected:
+  size_t current() const { return _cursor;}
+private:
+  cstack_t                   _controllers;
+  pstack_t                   _positions;
+  PositionalFocus           *_focus;
+  size_t                     _cursor;
+  Warsaw::PickTraversal_var __this;
 };
 
-inline void PickTraversalImpl::popController()
 //. remove one controller level from the top, it might have got out of scope
+inline void PickTraversalImpl::pop_controller()
 {
-  SectionLog log("PickTraversal::popController");
-  if (controllers.size())
+  Prague::Trace trace("PickTraversal::pop_controller");
+  if (_controllers.size())
     {
-      while (size() > positions.back()) pop();
-      controllers.pop_back();
-      positions.pop_back();
+      while (size() > _positions.back()) pop();
+      _cursor = size() - 1;
+      _controllers.pop_back();
+      _positions.pop_back();
     }
 }
 
-inline Controller_ptr PickTraversalImpl::topController()
+inline void PickTraversalImpl::reinit()
 {
-  return controllers.size() ? Controller::_duplicate(controllers.back()) : Controller::_nil();
+  Prague::Trace trace("PickTraversal::reinit");
+  _controllers.clear();
+  _positions.clear();
+  while (size() > 1)
+    {
+      Lease_var<TransformImpl> trafo(get_transformation(size() - 1));
+      pop();
+    }
+  _cursor = 0;
 }
 
-inline void PickTraversalImpl::reset(const Event::Pointer &p)
-//. pop all graphics up to the top most controller and set the pointer
-//. so the traversal can be used to start over directly at the top
+inline Warsaw::Controller_ptr PickTraversalImpl::top_controller()
 {
-  SectionLog log("PickTraversal::reset");
-  popController();
-  pointer = p;
+  return _controllers.size() ? Warsaw::Controller::_duplicate(_controllers.back()) : Warsaw::Controller::_nil();
 }
 
-#endif /* _PickTraversalImpl_hh */
+#endif 

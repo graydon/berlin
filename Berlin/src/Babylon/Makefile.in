@@ -1,0 +1,95 @@
+# $Id: Makefile.in,v 1.3 2000/11/23 15:29:46 tobias Exp $
+#
+# This source file is a part of the Berlin Project.
+# Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+# http://www.berlin-consortium.org
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+SHELL		:= /bin/sh
+VERSION		:= @VERSION@
+
+top_srcdir	:= @topdir@
+srcdir		:= $(top_srcdir)/src/Babylon
+builddir	:= ../..
+cdir		:= $(builddir)/config
+hdir		:= $(top_srcdir)/include
+bdir		:= $(builddir)/bin
+
+define makedep
+@echo generating dependencies for $(<F)
+$(SHELL) -ec '$(CXX) $(DEPFLAGS) $(CPPFLAGS) $< | sed "s/$*\\.o[ :]*/$*\\.d $*\\.o : /g" > $@'
+endef
+
+define compile
+@echo compiling $(@F)
+$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OPTFLAGS) $(SOFLAGS) -c $< -o $@
+endef
+
+include $(cdir)/local.mk
+
+CPPFLAGS	+= @CPPFLAGS@
+CXXFLAGS	+= $(SO_CXXFLAGS)
+LDFLAGS		+= $(SO_LDFLAGS)
+LIBS		+= @LIBS@
+
+BABYLON		:= String.cc Char.cc Dictionary.cc # utils.cc
+
+SRC		:= $(patsubst %, %, $(BABYLON))
+
+DEP		:= $(patsubst %.cc, %.d, $(notdir $(SRC)))
+OBJ		:= $(patsubst %.cc, %.o, $(notdir $(SRC)))
+
+TARGET		:= $(ldir)/libBabylon.so
+
+vpath %.hh  $(hdir)/Babylon
+
+.PHONY: clean distclean maintainer-clean dist install
+
+all:	$(TARGET)
+	cd blocks; $(MAKE)
+
+$(TARGET):	$(OBJ)
+		@echo linking $(@F)
+		$(CXX) $(LDFLAGS) -o $@ $(OBJ) $(LIBS)
+
+install:
+		$(INSTALL) -m755 $(TARGET) $(libdir)
+		$(INSTALL) -m755 $(bdir)/Babylon-config $(bindir)
+
+clean:	
+		rm -f $(TARGET)
+		rm -f *.o *.d
+		cd blocks; $(MAKE) clean;
+
+distclean:	clean
+		rm -f Makefile $(hdir)/Babylon/config.hh $(cdir)/Babylon/subdirs.mk \
+			$(cdir)/Babylon/config.log $(cdir)/Babylon/config.status \
+			$(bdir)/Babylon-config
+		cd blocks; $(MAKE) distclean;
+
+maintainer-clean: distclean
+		rm -f $(top_srcdir)/config/Babylon/configure $(top_srcdir)/config/Babylon/config.hh.in \
+			$(top_srcdir)/config/Babylon/aclocal.m4
+
+%.d:	$(srcdir)/%.cc $(hdir)/Babylon/%.hh
+	$(makedep)
+%.o:	$(srcdir)/%.cc
+	$(compile)
+
+ifeq (,$(findstring $(MAKECMDGOALS), clean distclean maintainer-clean))
+-include $(DEP)
+endif

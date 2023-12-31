@@ -4,3 +4,8 @@
 * finish GetOpt class
 
 * test it on different platforms
+
+01.08.00
+
+* test for sun and  BSD Socket ioctls...
+* consider making file errors exceptions

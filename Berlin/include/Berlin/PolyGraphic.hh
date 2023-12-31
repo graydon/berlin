@@ -1,13 +1,8 @@
-/*$Id: PolyGraphic.hh,v 1.14 1999/09/30 17:23:33 gray Exp $
+/*$Id: PolyGraphic.hh,v 1.20 2000/10/15 16:23:04 velco Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -33,27 +28,56 @@
 
 class PolyGraphic : public GraphicImpl
 {
-  typedef vector<edge_t> clist_t;
+  class Iterator;
+  friend class Iterator;
 public:
   PolyGraphic();
   virtual ~PolyGraphic();
 
-  virtual void append(Graphic_ptr);
-  virtual void prepend(Graphic_ptr);
+  virtual void append_graphic(Warsaw::Graphic_ptr);
+  virtual void prepend_graphic(Warsaw::Graphic_ptr);
+  virtual void remove_graphic(Warsaw::Tag);
+  virtual void remove_child_graphic(Warsaw::Tag);
+  virtual Warsaw::Graphic::Iterator_ptr first_child_graphic();
+  virtual Warsaw::Graphic::Iterator_ptr last_child_graphic();
 
-  virtual void needResize();
-  virtual void needResize(Tag);
+  virtual void need_resize();
+  virtual void need_resize(Warsaw::Tag);
 protected:
-  CORBA::Long numChildren();
-  Tag tag();
-  CORBA::Long index(Tag); 
-  Graphic::Requisition *childrenRequests();
-  void deallocateRequisitions(Graphic::Requisition *);
-  void childExtension(size_t, const Allocation::Info &, Region_ptr);
+  CORBA::Long num_children();
+  Warsaw::Tag unique_child_id();
+  glist_t::iterator child_id_to_iterator(Warsaw::Tag);
+  CORBA::Long child_id_to_index(Warsaw::Tag);
+  Warsaw::Graphic::Requisition *children_requests();
+  void deallocate_requisitions(Warsaw::Graphic::Requisition *);
+  void child_extension(size_t, const Warsaw::Allocation::Info &, Warsaw::Region_ptr);
 // private:
-  static Pool<Requisition> pool;
-  clist_t children;
-  Prague::Mutex childMutex;
+  static Pool<Warsaw::Graphic::Requisition> _pool;
+  glist_t _children;
+  Prague::Mutex _mutex;
 };
 
-#endif /* _PolyGraphic_hh */
+/*
+ * the following methods are inlined for speed.
+ * Attention : they must be used within a PolyGraphic::childMutex locked section !
+ */
+inline Warsaw::Tag PolyGraphic::unique_child_id()
+{
+  Warsaw::Tag localId;
+  for (localId = 0;
+       find_if (_children.begin(), _children.end(), localId_eq(localId)) != _children.end();
+       localId++);
+      return localId;
+}
+
+inline PolyGraphic::glist_t::iterator PolyGraphic::child_id_to_iterator(Warsaw::Tag localId)
+{
+  return find_if(_children.begin(), _children.end(), localId_eq(localId));
+}
+
+inline CORBA::Long PolyGraphic::child_id_to_index(Warsaw::Tag localId)
+{
+  return find_if(_children.begin(), _children.end(), localId_eq(localId)) - _children.begin();
+}
+
+#endif 

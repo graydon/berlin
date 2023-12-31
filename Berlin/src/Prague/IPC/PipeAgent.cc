@@ -1,7 +1,7 @@
-/*$Id: PipeAgent.cc,v 1.6 1999/11/17 02:03:18 stefan Exp $
+/*$Id: PipeAgent.cc,v 1.9 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -27,7 +27,7 @@
 
 using namespace Prague;
 
-PipeAgent::PipeAgent(const string &cmd, IONotifier *io, EOFNotifier *eof)
+PipeAgent::PipeAgent(const std::string &cmd, IONotifier *io, EOFNotifier *eof)
   : Coprocess(cmd, io, eof)
 {}
 
@@ -38,20 +38,20 @@ PipeAgent::~PipeAgent()
 
 void PipeAgent::start()
 {
-  if (id >= 0)
+  if (_id >= 0)
     {
       terminate();
-      pipebuf *pin  = new pipebuf(ios::out); // the stdin for the child is an output stream for the parent...
-      pipebuf *pout = new pipebuf(ios::in);  // the stdout for the child is an input stream for the parent...
-      pipebuf *perr = new pipebuf(ios::in);  // the stderr for the child is an input stream for the parent...
+      pipebuf *pin  = new pipebuf(std::ios::out); // the stdin for the child is an output stream for the parent...
+      pipebuf *pout = new pipebuf(std::ios::in);  // the stdout for the child is an input stream for the parent...
+      pipebuf *perr = new pipebuf(std::ios::in);  // the stderr for the child is an input stream for the parent...
       int fin = pin->open();
       int fout = pout->open();
       int ferr = perr->open();
 //       if (fin == -1 || fout == -1 || ferr == -1) { Error("communication setup failed", true); return;}
-      switch(id = fork())
+      switch(_id = fork())
 	{
 	case -1:
-	  id = 0;
+	  _id = 0;
 // 	  SystemError("cannot fork", true);
 	  return;
 	case  0:
@@ -61,19 +61,19 @@ void PipeAgent::start()
 	  const char *argv[4];
 	  argv[0] = "/bin/sh";
 	  argv[1] = "-c";
-	  argv[2] = path.c_str();
+	  argv[2] = _path.c_str();
 	  argv[3] = 0;
 	  execvp ("/bin/sh", (char**) argv);
-	  perror("/bin/sh");
+	  std::perror("/bin/sh");
 	  _exit(EXIT_FAILURE);
 	  break;
 	default:
- 	  inbuf = pin; close(fin);
- 	  outbuf = pout; close(fout);
- 	  errbuf = perr; close(ferr);
-	  inbuf->setnonblocking();
-	  outbuf->setnonblocking();
-	  errbuf->setnonblocking();
+ 	  _inbuf = pin; close(fin);
+ 	  _outbuf = pout; close(fout);
+ 	  _errbuf = perr; close(ferr);
+	  _inbuf->async(true);
+	  _outbuf->async(true);
+	  _errbuf->async(true);
  	  break;
 	}
     }

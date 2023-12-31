@@ -1,7 +1,7 @@
-/*$Id: mmapbuf.cc,v 1.2 1999/10/15 17:59:25 gray Exp $
+/*$Id: mmapbuf.cc,v 1.4 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -26,33 +26,33 @@ using namespace Prague;
 mmapbuf::mmapbuf(int fd, int mode)
   : mmap(fd, -1, MMap::read|MMap::write, MMap::shared), lock(fd)
 {
-  if (mode == ios::in)
+  if (mode == std::ios::in)
     {
       char_type *gbuf = reinterpret_cast<char_type *>(mmap.addr());
       setg(gbuf, gbuf, gbuf + mmap.size());
     }
-  else if (mode == ios::out)
+  else if (mode == std::ios::out)
     {
       char_type *pbuf = reinterpret_cast<char_type *>(mmap.addr());
       setp(pbuf, pbuf + mmap.size());
     }
-  else cerr << "mmapbuf::mmapbuf : invalid open mode" << endl;
+  else std::cerr << "mmapbuf::mmapbuf : invalid open mode" << std::endl;
 }
 
-mmapbuf::mmapbuf(const string &file, size_t length, int mode)
+mmapbuf::mmapbuf(const std::string &file, size_t length, int mode)
   : mmap(file, length, MMap::read|MMap::write, MMap::shared), lock(file, false)
 {
-  if (mode == ios::in)
+  if (mode == std::ios::in)
     {
       char_type *gbuf = reinterpret_cast<char_type *>(mmap.addr());
       if (gbuf) setg(gbuf, gbuf, gbuf + mmap.size());
     }
-  else if (mode == ios::out)
+  else if (mode == std::ios::out)
     {
       char_type *pbuf = reinterpret_cast<char_type *>(mmap.addr());
       if (pbuf) setp(pbuf, pbuf + mmap.size());
     }
-  else cerr << "mmapbuf::mmapbuf : invalid open mode" << endl;
+  else std::cerr << "mmapbuf::mmapbuf : invalid open mode" << std::endl;
 }
 
 mmapbuf::~mmapbuf()
@@ -119,7 +119,7 @@ mmapbuf::int_type mmapbuf::pbackfail(int c)
   return EOF;
 }
 
-streamsize mmapbuf::xsputn(const mmapbuf::char_type *s, streamsize n)
+std::streamsize mmapbuf::xsputn(const mmapbuf::char_type *s, std::streamsize n)
 {
   int wval = epptr() - pptr();
   if (n <= wval)
@@ -134,7 +134,7 @@ streamsize mmapbuf::xsputn(const mmapbuf::char_type *s, streamsize n)
   return wval;
 }
 
-streamsize mmapbuf::xsgetn(mmapbuf::char_type *s, streamsize n)
+std::streamsize mmapbuf::xsgetn(mmapbuf::char_type *s, std::streamsize n)
 {
   int rval = showmanyc();
   if (rval >= n)

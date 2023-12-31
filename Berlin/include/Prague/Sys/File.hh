@@ -1,7 +1,7 @@
-/*$Id: File.hh,v 1.4 1999/10/15 17:59:07 gray Exp $
+/*$Id: File.hh,v 1.8 2001/03/21 06:28:22 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _File_hh
-#define _File_hh
+#ifndef _Prague_File_hh
+#define _Prague_File_hh
 
 #include <string>
 #include <climits>
@@ -32,10 +32,7 @@
 namespace Prague
 {
 
-/* @Class{File}
- *
- * @Description{}
- */
+//. a File encapsulates common file based operations, such as lookup for state information
 class File
 {
 public:
@@ -47,60 +44,77 @@ public:
 		blk  = S_IFBLK, 
 		fifo = S_IFIFO, 
 		sock = S_IFSOCK};
-  enum access_t { ur = S_IRUSR,
-		  uw = S_IWUSR,
-		  ux = S_IXUSR,
-		  gr = S_IRGRP,
-		  gw = S_IWGRP,
-		  gx = S_IXGRP,
-		  or = S_IROTH,
-		  ow = S_IWOTH,
-		  ox = S_IXOTH,
-		  all= ur|uw|ux|gr|gw|gx|or|ow|ox};
-  File(const string &);
+  enum access_t { ru = S_IRUSR,
+		  wu = S_IWUSR,
+		  xu = S_IXUSR,
+		  rg = S_IRGRP,
+		  wg = S_IWGRP,
+		  xg = S_IXGRP,
+		  ro = S_IROTH,
+		  wo = S_IWOTH,
+		  xo = S_IXOTH,
+		  all= ru|wu|xu|rg|wg|xg|ro|wo|xo};
+  File(const std::string &);
   File(const File &);
   virtual ~File();
   File &operator = (const File &);
-  File &operator = (const string &);
+  File &operator = (const std::string &);
+  //. return the parent directory
   File parent() const;
-  const string &name() const { return shortname;}
-  const string &longName() const { return longname;}
-  bool is(type_t t) const { return (status.st_mode & S_IFMT) == (mode_t) t;}
-  long type() const { return (status.st_mode & S_IFMT);}
-  long access() const { return (status.st_mode & (ur|uw|ux));}
-  uid_t uid() const { return status.st_uid;}
-  gid_t gid() const { return status.st_gid;}
-  long  size() const { return  status.st_size;}
-  time_t accTime() const { return status.st_atime;}
-  time_t modTime() const { return status.st_mtime;}
-  time_t chTime() const { return status.st_ctime;}
+  //. return the file's name
+  const std::string &name() const { return _shortname;}
+  //. return the file's long name
+  const std::string &long_name() const { return _longname;}
+  //. check whether the file is of the given type
+  bool is(type_t t) const { return (_status.st_mode & S_IFMT) == (mode_t) t;}
+  //. return the file's type
+  long type() const { return (_status.st_mode & S_IFMT);}
+  //. return the file's access permission flag
+  long access() const { return (_status.st_mode & (ru|wu|xu));}
+  //. return the file owner
+  uid_t uid() const { return _status.st_uid;}
+  //. return the owning group
+  gid_t gid() const { return _status.st_gid;}
+  //. return the file size
+  long  size() const { return  _status.st_size;}
+  //. return the access time
+  time_t acc_time() const { return _status.st_atime;}
+  //. return the modification time
+  time_t mod_time() const { return _status.st_mtime;}
+  //. return the change time
+  time_t ch_time() const { return _status.st_ctime;}
 
+  //. change the access permission
   bool chmod(access_t);
-  bool mv(const string &);
+  //. rename the file
+  bool mv(const std::string &);
+  //. remove the file
   bool rm();
-  static string base(const string &);
-  static string tmp() { return ::tmpnam(0);}
+  //. static method to determine the base name for the given string
+  static std::string base(const std::string &);
+  //. generate a temporary file name
+  static std::string tmp() { return ::tmpnam(0);}
 protected:
-  struct stat status;
-  string longname;
-  string shortname;
-  bool getStatus();
-  const char *lastError() const;
-  int error;
+  struct stat _status;
+  std::string _longname;
+  std::string _shortname;
+  bool get_status();
+  const char *last_error() const;
+  int _error;
 private:
 };
 
-inline string File::base(const string &s)
+inline std::string File::base(const std::string &s)
 {
-  string::size_type p = s.find_last_of('/');
-  return p == string::npos ? s : s.substr(p + 1);
+  std::string::size_type p = s.find_last_of('/');
+  return p == std::string::npos ? s : s.substr(p + 1);
 }
 
-inline bool File::getStatus()
+inline bool File::get_status()
 {
-  if (stat(longname.c_str(), &status) == -1) { status.st_mode = 0; error = errno; return false;} return true;
+  if (stat(_longname.c_str(), &_status) == -1) { _status.st_mode = 0; _error = errno; return false;} return true;
 }
 
 };
 
-#endif /* _File_hh */
+#endif

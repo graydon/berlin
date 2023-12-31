@@ -1,7 +1,8 @@
-/*$Id: ServerContextImpl.cc,v 1.14 1999/09/30 17:23:33 gray Exp $
+/*$Id: ServerContextImpl.cc,v 1.28 2001/04/18 06:07:27 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org>
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -20,105 +21,111 @@
  * MA 02139, USA.
  */
 
-#include "Berlin/GenericFactoryImpl.hh"
-#include "Berlin/ClientContextImpl.hh"
-#include "Berlin/ServerContextManagerImpl.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/ClientContext.hh>
+#include "Berlin/ServerContextImpl.hh"
+#include "Berlin/ServerImpl.hh"
+#include "Berlin/KitImpl.hh"
 #include "Berlin/Logger.hh"
+#include <Prague/Sys/Plugin.hh>
+#include <Prague/Sys/Directory.hh>
+#include <Prague/Sys/Tracer.hh>
+#include <strstream>
 
 using namespace Prague;
+using namespace Warsaw;
+
+unsigned long ServerContextImpl::_counter = 0;
 
 // this is the thing which holds all the references to things a client allocates
 // (for garbage collection), does security checks for new allocation, and
 // occasionally pings the client to make sure it's still there.
 
-ServerContextImpl::ServerContextImpl(ServerContextManagerImpl *m, CosLifeCycle::FactoryFinder_ptr ff, ClientContext_ptr c)
-  : manager(m), ffinder(ff), cContext(ClientContext::_duplicate(c)) 
-{}
-
-CosLifeCycle::FactoryFinder_ptr ServerContextImpl::factoryFinder()
+ServerContextImpl::ServerContextImpl(ServerImpl *s, ClientContext_ptr c)
+    : _server(s), _client(ClientContext::_duplicate(c))
 {
-  return CosLifeCycle::FactoryFinder::_duplicate(ffinder);
+  Trace trace("ServerContextImpl::ServerContextImpl");
+//   PortableServer::POA_var root = _default_POA();
+//   policies.length(1);
+//   policies[0] = root->create_implicit_activation_policy(PortableServer::NO_IMPLICIT_ACTIVATION);
 }
 
-ClientContext_ptr ServerContextImpl::client()
+ServerContextImpl::~ServerContextImpl()
 {
-  return ClientContext::_duplicate(cContext);
+  Trace trace("ServerContextImpl::~ServerContextImpl");
+  for (klist_t::iterator i = _kits.begin(); i != _kits.end(); ++i)
+    (*i).second->deactivate();
 }
+
+ClientContext_ptr ServerContextImpl::client() { return ClientContext::_duplicate(_client);}
 
 // will fill the rest of these in as needs arise. They should do something reasonably obvious.
 
-void ServerContextImpl::setSingleton(const char *name, CORBA::Object_ptr singleton) 
+void ServerContextImpl::set_singleton(const char *name, CORBA::Object_ptr singleton)
   throw (SecurityException, SingletonFailureException)
 {
-  manager->setSingleton(name, singleton);
+  _server->set_singleton(name, singleton);
 }
 
-void ServerContextImpl::delSingleton(const char *name) 
+void ServerContextImpl::remove_singleton(const char *name) 
   throw (SecurityException, SingletonFailureException)
 {
-  manager->delSingleton(name);
+  _server->remove_singleton(name);
 }
 
-CORBA::Object_ptr ServerContextImpl::getSingleton(const char *name) 
+CORBA::Object_ptr ServerContextImpl::get_singleton(const char *name) 
   throw (SecurityException, SingletonFailureException)
 {
-  return manager->getSingleton(name);
+  return _server->get_singleton(name);
 }
 
 // this method should eventually do some kind of checking on the
 // ClientContext to make sure they are allowed to construct objects on
 // this server.
 
-CORBA::Object_ptr ServerContextImpl::create(const char *interfaceName)    
+Kit_ptr ServerContextImpl::resolve(const char *type, const Kit::PropertySeq &properties)    
   throw (SecurityException, CreationFailureException)
 {
-  CosLifeCycle::Key key;
-  key.length(1);
-  key[0].id   =  interfaceName; 
-  key[0].kind = (const char*) "Object"; 
-
-  CosLifeCycle::Criteria criteria;
-  
-  CosLifeCycle::Factories *factories = ffinder->find_factories(key);
-  CosLifeCycle::GenericFactory_var factory = CosLifeCycle::GenericFactory::_narrow((*factories)[0]);
-
-  if (CORBA::is_nil(factory)) throw CreationFailureException();
-  CORBA::Object_var object = factory->create_object(key, criteria);
-
-  Cloneable_var cloneable = Cloneable::_narrow(object);
-  if (!CORBA::is_nil(cloneable)) cloneable->bind(ServerContext_var(_this()));
-  // save a reference for future destroying purposes  
-  MutexGuard guard(mutex);
-  objects.push_back(object);
-  return CORBA::Object::_duplicate(object);
+  /*
+   * look for loaded kits first
+   */
+  klist_t::iterator k1 = _kits.lower_bound(type), k2 = _kits.upper_bound(type);
+  for (klist_t::iterator i = k1; i != k2; ++i)
+    if ((*i).second->supports(properties))
+      {
+	(*i).second->increment();
+	return (*i).second->_this();
+      }
+  /*
+   * now try the factories
+   */
+  PortableServer::POA_var root = _default_POA();
+  std::ostrstream oss;
+  oss << type << '#' << _counter++ << std::ends;
+  char *name = oss.str();
+  PortableServer::POAManager_var manager = root->the_POAManager();
+  PortableServer::POA_var poa = root->create_POA(name, manager, _policies);
+//   PortableServer::POA_var poa = PortableServer::POA::_duplicate(root);
+  delete [] name;
+  KitImpl *kit = _server->create(type, properties, poa);
+  if (!kit) throw CreationFailureException();
+  kit->bind(ServerContext_var(_this()));
+  kit->increment();
+  _kits.insert(klist_t::value_type(type, kit));
+  return kit->_this();
 }
 
 // this will nuke all allocated objects if the client has died, and then tell the caller 
-// (ServerContextManager) who will most likely destroy this ServerContext.
+// (Server) who will most likely destroy this ServerContext.
 
 bool ServerContextImpl::ping()
 {
-  MutexGuard guard (mutex);
+  Trace trace("ServerContextImpl::ping");
+  Prague::Guard<Mutex> guard(_mutex);
   bool alive = true;
-  try
-    {
-      if (CORBA::is_nil(cContext)) alive = false;
-      else alive = cContext->ping();
-    }
-  catch (...)
-    {
-      alive = false;
-    }
-  if (!alive)
-    {
-      for(olist_t::iterator i = objects.begin(); i != objects.end(); i++)
-	{
-	  CosLifeCycle::LifeCycleObject_var p = CosLifeCycle::LifeCycleObject::_narrow(*i);
-	  if (!CORBA::is_nil(p)) p->remove();
-	}
-    }
+  if (CORBA::is_nil(_client)) alive = false;
+  else
+    try { _client->ping();}
+    catch (...) { alive = false;}
   return alive;
 }
-
-
-

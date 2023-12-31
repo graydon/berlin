@@ -1,7 +1,8 @@
-/*+P
- * This file is part of OffiX,
- * a C++ API for the X Window System and Unix
- * Copyright (C) 1995-98  Stefan Seefeld
+/*$Id: url.hh,v 1.4 2001/03/25 08:25:16 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,10 +18,9 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
- -P*/
-/*$Id: url.hh,v 1.2 1999/08/30 14:42:06 gray Exp $*/
-#ifndef _url_hh
-#define _url_hh
+ */
+#ifndef _Prague_url_hh
+#define _Prague_url_hh
 
 #include <string>
 
@@ -30,33 +30,33 @@ namespace Prague
 class url
 {
 public:
-  url(const string &);
-  url(const url &, const string &);
-//   operator const string &() const;
-  const string &scheme() const { return s;}
-  const string &user() const { return u;}
-  const string &password() const { return pw;}
-  const string &hostname() const { return h;}
-  const string &path() const { return p;}
+  url(const std::string &);
+  url(const url &, const std::string &);
+//   operator const std::string &() const;
+  const std::string &scheme() const { return s;}
+  const std::string &user() const { return u;}
+  const std::string &password() const { return pw;}
+  const std::string &hostname() const { return h;}
+  const std::string &path() const { return p;}
   void setPath(const char *pp) { p = pp;}
-  const string &fragment() const { return f;}
-  const string &query() const { return q;}
-  void setQuery(const string &qq) { q = qq;}
-  const string &parameters() const { return pa;}
+  const std::string &fragment() const { return f;}
+  const std::string &query() const { return q;}
+  void setQuery(const std::string &qq) { q = qq;}
+  const std::string &parameters() const { return pa;}
   int port() const { return po;}
-  static void encode(string &);
-  static void decode(string &);
-protected:
-  string s;
-  string u;
-  string pw;
-  string h;
-  string p;
-  string f;
-  string q;
-  string pa;
-  int    po;
-  void parse(string);
+  static void encode(std::string &);
+  static void decode(std::string &);
+private:
+  void parse(const std::string &);
+  std::string s;
+  std::string u;
+  std::string pw;
+  std::string h;
+  std::string p;
+  std::string f;
+  std::string q;
+  std::string pa;
+  int         po;
 };
 
 };

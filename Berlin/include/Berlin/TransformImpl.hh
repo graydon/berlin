@@ -1,13 +1,8 @@
-/*$Id: TransformImpl.hh,v 1.5 1999/10/13 21:32:31 gray Exp $
+/*$Id: TransformImpl.hh,v 1.12 2001/02/06 22:02:21 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -29,43 +24,65 @@
 
 #include <Warsaw/config.hh>
 #include <Warsaw/Transform.hh>
+#include <Berlin/ServantBase.hh>
+#include <Berlin/Provider.hh>
 
-class TransformImpl : implements(Transform)
+class TransformImpl : public virtual POA_Warsaw::Transform,
+		      public virtual ServantBase
 {
+  friend class Provider<TransformImpl>;
 public:
   TransformImpl();
-  TransformImpl(Transform::Matrix m);
+  TransformImpl(const TransformImpl &);
+  TransformImpl(Warsaw::Transform_ptr t) : _this_valid (false) { copy(t);}
+  TransformImpl(Warsaw::Transform::Matrix m);
   virtual ~TransformImpl();
-
-  virtual void copy(Transform_ptr);
-  virtual void loadIdentity();
-  virtual void loadMatrix(const Matrix);
-  virtual void storeMatrix(Matrix);
-  virtual CORBA::Boolean equal(Transform_ptr);
-  virtual CORBA::Boolean Identity();
-  virtual CORBA::Boolean Translation();
-  virtual CORBA::Boolean detIsZero();
-  virtual void scale(const Vertex &);
-  virtual void rotate(double, Axis);
-  virtual void translate(const Vertex &);
-  virtual void premultiply(Transform_ptr);
-  virtual void postmultiply(Transform_ptr);
+  TransformImpl &operator = (const TransformImpl &);
+  virtual void copy(Warsaw::Transform_ptr);
+  virtual void load_identity();
+  virtual void load_matrix(const Warsaw::Transform::Matrix);
+  virtual void store_matrix(Warsaw::Transform::Matrix);
+  virtual CORBA::Boolean equal(Warsaw::Transform_ptr);
+  virtual CORBA::Boolean identity();
+  virtual CORBA::Boolean translation();
+  virtual CORBA::Boolean det_is_zero();
+  virtual void scale(const Warsaw::Vertex &);
+  virtual void rotate(CORBA::Double, Warsaw::Axis);
+  virtual void translate(const Warsaw::Vertex &);
+  virtual void premultiply(Warsaw::Transform_ptr);
+  virtual void postmultiply(Warsaw::Transform_ptr);
   virtual void invert();
-  virtual void transformVertex(Vertex &);
-  virtual void inverseTransformVertex(Vertex &);
+  virtual void transform_vertex(Warsaw::Vertex &);
+  virtual void inverse_transform_vertex(Warsaw::Vertex &);
 
-  Transform::Matrix &matrix() { return mat;}
-protected:
-  Transform::Matrix mat;
-  bool valid;
-  bool identity;
-  bool translate_only;
-  bool xy;
+  Warsaw::Transform::Matrix &matrix() { return _matrix;}
+  const Warsaw::Transform::Matrix &matrix() const { return _matrix;}
 
+  Warsaw::Transform_ptr _this()
+  {
+    if (!_this_valid)
+      {
+	__this = POA_Warsaw::Transform::_this ();
+	_this_valid = true;
+      }
+
+    return Warsaw::Transform::_duplicate (__this);
+  }
+
+private:
   void init();
-  void modified() { valid = false;}
+  void modified() { _dirty = true;}
   void recompute();
-  Coord det();
+  Warsaw::Coord det();
+  Warsaw::Transform::Matrix _matrix;
+  bool _dirty       : 1;
+  bool _identity    : 1;
+  bool _translation : 1;
+  bool _xy          : 1;
+  bool _this_valid  : 1;
+  bool _active      : 1;
+
+  Warsaw::Transform_var __this;
 };
 
 #endif

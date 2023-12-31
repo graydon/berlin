@@ -1,0 +1,82 @@
+# $Id: Makefile.in,v 1.7 2001/03/31 16:15:27 stefan Exp $
+#
+# This source file is a part of the Berlin Project.
+# Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+# http://www.berlin-consortium.org
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+SHELL	= /bin/sh
+
+top_srcdir	:= @topdir@
+builddir	:= ../../..
+cdir		:= $(builddir)/config
+hdir		:= $(top_srcdir)/include
+ddir		:= $(builddir)/doc/RefManual/html
+stylesheet      := $(top_srcdir)/doc/RefManual/style.css
+
+define compile
+@echo compiling $(@F)
+$(SYNOPSIS) -p C++ -Wp,-m -Wp,-g $(CPPFLAGS) -o $@ $?
+endef
+
+include $(cdir)/local.mk
+include $(cdir)/Docs/local.mk
+
+CPPFLAGS	+= @CPPFLAGS@
+CPPFLAGS	:= $(patsubst -I%, -I%, $(CPPFLAGS))
+
+Sys		:= logbuf.hh logstream.hh ntree.hh Tracer.hh regex.hh User.hh Process.hh Stopwatch.hh Profiler.hh Time.hh \
+	  	   File.hh Directory.hh FLock.hh FdSet.hh Path.hh GetOpt.hh DataTypeManager.hh \
+	  	   Memory.hh DLL.hh MMap.hh SHM.hh Thread.hh ThreadData.hh ThreadQueue.hh ThreadPool.hh \
+		   Timer.hh Signal.hh Fork.hh Plugin.hh
+IPC		:= ipcbuf.hh pipebuf.hh sockbuf.hh sockstream.hh ptybuf.hh mmapbuf.hh convert.hh \
+	  	   Agent.hh Dispatcher.hh Coprocess.hh PipeAgent.hh TTYAgent.hh SocketAgent.hh Acceptor.hh Connector.hh
+Filter		:= gzbuf.hh# xdrbuf.cc #bzbuf.cc 
+Network		:= protocol.hh echo.hh ftp.hh smtp.hh url.hh
+
+HDR		+= $(Sys) $(IPC) $(Filter) $(Network)
+SYN		:= $(patsubst %.hh, %.syn, $(HDR))
+
+TARGET	= $(ddir)/Prague
+
+all:	$(TARGET)
+
+$(TARGET):	$(SYN)
+		@echo formatting $(@F)
+		$(SYNOPSIS) -f HTML -Wf,-s,style.css,-C,ssd,-S,$(stylesheet),-t,Prague.toc -o $@ $(SYN)
+		touch $@
+
+vpath %.hh  $(hdir)/Prague/Sys $(hdir)/Prague/IPC $(hdir)/Prague/Filter $(hdir)/Prague/Network
+
+%.syn:	$(hdir)/Prague/Sys/%.hh
+	$(compile)
+%.syn:	$(hdir)/Prague/IPC/%.hh
+	$(compile)
+%.syn:	$(hdir)/Prague/Filter/%.hh
+	$(compile)
+%.syn:	$(hdir)/Prague/Network/%.hh
+	$(compile)
+
+clean:
+	rm -fr *.syn $(TARGET)
+
+distclean maintainer-clean:	clean
+	rm -f Makefile
+
+install:
+	install -m755 $(TARGET) $(libdir)
+

@@ -13,17 +13,19 @@
   <title>The Berlin Tutorial</title>
   <bookinfo>
 
-    <author>
+    <authorgroup>
+      <author>
+        <firstname>Graydon</firstname> <surname>Hoare</surname>
+      </author>
+      <author>
+        <firstname>Stefan</firstname> <surname>Seefeld</surname>
+      </author>
+        <!-- additional authors, please insert your names here -->
+    </authorgroup>
 
-      <firstname>Graydon</firstname> <surname>Hoare</surname>
-      <firstname>Stefan</firstname> <surname>Seefeld</surname>
-
-      <!-- additional authors, please insert your names here -->
-
-    </author>
     <copyright>
-      <year>1999</year>
-      <holder>the author(s)</holder>
+      <year>1999, 2000</year>
+      <holder>the authors</holder>
     </copyright>
     <legalnotice>
       <para>
@@ -48,8 +50,7 @@
 	its own process memory. This means that, rather than asking client
 	applications to repaint every window whenever any change occurs, a lot
 	of the redrawing machinery is contained within the server. 
-
-<sect2><title>graph structure</title>
+</para><sect2><title>graph structure</title>
 <para>
 	<!-- talk about graph structure --> The scene graph abstractly resembles
 	a tree. That is, there are a number of nodes (called "Graphics"), which
@@ -240,7 +241,7 @@
 
 
 </sect1>
-<sect1><title>events</title>
+<sect1><title>The logical control graph - input event handling</title>
 <para>
 	<!-- talk about events -->Users interact with the scene graph by feeding
 	the display server with events, from a wide variety of physical input
@@ -249,23 +250,134 @@
 
 </para><sect2><title>input devices and event types</title>
 <para>
-	<!-- talk about input devices and event types -->Events from a device
+	<!-- Events from a device
 	are categorized (at the moment) by very simple type tags. we hope in the
 	future modify this to work with an event attribute trading service, such
 	that an application can deal with events strictly in terms of the type
 	of information they convey, rather than the fixed device type which
-	created them.
+	created them. -->
 
-</para><sect3><title>device attributes</title>
-<para>
+	It is a difficult task to design a user interface which will work not 
+        only with all kind of existing input devices but also with devices even 
+        not yet conceived. For this reason, and because the concrete environment 
+        may be very different for two users, map physical devices and their input 
+        data to logical devices and sets of elementary data. Categorizing input data 
+        in terms of certain attributes (types) like 
+        <table frame=all pgwide=1>
+          <title>device attributes</title>
+          <tgroup cols=2>
+            <thead>
+               <row>
+                 <entry>name</entry>
+                 <entry>type</entry>
+               </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>telltale</entry>
+                <entry>Bitset</entry>
+              </row>
+              <row>
+                <entry>key</entry>
+                <entry>Toggle</entry>
+              </row>
+              <row>
+                <entry>button</entry>
+                <entry>Toggle</entry>
+              </row>
+              <row>
+                <entry>positional</entry>
+                <entry>Position</entry>
+              </row>
+              <row>
+                <entry>valuation</entry>
+                <entry>Float</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        Each logical device now posesses any number of these attributes which are the only
+        means for berlin to describe them. For example mice and keyboards would be described as
+        <table frame=all pgwide=1>
+          <title>logical devices</title>
+          <tgroup cols=4>
+            <colspec colnum=1 colname=c1>
+            <colspec colnum=4 colname=c4>
+            <spanspec spanname=keyboard namest=c1 nameend=c4 align=center>
+            <spanspec spanname=mouse namest=c1 nameend=c4 align=center>
+            <thead>
+               <row>
+                 <entry>device</entry>
+                 <entry>name</entry>
+                 <entry>type</entry>
+                 <entry>description</entry>
+               </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry spanname=keyboard valign=bottom>Keyboard</entry>
+              </row>
+              <row>
+                <entry>0</entry>
+                <entry>key</entry>
+                <entry>Toggle</entry>
+                <entry>the keysym (as unicode ?) </entry>
+              </row>
+              <row>
+                <entry>0</entry>
+                <entry>telltale</entry>
+                <entry>Bitset</entry>
+                <entry>set of current modifiers</entry>
+              </row>
+               <row>
+                 <entry spanname=mouse valign=bottom>Mouse</entry>
+               </row>
+              <row>
+                <entry>1</entry>
+                <entry>positional</entry>
+                <entry>Position</entry>
+                <entry>the current location</entry>
+              </row>
+              <row>
+                <entry>1</entry>
+                <entry>button</entry>
+                <entry>Toggle</entry>
+                <entry>the actuated button</entry>
+              </row>
+              <row>
+                <entry>1</entry>
+                <entry>telltale</entry>
+                <entry>Bitset</entry>
+                <entry>pressed buttons</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
 
-	<!-- talk about device attributes -->TBC
+        Berlin's <classname>EventManager</classname> will use such a description to 
+        create Event types suitable to carry the data associated with each attribute.
+        An Event is therefor nothing but a list of device/attribute pairs where an attribute
+        has a discriminator (type) and a value. 
+        This composition based principle allows devices to be coupled as well. For example, 
+        traditionally mouse events trigger different commands dependant on whether modifier
+        keys are pressed. This can simply be achieved in synthesizing the appropriate events
+        with the following data:
 
-</para></sect3>
-<sect3><title>event types</title>
-<para>
-	<!-- talk about event types -->TBC
-</para></sect3>
+        <programlisting>
+        Input::Position position = ...;
+        Input::Toggle button = ...;
+        Input::Bitset keymodifiers = ...;
+        Input::Event event;
+        event.length(3);
+        event[0].device = 0;
+        event[0].attr.location(position);
+        event[1].device = 0;
+        event[1].attr.selection(button);
+        event[2].device = 1;
+        event[2].attr.state(keymodifiers);
+        ...
+        </programlisting>
+</para>
 </sect2>
 <sect2><title>controllers, focus and picking</title>
 <para>
@@ -289,31 +401,160 @@
 	suitable controller.
 
 </para></sect3>
+<sect3><title>focus</title>
+<para>
+	<!-- talk about the concept of focus -->the Controller receiving the
+	event is said to hold the focus for the device the event originated in.
+	There are two fundamentally different ways to change the focus for a given
+	device. Positional events are - unless a device grab is active - dispatched
+	to the top most controller intersecting with the event's position. The
+	determination of this controller is done with a pick traversal.
+	For non positional devices a controller can request the focus explicitly.
+
+</para></sect3>
 <sect3><title>logical control graph</title>
 <para>
 	<!-- talk about logical control graph -->If you step back from the scene
 	graph and just concentrate on the controllers, you will see that they
 	form a sort of "subgraph" within the scene. This is referred to as the
 	<emphasis>logical control graph</emphasis>, since it is the set of nodes
-	into which most applications will hook their logic. When an event is
-	distributed through scene graph, it will only have to consider the nodes
-	in the logical control graph, because by definition none of the other
-	nodes in the scene are controllers. This means that all the machinery
-	associated with event distribution really only pays attention to the
-	logical control graph, ignoring everything else.
+	into which most applications will hook their logic. The necessary methods to
+        construct the control graph are:
+	<programlisting>
+	interface Controller
+	{
+          void appendController(in Controller c);
+          void prependController(in Controller c);
+          void insertController(in Controller c);
+          void replaceController(in Controller c);
+          void removeController();
+	};
+	</programlisting>
+        Note that the control graph isn't necessarily isomorph to the scene graph though that's
+        we one would intuitively expect. Since the control graph defines (mostly) the traversal
+        order for the navigation of non positional focus, it is the desired behavior which should
+        ultimately drive the topology if this graph.
 
 </para></sect3>
-<sect3><title>maintaining focus</title>
+<sect3><title>picking</title>
 <para>
-	<!-- talk about maintaining focus -->Events are passed through the
-	logical control graph in traversals called
-	<classname>PickTraversals</classname>, until they find a Controller. A
-	controller which receives an event may choose to take focus from the
-	event dispatcher, which means that it will be sent subsequent events
-	directly and should discard any events it is not interested in. If it
-	finds it has received an event it should not be receiving at all
-	anymore, it should relinquish focus, and allow the
-	<classname>PickTraversal</classname> to find an appropriate target.
+	<!-- talk about picking -->For positional events the target controller
+	must be determined - at least if no device grab is active - by comparing
+	the event's position with the graphics screen real estate. This lookup
+	algorithm is called picking and is done by means of a <classname>PickTraversal</classname>
+        which gets passed through the scene graph. As it does this, it maintains a growing and 
+        shrinking stack of information representing the current state of the traversal. This stack 
+        represents a "trail" or "path" to the currently traversed graphic.
+        We need to create a "snapshot" of this trail at the hit graphic. This is done by calling
+	<emphasis>hit</emphasis> on the PickTraversal, resulting in a memento being created.
+        <figure id="scene-figure" float="1">
+          <title>scene</title>
+          <graphic fileref="../figures/scene.jpg"></graphic>
+        </figure>
+        <figure id="scene-graph-figure" float="1">
+          <title>scene graph corresponding to the snapshot in ...</title>
+          <graphic fileref="../figures/scene-graph.jpg"></graphic>
+        </figure>
+        Imagine the mouse to click on the red polygon. This will result in
+        the <classname>TransformFigure</classname>'s method <emphasis>pick</emphasis>
+        to be called which looks like
+
+        <programlisting>
+        void TransformFigure::pick(PickTraversal_ptr traversal)
+        {
+          if (ext->valid && traversal->intersectsRegion(ext))
+            traversal->hit();
+        }
+        </programlisting>
+        The <classname> Traversal</classname>'s trail, in the moment the <emphasis>hit</emphasis> occurs,
+        contains the following entries:
+        <figure id="trail-figure" float="1">
+          <title>trail</title>
+          <graphic fileref="../figures/trail.jpg"></graphic>
+        </figure>
+        For each position, the trail contains the following information:
+        <table frame=all pgwide=1>
+          <title>stack information at each position in a traversal</title>
+          <tgroup cols=2>
+            <tbody>
+              <row>
+                <entry>Graphic</entry>
+                <entry>the actual node in the scene graph</entry>
+              </row>
+              <row>
+                <entry>Tag</entry>
+                <entry>an identifier for the edge to the parent</entry>
+              </row>
+              <row>
+                <entry>Region</entry>
+                <entry>allocation, in local coordinates</entry>
+              </row>
+              <row>
+                <entry>Transform</entry>
+                <entry>the transfomration from global to local coordinate system</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        Since after the traversal is over, the stack will be empty, the <classname>Picktraversal</classname>
+        needs to create a memento of itself, which can be used later on to deliver the event.
+        The controller stack, extracted out of the trail, is
+        <figure id="cstack-figure" float="1">
+          <title>controller/focus stack</title>
+          <graphic fileref="../figures/cstack.jpg"></graphic>
+        </figure>
+        It is used to update the focus, i.e. to call (in appropriate order) all the controllers'
+        <emphasis>receiveFocus</emphasis> methods. From within this method, the controllers can manipulate
+        global data such as pointer images, context sensitive menus etc. In particular, a Controller may
+        want to install an <classname>Event::Filter</classname> through which the event has to be passed
+        before the top controller (the <classname>Editor</classname> in this case) can handle it.
+        <programlisting>
+        CORBA::Boolean ControllerImpl::receiveFocus(Focus_ptr f)
+        {
+          set(Telltale::active);
+          f->setPointer(myPointer);
+          return true;
+        }
+        </programlisting>
+        Finally, if all filters let the event through, the Editor's handle method will be called. It sees
+        the trail like
+        <figure id="gstack-figure" float="1">
+          <title>trail, the unaccessible graphics are grayed out</title>
+          <graphic fileref="../figures/gstack.jpg"></graphic>
+        </figure>
+        A special iterator allows it to access the graphics which, inside the editor, were intersecting
+        with the device.
+</para></sect3>
+<sect3><title>navigating non positional devices</title>
+<para>
+	<!-- talk about focus navigation -->
+        <figure id="control-graph-figure" float="1">
+          <title>control graph</title>
+          <graphic fileref="../figures/control-graph.jpg"></graphic>
+        </figure>
+	You can navigate the focus through this control graph via the following
+	methods:
+        <programlisting>
+        interface Controller
+        {
+          boolean requestFocus(in Controller c, in Event::Device d);
+          boolean receiveFocus(in Focus f);
+          void loseFocus(in Focus f);
+
+          boolean firstFocus(in Event::Device d);
+          boolean lastFocus(in Event::Device d);
+          boolean nextFocus(in Event::Device d);
+          boolean prevFocus(in Event::Device d);
+        };
+        </programlisting>
+</para></sect3>
+<sect3><title>sumary</title>
+<para>
+	<!-- event dispatching sumary -->
+        <figure id="event-dispatching-figure" float="1">
+          <title>event and focus management</title>
+          <graphic fileref="../figures/events.jpg"></graphic>
+        </figure>
 
 </para></sect3>
 </sect2>
@@ -394,12 +635,64 @@
 	interface, which we have named <classname>Subject</classname> in order
 	to be familliar to Java programmers. It includes operations for adding
 	and removing <classname>Observers</classname> (such as
-	<classname>Views</classname), as well as a common notification method
+	<classname>Views</classname>, as well as a common notification method
 	which a client (or the model itself) should call when observers should
 	be notified of a change to the model. In addition, most models subclass
 	the <classname>Subject</classname> interface a little, to provide
 	accessors for their concrete datatype.
 
+</para><sect3><title>a special case: Controllers</title>
+<para>
+	<!-- talk about the Controller and it's state -->A good example which helps
+        illustrating the purpose of the MVC paradigm is the separation of data and
+        presentation within the Controller. As we have seen in the previous chapter,
+        the controller's job is to process input events. In fact, it <emphasis>interprets
+        </emphasis>the event and maps it to (observable) state changes. Events as such
+        are considered a private means between the server and the Controller for notification.
+        Therefor, focus changes and event reception isn't visible for the outer world.
+        However, the Controller is tightly coupled to a model, which represents it's state.
+        In fact, this coupling is so tight that we chose to implement it within the same
+        object. It's a <classname>Telltale</classname> <emphasis>inside</emphasis> the controller 
+        which serves this purpose. A typical controller implementation will set appropriate flags
+        in this telltale which are observable.
+        In other words - you never ask the controller whether it has keyboard focus or whether
+        it holds a grab for a positional device. You ask whether it is <emphasis>active</emphasis>,
+        <emphasis>pressed</emphasis>, <emphasis>choosen</emphasis>, etc. For buttons for example
+        you typically use frames or highlights to reflect these state flags.
+        This decoupling has the advantage that you can customize the behavior - i.e. the mapping 
+        from events to these semantic flags - and therefor have greater freedom to adapt the interface 
+        to your own needs. Here are the predefined flags declared in the Telltale interface:
+        <table frame=all>
+          <title>predefined telltale flags</title>
+          <tgroup cols=2>
+            <tbody>
+              <row>
+                <entry>enabled</entry>
+                <entry>the controller is enabled if it can receive events</entry>
+              </row>
+              <row>
+                <entry>active</entry>
+                <entry>a button click or the Enter key would press it</entry>
+              </row>
+              <row>
+                <entry>pressed</entry>
+                <entry>controller is being pressed</entry>
+              </row>
+              <row>
+                <entry>chosen</entry>
+                <entry>a flag used in toggable widgets</entry>
+              </row>
+              <row>
+                <entry>running</entry>
+                <entry>indicates that an associated command is being executed</entry>
+              </row>
+              <row>
+                <entry>...</entry>
+                <entry>...</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
 </para><sect3><title>concrete examples</title>
 <para>
 	<!-- talk about concrete examples -->Here we give some examples of
@@ -592,10 +885,8 @@
 <FIGURE ID="screen-appearance-figure" FLOAT="1">
 <TITLE>How the screen might appear, and how you might imagine it works
 </TITLE>
-<informaltable orient="land"><tgroup cols="2"><tbody><row><entry>
-<GRAPHIC FILEREF="../figures/you-see-it-on-screen.jpg"></GRAPHIC></entry><entry>
-<GRAPHIC FILEREF="../figures/you-see-it.jpg"></GRAPHIC></entry></row></tbody></tgroup>
-</informaltable>
+<GRAPHIC FILEREF="../figures/you-see-it-on-screen.jpg"></GRAPHIC>
+<GRAPHIC FILEREF="../figures/you-see-it.jpg"></GRAPHIC>
 </FIGURE>
 
 
@@ -671,10 +962,9 @@ different parts of the server will see it.
 
 </para><sect4><title>paths</title>
 <para>
-	<!-- talk about paths -->A path is a sequence of vectors, optionally
-	accompanied by a sequence of scalars specifying the knot vector of the
-	path if it represents a NURBS object. If the path has no knot vector, it
-	is interpreted as a polygon. 
+	<!-- talk about paths -->A path is a sequence of vectors, each given in
+	the standard double-precision physical device space, and subject to the
+	current transformation matrix.
 </para></sect4>
 
 <sect4><title>glyphs</title>

@@ -1,0 +1,122 @@
+../common/l10n.xml
+<html><head><meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1'><title>The Berlin Tutorial</title><meta name='generator' content='DocBook XSL Stylesheets V1.29'></head><body bgcolor='white' text='black' link='#0000FF' vlink='#840084' alink='#0000FF'><div id='id158000920' class='book'><div class='titlepage'><div><h1 class='title'><a name='id158000920'></a>The Berlin Tutorial</h1></div><div>
+      <h3 class='author'>Stefan Seefeld</h3>
+      <h3 class='author'>Graydon Hoare</h3>
+      
+    </div><div><p class='copyright'> &copy; 1999, 2000, 2001  the authors</p></div><div><div class='legalnotice'><p>Released under the terms of the GNU General Public License, version 2.0 or greater.
+      This document has been prepared for printing and the web using XML &amp; DocBook. It is available
+      online at <a href='http://www.berlin-consortium.org' target='_top'>http://www.berlin-consortium.org</a>
+      in HTML and PDF. Comments, additions, and discussion are welcome, and best directed towards the 
+      mailing list.</p></div></div><hr></div><div class='toc'><p><b></b></p><dl><li>1. <a href='#id135599720'>Getting Started</a><dl><li> <a href='#id158398816'>finding the server</a></li><li> <a href='#id158398784'>establishing a connection</a></li><li> <a href='#id158419256'>requesting some kits</a></li><li> <a href='#id158422448'>building a scene graph</a></li><li> <a href='#id158395552'>hello world</a></li></dl></li></dl></div><div class='chapter' id='id135599720'><div class='titlepage'><div><h2 class='title'><a name='id135599720'></a> 1. Getting Started</h2></div></div><div class='toc'><p><b></b></p><dl><li> <a href='#id158398816'>finding the server</a></li><li> <a href='#id158398784'>establishing a connection</a></li><li> <a href='#id158419256'>requesting some kits</a></li><li> <a href='#id158422448'>building a scene graph</a></li><li> <a href='#id158395552'>hello world</a></li></dl></div>
+<p>
+	
+</p>
+<div class='sect1'><a name='id158398816'></a><div class='titlepage'><div><h2 class='title' style='clear: all'><a name='id158398816'></a><span class='title'>finding the server</span></h2></div></div>
+
+<p>The first thing to do when starting a client is to get a reference to the server object. You do this
+by asking the naming server. The naming server is a separate process, whos address is configured into the
+CORBA runtime environment, such that you can look it up as an 'initial reference'. Here is the relevant code 
+in python:</p>
+<pre class='programlisting'>
+  orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
+  object = orb.resolve_initial_references("NameService");
+  ncontext = object._narrow(CosNaming.NamingContext)
+  name = [CosNaming.NameComponent("IDL:Warsaw/Server:1.0", "Object")]
+  object = ncontext.resolve(name)
+  server = object._narrow(Warsaw.Server)
+</pre>
+<p>and the same in C++:</p>
+<pre class='programlisting'>
+  CORBA::ORB_var orb = CORBA::ORB_init(argc, argv, "omniORB3");
+  CosNaming::NamingContext_var ncontext = resolve_init&lt;CosNaming::NamingContext>(orb, "NameService");
+  Server_var server = resolve_name&lt;Server>(ncontext, "IDL:Warsaw/Server:1.0");
+</pre>
+<p>One of the most frequent errors is a misconfigured naming service, i.e. the ORB is unable to
+retrieve the NameService reference. Make sure your naming server is running, and the ORB is able to communicate
+with it. (Various ORB's provide applets to inspect the naming context graph. You can use these tools as a debugging
+help.)</p>
+</div>
+<div class='sect1'><a name='id158398784'></a><div class='titlepage'><div><h2 class='title' style='clear: all'><a name='id158398784'></a><span class='title'>establishing a connection</span></h2></div></div>
+
+<p>The next step is to register with the server, i.e. to request that it hands you a ServerContext. To authenticate
+yourself, you have to provide a ClientContext object which is able to provide a set of credentials to the server.
+You therefor create a ClientContextImpl object (a 'servant' in CORBA terminology), then you bind it to an abstract
+'CORBA Object', by means of a 'Portable Object Adapter' (POA). The POA manages the demultiplexing of incoming requests,
+i.e. it is responsible that other parties can talk to the servants that are activated with it. Here is the python version
+:</p>
+<pre class='programlisting'>
+  poa = orb.resolve_initial_references("RootPOA")
+  poaManager = poa._get_the_POAManager()
+  poaManager.activate()
+  ci = ClientContextImpl()
+  client = ci._this()
+  context  = server.create_server_context(client)
+</pre>
+<p>and the same in C++:</p>
+<pre class='programlisting'>
+  PortableServer::POA_var poa = resolve_init&lt;PortableServer::POA>(orb, "RootPOA");
+  PortableServer::POAManager_var pman = poa->the_POAManager();
+  pman->activate();
+  ClientContextImpl *ci = new ClientContextImpl;
+  ClientContext_var client = ci._this();
+  ServerContext_var context = server->create_server_context(client);
+</pre>
+</div>
+<div class='sect1'><a name='id158419256'></a><div class='titlepage'><div><h2 class='title' style='clear: all'><a name='id158419256'></a><span class='title'>requesting some kits</span></h2></div></div>
+
+<p>Now that you have a ServerContext, you can ask for some resources that are allocated
+in the display server process for you. These resources are generally 'Kits', which are abstract
+factories for various purposes. Most Kits create Graphic nodes that you can insert into the
+scene graph. We allocate here a DesktopKit, which is responsible for top level windows, a TextKit,
+responsible for Text related objects such as simple text labels, or complex text flow objects, and
+a WidgetKit, that generates all the common widgets such as buttons, scrollbars, or choices. In python
+that looks so:</p>
+<pre class='programlisting'>
+  properties = []
+  object  = context.resolve("IDL:Warsaw/DesktopKit:1.0", properties)
+  desktop = object._narrow(Warsaw.DesktopKit)
+  object  = context.resolve("IDL:Warsaw/TextKit:1.0", properties)
+  text    = object._narrow(Warsaw.TextKit)
+  object  = context.resolve("IDL:Warsaw/WidgetKit:1.0", properties)
+  widget  = object._narrow(Warsaw.WidgetKit)
+</pre>
+<p>and the same in C++:</p>
+<pre class='programlisting'>
+  properties = []
+  DesktopKit_var desktop = resolve_kit&lt;DesktopKit>(context, "IDL:Warsaw/DesktopKit:1.0");
+  TextKit_var text       = resolve_kit&lt;TextKit>(context, "IDL:Warsaw/TextKit:1.0");
+  WidgetKit_var widgets  = resolve_kit&lt;WidgetKit>(context, "IDL:Warsaw/WidgetKit:1.0");
+</pre>
+</div>
+<div class='sect1'><a name='id158422448'></a><div class='titlepage'><div><h2 class='title' style='clear: all'><a name='id158422448'></a><span class='title'>building a scene graph</span></h2></div></div>
+
+<p>Now let's build a scene graph for a tiny applet. We'll start with a little text label,
+wrap it into a button, and put that button into a window. In python you write:</p>
+<pre class='programlisting'>
+  label = text.chunk("hello world")
+  button = widgets.button(label, Command._nil)
+  window = desktop.shell(button)
+</pre>
+<p>and in C++:</p>
+<pre class='programlisting'>
+  Graphic_var label = text->chunk("hello world");
+  Controller_var button = widgets->button(label, Command::_nil());
+  Window_var window = desktop->shell(button);
+</pre>
+</div>
+<div class='sect1'><a name='id158395552'></a><div class='titlepage'><div><h2 class='title' style='clear: all'><a name='id158395552'></a><span class='title'>hello world</span></h2></div></div>
+
+<p>To run, we'll just start an endless loop. This works, since the ORB is multi-threaded, so
+some other hidden threads will watch for server callbacks, timers, etc. Of course, you might want
+to do something more exciting in the main thread. In  python you may write:</p>
+<pre class='programlisting'>
+  while 1:
+    line = sys.stdin.readline()
+    if len(line) == 1: break
+</pre>
+<p>and in C++:</p>
+<pre class='programlisting'>
+  while (true) Thread::delay(1000);
+</pre>
+</div>
+</div></div></body></html>

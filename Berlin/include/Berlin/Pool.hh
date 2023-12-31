@@ -1,7 +1,7 @@
-/*$Id: Pool.hh,v 1.2 1999/09/23 20:01:35 gray Exp $
+/*$Id: Pool.hh,v 1.4 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -40,20 +40,20 @@ private:
     unsigned int size;
     bool used;
   };
-  vector<bucket> buckets;
+  std::vector<bucket> buckets;
 };
 
 template <class T>
 inline Pool<T>::~Pool()
 {
-  for (vector<bucket>::iterator i = buckets.begin(); i != buckets.end(); i++)
+  for (std::vector<bucket>::iterator i = buckets.begin(); i != buckets.end(); ++i)
     delete (*i).data;
 }
 
 template <class T>
 inline T *Pool<T>::allocate(unsigned int size)
 {
-  for (vector<bucket>::iterator i = buckets.begin(); i != buckets.end(); i++)
+  for (std::vector<bucket>::iterator i = buckets.begin(); i != buckets.end(); ++i)
     if (!(*i).used && (*i).size >= size)
       {
 	(*i).used = true;
@@ -71,7 +71,7 @@ inline T *Pool<T>::allocate(unsigned int size)
 template <class T>
 inline void Pool<T>::deallocate(T *d)
 {
-  for (vector<bucket>::iterator i = buckets.begin(); i != buckets.end(); i++)
+  for (std::vector<bucket>::iterator i = buckets.begin(); i != buckets.end(); ++i)
     if ((*i).data == d)
       {
 	(*i).used = false;

@@ -10,7 +10,7 @@ public:
   Handler(int s) : msg(s) {}
   virtual void process()
     {
-      cout << "Handler::process : " << msg << " from thread " << Thread::id() << endl;
+      std::cout << "Handler::process : " << msg << " from thread " << Thread::id() << std::endl;
       sleep(1);
     }
 private:

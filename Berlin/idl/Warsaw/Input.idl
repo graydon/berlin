@@ -1,0 +1,74 @@
+/*$Id: Input.idl,v 1.4 2000/08/31 18:51:47 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Input_idl
+#define _Warsaw_Input_idl
+
+#include <Warsaw/Types.idl>
+
+module Warsaw
+{
+  module Input
+    {
+      //. the device id. Each logical device has a unique id attached to it
+      //. which is used by events, focus etc.
+      typedef unsigned long Device;
+      //. a set of flags
+      typedef unsigned long Bitset;
+      //. the generalization of keys and mouse buttons
+      struct Toggle
+      {
+	enum type {press, hold, release} actuation;
+	unsigned long number;
+      };
+      //. positional events have one...
+      typedef Vertex        Position;
+      //. also possible: simple value input
+      typedef double        Value;
+      //. the actual attributes; the concrete type is discriminated by these
+      enum Discriminator { telltale, key, button, positional, valuation};
+      //. the data associated with these attributes
+      union Payload switch (Discriminator)
+	{
+	case telltale: Bitset state;
+	case key:
+	case button: Toggle selection;
+	case positional: Position location;
+	case valuation: Value val;
+	};
+      
+      //. each item contains a device id and an attribute
+      struct Item
+      {
+	Device dev;
+	Payload attr;
+      };
+      //. an event is simply a list of items
+      typedef sequence<Input::Item> Event;
+      //. An event filter controls the routing of events
+      interface Filter
+	{
+	  boolean handle(in Event e);
+	};
+    };
+};
+
+#endif

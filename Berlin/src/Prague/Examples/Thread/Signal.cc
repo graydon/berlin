@@ -9,7 +9,7 @@ public:
   Notifier() : count(0) {}
   virtual void notify(int signum)
   {
-    cerr << "catched signal '" << Signal::name(signum) << '\'' << endl;
+    std::cerr << "catched signal '" << Signal::name(signum) << '\'' << std::endl;
     if (++count == 5) exit(0);
   }
 private:

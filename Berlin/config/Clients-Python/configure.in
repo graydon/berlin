@@ -1,0 +1,80 @@
+dnl $Id: configure.in,v 1.9 2000/11/09 17:26:38 stefan Exp $
+dnl
+dnl This source file is a part of the Berlin Project.
+dnl Copyright (C) 2000 Håvard Skinnemoen <skinnemo@itk.ntnu.no>
+dnl Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+dnl http://www.berlin-consortium.org/
+dnl
+dnl This library is free software; you can redistribute it and/or
+dnl modify it under the terms of the GNU Library General Public
+dnl License as published by the Free Software Foundation; either
+dnl version 2 of the License, or (at your option) any later version.
+dnl
+dnl This library is distributed in the hope that it will be useful,
+dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+dnl Library General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU Library General Public
+dnl License along with this library; if not, write to the
+dnl Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+dnl MA 02139, USA.
+dnl
+dnl Process this file with autoconf to produce a configure script.
+
+dnl ------------------------------------------------------------------
+dnl Autoconf initialization
+dnl ------------------------------------------------------------------
+AC_PREREQ(2.12)
+AC_REVISION($Revision: 1.9 $)
+
+AC_INIT(subdirs.mk.in)
+AC_VERSION(0, 2, 2, 0, 0)
+AC_SET_PATHS(../..)
+
+AC_DIVERT_PUSH(AC_DIVERSION_INIT)dnl
+AC_CONFIG_AUX_DIR(config)
+AC_DIVERT_POP()
+
+AC_HEADLINE(dnl
+Berlin Clients-Python, Berlin python clients, dnl
+[Copyright (c) 2000 The Berlin Project <berlin-design@lists.sourceforge.net>],
+VERSION)
+
+dnl ------------------------------------------------------------------
+dnl CORBA environment
+dnl ------------------------------------------------------------------
+AC_MSG_PART(CORBA Environment)
+BERLIN_OMNIORBPY_CHECK
+
+dnl ------------------------------------------------------------------
+dnl Decisions
+dnl ------------------------------------------------------------------
+
+dnl Decide whether we are ready to build
+PYTHON=
+if test ".$berlin_cv_sys_omniidl_py" = .yes ; then
+	PYTHON="clients/python"
+fi
+AC_SUBST(PYTHON)
+
+dnl ------------------------------------------------------------------
+dnl Print a summary of what's going to be built
+dnl ------------------------------------------------------------------
+AC_MSG_PART(Summary)
+AC_MSG_RESULT([Build Python runtime:          $ac_cv_lib_omniORBpy])
+
+dnl ------------------------------------------------------------------
+dnl Output substitution
+dnl ------------------------------------------------------------------
+AC_MSG_PART(Output Substitution)
+
+mkdir -p $builddir/bin
+mkdir -p $builddir/clients/python
+mkdir -p $builddir/lib/python
+
+AC_OUTPUT([
+	$builddir/config/Clients-Python/subdirs.mk:config/Clients-Python/subdirs.mk.in
+	$builddir/config/Clients-Python/local.mk:config/Clients-Python/local.mk.in
+	$builddir/clients/python/Makefile:config/Clients-Python/Makefile.omniorb.in
+])

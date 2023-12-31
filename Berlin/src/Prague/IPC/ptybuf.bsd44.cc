@@ -1,7 +1,7 @@
-/*$Id: ptybuf.bsd44.cc,v 1.3 1999/11/16 02:15:20 stefan Exp $
+/*$Id: ptybuf.bsd44.cc,v 1.5 2000/12/21 21:05:44 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -46,12 +46,12 @@ int ptybuf::openpty()
       for (char *i = "0123456789abcdef"; *i != 0; i++)
 	{
 	  ptydev[9] = *i;
-	  data->fd = open(ptydev.c_str(), O_RDWR);
-          if (data->fd >= 0)
+	  fd(open(ptydev.c_str(), O_RDWR));
+          if (fd() >= 0)
 	    {
 	      ttydev[8] = ptydev[8];
 	      ttydev[9] = ptydev[9];
-	      if (access(ttydev.c_str(), R_OK | W_OK) == 0) return data->fd;
+	      if (access(ttydev.c_str(), R_OK | W_OK) == 0) return fd();
 	    }
 	  else if (errno == ENOENT) return -1;
 	}

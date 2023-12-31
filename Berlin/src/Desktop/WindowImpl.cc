@@ -1,7 +1,7 @@
-/*$Id: WindowImpl.cc,v 1.12 1999/11/06 20:23:08 stefan Exp $
+/*$Id: WindowImpl.cc,v 1.33 2001/04/18 06:07:27 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -20,209 +20,183 @@
  * MA 02139, USA.
  */
 
-#include "Berlin/Vertex.hh"
-#include "Berlin/Logger.hh"
 #include "Desktop/WindowImpl.hh"
+#include <Berlin/Vertex.hh>
+#include <Prague/Sys/Tracer.hh>
+#include <Warsaw/IO.hh>
 
 using namespace Prague;
+using namespace Warsaw;
+using namespace Layout;
 
-class Mover : public WindowImpl::Manipulator
+class WindowImpl::UnmappedStageHandle : public virtual POA_Layout::StageHandle,
+		                        public virtual ServantBase
 {
 public:
-  virtual void execute(const CORBA::Any &any)
-    {
-      if (CORBA::is_nil(handle)) return;
-      Vertex *delta;
-      if (any >>= delta)
-	{
- 	  Vertex p = handle->position();
-	  handle->position(p + *delta);
-	}
-      else  cerr << "Mover::execute : wrong message type !" << endl;
-    }
-};
-
-class Resizer : public WindowImpl::Manipulator
-{
-public:
-  virtual void execute(const CORBA::Any &any)
-    {
-      if (CORBA::is_nil(handle)) return;
-      Vertex *delta;
-      if (any >>= delta)
-	{
- 	  Vertex s = handle->size();
-          Graphic::Requisition r;
-          handle->child()->request(r);
-          if (r.x.defined)
-            {
-              if (delta->x > 0.) s.x = min(s.x + delta->x, r.x.maximum);
-              else s.x = max(s.x + delta->x, r.x.minimum);
-            }
-          else s.x += delta->x;
-          if (r.y.defined)
-            {
-              if (delta->y > 0.) s.y = min(s.y + delta->y, r.y.maximum);
-              else s.y = max(s.y + delta->y, r.y.minimum);
-            }
-          else s.y += delta->y;
-	  handle->size(s);
-	}
-      else cerr << "Resizer::execute : wrong message type !" << endl;
-    }
-};
-
-class MoveResizer : public WindowImpl::Manipulator
-{
-public:
-  MoveResizer(Alignment x, Alignment y, CORBA::Short b) : xalign(x), yalign(y), border(b) {}
-  virtual void execute(const CORBA::Any &any)
-    {
-      SectionLog section("MoveResizer::execute");
-      if (CORBA::is_nil(handle)) return;
-      Vertex *vertex;
-      if (any >>= vertex)
-	{
-          Graphic::Requisition r;
-          handle->child()->request(r);
- 	  Vertex pos = handle->position();
- 	  Vertex size = handle->size();
-	  Vertex p = pos, s = size;
-	  if (border & Window::left && xalign != 0.)
-	    {
-	      s.x = min(r.x.maximum, max(r.x.minimum, size.x - vertex->x/xalign));
-	      p.x = pos.x - xalign * (s.x - size.x);
-	    }
-	  else if (border & Window::right && xalign != 1.)
-	    {
-	      s.x = min(r.x.maximum, max(r.x.minimum, size.x + vertex->x/(1.-xalign)));
-	      p.x = pos.x - xalign * (s.x - size.x);
-	    }
-	  if (border & Window::top && yalign != 0.)
-	    {
-	      s.y = min(r.y.maximum, max(r.y.minimum, size.y - vertex->y/yalign));
-	      p.y = pos.y - yalign * (s.y - size.y);
-	    }
-	  else if (border & Window::bottom && yalign != 1.)
-	    {
-	      s.y = min(r.y.maximum, max(r.y.minimum, size.y + vertex->y/(1.-yalign)));
-	      p.y = pos.y - yalign * (s.y - size.y);
-	    }
-	  handle->parent()->begin();
-	  handle->position(p);
-	  handle->size(s);
-	  handle->parent()->end();
-	}
-      else cerr << "MoveResizer::execute : wrong message type !" << endl;
-    }
+  UnmappedStageHandle(Stage_ptr, Graphic_ptr, const Vertex &, const Vertex &, Stage::Index);
+  UnmappedStageHandle(StageHandle_ptr);
+  virtual ~UnmappedStageHandle();
+  virtual Stage_ptr parent() { return Stage::_duplicate(_parent);}
+  virtual Graphic_ptr child() { return Warsaw::Graphic::_duplicate(_child);}
+  virtual void remove() {}
+  virtual Vertex position() { return _position;}
+  virtual void position(const Vertex &pp) { _position = pp;}
+  virtual Vertex size() { return _size;}
+  virtual void size(const Vertex &ss) { _size = ss;}
+  virtual Stage::Index layer() { return _layer;}
+  virtual void layer(Stage::Index ll) { _layer = ll;}
 private:
-  Alignment xalign, yalign;
-  CORBA::Short border;
+  Stage_var    _parent;
+  Graphic_var  _child;
+  Vertex       _position;
+  Vertex       _size;
+  Stage::Index _layer;
 };
 
-class Relayerer : public WindowImpl::Manipulator
-{
-public:
-  virtual void execute(const CORBA::Any &any)
-    {
-      if (CORBA::is_nil(handle)) return;
-      Stage::Index i;
-      if (any >>= i)
-	{
-	  handle->layer(i);
-	}
-      else cerr << "Relayerer::execute : wrong message type !" << endl;
-    }
-};
-
-void WindowImpl::Mapper::execute(const CORBA::Any &)
-{
-  if (flag) window->map();
-  else window->unmap();
-}
+WindowImpl::UnmappedStageHandle::UnmappedStageHandle(Stage_ptr par, Graphic_ptr cc,
+						     const Vertex &pp, const Vertex &ss, Stage::Index ll)
+  : _parent(Stage::_duplicate(par)), _child(Warsaw::Graphic::_duplicate(cc)), _position(pp), _size(ss), _layer(ll) {}
+WindowImpl::UnmappedStageHandle::UnmappedStageHandle(StageHandle_ptr handle)
+  : _parent(handle->parent()),
+    _child(handle->child()),
+    _position(handle->position()),
+    _size(handle->size()),
+    _layer(handle->layer())
+{}
+WindowImpl::UnmappedStageHandle::~UnmappedStageHandle() { Trace trace("UnmappedStageHandle::~UnmappedStageHandle");}
 
 WindowImpl::WindowImpl()
-  : ControllerImpl(false), unmapped(0), manipulators(3), mapper(0)
+  : ControllerImpl(false)
 {
-  manipulators[0] = new Mover;
-  manipulators[0]->_obj_is_ready(_boa());
-  manipulators[1] = new Resizer;
-  manipulators[1]->_obj_is_ready(_boa());
-  manipulators[2] = new Relayerer;
-  manipulators[2]->_obj_is_ready(_boa());
-  mapper = new Mapper(this, true);
-  mapper->_obj_is_ready(_boa());
-  unmapper = new Mapper(this, false);
-  unmapper->_obj_is_ready(_boa());
+  Trace trace("WindowImpl::WindowImpl");
 }
 
 WindowImpl::~WindowImpl()
 {
-  for (mtable_t::iterator i = manipulators.begin(); i != manipulators.end(); i++)
-    (*i)->_dispose();
-  mapper->_dispose();
-  unmapper->_dispose();
+  Trace trace("WindowImpl::~WindowImpl");
+  mapped(false);
 }
 
-void WindowImpl::insert(Desktop_ptr desktop, bool mapped)
+void WindowImpl::need_resize()
 {
-  SectionLog section("WindowImpl::insert");
+  Trace trace("WindowImpl::need_resize");
+  Vertex size = _handle->size();
+  Warsaw::Graphic::Requisition r;
+  request(r);
+  if (r.x.minimum <= size.x && r.x.maximum >= size.x &&
+      r.y.minimum <= size.y && r.y.maximum >= size.y &&
+      r.z.minimum <= size.z && r.z.maximum >= size.z)
+    need_redraw();
+  else
+    {
+      size.x = std::min(r.x.maximum, std::max(r.x.minimum, size.x));
+      size.y = std::min(r.y.maximum, std::max(r.y.minimum, size.y));
+      size.z = std::min(r.z.maximum, std::max(r.z.minimum, size.z));
+      _handle->size(size);
+    }
+}
+
+/*
+ * cache the focus holding controllers so we can restore them when the window
+ * receives focus again...
+ */
+CORBA::Boolean WindowImpl::request_focus(Controller_ptr c, Warsaw::Input::Device d)
+{
+  if (_unmapped) return false;
+  Controller_var parent = parent_controller();
+  if (CORBA::is_nil(parent)) return false;
+  if (parent->request_focus(c, d))
+    {
+      if (_focus.size() <= d) _focus.resize(d + 1);
+      _focus[d] = Warsaw::Controller::_duplicate(c);
+      return true;
+    }
+  else return false;
+}
+
+void WindowImpl::insert(Desktop_ptr desktop)
+{
+  Trace trace("WindowImpl::insert");
   Vertex position, size;
-  position.x = position.y = 100., position.z = 0.;
-  Graphic::Requisition r;
+  position.x = position.y = 1000., position.z = 0.;
+  Warsaw::Graphic::Requisition r;
   request(r);
   size.x = r.x.natural, size.y = r.y.natural, size.z = 0;
-  unmapped = new UnmappedStageHandle(desktop, Graphic_var(_this()), position, size, 0);
-  unmapped->_obj_is_ready(_boa());
-  handle = StageHandle_var(unmapped->_this());
-  if (mapped) map();
+  _unmapped = new UnmappedStageHandle(desktop, Graphic_var(_this()), position, size, 0);
+  _handle = _unmapped->_this();
 }
 
-Command_ptr WindowImpl::move() { return manipulators[0]->_this();}
-Command_ptr WindowImpl::resize() { return manipulators[1]->_this();}
-Command_ptr WindowImpl::moveResize(Alignment x, Alignment y, CORBA::Short b)
+Vertex WindowImpl::position()
 {
-  manipulators.push_back(new MoveResizer(x, y, b));
-  manipulators.back()->_obj_is_ready(_boa());
-  return manipulators.back()->_this();
-}
-Command_ptr WindowImpl::relayer() { return manipulators[2]->_this();}
-Command_ptr WindowImpl::map(CORBA::Boolean f)
-{
-  return f ? mapper->_this() : unmapper->_this();
+  Prague::Guard<Mutex> guard(_mutex);
+  return _handle->position();
 }
 
-// void WindowImpl::pick(PickTraversal_ptr traversal)
-// {
-//   SectionLog section("WindowImpl::pick");
-//   traversal->enterController(Controller_var(_this()));
-//   MonoGraphic::traverse(traversal);
-//   traversal->leaveController();
-// }
-
-void WindowImpl::map()
+void WindowImpl::position(const Vertex &p)
 {
-  MutexGuard guard(mutex);
-  if (!unmapped) return;
-  Stage_var stage = handle->parent();
-  stage->begin();
-  StageHandle_var tmp = stage->insert(Graphic_var(_this()), handle->position(), handle->size(), handle->layer()); 
-  stage->end();
-  handle = tmp;
-  for (mtable_t::iterator i = manipulators.begin(); i != manipulators.end(); i++)
-    (*i)->bind(handle);
-  unmapped->_dispose();
-  unmapped = 0;
+  Trace trace("WindowImpl::position");
+  Prague::Guard<Mutex> guard(_mutex);
+  _handle->position(p);
 }
 
-void WindowImpl::unmap()
+Vertex WindowImpl::size()
 {
-  MutexGuard guard(mutex);
-  if (unmapped) return;
-  unmapped = new UnmappedStageHandle(handle);
-  unmapped->_obj_is_ready(_boa());
-  Stage_var stage = handle->parent();
-  stage->begin();
-  stage->remove(handle); 
-  stage->end();
+  Prague::Guard<Mutex> guard(_mutex);
+  return _handle->size();
+}
+
+void WindowImpl::size(const Vertex &s)
+{
+  Trace trace("WindowImpl::size");
+  Prague::Guard<Mutex> guard(_mutex);
+  _handle->size(s);
+}
+
+Stage::Index WindowImpl::layer()
+{
+  Prague::Guard<Mutex> guard(_mutex);
+  return _handle->layer();
+}
+
+void WindowImpl::layer(Stage::Index l)
+{
+  Trace trace("WindowImpl::layer");
+  Prague::Guard<Mutex> guard(_mutex);
+  _handle->layer(l);
+}
+
+CORBA::Boolean WindowImpl::mapped()
+{
+  Prague::Guard<Mutex> guard(_mutex);
+  return !_unmapped;
+}
+
+void WindowImpl::mapped(CORBA::Boolean flag)
+{
+  Trace trace("WindowImpl::mapped");
+  if (flag)
+    /*
+     * map
+     */
+    {
+      Prague::Guard<Mutex> guard(_mutex);
+      if (!_unmapped) return;
+      Stage_var stage = _handle->parent();
+      stage->begin();
+      StageHandle_var tmp = stage->insert(Graphic_var(_this()), _handle->position(), _handle->size(), _handle->layer()); 
+      stage->end();
+      _handle = tmp;
+      _unmapped = 0;
+    }
+  else
+    /*
+     * unmap
+     */
+    {
+      Prague::Guard<Mutex> guard(_mutex);
+      if (_unmapped) return;
+      _unmapped = new UnmappedStageHandle(_handle);
+      _handle->remove();
+      _handle = _unmapped->_this();
+    }
 }

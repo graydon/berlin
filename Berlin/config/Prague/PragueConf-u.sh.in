@@ -1,0 +1,12 @@
+#! /bin/sh
+#
+# Special Conf file to be used before Prague is installed
+
+module_name=Prague
+module_description="The Berlin Utility Library"
+prefix=
+exec_prefix=
+module_includes="@CPPFLAGS@"
+module_libdir=""
+module_libs="-lPrague @LIBS@"
+module_version="@SH_VERSION@"

@@ -1,7 +1,7 @@
-/*$Id: DesktopKitImpl.hh,v 1.3 1999/10/19 21:07:52 gray Exp $
+/*$Id: DesktopKitImpl.hh,v 1.12 2000/11/10 20:55:09 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -25,28 +25,37 @@
 #include <Warsaw/config.hh>
 #include <Warsaw/DesktopKit.hh>
 #include <Warsaw/LayoutKit.hh>
+#include <Warsaw/ToolKit.hh>
 #include <Warsaw/WidgetKit.hh>
 #include <Warsaw/Desktop.hh>
-#include <Berlin/CloneableImpl.hh>
-#include <vector>
+#include <Berlin/KitImpl.hh>
+#include <Berlin/RefCountVar.hh>
 
 class WindowImpl;
 class DesktopImpl;
 
-class DesktopKitImpl : lcimplements(DesktopKit), virtual public CloneableImpl
+class DesktopKitImpl : public virtual POA_Warsaw::DesktopKit,
+		       public KitImpl
 {
  public:
-  DesktopKitImpl();
+  DesktopKitImpl(KitFactory *, const Warsaw::Kit::PropertySeq &);
   virtual ~DesktopKitImpl();
-  virtual void bind(ServerContext_ptr);
-  virtual Desktop_ptr desk();
-  virtual Window_ptr shell(Graphic_ptr);
-  virtual Window_ptr transient(Graphic_ptr);
+  virtual void bind(Warsaw::ServerContext_ptr);
+  virtual Warsaw::Desktop_ptr desk();
+  virtual Warsaw::Window_ptr shell(Warsaw::Controller_ptr);
+  virtual Warsaw::Window_ptr transient(Warsaw::Controller_ptr);
+  virtual Warsaw::Window_ptr pulldown(Warsaw::Controller_ptr);
+
+  virtual Warsaw::Command_ptr move(Warsaw::Window_ptr);
+  virtual Warsaw::Command_ptr resize(Warsaw::Window_ptr);
+  virtual Warsaw::Command_ptr move_resize(Warsaw::Window_ptr, Warsaw::Alignment, Warsaw::Alignment, CORBA::Short);
+  virtual Warsaw::Command_ptr relayer(Warsaw::Window_ptr);
+  virtual Warsaw::Command_ptr map(Warsaw::Window_ptr, CORBA::Boolean);
  private:
-  Desktop_var   desktop;
-  LayoutKit_var lk;
-  WidgetKit_var wk;
-  vector<WindowImpl *> windows;
+  RefCount_var<Warsaw::Desktop>   _desktop;
+  RefCount_var<Warsaw::LayoutKit> _layout;
+  RefCount_var<Warsaw::ToolKit>   _tool;
+  RefCount_var<Warsaw::WidgetKit> _widget;
 };
 
-#endif /* _DesktopKitImpl_hh */
+#endif

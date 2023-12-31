@@ -1,7 +1,7 @@
-/*$Id: AllocationImpl.hh,v 1.3 1999/05/31 19:46:27 gray Exp $
+/*$Id: AllocationImpl.hh,v 1.9 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,28 +24,35 @@
 
 #include <Warsaw/config.hh>
 #include <Warsaw/Graphic.hh>
+#include <Berlin/ImplVar.hh>
+#include <Berlin/ServantBase.hh>
+#include <Berlin/Provider.hh>
 #include <vector>
 
 class RegionImpl;
 class TransformImpl;
 
-class AllocationImpl : implements(Allocation)
+class AllocationImpl : public virtual POA_Warsaw::Allocation,
+                       public virtual ServantBase
 {
   struct State
   {
-    RegionImpl *allocation;
-    TransformImpl *transformation;
-    Screen_var root;
+    RegionImpl        *allocation;
+    TransformImpl     *transformation;
+    Warsaw::Screen_var root;
   };
-  typedef vector<State> list_t;
+  typedef std::vector<State> list_t;
+  friend class Provider<AllocationImpl>;
 public:
   AllocationImpl();
   ~AllocationImpl();
-  void add(Region_ptr, Screen_ptr);
+  void add(Warsaw::Region_ptr, Warsaw::Screen_ptr);
   CORBA::Long size();
-  Allocation::Info *get(CORBA::Long);
+  Warsaw::Allocation::Info *get(CORBA::Long);
+  void clear();
 private:
-  list_t list;
+  bool _active : 1;
+  list_t _list;
 };
 
-#endif /* _AllocationImpl_hh */
+#endif 

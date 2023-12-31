@@ -1,7 +1,7 @@
-/*$Id: Connector.hh,v 1.2 1999/04/27 20:11:10 gray Exp $
+/*$Id: Connector.hh,v 1.9 2001/03/27 05:38:42 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,35 +19,60 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _Connector_hh
-#define _Connector_hh
+#ifndef _Prague_Connector_hh
+#define _Prague_Connector_hh
 
-#include <Prague/IPC/Agent.hh>
+#include <Prague/IPC/SocketAgent.hh>
 
 namespace Prague
 {
 
-/* @Class {Connector : public Agent}
- *
- * @Description {creates and handles (client/server) connections}
- */
-class Connector : public Agent
+//. a Connector is an Agent that connects to
+//. a specified sockaddr asynchronously
+template <typename Connection, typename Socket>
+class Connector : public SocketAgent
 {
 public:
-  Connector(Notifier *) {}
-  Connector(const Connector &C) : Agent(C) {}
-  virtual        ~Connector() {}
-  virtual ipcbuf *ibuf() { return 0;}
-  virtual ipcbuf *obuf() { return 0;}
-  virtual ipcbuf *ebuf() { return 0;}
-  virtual bool  pending() { return false;}
-  virtual void  dispatchpending() {}
-protected:
-  virtual void  outputEOF() = 0;
-  virtual void  errorEOF() = 0;
+  //. create a Connector for the given sockaddr
+  Connector(Socket *socket, const typename Socket::address_type &peer)
+    : SocketAgent(socket), _peer(peer) {}
+  virtual ~Connector() { Trace trace("Connector::~Connector");}
+  virtual Socket *ibuf() { return static_cast<Socket *>(SocketAgent::ibuf());}
+  virtual Socket *obuf() { return static_cast<Socket *>(SocketAgent::obuf());}
+  //. start with the connection attempt
+  virtual void start();
 private:
+  //. if the connection attempt was succesful, create a new Connection for it
+  virtual bool process(int, iomask);
+  typename Socket::address_type _peer;
 };
+
+template <typename Connection, typename Socket>
+void Connector<Connection, Socket>::start()
+{
+  Trace trace("Connector::start");
+  mask(in);
+  ibuf()->connect(_peer);
+  SocketAgent::start();
+}
+
+template <typename Connection, typename Socket>
+bool Connector<Connection, Socket>::process(int, iomask)
+{
+  Trace trace("Connector::process");
+  int error = ibuf()->clearerror();
+  if (!error)
+    {
+      stop();
+      Connection *connection = new Connection(release_buf());
+      connection->mask(out);
+      connection->start();
+      connection->remove_ref();
+    }
+  else std::clog << "connect: " << strerror(error) << std::endl;
+  return false;
+}
 
 };
 
-#endif /* _Connector_hh */
+#endif

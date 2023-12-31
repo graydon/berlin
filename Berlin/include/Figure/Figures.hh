@@ -1,7 +1,7 @@
-/*$Id: Figures.hh,v 1.1 1999/10/04 22:57:10 gray Exp $
+/*$Id: Figures.hh,v 1.7 2000/12/21 21:05:43 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,92 +24,100 @@
 
 #include <Figure/FigureImpl.hh>
 
-namespace Figures
+class PointImpl : public virtual POA_Figure::Point,
+                  public FigureImpl
 {
-  class PointImpl : implements(Point), public FigureImpl
-  {
-  public:
-    PointImpl();
-    PointImpl(const Vertex &);
-    PointImpl(const PointImpl &);
-    virtual ~PointImpl();
-    virtual Vertex pt();
-    virtual void pt(const Vertex &);
-  };
+public:
+  PointImpl();
+  PointImpl(const Warsaw::Vertex &);
+  PointImpl(const PointImpl &);
+  virtual ~PointImpl();
+  virtual Warsaw::Vertex pt();
+  virtual void pt(const Warsaw::Vertex &);
+};
   
-  class LineImpl : implements(Line), public FigureImpl
-  {
-  public:
-    LineImpl();
-    LineImpl(const Vertex &, const Vertex &);
-    LineImpl(const LineImpl &);
-    virtual ~LineImpl();
-    virtual Vertex pt1();
-    virtual void pt1(const Vertex &);
-    virtual Vertex pt2();
-    virtual void pt2(const Vertex &);
-  };
-
-  class RectangleImpl : implements(Rectangle), public FigureImpl
-  {
-  public:
-    RectangleImpl();
-    RectangleImpl(const Vertex &, const Vertex &);
-    RectangleImpl(const RectangleImpl &);
-    virtual ~RectangleImpl();
-    virtual Vertex pt1();
-    virtual void pt1(const Vertex &);
-    virtual Vertex pt2();
-    virtual void pt2(const Vertex &);
-  };
-
-  class CircleImpl : implements(Circle), public FigureImpl
-  {
-  public:
-    CircleImpl();
-    CircleImpl(const Vertex &, Coord);
-    CircleImpl(const CircleImpl &);
-    virtual ~CircleImpl();
-    virtual void resize();
-    virtual Vertex center();
-    virtual void center(const Vertex &);
-    virtual Coord radius();
-    virtual void radius(Coord);
-  protected:
-    Vertex center_;
-    Coord radius_;
-  };
-
-  class EllipseImpl : implements(Ellipse), public FigureImpl
-  {
-  public:
-    EllipseImpl();
-    EllipseImpl(const Vertex &, Coord, Coord);
-    EllipseImpl(const EllipseImpl &);
-    virtual ~EllipseImpl();
-    virtual void resize();
-    virtual Vertex center();
-    virtual void center(const Vertex &);
-    virtual Coord radius1();
-    virtual void radius1(Coord);
-    virtual Coord radius2();
-    virtual void radius2(Coord);
-  protected:
-    Vertex center_;
-    Coord radius1_, radius2_;
-  };
-
-  class PathImpl : implements(Path), public FigureImpl
-  {
-  public:
-    PathImpl();
-    PathImpl(const Vertices &);
-    PathImpl(const PathImpl &);
-    virtual ~PathImpl();
-    virtual void resize();
-    Vertices *handles();
-  };
-
+class LineImpl : public virtual POA_Figure::Line,
+                 public FigureImpl
+{
+public:
+  LineImpl();
+  LineImpl(const Warsaw::Vertex &, const Warsaw::Vertex &);
+  LineImpl(const LineImpl &);
+  virtual ~LineImpl();
+  virtual Warsaw::Vertex pt1();
+  virtual void pt1(const Warsaw::Vertex &);
+  virtual Warsaw::Vertex pt2();
+  virtual void pt2(const Warsaw::Vertex &);
 };
 
-#endif /* _Figures_hh */
+class RectangleImpl : public virtual POA_Figure::Rectangle,
+                      public FigureImpl
+{
+public:
+  RectangleImpl();
+  RectangleImpl(const Warsaw::Vertex &, const Warsaw::Vertex &);
+  RectangleImpl(const RectangleImpl &);
+  virtual ~RectangleImpl();
+  virtual Warsaw::Vertex pt1();
+  virtual void pt1(const Warsaw::Vertex &);
+  virtual Warsaw::Vertex pt2();
+  virtual void pt2(const Warsaw::Vertex &);
+};
+
+class CircleImpl : public virtual POA_Figure::Circle,
+                   public FigureImpl
+{
+public:
+  CircleImpl();
+  CircleImpl(const Warsaw::Vertex &, Warsaw::Coord);
+  CircleImpl(const CircleImpl &);
+  virtual ~CircleImpl();
+  virtual void resize();
+  virtual Warsaw::Vertex center();
+  virtual void center(const Warsaw::Vertex &);
+  virtual Warsaw::Coord radius();
+  virtual void radius(Warsaw::Coord);
+protected:
+  Warsaw::Vertex _center;
+  Warsaw::Coord  _radius;
+};
+
+class EllipseImpl : public virtual POA_Figure::Ellipse,
+                    public FigureImpl
+{
+public:
+  EllipseImpl();
+  EllipseImpl(const Warsaw::Vertex &, Warsaw::Coord, Warsaw::Coord);
+  EllipseImpl(const EllipseImpl &);
+  virtual ~EllipseImpl();
+  virtual void resize();
+  virtual Warsaw::Vertex center();
+  virtual void center(const Warsaw::Vertex &);
+  virtual Warsaw::Coord radius1();
+  virtual void radius1(Warsaw::Coord);
+  virtual Warsaw::Coord radius2();
+  virtual void radius2(Warsaw::Coord);
+protected:
+  Warsaw::Vertex _center;
+  Warsaw::Coord  _radius1;
+  Warsaw::Coord  _radius2;
+};
+
+class PathImpl : public virtual POA_Figure::Path,
+                 public FigureImpl
+{
+public:
+  PathImpl(bool);
+  PathImpl(const Warsaw::Path &, bool);
+  PathImpl(const PathImpl &);
+  virtual ~PathImpl();
+  virtual void resize();
+  Warsaw::Path *handles();
+  void handles(const Warsaw::Path &);
+  CORBA::Boolean closed();
+private:
+  Warsaw::Path_var _handles;
+  bool             _closed;
+};
+
+#endif

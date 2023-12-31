@@ -1,7 +1,7 @@
-/*$Id: gzstream.hh,v 1.4 1999/06/18 14:08:33 gray Exp $
+/*$Id: gzstream.hh,v 1.7 2001/03/27 05:38:42 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -28,40 +28,32 @@
 namespace Prague
 {
 
-class gzstream_common : virtual public ios
-{  
-  friend class gzifstream;
-  friend class gzofstream;
-  friend gzofstream &setcompressionlevel(gzofstream &, int);
-  friend gzofstream &setcompressionstrategy(gzofstream &, int);
-public:
-  virtual ~gzstream_common() {}
-  void attach(int fd, int mode) { if (!buffer.attach(fd, mode)) clear(ios::failbit|ios::badbit); else clear();}
-  void open(const char *name, int mode) { if (!buffer.open(name, mode)) clear(ios::failbit|ios::badbit); else clear();}
-  void close() { if (!buffer.close()) clear(ios::failbit | ios::badbit);}
-protected:
-  gzstream_common() : ios(gzstream_common::rdbuf()) {}
-private:
-  gzbuf *rdbuf() { return &buffer;}
-  gzbuf buffer;
-};
-
-class gzifstream : public gzstream_common, public istream
+class gzifstream : public std::istream
 {
 public:
-  gzifstream() : ios(gzstream_common::rdbuf()) { clear(ios::badbit);}
-  gzifstream(const char *name, int mode = ios::in) : ios(gzstream_common::rdbuf()) { gzstream_common::open(name, mode);}
-  gzifstream(int fd, int mode = ios::in) : ios(gzstream_common::rdbuf()) { gzstream_common::attach(fd, mode);}
-  virtual ~gzifstream() {}
+  gzifstream() : std::istream(new gzbuf()) {}
+  gzifstream(const char *name, int mode = std::ios::in) : std::istream(new gzbuf()) { open(name, mode);}
+  gzifstream(int fd, int mode = std::ios::in) : std::istream(new gzbuf()) { attach(fd, mode);}
+  virtual ~gzifstream() { delete rdbuf();}
+  gzbuf *rdbuf() { return static_cast<gzbuf *>(std::istream::rdbuf());}
+  void attach(int fd, int mode) { if (!gzifstream::rdbuf()->attach(fd, mode)) clear(std::ios::failbit|std::ios::badbit); else clear();}
+  void open(const char *name, int mode) { if (!gzifstream::rdbuf()->open(name, mode)) clear(std::ios::failbit|std::ios::badbit); else clear();}
+  void close() { if (!rdbuf()->close()) clear(std::ios::failbit | std::ios::badbit);}
 };
 
-class gzofstream : public gzstream_common, public ostream
+class gzofstream : public std::ostream
 {
+  friend gzofstream &set_compressionlevel(gzofstream &, int);
+  friend gzofstream &set_compressionstrategy(gzofstream &, int);
 public:
-  gzofstream() : ios(gzstream_common::rdbuf()) { clear(ios::badbit);}
-  gzofstream(const char *name, int mode = ios::out) : ios(gzstream_common::rdbuf()) { gzstream_common::open(name, mode);}
-  gzofstream(int fd, int mode = ios::out) : ios(gzstream_common::rdbuf()) { gzstream_common::attach(fd, mode);}
-  virtual ~gzofstream() {}
+  gzofstream() : std::ostream(new gzbuf()) {}
+  gzofstream(const char *name, int mode = std::ios::out) : std::ostream(new gzbuf()) { open(name, mode);}
+  gzofstream(int fd, int mode = std::ios::out) : std::ostream(new gzbuf()) { attach(fd, mode);}
+  virtual ~gzofstream() { delete rdbuf();}
+  gzbuf *rdbuf() { return static_cast<gzbuf *>(std::ostream::rdbuf());}
+  void attach(int fd, int mode) { if (!gzofstream::rdbuf()->attach(fd, mode)) clear(std::ios::failbit|std::ios::badbit); else clear();}
+  void open(const char *name, int mode) { if (!gzofstream::rdbuf()->open(name, mode)) clear(std::ios::failbit|std::ios::badbit); else clear();}
+  void close() { if (!rdbuf()->close()) clear(std::ios::failbit | std::ios::badbit);}
 };
 
 template<class T> class gzomanip
@@ -79,26 +71,26 @@ template<class T> gzofstream &operator << (gzofstream &s, const gzomanip<T> &m)
   return (*m.func)(s, m.val);
 }
 
-inline gzofstream &setcompressionlevel(gzofstream &s, int l)
+inline gzofstream &set_compressionlevel(gzofstream &s, int l)
 {
   (s.rdbuf())->setcompressionlevel(l);
   return s;
 }
 
-inline gzofstream &setcompressionstrategy(gzofstream &s, int l)
+inline gzofstream &set_compressionstrategy(gzofstream &s, int l)
 {
   (s.rdbuf())->setcompressionstrategy(l);
   return s;
 }
 
-inline gzomanip<int> setcompressionlevel(int l)
+inline gzomanip<int> set_compressionlevel(int l)
 {
-  return gzomanip<int>(&setcompressionlevel,l);
+  return gzomanip<int>(&set_compressionlevel,l);
 }
 
-inline gzomanip<int> setcompressionstrategy(int l)
+inline gzomanip<int> set_compressionstrategy(int l)
 {
-  return gzomanip<int>(&setcompressionstrategy,l);
+  return gzomanip<int>(&set_compressionstrategy,l);
 }
 
 };

@@ -1,7 +1,7 @@
-/*$Id: User.hh,v 1.3 1999/08/30 14:42:06 gray Exp $
+/*$Id: User.hh,v 1.5 2001/03/21 06:28:22 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -28,18 +28,14 @@
 namespace Prague
 {
 
-/* @Class{User}
- *
- * @Description{}
- */
 class User
 {
 public:
   User(int id = -1);
-  User(const string &);
+  User(const std::string &);
   ~User() {}
-  int uid() const { return pwd->pw_uid;}
-  int gid() const { return pwd->pw_gid;}
+  uid_t uid() const { return pwd->pw_uid;}
+  gid_t gid() const { return pwd->pw_gid;}
   const char *name() const { return pwd->pw_name;}
   const char *realName() const { return pwd->pw_gecos;}
   const char *home() const { return pwd->pw_dir;}

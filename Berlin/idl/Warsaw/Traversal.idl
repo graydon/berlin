@@ -1,0 +1,63 @@
+/*$Id: Traversal.idl,v 1.5 2000/10/20 17:45:01 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Traversal_idl
+#define _Warsaw_Traversal_idl
+
+#include <Warsaw/Types.idl>
+
+module Warsaw
+{
+  interface Region;
+  interface Graphic;
+  interface Transform;
+  
+  //. The Traversal interface defines the mechanism for
+  //. visiting a collection of graphics. A traversal is passed
+  //. to a graphic's traverse operation and maintains common
+  //. information as well as the stack of information associated
+  //. with each level of the traversal.
+  interface Traversal
+    {
+      enum order {up, down};
+      //. Return the current allocation region for the current graphic in the traversal
+      Region current_allocation();
+      //. Return the cumulative transformation matrix for
+      //. the current graphic in the traversal.
+      Transform current_transformation();
+      Graphic current_graphic();
+      boolean bounds(out Vertex lower, out Vertex upper, out Vertex origin);
+      boolean intersects_allocation();
+      boolean intersects_region(in Region r);
+      //. Continue traversing down to the given child graphic.
+      void traverse_child (in Graphic g, in Tag e, in Region r, in Transform t);
+      //. Call the traversal-specific operation on the current graphic.
+      //. This operation should be called on a leaf graphic
+      //. (or a composite that wants to do more than traverse
+      //. its children) when the traversal operation is other.
+      void visit(in Graphic g);
+      order direction();
+      boolean ok();
+      void update();
+    };
+};
+
+#endif

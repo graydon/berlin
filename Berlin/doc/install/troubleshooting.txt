@@ -1,0 +1,90 @@
+This is a trouble-shooting guide to getting the Berlin display system
+up and running.
+
+
+
+1) Building
+===========
+
+1-1) The 'configure' script can't find my CORBA environment, it says:
+
+|  configure: error: No supported CORBA environment found!
+|  configure: error: /usr/src/Berlin/./config/Warsaw/configure failed for config/Warsaw
+
+You may not have configured your ORB environment properly.  Remember
+that you need to fully install your ORB application.  In the case of
+omniORB, this includes properly building omniORB and omniORBpy,
+running the ORB name server and having the ORB bin directory in your
+path for programs such as omniidl.
+
+
+
+2) Installation
+===============
+
+(No installation instructions yet.)
+
+
+
+3) Running
+==========
+
+3-1) When starting up the server it spits out errors finding shared libraries:
+
+|  server: error while loading shared libraries: libWarsaw.so: cannot open shared object file: No such file or directory
+
+You need to add the $berlin-build lib directory to your
+LD_LIBRARY_PATH environment variable.  With sh/bash/zsh do it like
+this ($berlin-build is your Berlin build directory, see the INSTALL
+file for more info):
+
+  $ export LD_LIBRARY_PATH=$berlin-build/lib:$LD_LIBRARY_PATH
+
+And for csh/tcsh:
+
+  % setenv LD_LIBRARY_PATH $berlin-build/lib:$LD_LIBRARY_PATH
+
+----------------------------------------------------------------
+
+3-2) When starting up the server I get:
+
+|  unable to open IDL:Warsaw/DrawingKit:1.0 with attribute implementation=LibArtDrawingKit
+
+Are you running the Berlin server from the right build directory?
+Also check the berlinrc config file you're supplying for the server.
+
+----------------------------------------------------------------
+
+3-3) I get errors about NameService like:
+
+|  Cannot get initial reference for NameService:
+
+Run the omniORB nameserver, see the omniORB docs for more information.
+
+----------------------------------------------------------------
+
+3-4) When I running the Berlin demo client, text isn't displayed, on
+     buttons or next to the checkboxes.
+
+Try specifying which default font the server is to use by setting the
+environment variable 'BERLIN_FONT_CHOOSER' to the empty string and
+reruning the server.  On startup, it should present you with a list of
+fonts to choose from on the console from where you started up the
+server.
+
+
+
+Other Problems
+==============
+
+You may also read or post to the Berlin Help forum for questions not
+answered above, located at:
+
+  http://sourceforge.net/forum/?group_id=322
+
+or check out the Berlin FAQ at:
+
+  http://www2.berlin-consortium.org/wiki/html/Berlin/FAQ.htm
+
+The maintainer of this troubleshooting guide is Mishka Gorodnitzky
+<misaka@berlin-consortium.org>.

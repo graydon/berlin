@@ -1,7 +1,7 @@
-# $Id: Network.mk,v 1.5 1999/08/30 14:42:06 gray Exp $
+# $Id: Network.mk,v 1.9 2000/09/25 15:56:58 skinnemo Exp $
 #
 # This source file is a part of the Berlin Project.
-# Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+# Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
 # http://www.berlin-consortium.org
 #
 # This library is free software; you can redistribute it and/or
@@ -29,14 +29,14 @@ NTW_PRF = $(patsubst %.cc, $(ppath)/%.o, $(NTW_SRC))
 $(dpath)/%.d:	Network/%.cc $(ipath)/Prague/Network/%.hh
 		@echo making dependencies for $<
 		@if [ ! -d $(dpath) ]; then mkdir $(dpath); fi
-		@$(SHELL) -ec '$(CXX) -MM $(CXXFLAGS) $< \
+		@$(SHELL) -ec '$(CXX) $(DEPFLAGS) $(CPPFLAGS) $< \
 		| sed "s/$*\\.o[ :]*/$(dpath)\/$*\\.d $(opath)\/$*\\.o $(gpath)\/$*\\.o $(ppath)\/$*\\.o : /g" > $@'
 $(opath)/%.o:	Network/%.cc
-		$(CXX) $(CXXFLAGS) $(OPTFLAGS) $(SOFLAGS) -c $< -o $@
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OPTFLAGS) $(SOFLAGS) -c $< -o $@
 $(gpath)/%.o:	Network/%.cc
-		$(CXX) $(CXXFLAGS) $(GDBFLAGS) -c $< -o $@
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(GDBFLAGS) -c $< -o $@
 $(ppath)/%.o:	Network/%.cc
-		$(CXX) $(CXXFLAGS) $(OPTFLAGS) $(SOFLAGS) $(PRFFLAGS) -c $< -o $@
+		$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OPTFLAGS) $(SOFLAGS) $(PRFFLAGS) -c $< -o $@
 
 clean:		networkclean
 networkclean:
@@ -46,7 +46,9 @@ networkclean:
 ifneq ($(MAKECMDGOALS),config) 
 ifneq ($(MAKECMDGOALS),clean) 
 ifneq ($(MAKECMDGOALS),distclean) 
+ifneq ($(MAKECMDGOALS),cvsclean) 
 -include $(NTW_DEP)
+endif
 endif 
 endif 
 endif 

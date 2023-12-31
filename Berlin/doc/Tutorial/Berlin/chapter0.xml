@@ -1,0 +1,113 @@
+<chapter><title>Getting Started</title>
+<para>
+	<!-- talk about setting up berlin and writing a first little applet -->
+</para>
+<sect1>
+<title>finding the server</title>
+<para>The first thing to do when starting a client is to get a reference to the server object. You do this
+by asking the naming server. The naming server is a separate process, whos address is configured into the
+CORBA runtime environment, such that you can look it up as an 'initial reference'. Here is the relevant code 
+in python:</para>
+<programlisting>
+  orb = CORBA.ORB_init(sys.argv, CORBA.ORB_ID)
+  object = orb.resolve_initial_references("NameService");
+  ncontext = object._narrow(CosNaming.NamingContext)
+  name = [CosNaming.NameComponent("IDL:Warsaw/Server:1.0", "Object")]
+  object = ncontext.resolve(name)
+  server = object._narrow(Warsaw.Server)
+</programlisting>
+<para>and the same in C++:</para>
+<programlisting>
+  CORBA::ORB_var orb = CORBA::ORB_init(argc, argv, "omniORB3");
+  CosNaming::NamingContext_var ncontext = resolve_init&lt;CosNaming::NamingContext&gt;(orb, "NameService");
+  Server_var server = resolve_name&lt;Server&gt;(ncontext, "IDL:Warsaw/Server:1.0");
+</programlisting>
+<para>One of the most frequent errors is a misconfigured naming service, i.e. the ORB is unable to
+retrieve the NameService reference. Make sure your naming server is running, and the ORB is able to communicate
+with it. (Various ORB's provide applets to inspect the naming context graph. You can use these tools as a debugging
+help.)</para>
+</sect1>
+<sect1>
+<title>establishing a connection</title>
+<para>The next step is to register with the server, i.e. to request that it hands you a ServerContext. To authenticate
+yourself, you have to provide a ClientContext object which is able to provide a set of credentials to the server.
+You therefor create a ClientContextImpl object (a 'servant' in CORBA terminology), then you bind it to an abstract
+'CORBA Object', by means of a 'Portable Object Adapter' (POA). The POA manages the demultiplexing of incoming requests,
+i.e. it is responsible that other parties can talk to the servants that are activated with it. Here is the python version
+:</para>
+<programlisting>
+  poa = orb.resolve_initial_references("RootPOA")
+  poaManager = poa._get_the_POAManager()
+  poaManager.activate()
+  ci = ClientContextImpl()
+  client = ci._this()
+  context  = server.create_server_context(client)
+</programlisting>
+<para>and the same in C++:</para>
+<programlisting>
+  PortableServer::POA_var poa = resolve_init&lt;PortableServer::POA&gt;(orb, "RootPOA");
+  PortableServer::POAManager_var pman = poa->the_POAManager();
+  pman->activate();
+  ClientContextImpl *ci = new ClientContextImpl;
+  ClientContext_var client = ci._this();
+  ServerContext_var context = server->create_server_context(client);
+</programlisting>
+</sect1>
+<sect1>
+<title>requesting some kits</title>
+<para>Now that you have a ServerContext, you can ask for some resources that are allocated
+in the display server process for you. These resources are generally 'Kits', which are abstract
+factories for various purposes. Most Kits create Graphic nodes that you can insert into the
+scene graph. We allocate here a DesktopKit, which is responsible for top level windows, a TextKit,
+responsible for Text related objects such as simple text labels, or complex text flow objects, and
+a WidgetKit, that generates all the common widgets such as buttons, scrollbars, or choices. In python
+that looks so:</para>
+<programlisting>
+  properties = []
+  object  = context.resolve("IDL:Warsaw/DesktopKit:1.0", properties)
+  desktop = object._narrow(Warsaw.DesktopKit)
+  object  = context.resolve("IDL:Warsaw/TextKit:1.0", properties)
+  text    = object._narrow(Warsaw.TextKit)
+  object  = context.resolve("IDL:Warsaw/WidgetKit:1.0", properties)
+  widget  = object._narrow(Warsaw.WidgetKit)
+</programlisting>
+<para>and the same in C++:</para>
+<programlisting>
+  properties = []
+  DesktopKit_var desktop = resolve_kit&lt;DesktopKit&gt;(context, "IDL:Warsaw/DesktopKit:1.0");
+  TextKit_var text       = resolve_kit&lt;TextKit&gt;(context, "IDL:Warsaw/TextKit:1.0");
+  WidgetKit_var widgets  = resolve_kit&lt;WidgetKit&gt;(context, "IDL:Warsaw/WidgetKit:1.0");
+</programlisting>
+</sect1>
+<sect1>
+<title>building a scene graph</title>
+<para>Now let's build a scene graph for a tiny applet. We'll start with a little text label,
+wrap it into a button, and put that button into a window. In python you write:</para>
+<programlisting>
+  label = text.chunk("hello world")
+  button = widgets.button(label, Command._nil)
+  window = desktop.shell(button)
+</programlisting>
+<para>and in C++:</para>
+<programlisting>
+  Graphic_var label = text->chunk("hello world");
+  Controller_var button = widgets->button(label, Command::_nil());
+  Window_var window = desktop->shell(button);
+</programlisting>
+</sect1>
+<sect1>
+<title>hello world</title>
+<para>To run, we'll just start an endless loop. This works, since the ORB is multi-threaded, so
+some other hidden threads will watch for server callbacks, timers, etc. Of course, you might want
+to do something more exciting in the main thread. In  python you may write:</para>
+<programlisting>
+  while 1:
+    line = sys.stdin.readline()
+    if len(line) == 1: break
+</programlisting>
+<para>and in C++:</para>
+<programlisting>
+  while (true) Thread::delay(1000);
+</programlisting>
+</sect1>
+</chapter>

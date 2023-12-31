@@ -1,8 +1,8 @@
-/*$Id: FigureKitImpl.cc,v 1.10 1999/10/07 15:11:10 gray Exp $
+/*$Id: FigureKitImpl.cc,v 1.19 2001/04/18 06:07:27 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,26 +21,25 @@
  * MA 02139, USA.
  */
 
-#include "Warsaw/config.hh"
+#include <Warsaw/config.hh>
+#include <Berlin/Allocator.hh>
 #include "Figure/FigureKitImpl.hh"
-#include "Berlin/Allocator.hh"
 #include "Figure/FigureImpl.hh"
 #include "Figure/PolyFigure.hh"
 #include "Figure/Figures.hh"
 #include "Figure/ImageImpl.hh"
-#include "Figure/TransformatorImpl.hh"
-#include "Berlin/Plugin.hh"
+#include "Figure/Transformer.hh"
 
-using namespace Figures;
+using namespace Warsaw;
 
-FigureKitImpl::FigureKitImpl() {}
+FigureKitImpl::FigureKitImpl(KitFactory *f, const Warsaw::Kit::PropertySeq &p)
+  : KitImpl(f, p) {}
 FigureKitImpl::~FigureKitImpl() {}
-
 Graphic_ptr FigureKitImpl::root(Graphic_ptr child)
 {
   GraphicImpl *g = new TransformAllocator(Alignment(0.5), Alignment(0.5), Alignment(0.5), 
 					  Alignment(0.5), Alignment(0.5), Alignment(0.5));
-  g->_obj_is_ready(_boa());
+  activate(g);
   g->body(child);
   return g->_this();
 }
@@ -54,93 +53,103 @@ Graphic_ptr FigureKitImpl::fitter(Graphic_ptr g)
 Graphic_ptr FigureKitImpl::group()
 {
   PolyFigure *pf = new PolyFigure;
-  pf->_obj_is_ready(_boa());
+  activate(pf);
   return pf->_this();
 }
 
 Graphic_ptr FigureKitImpl::ugroup()
 {
   UPolyFigure *pf = new UPolyFigure;
-  pf->_obj_is_ready(_boa());
+  activate(pf);
   return pf->_this();
 }
 
-Point_ptr FigureKitImpl::point(Coord x, Coord y)
+Figure::Point_ptr FigureKitImpl::point(Coord x, Coord y)
 {
   Vertex v;
   v.x = x, v.y = y;
   PointImpl *pt = new PointImpl(v);
-  pt->_obj_is_ready(_boa());
+  activate(pt);
   return pt->_this();
 }
 
-Line_ptr FigureKitImpl::line(Coord x0, Coord y0, Coord x1, Coord y1)
+Figure::Line_ptr FigureKitImpl::line(Coord x0, Coord y0, Coord x1, Coord y1)
 {
   Vertex v1, v2;
   v1.x = x0, v1.y = y0;
   v2.x = x1, v2.y = y1;
   LineImpl *l = new LineImpl(v1, v2);
-  l->_obj_is_ready(_boa());
+  activate(l);
   return l->_this();
 }
 
-Rectangle_ptr FigureKitImpl::rectangle(Coord l, Coord t, Coord r, Coord b)
+Figure::Rectangle_ptr FigureKitImpl::rectangle(Coord l, Coord t, Coord r, Coord b)
 {
   Vertex lower, upper;
   lower.x = l, lower.y = t;
   upper.x = r, upper.y = b;
   RectangleImpl *rect = new RectangleImpl(lower, upper);
-  rect->_obj_is_ready(_boa());
+  activate(rect);
   return rect->_this();
 }
 
-Circle_ptr FigureKitImpl::circle(Coord x, Coord y, Coord r)
+Figure::Circle_ptr FigureKitImpl::circle(Coord x, Coord y, Coord r)
 {
   Vertex center;
   center.x = x, center.y = y;
   CircleImpl *c = new CircleImpl(center, r);
-  c->_obj_is_ready(_boa());
+  activate(c);
   return c->_this();
 }
 
-Ellipse_ptr FigureKitImpl::ellipse(Coord x, Coord y, Coord r1, Coord r2)
+Figure::Ellipse_ptr FigureKitImpl::ellipse(Coord x, Coord y, Coord r1, Coord r2)
 {
   Vertex center;
   center.x = x, center.y = y;
   EllipseImpl *e = new EllipseImpl(center, r1, r2);
-  e->_obj_is_ready(_boa());
+  activate(e);
   return e->_this();
 }
 
-Path_ptr FigureKitImpl::multiline(const Figure::Vertices &v)
+Figure::Path_ptr FigureKitImpl::multiline(const Warsaw::Path &p)
 {
-  PathImpl *p = new PathImpl(v);
-  p->_obj_is_ready(_boa());
-  return p->_this();
+  PathImpl *path = new PathImpl(p, false);
+  activate(path);
+  return path->_this();
 }
 
-Path_ptr FigureKitImpl::polygon(const Figure::Vertices &v)
+Figure::Path_ptr FigureKitImpl::polygon(const Warsaw::Path &p)
 {
-  PathImpl *p = new PathImpl(v);
-  p->_obj_is_ready(_boa());
-  return p->_this();
+  PathImpl *path = new PathImpl(p, true);
+  activate(path);
+  return path->_this();
 }
 
 Image_ptr FigureKitImpl::pixmap(Raster_ptr raster)
 {
   ImageImpl *image = new ImageImpl(raster);
-  image->_obj_is_ready(_boa());
-//   figures.push_back(image);
+  activate(image);
   return image->_this();
 }
 
-Transformator_ptr FigureKitImpl::projection(Graphic_ptr g)
+Graphic_ptr FigureKitImpl::texture(Graphic_ptr g, Raster_ptr raster)
 {
-  TransformatorImpl *transformator = new TransformatorImpl;
-  transformator->_obj_is_ready(_boa());
-//   figures.push_back(image);
-  transformator->body(g);
-  return transformator->_this();
+  Texture *t = new Texture(raster);
+  activate(t);
+  t->body(g);
+  return t->_this();
 }
 
-EXPORT_PLUGIN(FigureKitImpl, interface(FigureKit))
+Graphic_ptr FigureKitImpl::transformer(Graphic_ptr g)
+{
+  Transformer *transformer = new Transformer;
+  activate(transformer);
+  transformer->body(g);
+  return transformer->_this();
+}
+
+extern "C" KitFactory *load()
+{
+  static std::string properties[] = {"implementation", "FigureKitImpl"};
+  return new KitFactoryImpl<FigureKitImpl> ("IDL:Warsaw/FigureKit:1.0", properties, 1);
+}

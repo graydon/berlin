@@ -1,7 +1,7 @@
-/*$Id: EventManager.hh,v 1.3 1999/10/13 21:32:31 gray Exp $
+/*$Id: EventManager.hh,v 1.16 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,25 +22,32 @@
 #ifndef _EventManager_hh
 #define _EventManager_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/Event.hh"
-#include "Warsaw/Controller.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/Input.hh>
+#include <Warsaw/Controller.hh>
 #include <Berlin/ScreenImpl.hh>
 #include <Berlin/FocusImpl.hh>
+#include <Berlin/Console.hh>
 #include <Berlin/ImplVar.hh>
+#include <vector>
 
+//. synthesize events according to a global device and event descriptor map
+//. for now, device 0 is the keyboard, device 1 the mouse
 class EventManager
 {
+  typedef std::vector<FocusImpl *> flist_t;
 public:
-  EventManager(ScreenImpl *);
+  EventManager(Warsaw::Controller_ptr, Warsaw::Region_ptr);
   ~EventManager();
-  void requestFocus(Controller_ptr);
-  void damage(Region_ptr);
-  void dispatch(const Event::Pointer &);
-  void dispatch(const Event::Key &);
+  bool request_focus(Warsaw::Controller_ptr, Warsaw::Input::Device);
+  void next_event();
+  void restore(Warsaw::Region_ptr);
+  void damage(Warsaw::Region_ptr);
 private:
-  ScreenImpl *screen;
-  Impl_var<FocusImpl>  focus;
+  static void activate(FocusImpl *);
+  static void deactivate(FocusImpl *);
+  Console::Drawable *_drawable;
+  flist_t            _foci;
 };
 
-#endif /* _EventManager_hh */
+#endif 

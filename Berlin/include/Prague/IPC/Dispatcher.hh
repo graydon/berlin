@@ -1,7 +1,7 @@
-/*$Id: Dispatcher.hh,v 1.3 1999/11/16 02:15:20 stefan Exp $
+/*$Id: Dispatcher.hh,v 1.9 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _Dispatcher_hh
-#define _Dispatcher_hh
+#ifndef _Prague_Dispatcher_hh
+#define _Prague_Dispatcher_hh
 
 #include <Prague/Sys/Signal.hh>
 #include <Prague/Sys/FdSet.hh>
@@ -28,53 +28,57 @@
 #include <Prague/IPC/Agent.hh>
 #include <vector>
 #include <map>
+#include <unistd.h>
 
 namespace Prague
 {
 
+//. Dispatcher multiplexes i/o events to registered Agents. Together with
+//. the Agents, it implements the Reactor pattern.
+//. This implementation uses a thread pool for the actual callbacks.
 class Dispatcher
 {
-  typedef vector<Agent *> alist_t;
+  typedef std::vector<Agent *> alist_t;
   struct task
   {
-    task() : fd(-1), agent(0), mask(Agent::none) {}
-    task(int ffd, Agent *a, Agent::iomask_t m) : fd(ffd), agent(a), mask(m) {}
+    task() : fd(-1), agent(0), mask(Agent::none), released(false) {}
+    task(int ffd, Agent *a, Agent::iomask m) : fd(ffd), agent(a), mask(m) {}
     bool operator < (const task &t) const { return fd < t.fd;}
-    int fd;
-    Agent *agent;
-    Agent::iomask_t mask;
+    int             fd;
+    Agent          *agent;
+    Agent::iomask   mask;
+    bool            released;
   };
-  typedef vector<task> tlist_t;
-  typedef map<int, task> dictionary_t;
-
+  typedef std::map<int, task *> repository_t;
   struct Handler
   //. Handler is responsible for calling a specific method
   //. (determined by the mask) on the agent
   {
-    Handler(const task &tt) : t(tt) {}
-    void process() { dispatcher->process(t);};
-    task t;
+    Handler(task *tt) : t(tt) {}
+    void process() { dispatcher->process(t);}
+    task *t;
   };
   friend struct Handler;
-  struct Acceptor
-  {
-    Handler *consume(const task &t) const { return new Handler(t);}
-  };
+  struct Acceptor { Handler *consume(task *t) const { return new Handler(t);}};
   struct Cleaner { ~Cleaner();};
   friend struct Cleaner;
 public:
+  //. Dispatcher being a singleton, return the instance.
   static Dispatcher *instance();
-  void bind(int, Agent *, Agent::iomask_t);
-  void release(int);
-  void release(Agent *);
-  void wait();
-// private:
+  //. bind an Agent to events according to the provided filedescriptor fd, and the mask
+  void bind(Agent *, int fd, Agent::iomask mask);
+  //. release an Agent from channel fd, or the whole Agent, if fd is -1
+  void release(Agent *, int fd = -1);
+private:
   Dispatcher();
   virtual ~Dispatcher();
-  static void *dispatch(void *);
-  void process(const task &);
-  void deactivate(const task &);
-  void activate(const task &);
+  void wait();
+  void notify() { char *c = "c"; write(wakeup[1], c, 1);}
+  static void *run(void *);
+  void dispatch(task *);
+  void process(task *);
+  void deactivate(task *);
+  void activate(task *);
   static Dispatcher *dispatcher;
   static Mutex  singletonMutex;
   static Cleaner cleaner;
@@ -84,17 +88,16 @@ public:
   FdSet         wfds;
   FdSet         xfds;
   alist_t       agents;
-  dictionary_t  rchannel;
-  dictionary_t  wchannel;
-  dictionary_t  xchannel;
+  repository_t  rchannel;
+  repository_t  wchannel;
+  repository_t  xchannel;
   int           wakeup[2];
-  Thread::Queue<task> tasks;
+  Thread::Queue<task *> tasks;
   Acceptor      acceptor;
-  ThreadPool<task, Acceptor, Handler> workers;
+  ThreadPool<task *, Acceptor, Handler> workers;
   Thread        server;
 };
 
 };
 
-#endif /* _Dispatcher_hh */
-
+#endif

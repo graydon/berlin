@@ -1,0 +1,526 @@
+<chapter><title>under the hood</title>
+<para>
+	<!-- talk about under the hood -->
+</para><sect1><title>the scene graph</title>
+<para>
+	<!-- talk about the scene graph -->The scene graph is built out of
+	objects of the corba type <classname>Graphic</classname>. Here we will
+	discuss some of the gorier implementation matters of
+	<classname>Graphic</classname>, its subclasses and its collaborators.
+
+</para><sect2><title>structural containment (pointers)</title>
+<para>
+	<!-- talk about structural containment (pointers) -->Structurally, there
+	is a "pointer" (a corba reference) from each parent graphic to each of
+	its children, <emphasis>as well as</emphasis> from each child to its
+	parent(s). The reason for the reference from child to parent is, as we
+	shall shortly see, the scene graph can share children between multiple
+	parents. These references are used by traversals to "walk" the graph,
+	performing verious operations on the scene.
+</para>
+
+	  <para>Adding a child to a parent is as simple as calling the parent's
+	  <function>append()</function> method, though it is not clear exactly
+	  where a parent will place a child within its region. This is in fact
+	  intentional, as layout in the scene graph is dynamic and the
+	  specifics of each layout process are encapsulated in a simple
+	  requirement protocol we will discuss later. For now, it suffices to
+	  show the basics of connecting a parent to a child. Here we connect a
+	  rectangle child to a horizontal packing box (a transparent layout
+	  container).
+</para>
+
+<example>
+	  <title>Adding a child to a parent</title>	
+<programlisting>
+  Graphic_var hbox = lk->hbox();
+  Graphic_var rect = fk->rectangle(x,y,style);
+  hbox->append(rect);
+</programlisting>
+	</example>
+</sect2>
+
+
+<sect2><title>details of traversal</title>
+<para>
+	<!-- talk about details of traversal -->
+
+</para><sect3><title>visitor pattern</title>
+<para>
+	<!-- talk about visitor pattern -->Traversals use a novel form of the
+	visitor pattern to safely and quickly downcast a traversal object to one
+	of the few known traversal types. Rather than consider the traversal a
+	visitor of the node (and allow the node to call the traversal back with
+	its type), we consider the node to be visiting the traversal, and ask
+	the traversal to call the node back with the traversal's type. This is
+	an important decision, and must be well understood to follow the call
+	sequence of traversal. The decision to do so was made because there are
+	relatively few traversal types (two, at the moment) whereas there is an
+	unbounded number of graphic types. </para></sect3>
+
+<sect3><title>division of responsibility</title>
+<para>
+	<!-- talk about division of responsibility -->Responsibility for
+	sequencing a traversal's "tree walk" is divided between the traversal
+	object itself and the node it is visiting. If the node is a composite
+	node, such as a <classname>PolyGraphic</classname>, then it will
+	individually sequence the traversal through each of its children in an
+	order that best fits the way it has organized the children, spatially
+	and logically.</para></sect3>
+
+</sect2>
+
+<sect2><title>multiple interfaces</title>
+<para>
+	<!-- talk about multiple interfaces -->
+<FIGURE ID="screen-appearance-figure" FLOAT="1">
+<TITLE>How the screen might appear, and how you might imagine it works
+</TITLE>
+<GRAPHIC FILEREF="../figures/you-see-it-on-screen.jpg"></GRAPHIC>
+<GRAPHIC FILEREF="../figures/you-see-it.jpg"></GRAPHIC>
+</FIGURE>
+
+
+If you were just looking at the sample image above, you might consider the
+adjacent scene graph as a rough approximation of the data structure underlying
+it. This is how you are supposed to think about it, but it is not exacly how the
+different parts of the server will see it.
+
+</para><sect3><title>berlin / kit view</title>
+<para>
+	<!-- talk about berlin / kit view -->The berlin server, and the kits it
+	loads, see the scene as a mixture of concrete C++ objects and unknown
+	corba references. The C++ objects which were created by each instance of
+	a kit are, in general, known to it by concrete type. For instance, the
+	LayoutKit knows of the specific implementation type RectImpl. Clients do
+	not know about this type of object, nor does any part of the berlin
+	server outside the LayoutKit. When a client calls
+	<function>LayoutKit::rectangle()</function>, an instance of LayoutKit
+	will respond by building a new RectImpl and returning a handle to
+	it. The type of the handle it returns will be the opaque corba reference
+	type Graphic. The kit will maintain a C++ pointer to the RectImpl it
+	built, such that it can call <function>delete</function> on the pointer
+	when the kit is deallocated. Nobody outside of the kit needs to know
+	about the concrete implementation type. This is especially important in
+	heavily used kits, since they can implement their own resource pooling
+	and sharing mechanisms without needing to inform any other part of the
+	server.
+</para>
+	  <para>It is commonly misunderstood that because the kits and the
+	  server can only know one another's objects via their corba types, they
+	  must marshall all of their method calls on such objects through some
+	  sort of "dummy" TCP interface. This is not at all true; if objects are
+	  colocated in the same process, a call to a corba reference is just a
+	  normal C++ virtual method call and it happens as fast as any other.</para>
+</sect3>
+
+<sect3><title>client view</title>
+<para>
+	<!-- talk about client view --> Clients in other processes see only the
+	"corba view" of the scene graph, since they obtain all references to the
+	graph through corba. The interfaces we expose through corba are much
+	simpler and fewer than the implementation objects within the kits. The
+	only parts exposed are those which are strictly necessary for a client
+	to manipulate the graph structure. For instance, where the FigureKit
+	might see a RectImpl, or the LayoutKit might see a QuadTree, the client
+	will see just see 2 different objects of the opaque corba type
+	"Graphic". </para>
+
+</sect3>
+</sect2>
+
+<sect2><title>technical aspects of drawing</title>
+<para>
+	<!-- talk about technical aspects of drawing --> Here we discuss the
+	various facilities the berlin drawing interface supports.
+
+</para><sect3><title>clipping</title>
+<para>
+	<!-- talk about clipping -->Drawing in a windowed environment frequently
+	involves clipping the area being drawn to some specific region, such
+	that strokes which fall outside the region do not appear on the final
+	media. The berlin supports a stack of clipping regions, such that
+	children can add tighter constraints, which will be intersected with the
+	constraints any of their parents pushed on the clipping stack.
+
+</para></sect3>
+<sect3><title>drawing functions</title>
+<para>
+	<!-- talk about drawing functions -->In order to place pixels on the
+	screen, a graphic can request a path, a glyph, or a raster is
+	drawn. Such visual elements are broken down into a stylistic component
+	and a compact, data-model component.  
+
+</para><sect4><title>paths</title>
+<para>
+	<!-- talk about paths -->A path is a sequence of vectors, each given in
+	the standard double-precision physical device space, and subject to the
+	current transformation matrix.
+</para></sect4>
+
+<sect4><title>glyphs</title>
+<para>
+	<!-- talk about glyphs -->A text glyph is actually a fairly complex
+	item, as it interacts with its neighbouring glyphs in nontrivial
+	ways. Thus, rather than attempting to render glyphs in a uniform manner
+	by sending bitmaps or curves to the drawing facility, we delegate the
+	entire decision of how to render to an opaque interface which can have
+	different implementations supplied for different rendering backends,
+	such as printers or low resolution screens. We supply "chunks" of
+	unicode text, broken at intervals where the standard specifies no
+	inter-glyph interaction can occur, and ask the drawing facility to draw
+	the text for us (as well as reporting how much space the drawing
+	occupies, so we can do layout properly). </para></sect4>
+
+<sect4><title>rasters</title>
+<para>
+	<!-- talk about rasters -->In some cases, it is not appropriate to draw
+	using vector paths. In such cases, we have a facility for loading PNG
+	rasters into the display server, and then assigning them to scene graph
+	nodes. Such redrawing can be done very efficiently because the raster
+	can live in the display server, and is appropriate for objects such as
+	icons, mouse pointer images, or pixel data loaded from an external
+	source.</para></sect4>
+
+<sect4><title>styles</title>
+<para>
+	<!-- talk about styles -->Many drawing commands have an associated
+	"style" parameter, which is an association list mapping stylistic
+	properties like fill color or line thickness to values supplied by the
+	graphic. In the future, we hope to fully integrate the provision of
+	styles with a CSS style engine (which we hope also to use for choosing
+	widget variants) in order to make customization easier.
+
+	</para></sect4> <sect4><title>drawing kits</title>
+<para>
+	<!-- talk about drawing kits -->Drawing in berlin, as described above,
+	is mediated by a single, high level interface called the
+	<classname>DrawingKit</classname>. Different implementations of the
+	<classname>DrawingKit</classname> wrap different underlying drawing
+	libraries, filling in for the differences between the high level
+	interface it exports and the low level primitives supported by the
+	drawing library.  </para><sect5><title>drawables</title>
+<para>
+	<!-- talk about drawables -->Each instance of a
+	<classname>DrawingKit</classname> has an associated
+	<classname>Drawable</classname>, which is an object representing the
+	"medium" the drawing kit will operate on. This may be a CRT, a sheet of
+	paper, an LCD, or an imaginary device which the
+	<classname>DrawingKit</classname> has a way of simulating. At the
+	moment, all the <classname>Drawable</classname> does is supply dpi
+	information to the <classname>DrawingKit</classname> and manage the
+	clipping stack; in the future it may be extended to provide more
+	advanced feedback to the <classname>DrawingKit</classname>.
+
+</para></sect5>
+<sect5><title>color resolution</title>
+<para>
+	<!-- talk about color resolution -->
+</para><bridgehead renderas="sect5">color approximation models</bridgehead>
+<para>
+	<!-- talk about color approximation models -->
+</para></sect5>
+<sect5><title>spatial resolution</title>
+<para>
+	<!-- talk about spatial resolution -->
+</para><bridgehead renderas="sect5">spatial approximation and hinting</bridgehead>
+<para>
+	<!-- talk about spatial approximation & hinting -->
+</para></sect5>
+</sect4>
+</sect3>
+</sect2>
+<sect2><title>layout</title>
+<para>
+	<!-- talk about layout -->
+</para><sect3><title>theory</title>
+<para>
+	<!-- talk about theory -->
+</para><sect4><title>fixed positions</title>
+<para>
+	<!-- talk about fixed positions -->
+</para></sect4>
+<sect4><title>packing boxes</title>
+<para>
+	<!-- talk about packing boxes -->
+</para></sect4>
+<sect4><title>springs</title>
+<para>
+	<!-- talk about springs -->
+</para></sect4>
+<sect4><title>a generalization: requirements</title>
+<para>
+	<!-- talk about a generalization: requirements -->
+</para></sect4>
+</sect3>
+<sect3><title>implementation (needresize())</title>
+<para>
+	<!-- talk about implementation (needresize()) -->
+</para><sect4><title>recursive resizing</title>
+<para>
+	<!-- talk about recursive resizing -->
+</para></sect4>
+<sect4><title>containing a resize</title>
+<para>
+	<!-- talk about containing a resize -->
+</para></sect4>
+<sect4><title>layout managers</title>
+<para>
+	<!-- talk about layout managers -->
+</para></sect4>
+</sect3>
+</sect2>
+</sect1>
+<sect1><title>"internal" uses of MVC</title>
+<para>
+	<!-- talk about "internal" uses of MVC -->
+</para><sect2><title>special models</title>
+<para>
+	<!-- talk about special models -->
+</para><sect3><title>telltales intrinsic to controllers</title>
+<para>
+	<!-- talk about telltales intrinsic to controllers -->
+</para></sect3>
+</sect2>
+<sect2><title>special commands</title>
+<para>
+	<!-- talk about special commands -->
+</para><sect3><title>aynchronicity commands</title>
+<para>
+	<!-- talk about aynchronicity commands -->
+</para></sect3>
+<sect3><title>callbacks: "user" commands</title>
+<para>
+	<!-- talk about callbacks: "user" commands -->
+</para></sect3>
+</sect2>
+</sect1>
+<sect1><title>modules</title>
+<para>
+	<!-- talk about modules --> Berlin is almost completely made up of
+	pluggable, replaceable modules; so you need to have some understanding
+	of where the modules reside, how to load them, and what to do with them
+	once loaded. 
+
+</para><sect2><title>client server</title>
+<para>
+	<!-- talk about client server --> If you are writing an application for
+	berlin, you are actually writing a corba "client" program which is
+	requesting a particular service (access to the display, desktop, and
+	user) from the display "server". We now discuss aspects of the
+	client/server model, as it relates to berlin.
+
+</para><sect3><title>multiplexing facilities</title>
+<para>
+	<!-- talk about multiplexing facilities -->The computer your user will
+	be sitting in front of presents facilities for input, graphic display,
+	audio, etc. which cannot in their default modes of operation be shared
+	between multiple processes. Since users frequently want to do more than
+	one thing at once, they rely on a display server like berlin to
+	multiplex these facilities between clients. Rather than present a
+	low-level metaphor for the devices being multiplexed, berlin presents
+	clients with abstractions of various user-interface concepts, and then
+	internally translates them to concrete representations using available
+	resources. Thus your program will (commonly) not request any specific
+	pixel coordinates, color table indicies, audio sample buffers, glyph
+	indicies in fonts, or other low level mechanisms when talking to the
+	server. Instead, it will more often deal with only those logical objects
+	which you are abstractly concerned with presenting to the user, and rely
+	on berlin's modules to construct appropriate representations. 
+
+</para></sect3>
+<sect3><title>remote use</title>
+<para>
+	<!-- talk about remote use -->Berlin clients communicate with the server
+	(and other clients) using corba. Corba is a network transparent protocol
+	for remote invocation of object methods in a variety of languages. This
+	means that your client program will be able to access resources
+	multiplexed by a berlin server running on a remote computer, and will
+	not need to make any special adjustments in its code to do so. Remote
+	servers and local servers appear to the programmer as exactly the same
+	sort of thing. Furthermore you can use any language for which there is a
+	corba binding.</para>
+
+             <para>The first thing your program will have to do is get its
+             bearings in the "berlin universe", by looking up a corba name
+             service context and contacting a display server. After that, you
+             will need to obtain a "server context" from the server, and present
+             it with a locally constructed "client context", which the server
+             will use to perform any relevant security checks, as well as
+             monitor with a heartbeat for idle clients and keep track of objects
+             to be deallocated when the client disconnects. Here is some example
+             code and a sequence diagram to show you what is going on.</para>
+
+	<example>
+	  <title>Connecting and establishing contexts (client side)</title>
+	  <programlisting>
+  CORBA::ORB_ptr orb = CORBA::ORB_init(argc,argv,"omniORB2");
+  CORBA::BOA_ptr boa = orb->BOA_init(argc,argv,"omniORB2_BOA");
+  boa->impl_is_ready(0,1);
+  ServerContextManager_ptr manager = getManager(orb);
+  ClientContextImpl *myClientContext = new ClientContextImpl;
+  myClientContext->_obj_is_ready(boa);
+  ServerContext_ptr myServerContext = manager->newServerContext(myClientContext->_this());
+</programlisting>
+	  </example>
+
+</sect3>
+<sect3><title>centralization</title>
+<para>
+	<!-- talk about centralization -->Server contexts allow you to obtain
+	resources which have been centralized, in the server. As mentionned
+	previously, berlin centralizes a great deal more than other windowing
+	systems; this is in order to permit the user to choose between various
+	complete user interface policies, as well as specify simple
+	preference-style customization, which will apply equally to any client
+	connecting. Thus, when you construct a user interface element, you do so
+	in the display server process rather than in a client library.
+</para></sect3>
+</sect2>
+
+<sect2><title>server side modules</title>
+<para>
+	<!-- talk about server side modules -->Since our goal was to be
+	extensible and customizable, the display server loads its centralized
+	policies and objects from dynamically linked modules, at runtime. 
+
+</para><sect3><title>dynamic objects</title>
+<para>
+	<!-- talk about dynamic objects -->Dynamic objects (or "shared objects")
+	were initially developed to reduce space consumption on computers which
+	had a lot of common library code linked into each program. They let you
+	isolate a certain quantity of code and static data in objects which the
+	operating system links into the program at runtime. Changing the ".so
+	file" on disk can change the behaviour of the program when it next runs,
+	since it will re-link with the new code. In this way, we can also use
+	dynamic objects as a customization mechanism. To change
+	how the server behaves, you merely need to move one ".so file" out of
+	the way and put another in its place. The dynamic linker will take care
+	of the rest.
+
+</para></sect3>
+<sect3><title>common interface</title>
+<para>
+	<!-- talk about common interface -->Beyond merely customizing the
+	server, we also want to be able to add new functionality to existing
+	servers dynamically, without recompiling them. To do this, we need a way
+	for the server to inspect an arbitrary dynamic object it happens to find
+	on the disk, decide whether it contains new functionality intended for
+	the server, and if so to load the object and make it available to
+	clients and other objects within the server. To do this, we need a
+	common way to inspect objects: a common interface which the server can
+	look for inside the object file. This interface contains 2 functions:
+	<function>getName()</function> and <function>getPlugin()</function>, and
+	is inserted into any "plugin" intended for the berlin server using the
+	preprocessor macro
+	<function>EXPORT_PLUGIN(implementationName,interfaceName)</function>.
+
+</para></sect3>
+<sect3><title>dlopen</title>
+<para>
+	<!-- talk about dlopen -->We scan a "plugin directory" when the server
+	starts, and for each .so file we find there, we call
+	<function>dlopen()</function> on unix, which is a manual dynamic linking
+	facility. This loads the object into the server, and we inspect it for
+	the special interface (<function>getName()</function> and
+	<function>getPlugin()</function>) in order to determine which interface
+	it supports and to store a pointer to a function which can be used to
+	instantiate the interface. So, for instance, if a plugin supports the
+	WidgetKit IDL interface, it will have the <function>getName()</function>
+	method return "IDL:omg.org/WidgetKit:1.0" as a static interface
+	label. To construct an instance of WidgetKit as supported by this
+	plugin, we will call the associated <function>getPlugin()</function>
+	function. Clients can access modules using these names, as we will see
+	in the next section.
+</para></sect3>
+</sect2>
+<sect2><title>factories</title>
+<para>
+	<!-- talk about factories -->Factories facilitate decoupling an object's
+	maker from its user. We use factories extensively to mediate which
+	objects are constructed, where, and when. A factory object has a number
+	of methods on it which construct other objects, by delegation. For
+	instance, one could delegate constructing buttons to a "widget factory",
+	and all objects which were interested in obtaining buttons would call
+	<function>widgetFactory->newButton()</function>. This has subtle, but
+	extremely important implications.
+
+</para><sect3><title>abstract creation</title>
+<para>
+	<!-- talk about abstract creation -->In "normal" OO languages, to make a
+	new object, you call "operator new", which directly calls the
+	constructor for the concrete type of the object you are making. The
+	problem with doing this is that it makes it difficult to extend the
+	system by adding subclasses or different implementations, because the
+	"client" will always be constructing the same type of object. For
+	example, if you hardcode construction of a "simpleTextBuffer" into your
+	programs, and someone comes along and makes a new fancyTextBuffer which
+	implements the exact same interface but which is much more pleasant for
+	the user, you will have to manually go back and edit all the calls you
+	made to <function>new simpleTextBuffer()</function>. If, on the other
+	hand, you used a factory, there would be a central point of control over
+	simpleTextBuffer construction, and you could alter the factory object
+	(or provide an entirely new one) which returned a new fancyTextBuffer.
+</para></sect3>
+
+<sect3><title>generic factory </title>
+<para>
+	<!-- talk about generic factory  -->The berlin display server has a
+	"generic factory" which it uses to construct all other objects
+	(including other factories). The generic factory implements an OMG
+	"lifecycle" specification, which means that it is the sort of factory
+	other systems will expect to see, when speaking corba. It is somewhat
+	awkward to use, as it accepts only name/value pairs as construction
+	arguments, and returns objects of a very generic type, requiring you to
+	downcast them. Our generic factory accepts a single argument, which is
+	the name of the interface it is supposed to return an instance of. It
+	then searches its cache of interface names found in dynamic objects, and
+	constructs an instance using any function pointer it finds.
+
+</para></sect3>
+<sect3><title>special factories (kits)</title>
+<para>
+	<!-- talk about special factories (kits) -->Since the generic factory is
+	so awkward to use in the general case, we use special factories called
+	"kits" for most of our work. Shortly after your client has a server
+	context established, it will ask for the generic factory to create some
+	kits, such as the DesktopKit, the WidgetKit, the FigureKit, the
+	LayoutKit, and the TextKit. These kits are nothing more than
+	special-purpose factories, and are loaded from plugins (thus completely
+	replaceable) just like anything else the generic factory produces. The
+	kits have strongly-typed methods which accept a number of meaningful
+	parameters and return instances of more useful types. This makes
+	programming much more convenient for you. Here is an example of
+	obtaining the kits and using them to construct some objects.
+	</para>
+<example>
+	  <title>Obtaining and using kits</title>	
+<programlisting>
+  // use the "obtain" macro to talk to genericFactory
+  DesktopKit_var dk = obtain(myServerContext,DesktopKit);
+  LayoutKit_var lk = obtain(myServerContext,LayoutKit);
+  WidgetKit_var wk = obtain(myServerContext,WidgetKit);
+  FigureKit_var fk = obtain(myServerContext,FigureKit);
+  CommandKit_var ck = obtain(myServerContext,CommandKit);
+
+  Graphic_var hbox = lk->hbox();
+  Window_var window = dk->shell(Graphic_var(lk->marginFlexible(hbox, 10., 50., 10.)));
+</programlisting>
+	</example>
+
+	<para>As an example, the DesktopKit has a method called
+	<function>Graphic_ptr shell(Graphic_ptr g)</function>, which takes a
+	single graphic as an argument and returns a "shelled" object on the
+	desktop -- that is, an object with some sort of top level application
+	control mechanisms like title bars, window controls, or other
+	decorations. The client application is completely isolated from what
+	"shell" is placed around their graphic, or if their graphic is still
+	even visible. By replacing the DesktopKit or modifying some settings
+	within it, an end user or customizer can totally alter this aspect, and
+	many others, of the desktop environment. Shell is frequently the last
+	method an application will call, once it has constructed its user
+	interface and bound callbacks to various components within the UI. 
+</para></sect3>
+</sect2>
+</sect1>
+</chapter>

@@ -1,13 +1,8 @@
-/*$Id: GraphicImpl.hh,v 1.13 1999/09/30 17:23:33 gray Exp $
+/*$Id: GraphicImpl.hh,v 1.28 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,60 +22,93 @@
 #ifndef _GraphicImpl_hh
 #define _GraphicImpl_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/Graphic.hh"
-#include "Berlin/CloneableImpl.hh"
-#include "Prague/Sys/Thread.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/Graphic.hh>
+#include <Prague/Sys/Thread.hh>
 #include <vector>
 #include <algorithm>
+#include <functional>
+#include "Berlin/RefCountBaseImpl.hh"
+#include "Berlin/IdentifiableImpl.hh"
 
-declare_corba_ptr_type(Region)
 class RegionImpl;
+class AllocationImpl;
 
-class GraphicImpl : implements(Graphic)
+class GraphicImpl : public virtual POA_Warsaw::Graphic,
+                    public virtual RefCountBaseImpl,
+                    public virtual IdentifiableImpl
 {
  protected:
-  typedef pair<Graphic_var, Tag> edge_t;
-  typedef vector<edge_t> plist_t;
+  //. An edge is a reference to a graphic within a composite.
+  //. Because a graphic might appear twice within the same composite,
+  //. a graphic itself is insufficient to identify its position within
+  //. its parent.
+  struct Edge
+  {
+    Warsaw::Graphic_var peer;
+    Warsaw::Tag         peerId;
+    Warsaw::Tag         localId;
+  };
+  typedef std::vector<Edge> glist_t;
+  struct localId_eq : public std::unary_function<Edge, bool>
+    {
+      localId_eq(Warsaw::Tag t) : id(t) {}
+      bool operator()(const Edge &e) const { return e.localId == id; }
+      Warsaw::Tag id;
+    };
  public:
-  static const Coord infinity = 10e6;
+  static const Warsaw::Coord infinity = 10e6;
   GraphicImpl();
   virtual ~GraphicImpl();
+  virtual void deactivate();
 
-  virtual Graphic_ptr body();
-  virtual void body(Graphic_ptr);
-  virtual void append(Graphic_ptr);
-  virtual void prepend(Graphic_ptr);
-  virtual void addParent(Graphic_ptr, Tag);
-  virtual void removeParent(Graphic_ptr, Tag);
+  virtual Warsaw::Graphic_ptr body();
+  virtual void body(Warsaw::Graphic_ptr);
+  virtual void append_graphic(Warsaw::Graphic_ptr);
+  virtual void prepend_graphic(Warsaw::Graphic_ptr);
+  virtual void remove_graphic(Warsaw::Tag);
+  virtual void remove_child_graphic(Warsaw::Tag);
+  virtual Warsaw::Tag add_parent_graphic(Warsaw::Graphic_ptr, Warsaw::Tag);
+  virtual void remove_parent_graphic(Warsaw::Tag);
+  virtual Warsaw::Graphic::Iterator_ptr first_child_graphic();
+  virtual Warsaw::Graphic::Iterator_ptr last_child_graphic();
 
-  virtual Transform_ptr transformation();
-  virtual void request(Requisition &);
-  virtual void extension(const Allocation::Info &, Region_ptr);
-  virtual void shape(Region_ptr);
+  virtual Warsaw::Transform_ptr transformation();
+  virtual void request(Warsaw::Graphic::Requisition &);
+  virtual void extension(const Warsaw::Allocation::Info &, Warsaw::Region_ptr);
+  virtual void shape(Warsaw::Region_ptr);
 
-  virtual void traverse(Traversal_ptr);
-  virtual void draw(DrawTraversal_ptr);
-  virtual void pick(PickTraversal_ptr);
+  virtual void traverse(Warsaw::Traversal_ptr);
+  virtual void draw(Warsaw::DrawTraversal_ptr);
+  virtual void pick(Warsaw::PickTraversal_ptr);
 
-  virtual void allocate(Tag, const Allocation::Info &);
-  virtual void allocations(Allocation_ptr);
-  virtual void needRedraw();
-  virtual void needRedrawRegion(Region_ptr);
-  virtual void needResize();
+  virtual void allocate(Warsaw::Tag, const Warsaw::Allocation::Info &);
+  virtual void allocations(Warsaw::Allocation_ptr);
+  virtual void need_redraw();
+  virtual void need_redraw_region(Warsaw::Region_ptr);
+  virtual void need_resize();
 
-  static void initRequisition(Graphic::Requisition &);
-  static void defaultRequisition(Graphic::Requisition &);
-  static void require(Graphic::Requirement &, Coord, Coord, Coord, Coord);
-  static void requireLeadTrail(Graphic::Requirement &, Coord, Coord, Coord, Coord, Coord, Coord);
-  static Graphic::Requirement *requirement(Graphic::Requisition &, Axis);
-  static void defaultExtension(const Allocation::Info &, Region_ptr);
-  static void naturalAllocation(Graphic_ptr, RegionImpl &);
-  static void transformRequest(Graphic::Requisition &, Transform_ptr);
-  static Vertex transformAllocate(RegionImpl &, const Graphic::Requisition &, Transform_ptr);
-protected:
-  plist_t parents;
-  Prague::Mutex parentMutex;
+  static void init_requisition(Warsaw::Graphic::Requisition &);
+  static void default_requisition(Warsaw::Graphic::Requisition &);
+  static void require(Warsaw::Graphic::Requirement &, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
+  static void require_lead_trail(Warsaw::Graphic::Requirement &,
+				 Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
+  static Warsaw::Graphic::Requirement *requirement(Warsaw::Graphic::Requisition &, Warsaw::Axis);
+  static void default_extension(const Warsaw::Allocation::Info &, Warsaw::Region_ptr);
+  static void natural_allocation(Warsaw::Graphic_ptr, RegionImpl &);
+  static void transform_request(Warsaw::Graphic::Requisition &, Warsaw::Transform_ptr);
+  static Warsaw::Vertex transform_allocate(RegionImpl &, const Warsaw::Graphic::Requisition &, Warsaw::Transform_ptr);
+private:
+  Warsaw::Tag unique_parent_id();
+  glist_t              _parents;
+  Prague::Mutex        _mutex;
 };
 
-#endif /* _GraphicImpl_hh */
+class GraphicIteratorImpl : public virtual POA_Warsaw::GraphicIterator,
+		            public virtual ServantBase
+{
+public:
+  virtual void destroy() { deactivate();}
+};
+
+#endif

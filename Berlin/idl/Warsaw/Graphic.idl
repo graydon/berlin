@@ -1,0 +1,215 @@
+/*$Id: Graphic.idl,v 1.9 2000/09/19 21:11:02 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Graphic_idl
+#define _Warsaw_Graphic_idl
+
+#include <Warsaw/Types.idl>
+#include <Warsaw/Allocation.idl>
+#include <Warsaw/RefCountBase.idl>
+#include <Warsaw/Identifiable.idl>
+
+module Warsaw
+{
+  interface Traversal;
+  interface DrawTraversal;
+  interface PickTraversal;
+  interface Region;
+  interface Transform;
+  interface DrawingKit;
+  interface Graphic;
+  
+  //. A GraphicIterator is a reference to a graphic within an composite graphic
+  interface GraphicIterator
+    {
+      //. Return the child graphic to which the iterator currently refers
+      Graphic child();
+      //. Advance to the next child
+      void next();
+      //. Go back to the previous child
+      void prev();
+      //. Insert the given graphic into the composite after the current iterator position
+      void insert(in Graphic g);
+      //. Put the given graphic in place of the graphic at this position
+      //. The replace operation is equivalent to an atomic transaction
+      //. that removes the old graphic and inserts the new one.
+      void replace(in Graphic g);
+      //. Take the graphic at the current position out of the composite.  The
+      //. iterator will now refer to the following graphic. If the iterator
+      //. refers to the end of the composite, then this operation
+      //. will have no effect.
+      void remove();
+      //. destroy the iterator
+      void destroy();
+    };
+  
+  //. The Graphic interface defines the common operations for all objects
+  //. within the scene graph. Graphics have a size and an origin for the purposes 
+  //. of layout. The Graphic interface provides operations for geometry management,
+  //. drawing, picking, and a directed-acyclic structure (not strictly hierarchical).
+  interface Graphic : RefCountBase, Identifiable
+    {
+      //. If the defined flag is true, a requirement specifies
+      //. a natural size, maximum size, minimum size, and
+      //. alignment.  A composite may "stretch" a requirement
+      //. from its natural size to its maximum size or "shrink"
+      //. the requirement from the natural to minimum size.
+      //. It is possible to have negative sizes, such as for
+      //. "backwards" space.  The alignment is a fraction that
+      //. indicates the origin of the area.  An alignment of zero
+      //. means the origin is at the lower coordinate value;
+      //. an alignment of one means it is at the upper coordinate value.
+      //. Alignments can be negative or larger than one to indicate
+      //. the origin is outside the natural position.
+      struct Requirement
+      {
+	boolean defined;
+	Coord natural, maximum, minimum;
+	Alignment align;
+      };
+      //. A requisition contains a requirement for each axis and
+      //. a flag indicating whether the natural aspect ratios
+      //. should be preserved if the graphic is stretched or shrunk.
+      struct Requisition
+      {
+	Requirement x, y, z;
+	boolean preserve_aspect;
+      };
+      typedef GraphicIterator Iterator;
+      /*
+       * structural methods
+       */
+      //. The body attribute defines a graphic as the recipient
+      //. of operations.  Graphics that have a body defined
+      //. are typically "filters" that decorate, align, or
+      //. otherwise adjust the appearance of the body.
+      attribute Graphic body;
+      //. Add the given graphic to this composite. If the receiver
+      //. is not actually a composite, the operation will be ignored.
+      //. If the receiver has a body graphic, it should pass the operation
+      //. on to the body. In this way, "wrapper" graphics can
+      //. alter appearance without affecting structural operations.
+      void append_graphic(in Graphic g);
+      void prepend_graphic(in Graphic g);
+      void remove_graphic(in Tag t);
+      //. to be called by the child to detach itself from the parent
+      void remove_child_graphic(in Tag t);
+      //. add a parent for this graphic.
+      Tag add_parent_graphic(in Graphic g, in Tag t);
+      //. remove a parent for this graphic.
+      void remove_parent_graphic(in Tag t);
+      Iterator first_child_graphic();
+      Iterator last_child_graphic();
+      /*
+       * layout related methods
+       */
+      //. Return a transformation matrix associated with the graphic.
+      //. If a graphic implementation does not provide a transform,
+      //. this operation will return nil.
+      Transform transformation();
+      //. This operation asks for a graphic's desired geometry.
+      //. The computation should be fast to allow a composite graphic
+      //. to compute rather than store its components' requisitions.
+      //. In general, if a requisition might be expensive to compute
+      //. then a graphic should store its own requisition.  A composite graphic
+      //. therefore generally should store its requisition rather
+      //. than traverse its components.  A composite can assume
+      //. that needResize() will be called if the requisition
+      //. of one of its children changes.
+      void request(out Requisition r);
+      //. This operation extends the given region by the
+      //. bounds of where this graphic would draw when given
+      //. the allocation and transform defined by the Allocation::Info.
+      void extension(in Allocation::Info a, in Region r);
+      //. This operation extends the given region by the
+      //. precise shape where this graphic would naturally draw.
+      //. Calling shape may be more costly than calling extension
+      //. (which just computes bounds) and therefore should only
+      //. be called by composites that wish to perform layout
+      //. using the actual area where the object would draw.
+      void shape(in Region r);
+      /*
+       * traversal related
+       */
+      //. Start traversing a graphic and its components.  The traversal
+      //. object defines the operation on each graphic.  Normally,
+      //. a composite will call traverse recursively on each
+      //. of its components.
+      void traverse(in Traversal t);
+      //. Display this graphic using the allocation and transformation
+      //. specified by the given traversal.  No clipping or translation
+      //. is automatic for this operation--the allocation specifies
+      //. the position and size of this graphic for the purposes
+      //. of layout.  However, a composite graphic may set clipping
+      //. or transformations on the traversal's DrawingKit before
+      //. the composite draws its children.
+      //.
+      //. Drawing order is important for graphics when
+      //. they overlap in the same plane.  A graphic's draw operation
+      //. therefore should not be called directly, but implicitly
+      //. will be called as part of the screen update process.
+      void draw(in DrawTraversal t);
+      //. Find the graphics that intersect a point or rectangle
+      //. specified in screen-relative coordinates.  Conceptually,
+      //. picking is like drawing and determining what graphics
+      //. intersect the point or region.  When pick returns,
+      //. the traversal contains a list of the graphic trails
+      //. that were hit.
+      void pick(in PickTraversal t);
+      /*
+       * update related
+       */
+      //. Compute cumulative information for each allocation
+      //. of the graphic's child g. This operation normally need not
+      //. be called directly; instead application objects
+      //. usually call needRedraw or needResize.
+      void allocate(in Tag t, in Allocation::Info i);
+      void allocations(in Allocation a);
+      //. These operations request that a graphic cause its appearance
+      //. on the screen to be refreshed. If the graphic appears
+      //. in multiple places on the screen or on several screens,
+      //. the graphic should be redrawn in all the places.
+      //. A graphic may choose not to implement these operations
+      //. Under the assumption that update is either not possible
+      //. or will be handled by higher-level graphics.
+      //.
+      //. The needRedraw operation asks that the entire graphic
+      //. be redrawn; needRedrawRegion specifies an area
+      //. relative to the graphic's coordinate space. One use of
+      //. needRedrawRegion is to redraw the region surrounding the 
+      //. merged before and after areas of a transformed graphic.
+      //. 
+      //. Note these operations do not actually cause an immediate
+      //. screen update; they merely notify the system that
+      //. a draw traversal is desired in the near future.
+      void need_redraw();
+      void need_redraw_region(in Region r);
+      //. This operation is similar to needRedraw, but
+      //. includes the additional possibility that the graphic's
+      //. natural size has changed.  This operation implies
+      //. two redraw requests (which will be handled with
+      //. a single draw traversal), one for the graphic's original area
+      //. and one for the graphic's new area.
+      void need_resize();
+    };
+};
+
+#endif

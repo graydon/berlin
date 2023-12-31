@@ -1,7 +1,7 @@
-/*$Id: GLRaster.cc,v 1.3 1999/11/10 21:57:36 stefan Exp $
+/*$Id: GLRaster.cc,v 1.10 2000/09/19 21:11:07 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -20,7 +20,7 @@
  * MA 02139, USA.
  */
 
-#include "Prague/Sys/Memory.hh"
+#include <Prague/Sys/Memory.hh>
 #include "Drawing/openGL/GLRaster.hh"
 
 /*
@@ -29,17 +29,16 @@
  */
 
 using namespace Prague;
-
+using namespace Warsaw;
 
 template <class T>
 T ceiling(T a, T b) { return a % b == 0 ? a/b : a/b + 1;}
-const double epsilong = 0.001;
 
-bool scaleImage(GLenum format,
-		size_t widthin, size_t heightin, const unsigned char *datain,
-		size_t widthout, size_t heightout, unsigned char *dataout)
+bool scale_image(GLenum format,
+		 size_t widthin, size_t heightin, const unsigned char *datain,
+		 size_t widthout, size_t heightout, unsigned char *dataout)
 {
-  GLint components;
+  unsigned short components;
   /* Determine number of components per pixel */
   switch (format)
     {
@@ -207,11 +206,11 @@ bool scaleImage(GLenum format,
  * openGL requires glTexImage2D to take width and height in the form 2^k
  * se we extract the exponent here and the residue
  */
-inline void logbase2(unsigned int n, int &v)//, float &r)
+inline void logbase2(unsigned int n, GLint &v)
 {
   unsigned int k;
   for (k = 0; n >>= 1; k++);
-  v = 1 << (k + 1);//, r = v - n;
+  v = 1 << (k + 1);
 }
 
 /*
@@ -241,9 +240,9 @@ static GLint bytes_per_pixel(GLenum format)
     }
 }
 
-void resizeImage(GLenum format,
-		 size_t widthin, size_t heightin, const unsigned char *datain,
-		 size_t widthout, size_t heightout, unsigned char *dataout)
+void resize_image(GLenum format,
+		  size_t widthin, size_t heightin, const unsigned char *datain,
+		  size_t widthout, size_t heightout, unsigned char *dataout)
 {
   GLint bpp = bytes_per_pixel(format);
   Memory::zero(dataout, widthout * heightout * bpp);
@@ -251,8 +250,37 @@ void resizeImage(GLenum format,
     Memory::copy(datain, dataout, widthin * bpp);
 }
 
+GLTexture::GLTexture(Raster_var r)
+  : GLRaster(r)
+{
+  Raster::Info info = remote->header();
+  Raster::ColorSeq_var pixels;
+  Raster::Index lower, upper;
+  lower.x = lower.y = 0;
+  upper.x = info.width, upper.y = info.height;
+  remote->store_pixels(lower, upper, pixels);
+  width = info.width;
+  height = info.height;
+  vector<unsigned char> data(4*width*height);
+  vector<unsigned char>::iterator pixel = data.begin();
+  for (int y = height - 1; y >= 0; y--)
+    for (int x = 0; x != width; x++)
+      {
+	Color &color = pixels[y * info.width + x];
+	*pixel++ = static_cast<char>(color.red * 256);
+	*pixel++ = static_cast<char>(color.green * 256);
+	*pixel++ = static_cast<char>(color.blue * 256);
+	*pixel++ = static_cast<char>(color.alpha * 256);
+      }
+  texture = bind(GL_RGBA, GL_RGBA, data.begin());
+}
 
-GLuint GLRaster::bind(GLint components, GLenum format, unsigned char *data)
+GLTexture::~GLTexture()
+{
+  glDeleteTextures(1, &texture);  
+}
+
+GLuint GLTexture::bind(GLint components, GLenum format, unsigned char *data)
 {
   GLuint texture;
   glGenTextures(1, &texture);
@@ -296,22 +324,10 @@ GLuint GLRaster::bind(GLint components, GLenum format, unsigned char *data)
   bool done = false;
 
   if (w != width || h != height)
-#if 0
     {
-      /* must rescale image to get "top" mipmap texture image */
       image = new unsigned char [(w+4) * h * bpp];
-      bool error = scaleImage(format, width, height, data, w, h, image);
-      if (error) done = true;
+      scale_image(format, width, height, data, w, h, image);
     }
-#else
-    {
-      /* just copy the raster into a larger image, adapting the texture coordinates */
-      image = new unsigned char [(w+4) * h * bpp];
-      resizeImage(format, width, height, data, w, h, image);
-      s = static_cast<GLfloat>(width)/w;
-      t = static_cast<GLfloat>(height)/h;
-    }
-#endif
   else image = data;
 
   level = 0;
@@ -331,7 +347,7 @@ GLuint GLRaster::bind(GLint components, GLenum format, unsigned char *data)
       neww = (w < 2) ? 1 : w / 2;
       newh = (h < 2) ? 1 : h / 2;
       newimage = new unsigned char [(neww + 4) * newh * bpp];
-      error = scaleImage(format, w, h, image, neww, newh, newimage);
+      error = scale_image(format, w, h, image, neww, newh, newimage);
       if (error) done = true;
       if (image != data) delete [] image;
       image = newimage;
@@ -353,21 +369,15 @@ GLuint GLRaster::bind(GLint components, GLenum format, unsigned char *data)
   return texture;
 }
 
-void GLRaster::unbind()
-{
-  glDeleteTextures(1, &texture);  
-}
-
-GLRaster::GLRaster(Raster_var r)
-  : remote(r),
-    s(1.), t(1.)
+GLImage::GLImage(Raster_var r)
+  : GLRaster(r)
 {
   Raster::Info info = remote->header();
   Raster::ColorSeq_var pixels;
   Raster::Index lower, upper;
   lower.x = lower.y = 0;
   upper.x = info.width, upper.y = info.height;
-  remote->storePixels(lower, upper, pixels);
+  remote->store_pixels(lower, upper, pixels);
   width = info.width;
   height = info.height;
   vector<unsigned char> data(4*width*height);
@@ -384,27 +394,99 @@ GLRaster::GLRaster(Raster_var r)
   texture = bind(GL_RGBA, GL_RGBA, data.begin());
 }
 
-GLRaster::~GLRaster()
+GLImage::~GLImage()
 {
-  unbind();
+  glDeleteTextures(1, &texture);  
 }
 
-void GLRaster::draw()
+GLuint GLImage::bind(GLint components, GLenum format, unsigned char *data)
 {
-  glEnable(GL_TEXTURE_2D);
+  GLuint texture;
+  glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
-  glColor4f(1., 1., 1., 1.);
-  glBegin(GL_POLYGON);
-  Path path;
-  path.p.length(4);
-  path.p[0].x = path.p[0].y = path.p[0].z = 0.;
-  path.p[1].x = width, path.p[1].y = path.p[1].z = 0.;
-  path.p[2].x = width, path.p[2].y = height, path.p[2].z = 0.;
-  path.p[3].x = 0, path.p[3].y = height, path.p[3].z = 0.;
-  glTexCoord2f(0., 0.); glVertex3f(path.p[3].x, path.p[3].y, path.p[3].z);
-  glTexCoord2f(s, 0.);  glVertex3f(path.p[2].x, path.p[2].y, path.p[2].z);
-  glTexCoord2f(s, t);   glVertex3f(path.p[1].x, path.p[1].y, path.p[1].z);
-  glTexCoord2f(0., t);  glVertex3f(path.p[0].x, path.p[0].y, path.p[0].z);
-  glEnd();
-  glDisable(GL_TEXTURE_2D);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+  GLint w, h;
+  unsigned char *image, *newimage;
+  GLint neww, newh, level, bpp;
+  int error;
+  GLint unpackrowlength, unpackalignment, unpackskiprows, unpackskippixels;
+  GLint packrowlength, packalignment, packskiprows, packskippixels;
+
+  GLint maxsize;
+  glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxsize);
+  logbase2(width, w);
+  if (w > maxsize) w = maxsize;
+  logbase2(height, h);
+  if (h > maxsize) h = maxsize;
+  bpp = bytes_per_pixel(format);
+
+  /* Get current glPixelStore values */
+  glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpackrowlength);
+  glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpackalignment);
+  glGetIntegerv(GL_UNPACK_SKIP_ROWS, &unpackskiprows);
+  glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &unpackskippixels);
+  glGetIntegerv(GL_PACK_ROW_LENGTH, &packrowlength);
+  glGetIntegerv(GL_PACK_ALIGNMENT, &packalignment);
+  glGetIntegerv(GL_PACK_SKIP_ROWS, &packskiprows);
+  glGetIntegerv(GL_PACK_SKIP_PIXELS, &packskippixels);
+
+  /* set pixel packing */
+  glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+  glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  glPixelStorei(GL_PACK_SKIP_ROWS, 0);
+  glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
+
+  bool done = false;
+
+  if (w != width || h != height)
+    {
+      /* just copy the raster into a larger image, adapting the texture coordinates */
+      image = new unsigned char [(w+4) * h * bpp];
+      resize_image(format, width, height, data, w, h, image);
+      s = static_cast<GLfloat>(width)/w;
+      t = static_cast<GLfloat>(height)/h;
+    }
+  else image = data;
+
+  level = 0;
+  while (!done)
+    {
+      if (image != data)
+	{
+	  /* set pixel unpacking */
+	  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	  glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+	  glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+	}
+      glTexImage2D(GL_TEXTURE_2D, level, components, w, h, 0, format, GL_UNSIGNED_BYTE, image);
+      if (w==1 && h==1)  break;
+
+      neww = (w < 2) ? 1 : w / 2;
+      newh = (h < 2) ? 1 : h / 2;
+      newimage = new unsigned char [(neww + 4) * newh * bpp];
+      error = scale_image(format, w, h, image, neww, newh, newimage);
+      if (error) done = true;
+      if (image != data) delete [] image;
+      image = newimage;
+      w = neww;
+      h = newh;
+      level++;
+    }
+  if (image != data) delete [] image;
+
+   /* Restore original glPixelStore state */
+  glPixelStorei(GL_UNPACK_ROW_LENGTH, unpackrowlength);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, unpackalignment);
+  glPixelStorei(GL_UNPACK_SKIP_ROWS, unpackskiprows);
+  glPixelStorei(GL_UNPACK_SKIP_PIXELS, unpackskippixels);
+  glPixelStorei(GL_PACK_ROW_LENGTH, packrowlength);
+  glPixelStorei(GL_PACK_ALIGNMENT, packalignment);
+  glPixelStorei(GL_PACK_SKIP_ROWS, packskiprows);
+  glPixelStorei(GL_PACK_SKIP_PIXELS, packskippixels);
+  return texture;
 }

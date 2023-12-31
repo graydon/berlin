@@ -1,8 +1,8 @@
-/*$Id: PNG.cc,v 1.2 1999/11/06 20:23:08 stefan Exp $
+/*$Id: PNG.cc,v 1.9 2001/04/18 06:07:27 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Brent Fulgham <bfulgham@debian.org>
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,197 +21,205 @@
  * MA 02139, USA.
  */
 
-#include "Berlin/Logger.hh"
+#include <Warsaw/config.hh>
 #include "Image/PNG.hh"
-#include "Prague/Sys/Memory.hh"
+#include <Berlin/Logger.hh>
+#include <Prague/Sys/Memory.hh>
+#include <Prague/Sys/Tracer.hh>
 #include <iostream>
 #include <fstream>
 #include <streambuf.h>
 #include <png.h>
 
 using namespace Prague;
+using namespace Warsaw;
 
-class PNG::ibuf : public streambuf
+class PNG::ibuf : public std::streambuf
 {
 public:
   ibuf(const Raster::Data &data)
     {
-      char *begin = (char *)data.NP_data(); // soon to be replaced with get_buffer()  -stefan
+      char *begin = (char *)data.get_buffer();
       char *end   = begin + data.length();
-      setg (begin, begin, end);
+      setg(begin, begin, end);
     }
 };
 
-class PNG::obuf : public streambuf
+class PNG::obuf : public std::streambuf
 {
 public:
   unsigned char *data() const
     {
-      unsigned char *ret = new unsigned char[buf.size()];
-      Prague::Memory::copy(buf.begin(), ret, buf.size());
+      unsigned char *ret = new unsigned char[_buf.size()];
+      Prague::Memory::copy(&*_buf.begin(), ret, _buf.size());
       return ret;
     }
-  streamsize  length() const { return buf.size();}
-  streamsize  xsputn(const char *s, streamsize n)
+  std::streamsize  length() const { return _buf.size();}
+  std::streamsize  xsputn(const char *s, std::streamsize n)
     {
-      buf.insert(buf.end(), s, s + n);
+      _buf.insert(_buf.end(), s, s + n);
       return n;
     }
 private:
-  vector<unsigned char> buf;
+  std::vector<unsigned char> _buf;
 };
 
 class PNG::Decoder 
 {
   static const size_t magic = 8;
 public:
-  Decoder(streambuf *, png_structp, png_infop, png_infop);
-  operator bool () const { return valid;}
+  Decoder(std::streambuf *, png_structp, png_infop, png_infop);
+  operator bool () const { return _valid;}
   unsigned char **decode();
 private:
   static void read(png_structp, png_bytep, png_size_t);
   static void warning(png_structp, png_const_charp);
   static void error(png_structp, png_const_charp);
-  streambuf *input;
-  bool valid;
-  png_structp png;
-  png_infop   info, end;
+  std::streambuf *_input;
+  bool            _valid;
+  png_structp     _png;
+  png_infop       _info;
+  png_infop       _end;
 };
 
 class PNG::Encoder 
 {
 public:
-  Encoder(streambuf *, png_structp, png_infop, png_infop);
+  Encoder(std::streambuf *, png_structp, png_infop, png_infop);
   void encode(unsigned char *const *);
 private:
   static void write(png_structp, png_bytep, png_size_t);
   static void flush(png_structp);
   static void warning(png_structp, png_const_charp);
   static void error(png_structp, png_const_charp);
-  streambuf *output;
-  png_structp png;
-  png_infop info; 
-  png_infop end;
+  streambuf  *_output;
+  png_structp _png;
+  png_infop   _info; 
+  png_infop   _end;
 };
 
-inline PNG::Encoder::Encoder(streambuf *sb, png_structp p, png_infop i, png_infop e)
-  : output(sb), png(p), info(i), end(e)
+inline PNG::Encoder::Encoder(std::streambuf *sb, png_structp p, png_infop i, png_infop e)
+  : _output(sb), _png(p), _info(i), _end(e)
 {
-  png_set_write_fn (png, output, &PNG::Encoder::write, &PNG::Encoder::flush);
-  png_set_error_fn(png, output, &PNG::Encoder::error, &PNG::Encoder::warning);
-  png_set_write_status_fn(png, 0);
+  png_set_write_fn (_png, _output, &PNG::Encoder::write, &PNG::Encoder::flush);
+  png_set_error_fn(_png, _output, &PNG::Encoder::error, &PNG::Encoder::warning);
+  png_set_write_status_fn(_png, 0);
 }
 
 inline void PNG::Encoder::encode(unsigned char *const *rows)
 {
-  SectionLog section("Encoder::encode");
-  png_write_info(png, info);
-  png_write_image(png, const_cast<unsigned char **>(rows));
-  png_write_end(png, end);
+  Trace trace("Encoder::encode");
+  png_write_info(_png, _info);
+  png_write_image(_png, const_cast<unsigned char **>(rows));
+  png_write_end(_png, _end);
 }
 
 inline void PNG::Encoder::write(png_structp png_ptr, png_bytep image, png_size_t length) 
 {
-  streambuf *sbuf = static_cast<streambuf *>(png_ptr->io_ptr);
-  sbuf->xsputn((char*)image, (size_t)length);
+  std::streambuf *sbuf = static_cast<std::streambuf *>(png_ptr->io_ptr);
+  sbuf->sputn((char*)image, (size_t)length);
 }
 
 inline void PNG::Encoder::flush(png_structp png_ptr) 
 {
-  streambuf *sbuf = static_cast<streambuf *>(png_ptr->io_ptr);
+  std::streambuf *sbuf = static_cast<std::streambuf *>(png_ptr->io_ptr);
+#ifdef __GLIBCPP__
+  sbuf->pubsync();
+#else
   sbuf->sync();
+#endif
 }
 
 inline void PNG::Encoder::warning(png_structp, png_const_charp msg)
 {
-  Logger::log(Logger::corba) << "PNG::Encoder::warning : " << msg << endl;
+  Logger::log(Logger::corba) << "PNG::Encoder::warning : " << msg << std::endl;
 }
 
 inline void PNG::Encoder::error(png_structp, png_const_charp msg)
 {
-  Logger::log(Logger::corba) << "PNG::Encoder::error : " << msg << endl;
+  Logger::log(Logger::corba) << "PNG::Encoder::error : " << msg << std::endl;
 }
 
 inline PNG::Decoder::Decoder(streambuf *sbuf, png_structp p, png_infop i, png_infop e)
-  : input(sbuf), valid(false), png(p), info(i), end(e)
+  : _input(sbuf), _valid(false), _png(p), _info(i), _end(e)
 {
   png_byte header[magic];
-  input->xsgetn((char*)header, magic);
-  valid = !(png_sig_cmp(header, 0, magic));
-  if (valid)
+  _input->sgetn((char*)header, magic);
+  _valid = !(png_sig_cmp(header, 0, magic));
+  if (_valid)
     {
-      png_set_sig_bytes(png, magic);
-      png_set_read_fn(png, input, &PNG::Decoder::read);
-      png_set_error_fn(png, input, &PNG::Decoder::error, &PNG::Decoder::warning);
-      png_set_read_status_fn(png, 0);
-      png_read_info(png, info);
+      png_set_sig_bytes(_png, magic);
+      png_set_read_fn(_png, _input, &PNG::Decoder::read);
+      png_set_error_fn(_png, _input, &PNG::Decoder::error, &PNG::Decoder::warning);
+      png_set_read_status_fn(_png, 0);
+      png_read_info(_png, _info);
     }
 }
 
 inline unsigned char **PNG::Decoder::decode()
 
 {
-  SectionLog section("PNGDecoder::decode");
-  if (!valid)
+  Trace trace("PNGDecoder::decode");
+  if (!_valid)
     {
-      cerr << "PNG::Decoder::decode : invalid raster !" << endl;
+      std::cerr << "PNG::Decoder::decode : invalid raster !" << std::endl;
       return 0;
     }
-  png_uint_32 height = png_get_image_height(png, info);
-  png_uint_32 rowbytes = png_get_rowbytes(png, info);
+  png_uint_32 height = png_get_image_height(_png, _info);
+  png_uint_32 rowbytes = png_get_rowbytes(_png, _info);
   unsigned char **rows = new unsigned char *[height];
   for (png_uint_32 i = 0; i < height; i++) rows[i] = new unsigned char[rowbytes];
-  png_read_image(png, rows);
-  png_read_end(png, end);
+  png_read_image(_png, rows);
+  png_read_end(_png, _end);
   return rows;
 }
 
 inline void PNG::Decoder::read(png_structp png_ptr, png_bytep image, png_size_t length) 
 {
-  streambuf *input = static_cast<streambuf *>(png_ptr->io_ptr);
-  input->xsgetn((char *)image, (size_t)length);
+  std::streambuf *input = static_cast<std::streambuf *>(png_ptr->io_ptr);
+  input->sgetn((char *)image, (size_t)length);
 }
 
 inline void PNG::Decoder::warning(png_structp, png_const_charp msg)
 {
-  Logger::log(Logger::image) << "PNG::Decoder::warning : " << msg << endl;
+  Logger::log(Logger::image) << "PNG::Decoder::warning : " << msg << std::endl;
 }
 
 inline void PNG::Decoder::error(png_structp, png_const_charp msg)
 {
-  Logger::log(Logger::image) << "PNG::Decoder::error : " << msg << endl;
+  Logger::log(Logger::image) << "PNG::Decoder::error : " << msg << std::endl;
 }
 
 PNG::PNG()
 {
-  rpng = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
-  rinfo = png_create_info_struct(rpng);
-  rend = png_create_info_struct(rpng);
+  _rpng = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+  _rinfo = png_create_info_struct(_rpng);
+  _rend = png_create_info_struct(_rpng);
 }
 
 PNG::~PNG()
 {
   clear();
-  png_destroy_read_struct(&rpng, &rinfo, &rend);
+  png_destroy_read_struct(&_rpng, &_rinfo, &_rend);
 }
 
 void PNG::clear()
 {
-  png_destroy_read_struct(&rpng, &rinfo, &rend);
-  rpng = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
-  rinfo = png_create_info_struct(rpng);
-  rend = png_create_info_struct(rpng);  
+  png_destroy_read_struct(&_rpng, &_rinfo, &_rend);
+  _rpng = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
+  _rinfo = png_create_info_struct(_rpng);
+  _rend = png_create_info_struct(_rpng);  
 }
 
 void PNG::header(Raster::Info &info)
 {
-  info.width = rinfo->width;
-  info.height = rinfo->height;
-  info.depth = rinfo->bit_depth;
-  info.colortype = rinfo->color_type;
-  info.compression = rinfo->compression_type;
-  info.filter = rinfo->filter_type;
-  info.interlace = rinfo->interlace_type;
+  info.width = _rinfo->width;
+  info.height = _rinfo->height;
+  info.depth = _rinfo->bit_depth;
+  info.colortype = _rinfo->color_type;
+  info.compression = _rinfo->compression_type;
+  info.filter = _rinfo->filter_type;
+  info.interlace = _rinfo->interlace_type;
 }
 
 Raster::Data *PNG::marshal(unsigned char *const *rows)
@@ -223,13 +231,13 @@ Raster::Data *PNG::marshal(unsigned char *const *rows)
   /*
    * transfer the IHDR chunk
    */
-  png_get_IHDR(rpng, rinfo, &width, &height, &depth, &color, &interlace, &compression, &filter);
+  png_get_IHDR(_rpng, _rinfo, &width, &height, &depth, &color, &interlace, &compression, &filter);
   png_set_IHDR(wpng, winfo, width, height, depth, color, interlace, compression, filter);
   /*
    * set up buffer to hold new data
    */
   obuf buffer;
-  Encoder encoder(&buffer, wpng, winfo, rend);
+  Encoder encoder(&buffer, wpng, winfo, _rend);
   encoder.encode(rows);
   Raster::Data *data = new Raster::Data(static_cast<CORBA::ULong>(buffer.length()), static_cast<CORBA::ULong>(buffer.length()),
 					reinterpret_cast<CORBA::Octet *>(buffer.data()), static_cast<CORBA::Boolean>(true));
@@ -241,7 +249,7 @@ unsigned char **PNG::demarshal(const Raster::Data &data)
 {
   clear();
   ibuf buffer(data);
-  Decoder decoder(&buffer, rpng, rinfo, rend);
+  Decoder decoder(&buffer, _rpng, _rinfo, _rend);
   unsigned char **rows = decoder.decode();
   return rows;
 }
@@ -250,15 +258,15 @@ Color PNG::pixel(unsigned long x, unsigned long y, unsigned char *const *rows)
 {
   Color color;
   color.red = color.green = color.blue = 0.; color.alpha = 1.;
-  if (x >= rinfo->width || y >= rinfo->height)
+  if (x >= _rinfo->width || y >= _rinfo->height)
     {
-      cerr << "PNG::pixel: illegal index !" << endl;
+      std::cerr << "PNG::pixel: illegal index !" << std::endl;
       return color;
     }
   else
     {
-      if (rinfo->color_type != rgbalpha) cerr << "wrong color type : " << (int) rinfo->color_type << endl;
-      if (rinfo->bit_depth != 8) cerr << "wrong depth : " << (int) rinfo->bit_depth << endl;
+      if (_rinfo->color_type != rgbalpha) std::cerr << "wrong color type : " << (int) _rinfo->color_type << std::endl;
+      if (_rinfo->bit_depth != 8) std::cerr << "wrong depth : " << (int) _rinfo->bit_depth << std::endl;
       const unsigned char *pixel = rows[y] + 4*x;
       color.red = static_cast<double>(*pixel) / 256;
       color.green = static_cast<double>(*(pixel + 1)) / 256;
@@ -270,15 +278,15 @@ Color PNG::pixel(unsigned long x, unsigned long y, unsigned char *const *rows)
 
 void PNG::pixel(unsigned long x, unsigned long y, const Color &color, unsigned char **rows)
 {
-  if (x >= rinfo->width || y >= rinfo->height)
+  if (x >= _rinfo->width || y >= _rinfo->height)
     {
-      cerr << "RasterImpl::loadPixel: illegal index !" << endl;
+      std::cerr << "RasterImpl::loadPixel: illegal index !" << std::endl;
       return;
     }
   else
     {
-      if (rinfo->color_type != rgbalpha) cerr << "wrong color type : " << (int) rinfo->color_type << endl;
-      if (rinfo->bit_depth != 8) cerr << "wrong depth : " << (int) rinfo->bit_depth << endl;
+      if (_rinfo->color_type != rgbalpha) std::cerr << "wrong color type : " << static_cast<int>(_rinfo->color_type) << std::endl;
+      if (_rinfo->bit_depth != 8) std::cerr << "wrong depth : " << static_cast<int>(_rinfo->bit_depth) << endl;
       unsigned char *pixel = rows[y] + 4*x;
       *pixel++ = static_cast<png_byte>(color.red * 256);
       *pixel++ = static_cast<png_byte>(color.green * 256);
@@ -291,12 +299,12 @@ Raster::ColorSeq *PNG::pixels(unsigned long xlower, unsigned long ylower, unsign
 			      unsigned char *const *rows)
 {
   if (xupper < xlower || yupper < ylower ||
-      xupper > rinfo->width || yupper > rinfo->height ||
-      xlower > rinfo->width || ylower > rinfo->height)
+      xupper > _rinfo->width || yupper > _rinfo->height ||
+      xlower > _rinfo->width || ylower > _rinfo->height)
     {
-      cerr << "PNG::pixels: illegal indexes !\n";
-      cerr << xlower << ' ' << ylower << ' ' << xupper << ' ' << yupper
-	   << " not contained in " << ' ' << rinfo->width << 'x' << rinfo->height << endl;
+      std::cerr << "PNG::pixels: illegal indexes !\n";
+      std::cerr << xlower << ' ' << ylower << ' ' << xupper << ' ' << yupper
+	   << " not contained in " << ' ' << _rinfo->width << 'x' << _rinfo->height << std::endl;
       return 0;
     }
   png_uint_32 width = xupper - xlower;
@@ -306,14 +314,18 @@ Raster::ColorSeq *PNG::pixels(unsigned long xlower, unsigned long ylower, unsign
   colors->length(width*height);
   
   const unsigned char *row = 0;
-//   if (rinfo->color_type != rgbalpha) cerr << "wrong color type : " << (int) rinfo->color_type << endl;
-//   if (rinfo->bit_depth != 8) cerr << "wrong depth : " << (int) rinfo->bit_depth << endl;
   unsigned char *buffer = 0;
-  if (rinfo->color_type == palette) row = buffer = new unsigned char[rinfo->width*rinfo->height*4];
+  if (_rinfo->color_type != rgbalpha) row = buffer = new unsigned char[_rinfo->width*_rinfo->height*4];
   for (png_uint_32 y = ylower, i = 0; y != yupper; y++, i++)
     {
-      if (rinfo->color_type == palette) expand(rows[y], rows[y] + rinfo->rowbytes, buffer);
-      else row = rows[y];
+      switch (_rinfo->color_type)
+	{
+	case palette: palette_to_rgbalpha(rows[y], rows[y] + _rinfo->rowbytes, buffer); break;
+	case gray: gray_to_rgbalpha(rows[y], rows[y] + _rinfo->rowbytes, buffer); break;
+	case grayalpha: grayalpha_to_rgbalpha(rows[y], rows[y] + _rinfo->rowbytes, buffer); break;
+	case rgb: rgb_to_rgbalpha(rows[y], rows[y] + _rinfo->rowbytes, buffer); break;
+	default: row = rows[y];
+	}
       for (png_uint_32 x = xlower, j = 0; x != xupper; x++, j++)
 	{
 	  const unsigned char *pixel = row + 4*x;
@@ -331,40 +343,23 @@ Raster::ColorSeq *PNG::pixels(unsigned long xlower, unsigned long ylower, unsign
 void PNG::pixels(unsigned long xlower, unsigned long ylower, unsigned long xupper, unsigned long yupper,
 		 const Raster::ColorSeq &pixels, unsigned char **rows)
 {
-  cerr << "sorry, PNG::pixels not yet implemented" << endl;
-//   clear();
-//   Raster::Info info;
-//   info.width = width;
-//   info.height = height;
-//   info.depth = 8;
-//   info.colortype = PNG_COLOR_TYPE_RGB_ALPHA;
-//   info.compression = PNG_COMPRESSION_TYPE_BASE;
-//   info.filter = PNG_FILTER_TYPE_BASE;
-//   info.interlace = PNG_INTERLACE_NONE;
-//   png_set_IHDR(rpng, rinfo, info.width, info.height, info.depth, info.colortype, info.interlace, info.compression, info.filter);
-//   rows = new png_bytep[height];
-//   png_uint_32 rowbytes = (info.width * 32 + 7) >> 3;
-//   for (png_uint_32 i = 0; i != info.height; i++)
-//     {
-//       rows[i] = new png_byte[rowbytes];
-//       Prague::Memory::copy(data.NP_data() + i * rowbytes, rows[i], rowbytes);
-//     }
+  std::cerr << "sorry, PNG::pixels not yet implemented" << std::endl;
 }
 
-unsigned char **PNG::read(const string &file)
+unsigned char **PNG::read(const std::string &file)
 {
   unsigned char **rows = 0;
-  ifstream ifs(file.c_str());
-  if (!ifs) cerr << "PNG : file " << file << " unreadable" << endl;
+  std::ifstream ifs(file.c_str());
+  if (!ifs) cerr << "PNG : file " << file << " unreadable" << std::endl;
   else
     {
-      Decoder decoder(ifs.rdbuf(), rpng, rinfo, rend);
+      Decoder decoder(ifs.rdbuf(), _rpng, _rinfo, _rend);
       rows = decoder.decode();
     }
   return rows;
 }
 
-void PNG::write(const string &file, unsigned char *const *rows)
+void PNG::write(const std::string &file, unsigned char *const *rows)
 {
   png_structp wpng = png_create_write_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
   png_infop winfo = png_create_info_struct(wpng);
@@ -374,21 +369,21 @@ void PNG::write(const string &file, unsigned char *const *rows)
   /*
    * transfer the IHDR chunk
    */
-  png_get_IHDR(rpng, rinfo, &width, &height, &depth, &color, &interlace, &compression, &filter);
+  png_get_IHDR(_rpng, _rinfo, &width, &height, &depth, &color, &interlace, &compression, &filter);
   png_set_IHDR(wpng, winfo, width, height, depth, color, interlace, compression, filter);
 
-  ofstream ofs(file.c_str());
-  Encoder encoder(ofs.rdbuf(), wpng, winfo, rend);
+  std::ofstream ofs(file.c_str());
+  Encoder encoder(ofs.rdbuf(), wpng, winfo, _rend);
   encoder.encode(rows);
   png_destroy_write_struct(&wpng, &winfo);
 }
 
-void PNG::expand(const unsigned char *begin, const unsigned char *end, unsigned char *to)
+void PNG::palette_to_rgbalpha(const unsigned char *begin, const unsigned char *end, unsigned char *to)
 //. expands palette png into rgba
 {
-  if (rinfo->color_type != PNG_COLOR_TYPE_PALETTE) return;
+  if (_rinfo->color_type != PNG_COLOR_TYPE_PALETTE) return;
   size_t length = end - begin;
-  switch (rinfo->bit_depth)
+  switch (_rinfo->bit_depth)
     {
     case 1:
       {
@@ -457,11 +452,88 @@ void PNG::expand(const unsigned char *begin, const unsigned char *end, unsigned 
   unsigned char *dp = to + (length << 2) - 1;
   for (unsigned long i = 0; i < length; i++)
     {
-      if ((int)(*sp) >= rpng->num_trans) *dp-- = 0xff;
-      else *dp-- = rpng->trans[*sp];
-      *dp-- = rpng->palette[*sp].blue;
-      *dp-- = rpng->palette[*sp].green;
-      *dp-- = rpng->palette[*sp].red;
+      if ((int)(*sp) >= _rpng->num_trans) *dp-- = 0xff;
+      else *dp-- = _rpng->trans[*sp];
+      *dp-- = _rpng->palette[*sp].blue;
+      *dp-- = _rpng->palette[*sp].green;
+      *dp-- = _rpng->palette[*sp].red;
       sp--;
     }
 }
+
+void PNG::gray_to_rgbalpha(const unsigned char *begin, const unsigned char *end, unsigned char *to)
+{
+  if (_rinfo->color_type != gray) return;
+  if (_rinfo->bit_depth == 8)
+    for (; begin < end; begin++)
+      {
+	*(to++) = *begin;//red
+	*(to++) = *begin;//green
+	*(to++) = *begin;//blue
+	*(to++) =  0xff; //alpha
+      }
+  else
+    for (; begin < end; begin += 2)// 16 bit
+      {
+	*(to++) = *begin;
+	*(to++) = *(begin + 1);
+	*(to++) = *begin;
+	*(to++) = *(begin + 1);
+	*(to++) = *(begin++);
+	*(to++) = *(begin++);
+	*(to++) =  0xff;
+	*(to++) =  0xff;
+      }
+}
+
+void PNG::grayalpha_to_rgbalpha(const unsigned char *begin, const unsigned char *end, unsigned char *to)
+//. expands gray alpha png into rgba
+{
+  if (_rinfo->color_type != grayalpha) return;
+  if (_rinfo->bit_depth == 8)
+    for (; begin != end; begin++)
+      {
+	*(to++) = *begin;  // red
+	*(to++) = *begin;  // green
+	*(to++) = *begin++;// blue
+	*(to++) = *begin;  // alpha
+      }
+  else
+    for (; begin < end; begin++)
+      {
+	*(to++) = *begin;       // red
+	*(to++) = *(begin + 1); // red
+	*(to++) = *begin;       // green
+	*(to++) = *(begin + 1); // green
+	*(to++) = *(begin++);   // blue
+	*(to++) = *(begin++);   // blue
+	*(to++) = *(begin++);   // alpha
+	*(to++) = *begin;       // alpha
+      }
+}
+
+void PNG::rgb_to_rgbalpha(const unsigned char *begin, const unsigned char *end, unsigned char *to)
+{
+  if (_rinfo->color_type != rgb) return;
+  if (_rinfo->bit_depth == 8)
+    for (; begin < end; begin++)
+      {
+	*(to++) = *(begin++);//red
+	*(to++) = *(begin++);//green
+	*(to++) = *begin;//blue
+	*(to++) =  0xff; //alpha
+      }
+  else
+    for (; begin < end; begin++)// 16 bit
+      {
+	*(to++) = *(begin++);
+	*(to++) = *(begin++);
+	*(to++) = *(begin++);
+	*(to++) = *(begin++);
+	*(to++) = *(begin++);
+	*(to++) = *begin;
+	*(to++) =  0xff;
+	*(to++) =  0xff;
+      }
+}
+

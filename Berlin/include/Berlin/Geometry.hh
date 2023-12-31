@@ -1,7 +1,7 @@
-/*$Id: Geometry.hh,v 1.5 1999/10/21 20:23:50 gray Exp $
+/*$Id: Geometry.hh,v 1.7 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -226,7 +226,7 @@ inline bool Rectangle<T>::intersectsLine(const Line<T> &i) const
 }
 
 template <class T>
-ostream &operator << (ostream &os, const Rectangle<T> &rectangle)
+std::ostream &operator << (std::ostream &os, const Rectangle<T> &rectangle)
 {
   return os << '(' << rectangle.l << ',' << rectangle.t << ',' << rectangle.r << ',' << rectangle.b << ')';
 }

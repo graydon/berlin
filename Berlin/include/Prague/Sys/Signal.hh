@@ -1,7 +1,7 @@
-/*$Id: Signal.hh,v 1.3 1999/09/30 17:23:33 gray Exp $
+/*$Id: Signal.hh,v 1.8 2001/03/21 06:28:22 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _Signal_hh
-#define _Signal_hh
+#ifndef _Prague_Signal_hh
+#define _Prague_Signal_hh
 
 #include <Prague/Sys/Thread.hh>
 #include <Prague/Sys/ThreadQueue.hh>
@@ -33,12 +33,9 @@ namespace Prague
 
 class sigerr {};
 
+//. a wrapper for the POSIX signal handling functions.
 class Signal 
-  //. a wrapper for the (POSIX) signal handling functions}
 {
-  class Notifier;
-  typedef vector<Notifier *> nlist_t;
-  typedef map<int, nlist_t> dict_t;
 public:
   class Notifier
     {
@@ -46,32 +43,38 @@ public:
       virtual ~Notifier() {}
       virtual void notify(int) = 0;
     };
+private:
+  typedef std::vector<Notifier *> nlist_t;
+  typedef std::map<int, nlist_t> dict_t;
+public:
   enum type { hangup = SIGHUP, interrupt = SIGINT, quit = SIGQUIT, illegal = SIGILL,
 	      trap = SIGTRAP, abort = SIGABRT, iotrap = SIGIOT, bus = SIGBUS, fpe = SIGFPE,
 	      segv = SIGSEGV,
-	      usr1 = SIGUSR1, usr2 = SIGUSR2, alarm = SIGALRM, terminate = SIGTERM, child = SIGCLD, io = SIGIO,
+	      usr1 = SIGUSR1, usr2 = SIGUSR2, alarm = SIGALRM, terminate = SIGTERM, child = SIGCHLD, io = SIGIO,
 	      pipe = SIGPIPE, kill = SIGKILL};
-  static bool set (int, Notifier *);
   //. add a notifier to be executed whenever the given signal is catched
-  static bool unset (int, Notifier *);
+  static bool set(int, Notifier *);
   //. removes a notifier from the list for signum
-  static void unset (int);
+  static bool unset(int, Notifier *);
   //. remove all notifiers for the signal and reinstall the system's default handler
-  static void mask (int);
+  static void unset(int);
   //. ignore the specified signal
-  static void mask (int, int);
+  static void mask(int);
   //. block sigb while siga is handled
-  static void unmask (int);
+  static void mask(int, int);
   //. don't ignore the specified signal any more
-  static void unmask (int, int);
-  static bool ispending (int);
-  //. is there a pending signal of type @var{signum} (while being blocked)
-  static sigset_t pending ();
+  static void unmask(int);
+  //. don't ignore the specified signal any more
+  static void unmask(int, int);
+  //. is there a pending signal of type signum (while being blocked)
+  static bool ispending(int signum);
   //. is there any pending signal (while being blocked)
-  static void sysresume (int, bool);
-  static char *name(int);
+  static sigset_t pending();
+  static void sysresume(int, bool);
   //. returns the signal name of signum if nonzero or of the last signal beeing catched
+  static const char *name(int);
 
+  //. a Signal Guard, that masks a given signal over its lifetime.
   class Guard
   {
   public:
@@ -91,4 +94,4 @@ private:
 
 };
 
-#endif /* _Signal_hh */
+#endif

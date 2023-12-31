@@ -1,7 +1,7 @@
-/*$Id: ViewportImpl.hh,v 1.6 1999/06/15 20:54:19 gray Exp $
+/*$Id: ViewportImpl.hh,v 1.14 2000/09/19 21:11:05 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,54 +22,52 @@
 #ifndef _Viewport_hh
 #define _Viewport_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/Viewport.hh"
-#include "Berlin/MonoGraphic.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/Viewport.hh>
+#include <Warsaw/BoundedRange.hh>
+#include <Berlin/ViewImpl.hh>
+#include <Berlin/MonoGraphic.hh>
+#include <Berlin/RefCountVar.hh>
 
-declare_corba_ptr_type(BoundedRange)
 class RegionImpl;
 
-class ViewportImpl : implements(Viewport), public MonoGraphic
+class ViewportImpl : public virtual POA_Layout::Viewport,
+		     public virtual ViewImpl,
+		     public MonoGraphic
 {
   class Adjustment;
  public:
   ViewportImpl();
   ~ViewportImpl();
-  void attachAdjustments();
-  virtual void body(Graphic_ptr);
+  virtual void body(Warsaw::Graphic_ptr);
+  virtual Warsaw::Graphic_ptr body() { return MonoGraphic::body();}
 
-  virtual Transform_ptr transformation();
-  virtual void request(Requisition &);
+  virtual Warsaw::Transform_ptr transformation();
+  virtual void request(Warsaw::Graphic::Requisition &);
 
-  virtual void traverse(Traversal_ptr);
+  virtual void traverse(Warsaw::Traversal_ptr);
+  virtual void draw(Warsaw::DrawTraversal_ptr);
+  virtual void pick(Warsaw::PickTraversal_ptr);
 
-  virtual void needResize();
+  virtual void need_resize();
 
-  virtual BoundedRange_ptr adjustment(Axis);
+  virtual Warsaw::BoundedRange_ptr adjustment(Warsaw::Axis);
 
-  virtual void update(Subject_ptr, const CORBA::Any &);
+  virtual void update(const CORBA::Any &);
 
-  void scrollTo(Axis, Coord);
-  Coord lower(Axis);
-  Coord length(Axis);
-  Coord offset(Axis);
-  Coord visible(Axis);
 protected:
-  void allocateChild(Allocation::Info &);
-  void cacheRequisition();
-  void checkAllocation(Region_ptr);
-  RegionImpl *bodyAllocation(Region_ptr);
-  void scrollTransform(Transform_ptr);
+  virtual void activate_composite();
+  void allocate_child(Warsaw::Allocation::Info &);
+  void cache_requisition();
+  void cache_allocation(Warsaw::Region_ptr);
+  void body_allocation(Warsaw::Region_ptr, RegionImpl *);
+  void scroll_transform(Warsaw::Transform_ptr);
 
-  Coord       of[2];
-  Coord       vi[2];
-  Coord       lo[2]; 
-  Coord       le[2];
-
-  Adjustment *xadjustment;
-  Adjustment *yadjustment;
+  Warsaw::BoundedRange::Settings settings[2];
+  RefCount_var<Warsaw::BoundedRange> xadjustment;
+  RefCount_var<Warsaw::BoundedRange> yadjustment;
   bool        requested;
-  Requisition requisition;
+  Warsaw::Graphic::Requisition requisition;
 };
 
-#endif /* _Viewport_hh */
+#endif

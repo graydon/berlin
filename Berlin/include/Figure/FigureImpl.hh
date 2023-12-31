@@ -1,7 +1,7 @@
-/*$Id: FigureImpl.hh,v 1.2 1999/10/13 21:32:31 gray Exp $
+/*$Id: FigureImpl.hh,v 1.8 2000/12/21 21:05:43 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,38 +24,39 @@
 
 #include <Warsaw/config.hh>
 #include <Warsaw/Figure.hh>
-#include <Berlin/GraphicImpl.hh>
 #include <Berlin/ImplVar.hh>
+#include <Berlin/GraphicImpl.hh>
 
 class TransformImpl;
 class RegionImpl;
 
-class TransformFigure : implements (Figure), public GraphicImpl
+class TransformFigure : public virtual POA_Figure::FigureBase,
+			public GraphicImpl
 {
  public:
   TransformFigure();
   ~TransformFigure();
-  virtual Transform_ptr transformation();
-  virtual void request(Requisition &);
-  virtual void extension(const Allocation::Info &, Region_ptr r);
-  virtual void pick(PickTraversal_ptr);
-  virtual void needRedraw();
+  virtual Warsaw::Transform_ptr transformation();
+  virtual void request(Warsaw::Graphic::Requisition &);
+  virtual void extension(const Warsaw::Allocation::Info &, Warsaw::Region_ptr);
+  virtual void pick(Warsaw::PickTraversal_ptr);
+  virtual void need_redraw();
   
-  Mode type() { return mode;}
-  void type(Mode m) { mode = m; needRedraw();}
-  Color foreground() { return fg;}
-  void foreground(const Color &f) { fg = f; needRedraw();}
-  Color background() { return bg;}
-  void background(const Color &b) { bg = b; needRedraw();}
+  Figure::Mode type() { return _mode;}
+  void type(Figure::Mode m) { _mode = m; need_redraw();}
+  Warsaw::Color foreground() { return _fg;}
+  void foreground(const Warsaw::Color &f) { _fg = f; need_redraw();}
+  Warsaw::Color background() { return _bg;}
+  void background(const Warsaw::Color &b) { _bg = b; need_redraw();}
 
   virtual void resize();
 
   void copy(const TransformFigure &);
  protected:
-  Mode mode;
-  Color fg, bg;
-  Impl_var<TransformImpl> tx;
-  Impl_var<RegionImpl> ext;
+  Figure::Mode            _mode;
+  Warsaw::Color           _fg, _bg;
+  Impl_var<TransformImpl> _tx;
+  Impl_var<RegionImpl>    _ext;
 };
 
 class FigureImpl : public TransformFigure
@@ -64,18 +65,17 @@ public:
   FigureImpl();
   virtual ~FigureImpl();
 
-  void addPoint(Coord, Coord);
+  void add_point(Warsaw::Coord, Warsaw::Coord);
   void reset();
   virtual void resize();
 
-  virtual void extension(const Allocation::Info &, Region_ptr);
-  virtual void draw(DrawTraversal_ptr);
-  virtual void pick(PickTraversal_ptr);
+  virtual void extension(const Warsaw::Allocation::Info &, Warsaw::Region_ptr);
+  virtual void draw(Warsaw::DrawTraversal_ptr);
+  virtual void pick(Warsaw::PickTraversal_ptr);
 
   void copy(const FigureImpl &);
 protected:
-  Vertices_var path;
-  Vertices_var handle;
+  Warsaw::Path_var _path;
 };
 
-#endif /* _FigureImpl_hh */
+#endif

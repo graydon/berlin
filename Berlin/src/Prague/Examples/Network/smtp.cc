@@ -1,8 +1,6 @@
 #include <Prague/Network/smtp.hh>
 #include <Prague/Sys/User.hh>
 #include <string>
-// #include <stdio.h>
-// #include <pwd.h>
 #include <unistd.h>
 
 using namespace Prague;
@@ -11,10 +9,10 @@ int main (int argc, char **argv)
 {
   if (argc < 4)
     {
-      cerr << "Usage: " << argv[0] << " host recipient files...\n";
+      std::cerr << "Usage: " << argv[0] << " host recipient files...\n";
       return 1;
     }
-  smtp client (&cout);
+  smtp client (&std::cout);
 
   // establish connection
   client->connect(argv[1]);
@@ -25,7 +23,7 @@ int main (int argc, char **argv)
 
   // get the FROM address
   User me;
-  string sender = string (me.name()) + '@' + client->localhost();
+  std::string sender = std::string(me.name()) + '@' + client->localaddr().hostname();
 
   // send the files
   for (int i = 3; i < argc; i++)

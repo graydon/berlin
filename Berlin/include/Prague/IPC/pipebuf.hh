@@ -1,7 +1,7 @@
-/*$Id: pipebuf.hh,v 1.2 1999/04/27 20:11:10 gray Exp $
+/*$Id: pipebuf.hh,v 1.4 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -26,22 +26,16 @@
 namespace Prague
 {
 
-/* @Class{pipebuf : public ipcbuf}
- *
- * @Description{a ipcbuf based on a pipe}
- */
+//.a ipcbuf based on a pipe}
 class pipebuf : public ipcbuf
 {
 public:
   pipebuf(int flag) : ipcbuf(flag), fl(flag) {}
+  //. construct a pipebuf for reading, if @code{mode == ios::in}, writing otherwise
   int open();
 protected:
   int fl;
 };
-
-/* @Method{pipebuf::pipebuf(int mode)}
- * @Description{construct a pipebuf for reading, if @code{mode == ios::in}, writing otherwise}
- */
 
 };
 

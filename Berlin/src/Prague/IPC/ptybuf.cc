@@ -1,7 +1,7 @@
-/*$Id: ptybuf.cc,v 1.3 1999/11/16 02:15:20 stefan Exp $
+/*$Id: ptybuf.cc,v 1.12 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -20,10 +20,19 @@
  * MA 02139, USA.
  */
 #include <Prague/IPC/ptybuf.hh>
+#include <cstdio>
+#include <cerrno>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <termios.h>
+#include <Prague/Sys/Thread.hh>
+
+#if defined(__linux__) || defined(__FreeBSD__) // XXX: should use configure
+#  define __bsd44__
+#elif defined(__sgi__)
+#  define __svr4__
+#endif
 
 using namespace Prague;
 
@@ -48,7 +57,7 @@ public:
 };
 
 ptybuf::ptybuf()
-  : ipcbuf(ios::in|ios::out), save(0)
+  : ipcbuf(std::ios::in|std::ios::out), save(0)
 {
   ptydev[0] = ttydev[0] = '\0';
 }
@@ -69,15 +78,25 @@ ptybuf::~ptybuf()
   delete save;
 }
 
+std::streamsize ptybuf::sys_read(char *buf, std::streamsize len)
+{
+  std::streamsize rval = -1;
+  do rval = ::read(fd(), buf, len);
+  while (rval == -1 && errno == EINTR);
+  if (rval == -1 && errno == EIO) return 0;
+  if (rval == -1 && errno != EAGAIN) perror("ptybuf::read");
+  return rval;
+}
+
 void ptybuf::setup()
 {
 //   ptystream = fdopen(fd(), "r+");
   if (!save) save = new backup(fd());
 }
 
-#ifdef __linux__ //_bsd_
+#if defined __bsd44__
 #include "ptybuf.bsd44.cc"
-#elif defined __sgi__ //_svr4_
+#elif defined __svr4__
 #include "ptybuf.svr4.cc"
 #else
 #error sorry, ptybuf not yet implemented for this architecture

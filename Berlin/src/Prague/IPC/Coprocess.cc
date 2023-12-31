@@ -1,7 +1,7 @@
-/*$Id: Coprocess.cc,v 1.8 1999/11/18 04:45:24 stefan Exp $
+/*$Id: Coprocess.cc,v 1.18 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,15 +19,26 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
+#include "Prague/config.hh"
 #include "Prague/IPC/Coprocess.hh"
 #include "Prague/Sys/Signal.hh"
+#include "Prague/Sys/Tracer.hh"
 
 #include <fstream>
 
 #include <cstdio>
 #include <cerrno>
-#include <wait.h>
 #include <unistd.h>
+#include <sys/types.h>
+#if HAVE_SYS_WAIT_H
+# include <sys/wait.h>
+#endif
+#ifndef WEXITSTATUS
+# define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
+#endif
+#ifndef WIFEXITED
+# define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#endif
 
 using namespace Prague;
 
@@ -44,8 +55,8 @@ static bool init = false;
 
 void Coprocess::Reaper::notify(int)
 {
-  sleep(1);
-  MutexGuard guard(singletonMutex);
+  Trace trace("Coprocess::Reaper::notify");
+  Prague::Guard<Mutex> guard(singletonMutex);
   for (plist_t::iterator i = processes.begin(); i != processes.end(); i++)
     {
       int status;
@@ -54,15 +65,15 @@ void Coprocess::Reaper::notify(int)
 	{
 	  if (WIFEXITED(status))
 	    {
-	      MutexGuard guard((*i)->mutex);
-	      (*i)->id     = 0;
+	      Prague::Guard<Mutex> guard((*i)->_mutex);
+	      (*i)->_id     = 0;
 	      (*i)->_state = exited;
 	      (*i)->_value = WEXITSTATUS(status);
 	    }
 	  else if (WIFSIGNALED(status))
 	    {
-	      MutexGuard guard((*i)->mutex);
-	      (*i)->id     = 0;
+	      Prague::Guard<Mutex> guard((*i)->_mutex);
+	      (*i)->_id     = 0;
 	      (*i)->_state = signaled;
 	      (*i)->_value = WTERMSIG(status);
 	    }
@@ -72,8 +83,8 @@ void Coprocess::Reaper::notify(int)
     }
 }
 
-Coprocess::Coprocess(const string &cmd, IONotifier *n, EOFNotifier *e)
-  : path(cmd), ioNotifier(n), eofNotifier(e), id(0), _state(ready), inbuf(0), outbuf(0), errbuf(0)
+Coprocess::Coprocess(const std::string &cmd, IONotifier *n, EOFNotifier *e)
+  : _path(cmd), _ioNotifier(n), _eofNotifier(e), _id(0), _state(ready), _inbuf(0), _outbuf(0), _errbuf(0)
 {
   if (!init) Signal::set(Signal::child, &reaper);
   init = true;
@@ -84,12 +95,13 @@ Coprocess::Coprocess(const string &cmd, IONotifier *n, EOFNotifier *e)
 
 Coprocess::~Coprocess()
 {
+  stop();
   terminate();
 };
 
 void Coprocess::start()
 {
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(_mutex);
   processes.push_back(this);
   _state = running;
   Agent::start();
@@ -100,12 +112,15 @@ void Coprocess::stop()
   Agent::stop();
 }
 
-bool Coprocess::processIO(int, iomask_t m)
+bool Coprocess::process(int, iomask m)
 {
+  Trace trace("Coprocess::process");
+  Prague::Guard<Mutex> guard(_mutex);
   /*
    * let the client process the IO
    */
-  bool flag = ioNotifier ? ioNotifier->notify(m) : false;
+  bool flag = _ioNotifier ? _ioNotifier->notify(m) : false;
+  flag &= (_id != 0);
   /*
    * see whether the channel is still open
    */
@@ -115,8 +130,7 @@ bool Coprocess::processIO(int, iomask_t m)
     case Agent::inexc:
       if (ibuf()->eof())
 	{
-	  shutdown(in);
-	  if (eofNotifier) eofNotifier->notify(Agent::in);
+	  if (_eofNotifier) _eofNotifier->notify(Agent::in);
 	  flag = false;
 	}
       break;
@@ -124,8 +138,7 @@ bool Coprocess::processIO(int, iomask_t m)
     case Agent::outexc:
       if (obuf()->eof()) 
 	{
-	  shutdown(out);
-	  if (eofNotifier) eofNotifier->notify(Agent::out);
+	  if (_eofNotifier) _eofNotifier->notify(Agent::out);
 	  flag = false;
 	}
       break;
@@ -133,8 +146,7 @@ bool Coprocess::processIO(int, iomask_t m)
     case Agent::errexc:
       if (ebuf()->eof())
 	{
-	  shutdown(err);
-	  if (eofNotifier) eofNotifier->notify(Agent::err);
+	  if (_eofNotifier) _eofNotifier->notify(Agent::err);
 	  flag = false;
 	}
       break;
@@ -156,31 +168,20 @@ void Coprocess::terminate()
       Thread::delay(1);
     }
   Thread::delay(10);
-  if (pid()) cerr << "Coprocess " << pid() << " wouldn't die (" << Signal::name(sig) << ')' << endl;
+  if (pid()) std::cerr << "Coprocess " << pid() << " wouldn't die (" << Signal::name(sig) << ')' << std::endl;
 }
 
-void Coprocess::shutdown(short m)
+void Coprocess::shutdown(int m)
 {
-  m = mask() | ~m;
-  mask(m);
-  if (m ^ in)
-    {
-      delete inbuf;
-      inbuf = 0;
-    }
-  else if (m ^ out)
-    {
-      delete outbuf;
-      outbuf = 0;
-    }
-  else if (m ^ err)
-    {
-      delete errbuf;
-      errbuf = 0;
-    }
+  short om = mask();
+  m &= om;
+  mask(om & ~m);
+  if (m & in) delete _inbuf, _inbuf = 0;
+  if (m & out) delete _outbuf, _outbuf = 0;
+  if (m & err) delete _errbuf, _errbuf = 0;
 }
 
 void Coprocess::kill(int signum)
 {
-  if (id > 0 && ::kill(id, signum) < 0) perror("Coprocess::kill");
+  if (_id > 0 && ::kill(_id, signum) < 0) std::perror("Coprocess::kill");
 }

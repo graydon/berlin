@@ -1,7 +1,7 @@
-/*$Id: gzbuf.cc,v 1.2 1999/04/27 20:09:49 gray Exp $
+/*$Id: gzbuf.cc,v 1.4 2001/03/27 05:38:42 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * this file defines a C++ interface to zlib
@@ -22,16 +22,18 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#include <memory.h>
 #include "Prague/Filter/gzbuf.hh"
+#include <memory.h>
+#include <cstdio>
 
 using namespace Prague;
 
-gzbuf::gzbuf() : file(0), mode(0), fd_owner(false) {}
+gzbuf::gzbuf() : _file(0), _mode(0), _owner(false), _buf(new char[BUFSIZ]) {}
 gzbuf::~gzbuf()
 {
   sync();
-  if (fd_owner) close();
+  delete _buf;
+  if (_owner) close();
 }
 
 gzbuf *gzbuf::open(const char *name, int io_mode)
@@ -39,36 +41,36 @@ gzbuf *gzbuf::open(const char *name, int io_mode)
   if (is_open()) return 0;
   char char_mode[10];
   char *p;
-  memset(char_mode,'\0',10);
+  memset(char_mode, '\0', 10);
   p = char_mode;
-  if (io_mode & ios::in)
+  if (io_mode & std::ios::in)
     {
-      mode = ios::in;
+      _mode = std::ios::in;
       *p++ = 'r';
     }
   else if
-    (io_mode & ios::app)
+    (io_mode & std::ios::app)
     {
-      mode = ios::app;
+      _mode = std::ios::app;
       *p++ = 'a';
     }
   else
     {
-      mode = ios::out;
+      _mode = std::ios::out;
       *p++ = 'w';
     }
-  if (io_mode & ios::binary)
+  if (io_mode & std::ios::binary)
     {
-      mode |= ios::binary;
+      _mode |= std::ios::binary;
       *p++ = 'b';
     }
   // Hard code the compression level
-  if (io_mode & (ios::out|ios::app))
+  if (io_mode & (std::ios::out|std::ios::app))
     {
       *p++ = '9';
     }
-  if ((file = gzopen(name, char_mode)) == 0) return 0;
-  fd_owner = true;
+  if ((_file = gzopen(name, char_mode)) == 0) return 0;
+  _owner = true;
   return this;
 }
 
@@ -79,33 +81,33 @@ gzbuf *gzbuf::attach(int fd, int io_mode)
   char *p;
   memset(char_mode,'\0',10);
   p = char_mode;
-  if (io_mode & ios::in)
+  if (io_mode & std::ios::in)
     {
-      mode = ios::in;
+      _mode = std::ios::in;
       *p++ = 'r';
     }
-  else if (io_mode & ios::app)
+  else if (io_mode & std::ios::app)
     {
-      mode = ios::app;
+      _mode = std::ios::app;
       *p++ = 'a';
     }
   else
     {
-      mode = ios::out;
+      _mode = std::ios::out;
       *p++ = 'w';
     }
-  if (io_mode & ios::binary)
+  if (io_mode & std::ios::binary)
     {
-      mode |= ios::binary;
+      _mode |= std::ios::binary;
       *p++ = 'b';
     }
   // Hard code the compression level
-  if (io_mode & (ios::out|ios::app))
+  if (io_mode & (std::ios::out|std::ios::app))
     {
       *p++ = '9';
     }
-  if ((file = gzdopen(fd, char_mode)) == 0) return 0;
-  fd_owner = false;
+  if ((_file = gzdopen(fd, char_mode)) == 0) return 0;
+  _owner = false;
   return this;
 }
 
@@ -114,45 +116,33 @@ gzbuf *gzbuf::close()
   if (is_open())
     {
       sync();
-      gzclose(file);
-      file = 0;
+      gzclose(_file);
+      _file = 0;
     }
   return this;
 }
 
 int gzbuf::setcompressionlevel(short comp_level)
 {
-  return gzsetparams(file, comp_level, -2);
+  return gzsetparams(_file, comp_level, -2);
 }
 
 int gzbuf::setcompressionstrategy(short comp_strategy)
 {
-  return gzsetparams(file, -2, comp_strategy);
+  return gzsetparams(_file, -2, comp_strategy);
 }
 
-streampos gzbuf::seekoff(streamoff off, ios::seek_dir dir, int which)
+std::streampos gzbuf::seekoff(std::streamoff off, std::ios::seekdir dir, int which)
 {
-  return streampos(EOF);
+  return std::streampos(EOF);
 }
 
 int gzbuf::underflow()
 {
   // If the file hasn't been opened for reading, error.
-  if (!is_open() || !(mode & ios::in)) return EOF;
+  if (!is_open() || !(_mode & std::ios::in)) return EOF;
   // if a buffer doesn't exists, allocate one.
-  if (!base())
-    {
-      if ((allocate()) == EOF) return EOF;
-      setp(0,0);
-    }
-  else
-    {
-      if (in_avail()) return (unsigned char) *gptr();
-      if (out_waiting())
-	{
-	  if (flushbuf() == EOF) return EOF;
-	}
-    }
+  if (in_avail()) return (unsigned char) *gptr();
   // Attempt to fill the buffer.
   int result = fillbuf();
   if (result == EOF)
@@ -166,22 +156,12 @@ int gzbuf::underflow()
 
 int gzbuf::overflow(int c)
 {
-  if (!is_open() || !(mode & ios::out)) return EOF;
-  if (!base())
+  if (!is_open() || !(_mode & std::ios::out)) return EOF;
+  if (pptr() - pbase())
     {
-      if (allocate() == EOF) return EOF;
-      setg(0,0,0);
+      if (flushbuf() == EOF) return EOF;
     }
-  else
-    {
-      if (in_avail()) return EOF;
-      if (out_waiting())
-	{
-	  if (flushbuf() == EOF) return EOF;
-	}
-  }
-  int bl = blen();
-  setp( base(), base() + bl);
+  setp(_buf, _buf + BUFSIZ);
   if (c != EOF)
     {
       *pptr() = c;
@@ -193,7 +173,7 @@ int gzbuf::overflow(int c)
 int gzbuf::sync()
 {
   if (!is_open()) return EOF;
-  if (out_waiting()) return flushbuf();
+  if (pptr() - pbase()) return flushbuf();
   return 0;
 }
 
@@ -203,19 +183,15 @@ int gzbuf::flushbuf()
   char *q;
   q = pbase();
   n = pptr() - q;
-  if (gzwrite(file, q, n) < n) return EOF;
-  setp(0,0);
+  if (gzwrite(_file, q, n) < n) return EOF;
+  setp(0, 0);
   return 0;
 }
 
 int gzbuf::fillbuf()
 {
-  int required;
-  char *p;
-  p = base();
-  required = blen();
-  int t = gzread(file, p, required);
+  int t = gzread(_file, _buf, BUFSIZ);
   if (t <= 0) return EOF;
-  setg(base(), base(), base()+t);
+  setg(_buf, _buf, _buf + t);
   return t;
 }

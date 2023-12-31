@@ -1,0 +1,43 @@
+/*$Id: Canvas.idl,v 1.1 2000/09/28 15:46:25 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Canvas_idl
+#define _Warsaw_Canvas_idl
+
+#include <Warsaw/Drawable.idl>
+#include <Warsaw/Graphic.idl>
+
+module Warsaw
+{
+  interface Canvas : Graphic
+    {
+      typedef Drawable::PixelFormat PixelFormat;
+      typedef Drawable::BufferFormat BufferFormat;
+
+      readonly attribute long shm_id;
+      readonly attribute PixelFormat pixel_format;
+      readonly attribute BufferFormat buffer_format;
+      void lock();
+      void unlock();
+    };
+};
+
+#endif

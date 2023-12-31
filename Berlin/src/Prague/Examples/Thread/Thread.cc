@@ -4,26 +4,33 @@
 
 using namespace Prague;
 
+struct DebugGuard
+{
+  DebugGuard() { std::cout << "DebugGuard::DebugGuard" << std::endl;}
+  ~DebugGuard() { std::cout << "DebugGuard::~DebugGuard" << std::endl;}
+};
+
 void *task0(void *a)
 {
-  cout << "task 0 sleeping 5 sec..." << endl;
+  std::cout << "task 0 sleeping 5 sec..." << std::endl;
   sleep(5);
+  std::cout << "exiting..." << std::endl;
   exit(0);
   return a;
 }
 
 void *task1(void *a)
 {
-  cout << "task 1 sleeping 1 sec..." << endl;
+  std::cout << "task 1 sleeping 1 sec..." << std::endl;
   sleep(2);
   return a;
 }
 
 void *task2(void *)
 {
-  cout << "task 2 sleeping 1 sec..." << endl;
+  std::cout << "task 2 sleeping 1 sec..." << std::endl;
   sleep(1);
-  cout << "task 2 exiting..." << endl;
+  std::cout << "task 2 exiting..." << std::endl;
   const char *r = "task 2 exited";
   Thread::exit((char *)r);
   return 0;
@@ -31,7 +38,8 @@ void *task2(void *)
 
 void *task3(void *)
 {
-  cout << "task 3 sleeping forever..." << endl;
+  std::cout << "task 3 sleeping forever..." << std::endl;
+  DebugGuard guard;
   while (true)
     {
       sleep(1);
@@ -55,16 +63,16 @@ int main(int, char **)
   thread3.start();
   void *r;
   thread1.join(&r);
-  if (thread1.state() == Thread::canceled) cout << "thread 1 canceled" << endl;
-  else cout << "thread 1 finished, return value is " << *static_cast<long *>(r) << endl;
+  if (thread1.state() == Thread::canceled) std::cout << "thread 1 canceled" << std::endl;
+  else std::cout << "thread 1 finished, return value is " << *static_cast<long *>(r) << std::endl;
   thread2.join(&r);
-  if (thread2.state() == Thread::canceled) cout << "thread 2 canceled" << endl;
-  else cout << "thread 2 finished, return value is '" << static_cast<char *>(r) << '\'' << endl;
-  cout << "cancelling thread 3..." << endl; 
+  if (thread2.state() == Thread::canceled) std::cout << "thread 2 canceled" << std::endl;
+  else std::cout << "thread 2 finished, return value is '" << static_cast<char *>(r) << '\'' << std::endl;
+  std::cout << "cancelling thread 3..." << std::endl; 
   thread3.cancel();
   thread3.join(&r);
-  if (thread3.state() == Thread::canceled) cout << "thread 3 canceled" << endl;
-  else cout << "thread 3 finished, return value is '" << static_cast<char *>(r) << '\'' << endl;
+  if (thread3.state() == Thread::canceled) std::cout << "thread 3 canceled" << std::endl;
+  else std::cout << "thread 3 finished, return value is '" << static_cast<char *>(r) << '\'' << std::endl;
 //   thread0.join(0);
   while (true) sleep(1);
 }

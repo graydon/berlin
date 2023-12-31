@@ -1,7 +1,7 @@
-/*$Id: regex.hh,v 1.4 1999/05/03 22:06:44 gray Exp $
+/*$Id: regex.hh,v 1.6 2001/03/21 06:28:23 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -29,39 +29,32 @@
 namespace Prague
 {
 
-/* @Class{rxmatch}
- *
- * @Description{represents matches of a regular expression search}
- */
+//. rxmatch represents matches of a regular expression search
 class rxmatch
 {
 public:
   typedef regmatch_t *iterator;
-  rxmatch() : n(0), r(0) {}
-  ~rxmatch() { delete [] r;}
-  size_t size() const { return n;}
-  iterator begin() const { return r;}
-  iterator end() const { return r + n;}
-  string substr(iterator i) const { return s.substr(i->rm_so, i->rm_eo - i->rm_so);}
-  operator bool () const { return n;}
+  rxmatch() : _n(0), _r(0) {}
+  ~rxmatch() { delete [] _r;}
+  size_t size() const { return _n;}
+  iterator begin() const { return _r;}
+  iterator end() const { return _r + _n;}
+  std::string substr(iterator i) const { return _s.substr(i->rm_so, i->rm_eo - i->rm_so);}
+  operator bool () const { return _n;}
   friend class regex;
 private:
-  string      s;
-  size_t      n;
-  regmatch_t *r;
-  rxmatch(const string &ss, int p, int nn, regmatch_t *rr) : s(ss), n(nn), r(rr)
+  std::string _s;
+  size_t      _n;
+  regmatch_t *_r;
+  rxmatch(const std::string &s, int p, int n, regmatch_t *r) : _s(s), _n(n), _r(r)
     {
-      if (p == -1) n = 0;
-      for (size_t i = 0; i != n; i++)
-	if (rr[i].rm_so == -1) { n = i; break;}
-	else rr[i].rm_so += p, rr[i].rm_eo += p;
+      if (p == -1) _n = 0;
+      for (size_t i = 0; i != n; ++i)
+	if (r[i].rm_so == -1) { _n = i; break;}
+	else r[i].rm_so += p, r[i].rm_eo += p;
     }
 };
 
-/* @Class{regex}
- *
- * @Description{}
- */
 class regex
 {
   struct rx_t
@@ -74,18 +67,18 @@ class regex
   };
 public:
   enum syntax { extended = REG_EXTENDED, basic};
-  regex(int e = extended) : info(new rx_t(e & extended)) {}
-  regex(const string &, int = extended);
+  regex(int e = extended) : _info(new rx_t(e & extended)) {}
+  regex(const std::string &, int = extended);
   regex(const regex &);
   regex &operator = (const regex &);
-  regex &operator = (const string &);
+  regex &operator = (const std::string &);
   ~regex();
-  string::size_type match(const string &, int = 0) const;
-  rxmatch search(const string &, int = 0) const;
-  bool OK() const { return info && info->rx;}
+  std::string::size_type match(const std::string &, int = 0) const;
+  rxmatch search(const std::string &, int = 0) const;
+  bool OK() const { return _info && _info->rx;}
 private:
-  rx_t *info;
-  string error(int);
+  std::string error(int);
+  rx_t *_info;
 };
 
 extern const regex rxwhite;          // = "[ \n\t\r\v\f]+"

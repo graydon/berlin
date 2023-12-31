@@ -1,7 +1,4 @@
-#ifndef _GLUnifont_hh
-#define _GLUnifont_hh
-
-/*$Id: GLUnifont.hh,v 1.4 1999/11/30 21:52:35 tobias Exp $
+/*$Id: GLUnifont.hh,v 1.14 2001/01/26 17:09:49 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
@@ -22,47 +19,64 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
+#ifndef _GLUnifont_hh
+#define _GLUnifont_hh
 
 #include <GL/gl.h>
 #include <vector>
-#include "Warsaw/config.hh"
-#include "Warsaw/Style.hh"
-#include "Warsaw/Types.hh"
-#include "Warsaw/Text.hh"
-#include "Prague/Sys/MMap.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/Types.hh>
+#include <Warsaw/Graphic.hh>
+#include <Prague/Sys/MMap.hh>
+#include "Drawing/openGL/GLFont.hh"
 #include <Warsaw/Unicode.hh>
 
-// This is a default font, just in case -- a character cell bitmapped unicode
-// font which is generated "on the fly" from the GNU unifont, which we're
-// storing in a packed binary array we mmap() in. this is so that, even if all
-// the font manufactureres in the world turn against us, we can still render
-// multilingual text, albeit not quite as well as certain (ahem) proprietary
-// text systems
-
-class GLUnifont :
-    implementsscoped(Text,BaseFont) 
+class GLUnifont : public GLFont
+//. This is a default font, just in case -- a character cell bitmapped unicode
+//. font which is generated "on the fly" from the GNU unifont, which we're
+//. storing in a packed binary array we mmap() in. this is so that, even if all
+//. the font manufactureres in the world turn against us, we can still render
+//. multilingual text, albeit not quite as well as certain (ahem) proprietary
+//. text systems
 {
+  class Texture
+  //. Glyph Textures are layed out with 64 columns, 4 rows of glyphs
+  //. each 32x16 or 16x16 texels large
+  {
+    enum { columns = 64, rows = 4};
+  public:
+    Texture() : name(0), pos(0), data(0) {}
+    ~Texture();
+    void bind(unsigned char *glyphs, GLubyte block);
+    bool bound() const { return data;}
+    void coords(Warsaw::Unichar, float &, float &, float &, float &);
+    GLuint id() { return name;}
+  private:
+    GLuint   name;
+    GLuint  *pos;
+    GLubyte *data;
+  };
+public:
+  GLUnifont();
+  virtual ~GLUnifont();
+  virtual CORBA::ULong size();
+  virtual CORBA::ULong weight();
+  virtual Warsaw::Unistring *family();
+  virtual Warsaw::Unistring *subfamily();
+  virtual Warsaw::Unistring *fullname();
+  virtual Warsaw::Unistring *style();
+  virtual Warsaw::DrawingKit::FontMetrics metrics();
+  virtual Warsaw::DrawingKit::GlyphMetrics metrics(Warsaw::Unichar);
 
- public:
-    GLUnifont();
-    virtual ~GLUnifont();
-    
-    // Text::BaseFont implementation
-    void acceptFontVisitor(Text::FontVisitor_ptr v);
-    CORBA::Boolean canDrawText(const Unistring &u);
-    void drawText(const Unistring &u, const Vertex &v);
-    void allocateText(const Unistring &u, Graphic::Requisition &r);
-    FeatureValueList *queryFeature(FeatureType ft);
-    void setFeature(FeatureType ft, FeatureValue fv);
-    Text::FontDescriptor *descriptor();  
-
-    void setColor(Color c);
-
- protected:
-    MMap *glyphmap;
-    Text::FontDescriptor myDescriptor;
-    Color myColor;
+  void drawChar(Warsaw::Unichar);
+  void allocateChar(Warsaw::Unichar, Warsaw::Graphic::Requisition &);
+private:
+  Prague::MMap *glyphmap;
+  Warsaw::Unistring _family;
+  Warsaw::Unistring _subfamily;
+  Warsaw::Unistring _fullname;
+  Warsaw::Unistring _style;
+  Texture textures[256];
 };
-
 
 #endif

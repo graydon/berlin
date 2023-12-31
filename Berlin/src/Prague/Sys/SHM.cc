@@ -1,7 +1,7 @@
-/*$Id: SHM.cc,v 1.2 1999/04/27 20:09:50 gray Exp $
+/*$Id: SHM.cc,v 1.4 2000/09/28 15:46:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -28,7 +28,8 @@
 
 using namespace Prague;
 
-int   SHM::allocate(size_t bytes) { return shmget(IPC_PRIVATE, bytes, IPC_CREAT | 0600);}
+int   SHM::allocate(key_t key, size_t bytes, int flags) { return shmget(key, bytes, flags);}
+int   SHM::allocate(size_t bytes, int flags) { return shmget(IPC_PRIVATE, bytes, flags);}
 void  SHM::deallocate(int id) { shmctl(id, IPC_RMID, 0);}
 void *SHM::attach(int id) { return shmat(id, 0, SHM_RND);}
 void  SHM::detach(void *p) { shmdt(reinterpret_cast<char *> (p));}

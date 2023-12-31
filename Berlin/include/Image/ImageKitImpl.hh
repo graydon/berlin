@@ -1,8 +1,9 @@
-/*$Id: ImageKitImpl.hh,v 1.5 1999/09/10 20:57:37 gray Exp $
+/*$Id: ImageKitImpl.hh,v 1.9 2000/08/31 18:52:32 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Brent A. Fulgham <bfulgham@debian.org>
  * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org>
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,24 +25,24 @@
 #ifndef _ImageKitImpl_hh
 #define _ImageKitImpl_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/ImageKit.hh"
-#include "Warsaw/Raster.hh"
-#include "Berlin/CloneableImpl.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/ImageKit.hh>
+#include <Warsaw/Raster.hh>
+#include <Berlin/KitImpl.hh>
 #include <vector>
 
 class RasterImpl;
 
-class ImageKitImpl : lcimplements(ImageKit), virtual public CloneableImpl
+class ImageKitImpl : public virtual POA_Warsaw::ImageKit,
+		     public KitImpl
 {
 public:
-  ImageKitImpl();
+  ImageKitImpl(KitFactory *, const Warsaw::Kit::PropertySeq &);
   virtual ~ImageKitImpl();
 
-  Raster_ptr empty();
-  Raster_ptr create(const char *file);
+  Warsaw::Raster_ptr empty();
+  Warsaw::Raster_ptr create(const char *file);
 protected:
-  vector<RasterImpl *> rasters;
 };
 
 #endif

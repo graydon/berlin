@@ -1,0 +1,12 @@
+#! /bin/sh
+#
+# Special Conf file to be used before Warsaw is installed
+
+module_name=Warsaw
+module_description="The Berlin Protocol"
+prefix=
+exec_prefix=
+module_includes="@CPPFLAGS@ @ORB_CPPFLAGS@"
+module_libdir=""
+module_libs="-lWarsaw @LIBS@ @ORB_LIBS@"
+module_version="@SH_VERSION@"

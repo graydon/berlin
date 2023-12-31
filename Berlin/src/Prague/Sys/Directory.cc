@@ -1,7 +1,7 @@
-/*$Id: Directory.cc,v 1.3 1999/10/19 21:07:52 gray Exp $
+/*$Id: Directory.cc,v 1.6 2001/03/21 06:28:55 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -27,8 +27,8 @@
 using namespace Prague;
 
 bool compSize(File *a, File *b) { return  (a->size() > b->size());}
-bool compAccTime(File *a, File *b) { return a->accTime() < b->accTime();}
-bool compModTime(File *a, File *b) { return a->modTime() < b->modTime();}
+bool compAccTime(File *a, File *b) { return a->acc_time() < b->acc_time();}
+bool compModTime(File *a, File *b) { return a->mod_time() < b->mod_time();}
 bool compAlpha(File *a, File *b) { return a->name() < b->name();}
 bool compDirsFirst(File *a, File *b)
 {
@@ -37,83 +37,83 @@ bool compDirsFirst(File *a, File *b)
   else return compAlpha(a, b);
 };
 
-Directory::Directory(const string &n, int order, int filter)
+Directory::Directory(const std::string &n, int order, int filter)
   : File(n)
 {
-  while (longname.length() > 2 && longname[longname.length() - 1] == '.' && longname[longname.length() - 2] == '.')
+  while (_longname.length() > 2 && _longname[_longname.length() - 1] == '.' && _longname[_longname.length() - 2] == '.')
     {
-      string::size_type i = longname.rfind('/', longname.length() - 3);
-      longname.erase(i, longname.length());
+      std::string::size_type i = _longname.rfind('/', _longname.length() - 3);
+      _longname.erase(i, _longname.length());
     }
-  shortname = File::base(longname);
-  if (getStatus() && is(File::dir))
+  _shortname = File::base(_longname);
+  if (get_status() && is(File::dir))
     {
-      DIR *dir = opendir(longname.c_str());
+      DIR *dir = opendir(_longname.c_str());
       for (struct dirent *entry = readdir(dir); entry; entry = readdir(dir))
 	{
-	  string childname = longname + '/' + entry->d_name;
+	  std::string childname = _longname + '/' + entry->d_name;
 	  if (filter == unfiltered ||
 	      filter == nohidden && entry->d_name[0] != '.' ||
 	      filter == dirs && File(childname).is(File::dir) ||
 	      filter == nodirs && !File(childname).is(File::dir))
-	    children.push_back(new File(childname));
+	    _children.push_back(new File(childname));
 	}
       closedir(dir);
       switch (order)
 	{
-	case dirsfirst: sort(children.begin(), children.end(), compDirsFirst); break;
-	case size:      sort(children.begin(), children.end(), compSize); break;
-	case modtime:   sort(children.begin(), children.end(), compModTime); break;
-	case acctime:   sort(children.begin(), children.end(), compAccTime); break;
+	case dirsfirst: sort(_children.begin(), _children.end(), compDirsFirst); break;
+	case size:      sort(_children.begin(), _children.end(), compSize); break;
+	case modtime:   sort(_children.begin(), _children.end(), compModTime); break;
+	case acctime:   sort(_children.begin(), _children.end(), compAccTime); break;
 	case alpha:
-	default:        sort(children.begin(), children.end(), compAlpha); break;
+	default:        sort(_children.begin(), _children.end(), compAlpha); break;
 	}
     }
 }
 
-Directory::Directory(const string &n, int order, const string &pattern)
+Directory::Directory(const std::string &n, int order, const std::string &pattern)
   : File(n)
 {
-  while (longname.length() > 2 && longname[longname.length() - 1] == '.' && longname[longname.length() - 2] == '.')
+  while (_longname.length() > 2 && _longname[_longname.length() - 1] == '.' && _longname[_longname.length() - 2] == '.')
     {
-      string::size_type i = longname.rfind('/', longname.length() - 3);
-      longname.erase(i, longname.length());
+      std::string::size_type i = _longname.rfind('/', _longname.length() - 3);
+      _longname.erase(i, _longname.length());
     }
-  shortname = File::base(n);
-  if (getStatus() && is(File::dir))
+  _shortname = File::base(n);
+  if (get_status() && is(File::dir))
     {
       regex filter(pattern);
-      DIR *dir = opendir(longname.c_str());
+      DIR *dir = opendir(_longname.c_str());
       for (struct dirent *entry = readdir(dir); entry; entry = readdir(dir))
 	{
 	  if (filter.search(entry->d_name))
 	    {
-	      string childname = longname + '/' + entry->d_name;
-	      children.push_back(new File(childname));
+	      std::string childname = _longname + '/' + entry->d_name;
+	      _children.push_back(new File(childname));
 	    }
 	}
       closedir(dir);
       switch (order)
 	{
-	case dirsfirst: sort(children.begin(), children.end(), compDirsFirst); break;
-	case size:      sort(children.begin(), children.end(), compSize); break;
-	case modtime:   sort(children.begin(), children.end(), compModTime); break;
-	case acctime:   sort(children.begin(), children.end(), compAccTime); break;
+	case dirsfirst: sort(_children.begin(), _children.end(), compDirsFirst); break;
+	case size:      sort(_children.begin(), _children.end(), compSize); break;
+	case modtime:   sort(_children.begin(), _children.end(), compModTime); break;
+	case acctime:   sort(_children.begin(), _children.end(), compAccTime); break;
 	case alpha:
-	default:        sort(children.begin(), children.end(), compAlpha); break;
+	default:        sort(_children.begin(), _children.end(), compAlpha); break;
 	}
     }
 }
 
-Directory::Directory(const Directory &D)
-  : File(D)
+Directory::Directory(const Directory &dir)
+  : File(dir)
 {
-  for (vector<File *>::const_iterator i = D.children.begin(); i != D.children.end(); i++)
-    children.push_back(new File((*i)->name()));
+  for (std::vector<File *>::const_iterator i = dir._children.begin(); i != dir._children.end(); i++)
+    _children.push_back(new File((*i)->name()));
 }
 
 Directory::~Directory()
 {
-  for (vector<File *>::iterator i = children.begin(); i != children.end(); i++) delete *i;
+  for (std::vector<File *>::iterator i = _children.begin(); i != _children.end(); i++) delete *i;
 }
 

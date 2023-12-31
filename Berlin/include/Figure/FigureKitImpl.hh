@@ -1,8 +1,8 @@
-/*$Id: FigureKitImpl.hh,v 1.8 1999/10/04 22:57:10 gray Exp $
+/*$Id: FigureKitImpl.hh,v 1.16 2000/12/21 21:05:43 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,38 +24,37 @@
 #ifndef _FigureKitImpl_hh
 #define _FigureKitImpl_hh
 
-#include "Warsaw/FigureKit.hh"
-#include "Warsaw/config.hh"
-#include "Berlin/CloneableImpl.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/FigureKit.hh>
+#include <Warsaw/Figure.hh>
+#include <Berlin/KitImpl.hh>
 #include <vector>
 
-class Figure;
-
-class FigureKitImpl : lcimplements(FigureKit), virtual public CloneableImpl {
+class FigureKitImpl : public virtual POA_Warsaw::FigureKit,
+		      public KitImpl
+{
  public:
-    FigureKitImpl();
-    virtual ~FigureKitImpl();
-
-    Graphic_ptr root(Graphic_ptr);
-    Graphic_ptr fitter(Graphic_ptr);
-    Graphic_ptr group();
-    Graphic_ptr ugroup();
-
-    Figures::Point_ptr point(Coord, Coord);
-    Figures::Line_ptr line(Coord, Coord, Coord, Coord);
-    Figures::Rectangle_ptr rectangle(Coord, Coord, Coord, Coord);
-    Figures::Circle_ptr circle(Coord, Coord, Coord);
-    Figures::Ellipse_ptr ellipse(Coord, Coord, Coord, Coord);
-    //   Figures::Path_ptr openBspline(const Figure::Vertices &);
-    //   Figures::Path_ptr closedBspline(const Figure::Vertices &);
-    Figures::Path_ptr multiline(const Figure::Vertices &);
-    Figures::Path_ptr polygon(const Figure::Vertices &);
-
-    Image_ptr   pixmap(Raster_ptr);
-    Transformator_ptr projection(Graphic_ptr);
- protected:
-    vector<Figure *> figures;
+  FigureKitImpl(KitFactory *, const Warsaw::Kit::PropertySeq &);
+  virtual ~FigureKitImpl();
+  
+  Warsaw::Graphic_ptr root(Warsaw::Graphic_ptr);
+  Warsaw::Graphic_ptr fitter(Warsaw::Graphic_ptr);
+  Warsaw::Graphic_ptr group();
+  Warsaw::Graphic_ptr ugroup();
+  
+  Figure::Point_ptr point(Warsaw::Coord, Warsaw::Coord);
+  Figure::Line_ptr line(Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
+  Figure::Rectangle_ptr rectangle(Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
+  Figure::Circle_ptr circle(Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
+  Figure::Ellipse_ptr ellipse(Warsaw::Coord, Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
+  //   Figures::Path_ptr openBspline(const Figure::Vertices &);
+  //   Figures::Path_ptr closedBspline(const Figure::Vertices &);
+  Figure::Path_ptr multiline(const Warsaw::Path &);
+  Figure::Path_ptr polygon(const Warsaw::Path &);
+  
+  Warsaw::Image_ptr   pixmap(Warsaw::Raster_ptr);
+  Warsaw::Graphic_ptr texture(Warsaw::Graphic_ptr, Warsaw::Raster_ptr);
+  Warsaw::Graphic_ptr transformer(Warsaw::Graphic_ptr);
 };
-
 
 #endif

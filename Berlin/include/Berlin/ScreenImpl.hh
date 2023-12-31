@@ -1,7 +1,7 @@
-/*$Id: ScreenImpl.hh,v 1.16 1999/10/13 21:32:31 gray Exp $
+/*$Id: ScreenImpl.hh,v 1.27 2001/02/03 17:21:03 tobias Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,38 +24,44 @@
 
 #include <Warsaw/config.hh>
 #include <Warsaw/Screen.hh>
+#include <Berlin/ImplVar.hh>
 #include <Berlin/MonoGraphic.hh>
 #include <Berlin/ControllerImpl.hh>
-#include <Berlin/ImplVar.hh>
 
 class ScreenManager;
 class EventManager;
 class RegionImpl;
-class GLDrawingKit;
 
-class ScreenImpl : implements(Screen), public ControllerImpl
+class ScreenImpl : public virtual POA_Warsaw::Screen,
+                   public ControllerImpl
 {
 public:
-  ScreenImpl(GLDrawingKit *);
-  virtual ~ScreenImpl();
-
-  virtual void pick(PickTraversal_ptr);
-  virtual void allocations(Allocation_ptr);
-
-  virtual Coord width();
-  virtual Coord height();
-  virtual DrawingKit_ptr kit();
-  virtual void damage(Region_ptr);
-
-  virtual CORBA::Boolean handle(PickTraversal_ptr, const CORBA::Any &);
-
-  ScreenManager *manager();
-  Region_ptr getRegion();
+    //. Sets up the screen to the sizes given by the console in use.
+    ScreenImpl();
+    virtual ~ScreenImpl();
+    //. Sets up the Event- and Screenmanager for this screen.
+    void bind_managers(EventManager *, ScreenManager *);
+    
+    virtual void pick(Warsaw::PickTraversal_ptr);
+    virtual void allocations(Warsaw::Allocation_ptr);
+    virtual void need_resize() { need_redraw();}
+    
+    virtual Warsaw::Coord width();
+    virtual Warsaw::Coord height();
+    virtual void damage(Warsaw::Region_ptr);
+    
+    virtual CORBA::Boolean request_focus(Warsaw::Controller_ptr, Warsaw::Input::Device);
+    virtual CORBA::Boolean receive_focus(Warsaw::Focus_ptr) { return true;}
+    virtual void lose_focus(Warsaw::Input::Device) {}
+    virtual CORBA::Boolean handle_positional(Warsaw::PickTraversal_ptr, const Warsaw::Input::Event &) { return false;}
+    virtual CORBA::Boolean handle_non_positional(const Warsaw::Input::Event &) { return false;}
+    
+    Warsaw::Region_ptr allocation();
 protected:
-  GLDrawingKit  *drawing;
-  ScreenManager *smanager;
-  Impl_var<RegionImpl> region;
-  EventManager  *emanager;
+    Warsaw::Screen_ptr    __this;
+    EventManager          *_emanager;
+    ScreenManager         *_smanager;
+    Impl_var<RegionImpl>   _region;
 };
 
-#endif /* _ScreenImpl_hh */
+#endif 

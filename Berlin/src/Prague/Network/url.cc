@@ -1,7 +1,8 @@
-/*+P
- * This file is part of OffiX,
- * a C++ API for the X Window System and Unix
- * Copyright (C) 1995-98  Stefan Seefeld
+/*$Id: url.cc,v 1.4 2001/03/25 08:25:16 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,14 +18,16 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
- -P*/
+ */
 #include "Prague/Sys/regex.hh"
 #include "Prague/Network/url.hh"
+#include <iostream>
 
 using namespace Prague;
 
-void url::parse(string t)
+void url::parse(const std::string &tt)
 {
+  std::string t(tt);
   /*
    * search for a fragment identifier.
    */
@@ -52,12 +55,12 @@ void url::parse(string t)
        */
       t.erase(0, 2);
       i = t.find('/');
-      string nl;
+      std::string nl;
       nl = t.substr(0, i);
       t.erase(0, i);
       if ((i = nl.find('@')) >= 0)
 	{
-	  string login = nl.substr(0, i);
+	  std::string login = nl.substr(0, i);
 	  nl.erase(0, i + 1);
 	  if ((i = login.find(':')) >= 0)
 	    {
@@ -68,7 +71,7 @@ void url::parse(string t)
 	}
       if ((i = nl.find(':')) >= 0)
 	{
-	  string portstr = nl.substr(i + 1);
+	  std::string portstr = nl.substr(i + 1);
 	  nl.erase(i, nl.length());
 	  po = atoi(portstr.c_str());
 	}
@@ -94,24 +97,24 @@ void url::parse(string t)
    * the rest is the path.
    */
   p = t;
-  if (s.length()) cout << "scheme\t:" << s << endl;
-  if (u.length()) cout << "user\t:" << u << endl;
-  if (pw.length()) cout << "password\t:" << pw << endl;
-  if (h.length()) cout << "hostname\t:" << h << endl;
-  if (po >= 0) cout << "port\t:" << po << endl;
-  if (p.length()) cout << "path\t:" << p << endl;
-  if (f.length()) cout << "fraction\t:" << f << endl;
-  if (q.length()) cout << "query\t:" << q << endl;
-  if (pa.length()) cout << "parameters\t:" << pa << endl;
+  if (s.length()) std::cout << "scheme\t:" << s << std::endl;
+  if (u.length()) std::cout << "user\t:" << u << std::endl;
+  if (pw.length()) std::cout << "password\t:" << pw << std::endl;
+  if (h.length()) std::cout << "hostname\t:" << h << std::endl;
+  if (po >= 0) std::cout << "port\t:" << po << std::endl;
+  if (p.length()) std::cout << "path\t:" << p << std::endl;
+  if (f.length()) std::cout << "fraction\t:" << f << std::endl;
+  if (q.length()) std::cout << "query\t:" << q << std::endl;
+  if (pa.length()) std::cout << "parameters\t:" << pa << std::endl;
 }
 
-url::url(const string &t)
+url::url(const std::string &t)
  : po(-1)
 {
   parse(t);
 }
 
-url::url(const url &absurl, const string &relurl)
+url::url(const url &absurl, const std::string &relurl)
  : po(-1)
 {
   parse(relurl);
@@ -137,7 +140,7 @@ url::url(const url &absurl, const string &relurl)
 // 	  else
 // 	    {
 // 				// Step 6...
-// 	      string newPath;
+// 	      std::string newPath;
 // 	      int idx1 = 0;
 // 	      newPath = absurl->path();
 // 	      if ((idx1 = newPath.findRev('/')) >= 0) newPath.truncate(idx1 + 1);
@@ -204,11 +207,11 @@ url::url(const url &absurl, const string &relurl)
 /*
  * @Method{}
  *
- * @Description{Return the fully qualified URL as a string}
+ * @Description{Return the fully qualified URL as a std::string}
  */
-// url::operator const string &() const
+// url::operator const std::string &() const
 // {
-//   string tmp;
+//   std::string tmp;
 //   if (method())
 //     {
 //       tmp += method();
@@ -231,7 +234,7 @@ url::url(const url &absurl, const string &relurl)
 //       if (port() >= 0)
 // 	{
 // 	  tmp += ":";
-// 	  tmp += string().setNum(port());
+// 	  tmp += std::string().setNum(port());
 // 	}
 //       if (path() && path()[0] != '/')
 // 	{
@@ -258,11 +261,11 @@ url::url(const url &absurl, const string &relurl)
 //   return tmp;
 // }
 
-void url::encode(string &s)
+void url::encode(std::string &s)
 {
   unsigned int  i;
   unsigned char c;
-  string escaped;
+  std::string escaped;
   for (i = 0; i < s.length(); i++)
     {
       c = s[i];
@@ -279,11 +282,11 @@ void url::encode(string &s)
     }
 }
 
-void url::decode(string &s)
+void url::decode(std::string &s)
 {
   unsigned int  i;
   unsigned char c;
-  string escaped;
+  std::string escaped;
   for (i = 0; i < s.length(); i++)
     {
       c = s[i];

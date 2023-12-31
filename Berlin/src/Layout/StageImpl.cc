@@ -1,7 +1,7 @@
-/*$Id: StageImpl.cc,v 1.27 1999/11/06 20:23:08 stefan Exp $
+/*$Id: StageImpl.cc,v 1.45 2001/04/18 06:07:27 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -20,134 +20,139 @@
  * MA 02139, USA.
  */
 
-#include "Warsaw/config.hh"
-#include "Warsaw/Screen.hh"
-#include "Berlin/AllocationImpl.hh"
-#include "Berlin/TransformImpl.hh"
-#include "Berlin/DebugGraphic.hh"
-#include "Berlin/ImplVar.hh"
-#include "Berlin/Logger.hh"
-#include "Berlin/QuadTree.hh"
 #include "Layout/StageImpl.hh"
+#include <Berlin/Provider.hh>
+#include <Warsaw/config.hh>
+#include <Warsaw/Screen.hh>
+#include <Berlin/AllocationImpl.hh>
+#include <Berlin/TransformImpl.hh>
+#include <Berlin/DebugGraphic.hh>
+#include <Berlin/QuadTree.hh>
+#include <Berlin/Math.hh>
+#include <Prague/Sys/Tracer.hh>
+#include <Prague/Sys/Profiler.hh>
 
 using namespace Geometry;
 using namespace Prague;
+using namespace Warsaw;
+using namespace Layout;
 
-class StageImpl::Sequence : public list<StageHandleImpl *>
+class StageImpl::Sequence : public std::vector<StageHandleImpl *>
 {
-  typedef list<StageHandleImpl *> parent_t;
-  iterator lookup(Stage::Index layer);
+  typedef std::vector<StageHandleImpl *> parent_t;
 public:
-  Sequence() : cursor(begin()) {}
+  Sequence() : _cursor(0) {}
   ~Sequence() {}
   
   void insert(StageHandleImpl *);
   void remove(StageHandleImpl *);
   
-  StageHandleImpl *find(Stage::Index layer) { return *lookup(layer);}
-  StageHandleImpl *front() { return parent_t::front();}
-  StageHandleImpl *back() { return parent_t::back();}
+  StageHandleImpl *find(Layout::Stage::Index layer) { iterator i = lookup(layer); return i == end() ? 0 : *i;}
+  StageHandleImpl *front() { return size() ? parent_t::front() : 0;}
+  StageHandleImpl *back() { return size() ? parent_t::back() : 0;}
+  StageHandleImpl *current() { return _cursor < size() ? *(begin() + _cursor) : 0;}
 private:
-  iterator cursor;
+  iterator lookup(Layout::Stage::Index layer);
+  size_t _cursor;
 };
  
-class StageImpl::Finder
+namespace
+{
+class Finder
 {
 public:
   virtual ~Finder() {}
   virtual void found(StageHandleImpl *) = 0;
 };
 
-class StageImpl::Quad : public QTNode<Coord, StageHandleImpl *>
+class Quad : public QTNode<Coord, StageHandleImpl *>
 {
   typedef QTNode<Coord, StageHandleImpl *> parent_t;
 public:
   Quad(const Geometry::Rectangle<Coord> &);
-  Quad(const Geometry::Rectangle<Coord> &, StageImpl::Quad *);
-  Quad *node(int i) { return static_cast<StageImpl::Quad *>(parent_t::node(static_cast<index>(i)));}
-  void within(const Geometry::Rectangle<Coord> &, StageImpl::Finder &);
-  void contains(const Geometry::Point<Coord> &, StageImpl::Finder &);
-  void intersects(const Geometry::Rectangle<Coord> &, StageImpl::Finder &);
-  void intersects(const Geometry::Rectangle<Coord> &, const Geometry::Polygon<Coord> &, StageImpl::Finder &);
+  Quad(const Geometry::Rectangle<Coord> &, Quad *);
+  Quad *node(int i) { return static_cast<Quad *>(parent_t::node(static_cast<index>(i)));}
+  void within(const Geometry::Rectangle<Coord> &, Finder &);
+  void contains(const Geometry::Point<Coord> &, Finder &);
+  void intersects(const Geometry::Rectangle<Coord> &, Finder &);
+  void intersects(const Geometry::Rectangle<Coord> &, const Geometry::Polygon<Coord> &, Finder &);
+};
 };
 
 class StageImpl::QuadTree : public ::QuadTree<Coord, StageHandleImpl *>
 {
   typedef ::QuadTree<Coord, StageHandleImpl *> parent_t;
 public:
-  QuadTree() : transaction(0), operations(0) {}
-  StageImpl::Quad *node() { return static_cast<StageImpl::Quad *>(parent_t::node());}
+  QuadTree() : _transaction(0), _operations(0) {}
+  Quad *node() { return static_cast<Quad *>(parent_t::node());}
 
-  void begin(){ transaction++;}
+  void begin(){ _transaction++;}
   void insert(StageHandleImpl *);
   void remove(StageHandleImpl *);
   void end();
   StageHandleImpl *contains(const Geometry::Point<Coord> &);
-  void within(const Geometry::Rectangle<Coord> &r, StageImpl::Finder &f) { if (node()) node()->within(r, f);}
-  void intersects(const Geometry::Rectangle<Coord> &r, StageImpl::Finder &f) { if (node()) node()->intersects(r, f);}
-  void intersects(const Geometry::Polygon<Coord> &, StageImpl::Finder &);
+  void within(const Geometry::Rectangle<Coord> &r, Finder &f) { if (node()) node()->within(r, f);}
+  void intersects(const Geometry::Rectangle<Coord> &r, Finder &f) { if (node()) node()->intersects(r, f);}
+  void intersects(const Geometry::Polygon<Coord> &, Finder &);
 private:
-  unsigned transaction;
-  unsigned operations;
+  unsigned int _transaction;
+  unsigned int _operations;
 };
 
-StageImpl::Sequence::iterator StageImpl::Sequence::lookup(Stage::Index layer)
+StageImpl::Sequence::iterator StageImpl::Sequence::lookup(Layout::Stage::Index layer)
 {
-  if (layer == front()->l) return begin();
-  if (layer == back()->l) return --end();
-  if (layer == (*cursor)->l) return cursor;
+  Trace trace("StageImpl::Sequence::lookup");
+  if (layer == front()->_layer) return begin();
+  if (layer == back()->_layer) return end() - 1;
+  if (layer == current()->_layer) return begin() + _cursor;
   /*
    * start searching from the closest item
    */
-  int fdist = front()->l - layer;
-  int bdist = layer;
-  int cdist = Math::abs((*cursor)->l - layer);
+  Layout::Stage::Index fdist = front()->_layer - layer;
+  Layout::Stage::Index bdist = layer;
+  Layout::Stage::Index cdist = Math::abs(current()->_layer - layer);
   if (fdist < bdist)
     {
-      if (fdist < cdist) cursor = begin();
+      if (fdist < cdist) _cursor = 0;
     }
   else
     {
-      if (bdist < cdist) cursor = --end();
+      if (bdist < cdist) _cursor = size() - 1;
     }
-
-  int delta = layer - (*cursor)->l;
-  while (delta > 0) delta--, cursor++;
-  while (delta < 0) delta++, cursor--;
-  return cursor;
+  _cursor += layer - current()->_layer;
+  return begin() + _cursor;
 }
 
 void StageImpl::Sequence::insert(StageHandleImpl *handle)
 {
-  int layer = handle->l;
+  Trace trace("StageImpl::Sequence::insert");
+  Layout::Stage::Index layer = handle->_layer;
   iterator i;
   if (!size() || layer == 0) i = begin();
-  else if (front()->l < layer) i = end();
+  else if (front()->_layer < layer) i = end();
   else i = lookup(layer);
-  parent_t::insert(i++, handle);
-  for (i++; i != end(); i++) (*i)->l = layer++;
+  for (iterator j = i; j != end(); j++) (*j)->_layer = ++layer;
+  parent_t::insert(i, handle);
 }
  
 void StageImpl::Sequence::remove(StageHandleImpl *handle)
 {
-  int layer = handle->l;
+  Trace trace("StageImpl::Sequence::remove");
+  Layout::Stage::Index layer = handle->_layer;
   iterator old = lookup(layer);
-  if (old == cursor)
-    if ((*cursor)->l <= (front()->l / 2)) cursor++;
-    else cursor--;
-  for (iterator i = old++; i != end(); i++) (*i)->l = layer++;
+  if (old == begin() + _cursor)
+    if (current()->_layer <= (front()->_layer / 2)) _cursor++;
+    else _cursor--;
+  for (iterator i = old++; i != end(); i++) (*i)->_layer = layer++;
   parent_t::erase(--old);
 }
 
-StageImpl::Quad::Quad(const Rectangle<Coord> &region) : parent_t(region)
-{
-//   SectionLog section("StageQuad::StageQuad(rectangle)");
-}
+Quad::Quad(const Rectangle<Coord> &region) : parent_t(region) {}
 
 /*
  * one child node is given; the other three are added inside
  */
-StageImpl::Quad::Quad(const Rectangle<Coord> &r, StageImpl::Quad *node)
+Quad::Quad(const Rectangle<Coord> &r, Quad *node)
  : parent_t(r)
 {
 //   SectionLog section("StageQuad::StageQuad(rectangle, StageQuad *)");
@@ -173,19 +178,19 @@ StageImpl::Quad::Quad(const Rectangle<Coord> &r, StageImpl::Quad *node)
 
   quadrants[lefttop] =
     idx == lefttop ? node :
-    new StageImpl::Quad(Rectangle<Coord>(region.l, region.t, region.cx(), region.cy()));
+    new Quad(Rectangle<Coord>(region.l, region.t, region.cx(), region.cy()));
   quadrants[righttop] =
     idx == righttop ? node :
-    new StageImpl::Quad(Rectangle<Coord>(region.cx(), region.t, region.r, region.cy()));
+    new Quad(Rectangle<Coord>(region.cx(), region.t, region.r, region.cy()));
   quadrants[leftbottom] =
     idx == leftbottom ? node :
-    new StageImpl::Quad(Rectangle<Coord>(region.l, region.cy(), region.cx(), region.b));
+    new Quad(Rectangle<Coord>(region.l, region.cy(), region.cx(), region.b));
   quadrants[rightbottom] =
     idx == rightbottom ? node :
-    new StageImpl::Quad(Rectangle<Coord>(region.cx(), region.cy(), region.r, region.b));
+    new Quad(Rectangle<Coord>(region.cx(), region.cy(), region.r, region.b));
 }
 
-void StageImpl::Quad::within(const Rectangle<Coord> &r, StageImpl::Finder &finder)
+void Quad::within(const Rectangle<Coord> &r, Finder &finder)
 {
   index idx = where(region);
   if (idx == fence)
@@ -220,7 +225,7 @@ void StageImpl::Quad::within(const Rectangle<Coord> &r, StageImpl::Finder &finde
   else node(idx)->within(r, finder);
 }
 
-void StageImpl::Quad::contains(const Point<Coord> &point, StageImpl::Finder &finder)
+void Quad::contains(const Point<Coord> &point, Finder &finder)
 {
   for (list::iterator i = items.begin(); i != items.end(); i++)
     if ((*i)->bbox().contains(point))
@@ -235,9 +240,8 @@ void StageImpl::Quad::contains(const Point<Coord> &point, StageImpl::Finder &fin
   if (!leaf()) node(where(point))->contains(point, finder);
 }
 
-void StageImpl::Quad::intersects(const Rectangle<Coord> &r, StageImpl::Finder &finder)
+void Quad::intersects(const Rectangle<Coord> &r, Finder &finder)
 {
-//   cout << "StageImpl::Quad::intersects " << r << endl;
   for (list::iterator i = items.begin(); i != items.end(); i++)
     {
       if ((*i)->bbox().intersects(r))
@@ -249,7 +253,6 @@ void StageImpl::Quad::intersects(const Rectangle<Coord> &r, StageImpl::Finder &f
 	  */
 	  finder.found(*i);
 	}
-//       else cout << "don't intersect for " << (*i)->bbox() << endl;
     }
   index idx = where(r);
   if (idx == fence)
@@ -282,7 +285,7 @@ void StageImpl::Quad::intersects(const Rectangle<Coord> &r, StageImpl::Finder &f
   else node(idx)->intersects(r, finder);
 }
 
-void StageImpl::Quad::intersects(const Rectangle<Coord> &r, const Polygon<Coord> &polygon, StageImpl::Finder &finder)
+void Quad::intersects(const Rectangle<Coord> &r, const Polygon<Coord> &polygon, Finder &finder)
 {
   for (list::iterator i = items.begin(); i != items.end(); i++)
     if (polygon.intersects((*i)->bbox()))
@@ -331,7 +334,7 @@ void StageImpl::Quad::intersects(const Rectangle<Coord> &r, const Polygon<Coord>
 void StageImpl::QuadTree::insert(StageHandleImpl *handle)
 {
   const Rectangle<Coord> &bbox = handle->bbox();
-  if (!node()) quad = new StageImpl::Quad(bbox);
+  if (!node()) quad = new Quad(bbox);
   /*
    * FIXME: currently, this code inserts new nodes as long as the outermost
    *        doesn't completely contain the handle's boundingbox. What if the
@@ -340,7 +343,7 @@ void StageImpl::QuadTree::insert(StageHandleImpl *handle)
    *        system, so may be a limiting depth of the tree would be a solution.
    *                -stefan
    */
-  else while (!bbox.within(node()->extension())) quad = new StageImpl::Quad(bbox, node());
+  else while (!bbox.within(node()->extension())) quad = new Quad(bbox, node());
   node()->insert(handle);
 }
 
@@ -351,14 +354,14 @@ void StageImpl::QuadTree::remove(StageHandleImpl *handle)
 
 void StageImpl::QuadTree::end()
 {
-  transaction--;
-  if (transaction == 0)
+  _transaction--;
+  if (_transaction == 0)
     {
       /*
        * ??? every 32 operations adjust the StageQuad tree -denis
        */
-      operations++;
-      if (operations & 0x1f == 0)
+      _operations++;
+      if (_operations & 0x1f == 0)
 	{
 	  /*
 	   * ??? desire min of 8, max of 32, smallest span of 16 -denis
@@ -368,13 +371,13 @@ void StageImpl::QuadTree::end()
     }
 }
 
-class StageQuadTreeContains : public StageImpl::Finder
+class StageQuadTreeContains : public Finder
 {
 public:
   StageQuadTreeContains(Traversal::order o) : handle(0), order(o) {}
   virtual void found(StageHandleImpl *h)
     {
-      if (!handle || (order == Traversal::down && handle->l > h->l) || handle->l < h->l)
+      if (!handle || (order == Traversal::down && handle->_layer > h->_layer) || handle->_layer < h->_layer)
 	handle = h;
     }
   StageHandleImpl *handle;
@@ -393,7 +396,7 @@ StageHandleImpl *StageImpl::QuadTree::contains(const Point<Coord> &point)
   return handle;
 }
 
-void StageImpl::QuadTree::intersects(const Polygon<Coord> &polygon, StageImpl::Finder &finder)
+void StageImpl::QuadTree::intersects(const Polygon<Coord> &polygon, Finder &finder)
 {
   if (node())
     {
@@ -403,77 +406,85 @@ void StageImpl::QuadTree::intersects(const Polygon<Coord> &polygon, StageImpl::F
     }
 }
 
-class StageTraversal : public StageImpl::Finder
+class StageTraversal : public Finder
 {
 public:
   StageTraversal(Traversal_ptr t);
   virtual ~StageTraversal();
-  virtual void found(StageHandleImpl *h) { buffer.push_back(h);}
+  virtual void found(StageHandleImpl *h) { _buffer.push_back(h);}
   void execute();
 private:
   void traverse(StageHandleImpl *);
-  Traversal_ptr traversal;
-  vector<StageHandleImpl *> buffer;
+  Traversal_ptr                  _traversal;
+  std::vector<StageHandleImpl *> _buffer;
 };
 
-StageTraversal::StageTraversal(Traversal_ptr t) : traversal(t) {}
+StageTraversal::StageTraversal(Traversal_ptr t) : _traversal(t) {}
 StageTraversal::~StageTraversal() {}
 
+namespace std
+{
 template <>
 struct greater<StageHandleImpl *> : public binary_function<StageHandleImpl *, StageHandleImpl *, bool>
-{ bool operator() (StageHandleImpl *a, StageHandleImpl *b) const { return a->l > b->l;}};
+{ bool operator() (StageHandleImpl *a, StageHandleImpl *b) const { return a->_layer > b->_layer;}};
 
 template <>
 struct less<StageHandleImpl *> : public binary_function<StageHandleImpl *, StageHandleImpl *, bool>
-{ bool operator() (StageHandleImpl *a, StageHandleImpl *b) const { return a->l < b->l;}};
+{ bool operator() (StageHandleImpl *a, StageHandleImpl *b) const { return a->_layer < b->_layer;}};
+};
 
 void StageTraversal::execute()
 {
-  if (traversal->direction() == Traversal::down)
-    sort(buffer.begin(), buffer.end(), less<StageHandleImpl *>());
+  if (_traversal->direction() == Traversal::down)
+    sort(_buffer.begin(), _buffer.end(), std::less<StageHandleImpl *>());
   else
-    sort(buffer.begin(), buffer.end(), greater<StageHandleImpl *>());
-  for (vector<StageHandleImpl *>::iterator i = buffer.begin(); i != buffer.end() && traversal->ok(); i++)
+    sort(_buffer.begin(), _buffer.end(), std::greater<StageHandleImpl *>());
+  for (std::vector<StageHandleImpl *>::iterator i = _buffer.begin(); i != _buffer.end() && _traversal->ok(); ++i)
     {
-      if (!traversal->ok()) break;
+      if (!_traversal->ok()) break;
       traverse(*i);
     }
 }
 
 void StageTraversal::traverse(StageHandleImpl *handle)
 {
-  Impl_var<RegionImpl> region(new RegionImpl);
+  Trace trace("StageTraversal::traverse");
+  if (CORBA::is_nil(handle->_child)) return;
+  Lease_var<RegionImpl> region(Provider<RegionImpl>::provide());
   handle->bbox(*region);
   Vertex origin;
   region->normalize(origin);
-  Impl_var<TransformImpl> transformation(new TransformImpl);
+  Lease_var<TransformImpl> transformation(Provider<TransformImpl>::provide());
+  transformation->load_identity();
   transformation->translate(origin);
-  traversal->traverseChild(handle->c, handle->tag, Region_var(region->_this()), Transform_var(transformation->_this()));
+  try { _traversal->traverse_child(handle->_child, handle->_tag, Region_var(region->_this()), Transform_var(transformation->_this()));}
+  catch (const CORBA::OBJECT_NOT_EXIST &) { handle->_child = Warsaw::Graphic::_nil();}
+  catch (const CORBA::COMM_FAILURE &) { handle->_child = Warsaw::Graphic::_nil();}
 }
 
 StageImpl::StageImpl()
-  : children(new Sequence),
-    tree(new QuadTree),
-    nesting(0),
-    damage_(new RegionImpl),
-    bbregion(new RegionImpl),
-    need_redraw(false),
-    need_resize(false)
+  : _children(new Sequence),
+    _tree(new QuadTree),
+    _nesting(0),
+    _damage(new RegionImpl),
+    _bbregion(new RegionImpl),
+    _need_redraw(false),
+    _need_resize(false)
 {
 }
 
 StageImpl::~StageImpl()
 {
-  delete tree;
-  delete tree;
+  delete _tree;
+  delete _children;
 }
 
-void StageImpl::request(Requisition &r)
+void StageImpl::request(Warsaw::Graphic::Requisition &r)
 {
-  GraphicImpl::initRequisition(r);
-  if (tree->size() > 0)
+  GraphicImpl::init_requisition(r);
+  if (_tree->size() > 0)
     {
-      Geometry::Rectangle<Coord> b = tree->bbox();
+      Geometry::Rectangle<Coord> b = _tree->bbox();
       Coord w = b.r - b.l;
       Coord h = b.b - b.t;
       Coord ax = (Math::equal(w, 0., epsilon) ? 0 : (-b.l / w));
@@ -485,8 +496,10 @@ void StageImpl::request(Requisition &r)
 
 void StageImpl::traverse(Traversal_ptr traversal)
 {
-  SectionLog section("StageImpl::traverse");
-  RegionImpl region(Region_var(traversal->allocation()));
+  Trace trace("StageImpl::traverse");
+  Prague::Guard<Mutex> guard(_mutex);
+//   Profiler prf("StageImpl::traverse");
+  RegionImpl region(Region_var(traversal->current_allocation()));
   Geometry::Rectangle<Coord> rectangle;
   rectangle.l = region.lower.x;
   rectangle.t = region.lower.y;
@@ -494,34 +507,34 @@ void StageImpl::traverse(Traversal_ptr traversal)
   rectangle.b = region.upper.y;
 //   dumpQuadTree(*tree);
   StageTraversal st(traversal);
-  tree->intersects(rectangle, st);
+  _tree->intersects(rectangle, st);
   st.execute();
 }
 
 void StageImpl::allocate(Tag tag, const Allocation::Info &a)
 {
-  StageHandleImpl *handle = tag2handle(tag);
+  StageHandleImpl *handle = tag_to_handle(tag);
   if (handle)
     {
-      Impl_var<RegionImpl> region(new RegionImpl);
-      Impl_var<TransformImpl> transform(new TransformImpl);
+      Lease_var<RegionImpl> region(Provider<RegionImpl>::provide());
+      Lease_var<TransformImpl> transform(Provider<TransformImpl>::provide());
+      transform->load_identity();
       Vertex origin;
       handle->bbox(*region);
       region->normalize(origin);
-      transform->translate(handle->p);
+      transform->translate(handle->_position);
       a.allocation->copy(Region_var(region->_this()));
       a.transformation->premultiply(Transform_var(transform->_this()));
     }
-//   else cerr << "StageImpl::allocate : child not found ! (tag is " << tag << ')' << endl;
 }
 
-void StageImpl::needRedraw()
+void StageImpl::need_redraw()
 {
-  SectionLog section("StageImpl::needRedraw");
-  Impl_var<AllocationImpl> allocation(new AllocationImpl);
+  Trace trace("StageImpl::needRedraw");
+  Lease_var<AllocationImpl> allocation(Provider<AllocationImpl>::provide());
   allocations(Allocation_var(allocation->_this()));
-  Impl_var<RegionImpl> region(new RegionImpl);
-  Impl_var<TransformImpl> tx(new TransformImpl);
+  Lease_var<RegionImpl> region(Provider<RegionImpl>::provide());
+  Lease_var<TransformImpl> tx(Provider<TransformImpl>::provide());
   for (CORBA::Long i = 0; i < allocation->size(); i++)
     {
       const Allocation::Info_var info = allocation->get(i);
@@ -531,284 +544,343 @@ void StageImpl::needRedraw()
 	{
 	  Vertex origin;
 	  info->allocation->origin(origin);
-	  tx->loadIdentity();
+	  tx->load_identity();
 	  tx->translate(origin);
-	  region->applyTransform(Transform_var(tx->_this()));
+	  region->apply_transform(Transform_var(tx->_this()));
 	  if (region->valid) info->root->damage(Region_var(region->_this()));
 	}
     }
 }
 
-void StageImpl::needRedrawRegion(Region_ptr region)
+void StageImpl::need_redraw_region(Region_ptr region)
 {
-  SectionLog section("StageImpl::needRedrawRegion");
-  Impl_var<AllocationImpl> allocation(new AllocationImpl);
+  Trace trace("StageImpl::need_redraw_region");
+  Lease_var<AllocationImpl> allocation(Provider<AllocationImpl>::provide());
   allocations(Allocation_var(allocation->_this()));
   CORBA::Long size = allocation->size();
-  Impl_var<RegionImpl> tmp(new RegionImpl);
-  Impl_var<TransformImpl> tx(new TransformImpl);
+  Lease_var<RegionImpl> tmp(Provider<RegionImpl>::provide());
+  Lease_var<TransformImpl> tx(Provider<TransformImpl>::provide());
   for (CORBA::Long i = 0; i < size; i++)
     {
       const Allocation::Info_var info = allocation->get(i);
       tmp->copy(region);
-      tmp->applyTransform(info->transformation);
+      tmp->apply_transform(info->transformation);
       Vertex origin;
       info->allocation->origin(origin);
-      tx->loadIdentity();
+      tx->load_identity();
       tx->translate(origin);
-      tmp->applyTransform(Transform_var(tx->_this()));
+      tmp->apply_transform(Transform_var(tx->_this()));
       if (tmp->valid) info->root->damage(Region_var(tmp->_this()));
     }
 }
 
-void StageImpl::needResize()
+void StageImpl::need_resize()
 {
-  SectionLog section("StageImpl::needResize");
+  Trace trace("StageImpl::need_resize");
   /*
    * FIXME !!!: need to work out how to process this. (which sub region to damage etc...)
    */
-  GraphicImpl::needResize();
+  GraphicImpl::need_resize();
 }
 
 Region_ptr StageImpl::bbox()
 {
-  Geometry::Rectangle<Coord> bb = tree->bbox();
-  bbregion->valid = true;
-  bbregion->lower.x = bb.l;
-  bbregion->lower.y = bb.t;
-  bbregion->lower.z = 0.;
-  bbregion->upper.x = bb.r;
-  bbregion->upper.y = bb.b;
-  bbregion->upper.z = 0.;
-  return bbregion->_this();
+  Prague::Guard<Mutex> guard(_mutex);
+  Geometry::Rectangle<Coord> bb = _tree->bbox();
+  _bbregion->valid = true;
+  _bbregion->lower.x = bb.l;
+  _bbregion->lower.y = bb.t;
+  _bbregion->lower.z = 0.;
+  _bbregion->upper.x = bb.r;
+  _bbregion->upper.y = bb.b;
+  _bbregion->upper.z = 0.;
+  return _bbregion->_this();
 }
 
-CORBA::Long StageImpl::layers() { return tree->size();}
-
-StageHandle_ptr StageImpl::layer(Stage::Index i)
+CORBA::Long StageImpl::layers()
 {
-  StageHandleImpl *handle = children->find(i);
+  Prague::Guard<Mutex> guard(_mutex);
+  return _tree->size();
+}
+
+StageHandle_ptr StageImpl::layer(Layout::Stage::Index i)
+{
+  Prague::Guard<Mutex> guard(_mutex);
+  StageHandleImpl *handle = _children->find(i);
   return handle ? handle->_this() : StageHandle::_nil();
 }
 
 void StageImpl::begin()
 {
-  if (!nesting++)
+  if (!_nesting++)
     {
-      Geometry::Rectangle<Coord> bb = tree->bbox();
-      bbregion->lower.x = bb.l;
-      bbregion->lower.y = bb.t;
-      bbregion->upper.x = bb.r;
-      bbregion->upper.y = bb.b;
-      tree->begin();
+      Geometry::Rectangle<Coord> bb = _tree->bbox();
+      _bbregion->lower.x = bb.l;
+      _bbregion->lower.y = bb.t;
+      _bbregion->upper.x = bb.r;
+      _bbregion->upper.y = bb.b;
+      _tree->begin();
     }
 }
 
 void StageImpl::end()
 {
-  SectionLog section("StageImpl::end");
-  MutexGuard guard(childMutex);
-  if (!--nesting)
+  Trace trace("StageImpl::end");
+  Prague::Guard<Mutex> guard(_mutex);
+  if (!--_nesting)
     {
-      tree->end();
-      if (need_redraw)
+      _tree->end();
+      if (_need_redraw)
 	{
-	  needRedrawRegion(Region_var(damage_->_this()));
-	  need_redraw = false;
+	  need_redraw_region(Region_var(_damage->_this()));
+	  _need_redraw = false;
 	}
-      if (need_resize)
+      if (_need_resize)
 	{
- 	  Geometry::Rectangle<Coord> bb = tree->bbox();
- 	  if (! Math::equal(bbregion->lower.x, bb.l, epsilon) ||
- 	      ! Math::equal(bbregion->lower.y, bb.t, epsilon) ||
- 	      ! Math::equal(bbregion->upper.x, bb.r, epsilon) ||
- 	      ! Math::equal(bbregion->upper.y, bb.b, epsilon))
- 	    GraphicImpl::needResize();
- 	  need_resize = false;
+ 	  Geometry::Rectangle<Coord> bb = _tree->bbox();
+ 	  if (! Math::equal(_bbregion->lower.x, bb.l, epsilon) ||
+ 	      ! Math::equal(_bbregion->lower.y, bb.t, epsilon) ||
+ 	      ! Math::equal(_bbregion->upper.x, bb.r, epsilon) ||
+ 	      ! Math::equal(_bbregion->upper.y, bb.b, epsilon))
+ 	    GraphicImpl::need_resize();
+ 	  _need_resize = false;
 	}
     }
 }
 
-StageHandle_ptr StageImpl::insert(Graphic_ptr g, const Vertex &position, const Vertex &size, Index layer)
+StageHandle_ptr StageImpl::insert(Graphic_ptr g, const Vertex &position, const Vertex &size, Layout::Stage::Index layer)
 {
-  SectionLog section("StageImpl::insert");
-  MutexGuard guard(childMutex);
-  StageHandleImpl *handle = new StageHandleImpl(this, g, tag(), position, size, layer);
-  handle->_obj_is_ready(_boa());
-  tree->insert(handle);
+  Trace trace("StageImpl::insert");
+  Prague::Guard<Mutex> guard(_mutex);
+  StageHandleImpl *handle = new StageHandleImpl(this, g, unique_tag(), position, size, layer);
+  _tree->insert(handle);
 //   dumpQuadTree(*tree);
-  children->insert(handle);
+  _children->insert(handle);
   damage(handle);
   return handle->_this();
 }
 
 void StageImpl::remove(StageHandle_ptr h)
 {
-  SectionLog section("StageImpl::remove");
-  MutexGuard guard(childMutex);
-  StageHandleImpl *handle = children->find(h->layer());
+  Trace trace("StageImpl::remove");
+  Prague::Guard<Mutex> guard(_mutex);
+  StageHandleImpl *handle = _children->find(h->layer());
   if (!handle) return;
-  tree->remove(handle);
+  _tree->remove(handle);
 //   dumpQuadTree(*tree);
-  children->remove(handle);
+  _children->remove(handle);
 
   damage(handle);
-  handle->_dispose();
-  need_resize = true;
+//  handle->_dispose();
+  _need_resize = true;
 }
 
 void StageImpl::move(StageHandleImpl *handle, const Vertex &p)
 {
-  SectionLog section("StageImpl::move");
-  MutexGuard guard(childMutex);
-  tree->remove(handle);
+  Trace trace("StageImpl::move");
+//   Prague::Profiler prf("StageImpl::move");
+  Prague::Guard<Mutex> guard(_mutex);
+  _tree->remove(handle);
 
   damage(handle);
-  need_resize = true;
+  _need_resize = true;
+
   
-  Coord dx = p.x - handle->p.x;
-  Coord dy = p.y - handle->p.y;
-  handle->boundingbox.l += dx;
-  handle->boundingbox.t += dy;
-  handle->boundingbox.r += dx;
-  handle->boundingbox.b += dy;
-  handle->p = p;
-  tree->insert(handle);
+  Coord dx = p.x - handle->_position.x;
+  Coord dy = p.y - handle->_position.y;
+  handle->_bbox.l += dx;
+  handle->_bbox.t += dy;
+  handle->_bbox.r += dx;
+  handle->_bbox.b += dy;
+  handle->_position = p;
+  _tree->insert(handle);
 //   dumpQuadTree(*tree);
 
   damage(handle);
-  need_resize = true;
+  _need_resize = true;
 }
 
 void StageImpl::resize(StageHandleImpl *handle, const Vertex &s)
 {
-  SectionLog section("StageImpl::resize");
-  MutexGuard guard(childMutex);
-  tree->remove(handle);
+  Trace trace("StageImpl::resize");
+  Prague::Guard<Mutex> guard(_mutex);
+  _tree->remove(handle);
 
   damage(handle);
-  need_resize = true;
+  _need_resize = true;
   
-  handle->boundingbox.r = handle->boundingbox.l + s.x;
-  handle->boundingbox.b = handle->boundingbox.t + s.y;
-  handle->s = s;
-  tree->insert(handle);
+  handle->_bbox.r = handle->_bbox.l + s.x;
+  handle->_bbox.b = handle->_bbox.t + s.y;
+  handle->_size = s;
+  _tree->insert(handle);
 //   dumpQuadTree(*tree);
 
   damage(handle);
-  need_resize = true;
+  _need_resize = true;
 }
 
-void StageImpl::relayer(StageHandleImpl *handle, Stage::Index l)
+void StageImpl::relayer(StageHandleImpl *handle, Layout::Stage::Index l)
 {
-  SectionLog section("StageImpl::relayer");
-  MutexGuard guard(childMutex);
-  children->remove(handle);
-  handle->l = l;
-  children->insert(handle);
+  Trace trace("StageImpl::relayer");
+  Prague::Guard<Mutex> guard(_mutex);
+  _children->remove(handle);
+  handle->_layer = l;
+  _children->insert(handle);
   damage(handle);
 }
 
-Tag StageImpl::tag()
+Tag StageImpl::unique_tag()
 {
   Tag t = 0;
   do
     {
       Sequence::iterator i;
-      for (i = children->begin(); i != children->end(); i++)
-	if ((*i)->tag == t) break;
-      if (i == children->end()) return t;
+      for (i = _children->begin(); i != _children->end(); i++)
+	if ((*i)->_tag == t) break;
+      if (i == _children->end()) return t;
     }
   while (++t);
   return 0;
 }
 
-StageHandleImpl *StageImpl::tag2handle(Tag tag)
+StageHandleImpl *StageImpl::tag_to_handle(Tag tag)
 {
-  for (Sequence::iterator i = children->begin(); i != children->end(); i++)
-    if ((*i)->tag == tag) return *i;
+  for (Sequence::iterator i = _children->begin(); i != _children->end(); i++)
+    if ((*i)->_tag == tag) return *i;
   return 0;
 }
 
 void StageImpl::damage(StageHandleImpl *handle)
 {
-  Impl_var<RegionImpl> region(new RegionImpl);
+  Lease_var<RegionImpl> region(Provider<RegionImpl>::provide());
   handle->bbox(*region);
-  if (need_redraw) damage_->mergeUnion(Region_var(region->_this()));
+  if (_need_redraw) _damage->merge_union(Region_var(region->_this()));
   else
     {
-      need_redraw = true;
-      damage_->copy(Region_var(region->_this()));
+      _need_redraw = true;
+      _damage->copy(Region_var(region->_this()));
     }
 }
 
-StageHandleImpl::StageHandleImpl(StageImpl *pa, Graphic_ptr g, Tag t, const Vertex &pp, const Vertex &ss, Stage::Index ll)
-  : stage(pa), c(Graphic::_duplicate(g)), tag(t), p(pp), s(ss), l(ll)
+StageHandleImpl::StageHandleImpl(StageImpl *stage, Graphic_ptr g, Tag t, const Vertex &p, const Vertex &s, Layout::Stage::Index l)
+  : _parent(stage), _child(Graphic::_duplicate(g)), _tag(t), _position(p), _size(s), _layer(l)
 {
-  c->addParent(Stage_var(stage->_this()), tag);
-  cacheBBox();
+  _child->add_parent_graphic(Stage_var(_parent->_this()), _tag);
+  cache_bbox();
+}
+
+Layout::Stage_ptr StageHandleImpl::parent()
+{
+  return _parent->_this();
+}
+Warsaw::Graphic_ptr StageHandleImpl::child()
+{
+  return Warsaw::Graphic::_duplicate(_child);
+}
+
+void StageHandleImpl::remove()
+{
+  _parent->begin();
+  _parent->remove(StageHandle_var(_this()));
+  _parent->end();
+}
+
+Warsaw::Vertex StageHandleImpl::position()
+{
+  Prague::Guard<Mutex> guard(_mutex);
+  return _position;
 }
 
 void StageHandleImpl::position(const Vertex &pp)
 {
-  stage->begin();
-  stage->move(this, pp);
-  stage->end();
+  _parent->begin();
+  _parent->move(this, pp);
+  _parent->end();
+}
+
+Warsaw::Vertex StageHandleImpl::size()
+{
+  Prague::Guard<Mutex> guard(_mutex);
+  return _size;
 }
 
 void StageHandleImpl::size(const Vertex &ss)
 {
-  stage->begin();
-  stage->resize(this, ss);
-  stage->end();
+  _parent->begin();
+  _parent->resize(this, ss);
+  _parent->end();
 }
 
-void StageHandleImpl::layer(Stage::Index ll)
+Layout::Stage::Index StageHandleImpl::layer() 
 {
-  stage->begin();
-  stage->relayer(this, ll);
-  stage->end();
+  Prague::Guard<Mutex> guard(_mutex);
+  return _layer;
 }
 
-void StageHandleImpl::cacheBBox()
+void StageHandleImpl::layer(Layout::Stage::Index ll)
 {
-  SectionLog section("StageHandleImpl::cacheBBox");
+  _parent->begin();
+  _parent->relayer(this, ll);
+  _parent->end();
+}
+
+const Geometry::Rectangle<Warsaw::Coord> &StageHandleImpl::bbox()
+{
+  Prague::Guard<Mutex> guard(_mutex);
+  return _bbox;
+}
+
+void StageHandleImpl::bbox(RegionImpl &region)
+{
+  Prague::Guard<Mutex> guard(_mutex);
+  region.valid   = true;
+  region.lower.x = _bbox.l;
+  region.upper.x = _bbox.r;
+  region.xalign  = _xalign;
+  region.lower.y = _bbox.t;
+  region.upper.y = _bbox.b;
+  region.yalign  = _yalign;
+}
+
+void StageHandleImpl::cache_bbox()
+{
+  Trace trace("StageHandleImpl::cache_bbox");
   Graphic::Requisition r;
-  GraphicImpl::initRequisition(r);    
-  c->request(r);
+  GraphicImpl::init_requisition(r);    
+  _child->request(r);
   if (r.x.defined && r.y.defined)
     {
-      xalign = r.x.align;
-      yalign = r.y.align;
-      if (s.x != 0)
+      _xalign = r.x.align;
+      _yalign = r.y.align;
+      if (_size.x != 0)
 	{
-	  boundingbox.l = p.x;
-	  boundingbox.r = p.x + s.x;
+	  _bbox.l = _position.x;
+	  _bbox.r = _position.x + _size.x;
 	}
       else
 	{
-	  boundingbox.l = p.x - r.x.natural * r.x.align;
-	  boundingbox.r = p.x + r.x.natural * (1. - r.x.align);
+	  _bbox.l = _position.x - r.x.natural * r.x.align;
+	  _bbox.r = _position.x + r.x.natural * (1. - r.x.align);
 	}
-      if (s.y != 0)
+      if (_size.y != 0)
 	{
-	  boundingbox.t = p.y;
-	  boundingbox.b = p.y + s.y;
+	  _bbox.t = _position.y;
+	  _bbox.b = _position.y + _size.y;
 	}
       else
 	{
-	  boundingbox.t = p.y - r.y.natural * r.y.align;
-	  boundingbox.b = p.y + r.y.natural * (1. - r.y.align);
+	  _bbox.t = _position.y - r.y.natural * r.y.align;
+	  _bbox.b = _position.y + r.y.natural * (1. - r.y.align);
 	}
     }
   else
     {
-      xalign = 0.;
-      yalign = 0.;
-      boundingbox.l = p.x;
-      boundingbox.r = p.x;
-      boundingbox.t = p.y;
-      boundingbox.b = p.y;
+      _xalign = 0.;
+      _yalign = 0.;
+      _bbox.l = _position.x;
+      _bbox.r = _position.x;
+      _bbox.t = _position.y;
+      _bbox.b = _position.y;
     }
 }
 

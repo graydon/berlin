@@ -1,0 +1,51 @@
+/*$Id: Kit.idl,v 1.5 2000/08/31 18:51:47 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Kit_idl
+#define _Warsaw_Kit_idl
+
+#include <Warsaw/RefCountBase.idl>
+
+module Warsaw
+{
+  interface ServerContext;
+
+  //. ths kit interface is the base type for most of the objects
+  //. you will allocate in a berlin server.
+  interface Kit : RefCountBase
+    {
+      struct Property
+      {
+	string name;
+	string value;
+      };
+      typedef sequence<Property> PropertySeq;
+      
+      //. query for properties
+      readonly attribute PropertySeq properties;
+      boolean _supports(in PropertySeq p);
+      //. initializer method which allows a kit to hook up resources it
+      //. might need from the same context
+      void bind(in ServerContext sc);
+    };
+};
+
+#endif

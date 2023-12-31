@@ -1,8 +1,8 @@
-/*$Id: PNG.hh,v 1.1 1999/10/19 21:07:52 gray Exp $
+/*$Id: PNG.hh,v 1.7 2001/04/18 06:07:26 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Brent Fulgham <bfulgham@debian.org>
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -23,8 +23,10 @@
 #ifndef _PNG_hh
 #define _PNG_hh
 
+#include <Warsaw/config.hh>
 #include <Warsaw/Raster.hh>
 #include <png.h>
+#include <string>
 
 class PNG
 {
@@ -47,20 +49,23 @@ public:
   PNG();
   ~PNG();
   void clear();
-  void header(Raster::Info &);
-  Raster::Data *marshal(unsigned char *const *);
-  unsigned char **demarshal(const Raster::Data &);
-  Color pixel(unsigned long, unsigned long, unsigned char *const *);
-  void pixel(unsigned long, unsigned long, const Color &, unsigned char **);
-  Raster::ColorSeq *pixels(unsigned long, unsigned long, unsigned long, unsigned long, unsigned char *const *);
-  void pixels(unsigned long, unsigned long, unsigned long, unsigned long, const Raster::ColorSeq &, unsigned char **);
-  unsigned char **read(const string &);
-  void write(const string &, unsigned char *const *);
+  void header(Warsaw::Raster::Info &);
+  Warsaw::Raster::Data *marshal(unsigned char *const *);
+  unsigned char **demarshal(const Warsaw::Raster::Data &);
+  Warsaw::Color pixel(unsigned long, unsigned long, unsigned char *const *);
+  void pixel(unsigned long, unsigned long, const Warsaw::Color &, unsigned char **);
+  Warsaw::Raster::ColorSeq *pixels(unsigned long, unsigned long, unsigned long, unsigned long, unsigned char *const *);
+  void pixels(unsigned long, unsigned long, unsigned long, unsigned long, const Warsaw::Raster::ColorSeq &, unsigned char **);
+  unsigned char **read(const std::string &);
+  void write(const std::string &, unsigned char *const *);
 private:
-  void expand(const unsigned char *, const unsigned char *, unsigned char *);
-  png_structp rpng;
-  png_infop   rinfo;
-  png_infop   rend;
+  void palette_to_rgbalpha(const unsigned char *, const unsigned char *, unsigned char *);
+  void gray_to_rgbalpha(const unsigned char *, const unsigned char *, unsigned char *);
+  void grayalpha_to_rgbalpha(const unsigned char *, const unsigned char *, unsigned char *);
+  void rgb_to_rgbalpha(const unsigned char *, const unsigned char *, unsigned char *);
+  png_structp _rpng;
+  png_infop   _rinfo;
+  png_infop   _rend;
 };
 
-#endif /* _PNG_hh */
+#endif

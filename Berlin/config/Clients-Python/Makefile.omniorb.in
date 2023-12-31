@@ -1,0 +1,66 @@
+# $Id: Makefile.omniorb.in,v 1.5 2000/11/14 21:36:36 stefan Exp $
+#
+# This source file is a part of the Berlin Project.
+# Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org>
+# http://www.berlin-consortium.org
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+SHELL		:= /bin/sh
+VERSION		:= @VERSION@
+
+builddir	:= ../..
+cdir		:= $(builddir)/config
+idir		:= @topdir@/idl
+
+include $(cdir)/local.mk
+
+IDLPY		:= @IDLPY@
+
+INT		:= Types.idl RefCountBase.idl Identifiable.idl ClientContext.idl \
+		   Server.idl Kit.idl Transform.idl Region.idl \
+		   Allocation.idl Traversal.idl PickTraversal.idl \
+		   DrawTraversal.idl Graphic.idl Screen.idl Input.idl \
+		   Focus.idl Drawable.idl DrawingKit.idl Figure.idl Image.idl \
+		   FigureKit.idl Grid.idl Viewport.idl Stage.idl \
+		   LayoutKit.idl Command.idl CommandKit.idl Subject.idl \
+		   Observer.idl Controller.idl View.idl Telltale.idl \
+		   BoundedValue.idl BoundedRange.idl TextBuffer.idl \
+		   StreamBuffer.idl Selection.idl Trigger.idl \
+		   Canvas.idl State.idl ToolKit.idl Choice.idl  WidgetKit.idl GadgetKit.idl \
+		   TextKit.idl Raster.idl ImageKit.idl Desktop.idl \
+		   Window.idl DesktopKit.idl GGIKit.idl UnidrawKit.idl
+
+SRC		:= $(patsubst %.idl, $(builddir)/lib/python/%_idl.py, $(INT))
+CPY		:= $(patsubst %.py, %.pyc, $(SRC))
+
+all:	$(SRC)
+
+install:
+#	install -m755 $(TARGET) $(libdir)
+
+clean:	
+	rm -rf $(SRC) $(CPY) Input Figure Warsaw Layout GGI Unidraw *__POA
+
+distclean:	clean
+		rm -f Makefile $(cdir)/Clients-Python/local.mk 
+
+maintainer-clean:	distclean
+
+$(builddir)/lib/python/%_idl.py:	$(idir)/Warsaw/%.idl
+	@echo generating $(@F)
+	$(IDLPY) -nf -bpython -C$(builddir)/lib/python -I$(idir) $^
+

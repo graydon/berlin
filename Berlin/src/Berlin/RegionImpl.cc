@@ -1,13 +1,8 @@
-/*$Id: RegionImpl.cc,v 1.17 1999/11/06 20:23:08 stefan Exp $
+/*$Id: RegionImpl.cc,v 1.27 2001/04/18 06:07:27 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,16 +21,17 @@
  */
 #include "Berlin/RegionImpl.hh"
 #include "Berlin/TransformImpl.hh"
-#include "Berlin/Logger.hh"
+#include <iomanip>
+#include <cassert>
+
+using namespace Warsaw;
 
 RegionImpl::RegionImpl()
+  : valid(false), xalign(0.), yalign(0.), zalign(0.), _this_valid(false)
 {
-  Coord zero = Coord(0.0);
-  valid = false;
-  lower.x = lower.y = zero;
-  upper.x = upper.y = zero;
-  lower.z = upper.z = zero;
-  xalign = yalign = zalign = zero;
+  lower.x = lower.y = 0.;
+  upper.x = upper.y = 0.;
+  lower.z = upper.z = 0.;
 }
 
 RegionImpl::RegionImpl(const RegionImpl &region)
@@ -44,24 +40,36 @@ RegionImpl::RegionImpl(const RegionImpl &region)
     upper(region.upper),
     xalign(region.xalign),
     yalign(region.yalign),
-    zalign(region.zalign)
+    zalign(region.zalign),
+    _this_valid(false)
 {}
 
 RegionImpl::RegionImpl(Region_ptr region)
+  : _this_valid(false)
 {
   RegionImpl::copy(region);
 }
 
 RegionImpl::RegionImpl(Region_ptr region, Transform_ptr transformation)
+  : _this_valid(false)
 {
   RegionImpl::copy(region);
-  if (!CORBA::is_nil(transformation) && !transformation->Identity())
-    RegionImpl::applyTransform(transformation);
+  if (!CORBA::is_nil(transformation) && !transformation->identity())
+    RegionImpl::apply_transform(transformation);
 }
 
 RegionImpl::~RegionImpl() {}
 
+RegionImpl &RegionImpl::operator = (const RegionImpl &region)
+{
+  assert(_active);
+  valid = region.valid;
+  lower = region.lower;
+  upper = region.upper;
+}
+
 CORBA::Boolean RegionImpl::defined() { return valid;}
+void RegionImpl::clear() { valid = false;}
 
 CORBA::Boolean RegionImpl::contains(const Vertex &v)
 {
@@ -72,7 +80,7 @@ CORBA::Boolean RegionImpl::contains(const Vertex &v)
 	  );
 }
 
-CORBA::Boolean RegionImpl::containsPlane(const Vertex &v, Axis a)
+CORBA::Boolean RegionImpl::contains_plane(const Vertex &v, Axis a)
 {
   bool b = false;
   if (valid)
@@ -111,7 +119,7 @@ void RegionImpl::copy(Region_ptr region)
 {
   if (!CORBA::is_nil(region) && region->defined())
     {
-      Region::Allotment x, y, z;
+      Warsaw::Region::Allotment x, y, z;
       region->span(xaxis, x);
       region->span(yaxis, y);
       region->span(zaxis, z);
@@ -128,7 +136,7 @@ void RegionImpl::copy(Region_ptr region)
     }
 }
 
-void RegionImpl::mergeIntersect(Region_ptr region)
+void RegionImpl::merge_intersect(Region_ptr region)
 {
   if (region->defined())
     {
@@ -136,14 +144,14 @@ void RegionImpl::mergeIntersect(Region_ptr region)
 	{
 	  Vertex l, u;
 	  region->bounds(l, u);
-	  mergeMax(lower, l);
-	  mergeMin(upper, u);
+	  merge_max(lower, l);
+	  merge_min(upper, u);
         }
       else copy(region);
     }
 }
 
-void RegionImpl::mergeUnion(Region_ptr region)
+void RegionImpl::merge_union(Region_ptr region)
 {
   if (region->defined())
     {
@@ -151,8 +159,8 @@ void RegionImpl::mergeUnion(Region_ptr region)
 	{
 	  Vertex l, u;
 	  region->bounds(l, u);
-	  mergeMin(lower, l);
-	  mergeMax(upper, u);
+	  merge_min(lower, l);
+	  merge_max(upper, u);
         }
       else copy(region);
     }
@@ -163,41 +171,64 @@ void RegionImpl::subtract(Region_ptr region)
   // not implemented
 }
 
-void RegionImpl::applyTransform(Transform_ptr transformation)
+/*
+ * note: the new region is the bounding box of the transformed
+ *       old region
+ *
+ * This algorithm takes advantage of some
+ * interesting properties of affine transformations: i.e., opposite sides
+ * are always parallel and same in length.  Another property of
+ * affine transformation is that the transformed center of a box
+ * is equal to the center of the transformed box.  Realizing these
+ * properties, finding the transformed box can be broken down as finding
+ * the effective width, height, depth, and center.  The last is easy.
+ * Each of the other three values is found by first breaking down
+ * each of the transformed axis vectors into x, y,  and z vectors.
+ * Joining all the absolute vectors on a certain axis gives you
+ * the size of the box on that axis.  Width, for example,
+ * forms a (w, 0, 0) vector.  After transformation, it becomes
+ * (Xw, Yw, Zw). The new width is then given as abs(Xw) + abs(Xh) + abs(Xd)
+ */
+void RegionImpl::apply_transform(Transform_ptr transformation)
 {
-  SectionLog section("RegionImpl::applyTransform");
   if (valid)
     {
       Vertex o;
 
       origin(o);
-      transformation->transformVertex(o);
+      transformation->transform_vertex(o);
       Transform::Matrix m;
-      transformation->storeMatrix(m);
+      transformation->store_matrix(m);
 
-      Coord w = upper.x - lower.x;
-      Coord h = upper.y - lower.y;
+      Coord lx = upper.x - lower.x;
+      Coord ly = upper.y - lower.y;
+      Coord lz = upper.z - lower.z;
 
       Vertex center;
-      center.x = Coord((upper.x + lower.x) * 0.5);
-      center.y = Coord((upper.y + lower.y) * 0.5);
+      center.x = (upper.x + lower.x) * 0.5;
+      center.y = (upper.y + lower.y) * 0.5;
+      center.z = (upper.z + lower.z) * 0.5;
 
       // transform the center
 
-      transformation->transformVertex(center);
+      transformation->transform_vertex(center);
 
       // optimized computation of new width and height
-      Coord nw = Coord(Math::abs(w * m[0][0]) + Math::abs(h * m[1][0]));
-      Coord nh = Coord(Math::abs(w * m[0][1]) + Math::abs(h * m[1][1]));
+      Coord nlx = Math::abs(lx * m[0][0]) + Math::abs(ly * m[0][1]) + Math::abs(lz * m[0][2]);
+      Coord nly = Math::abs(lx * m[1][0]) + Math::abs(ly * m[1][1]) + Math::abs(lz * m[1][2]);
+      Coord nlz = Math::abs(lx * m[2][0]) + Math::abs(ly * m[2][1]) + Math::abs(lz * m[2][2]);
 
       // form the new box
-      lower.x = Coord(center.x - nw * 0.5);
-      upper.x = Coord(center.x + nw * 0.5);
-      lower.y = Coord(center.y - nh * 0.5);
-      upper.y = Coord(center.y + nh * 0.5);
+      lower.x = center.x - nlx * 0.5;
+      upper.x = center.x + nlx * 0.5;
+      lower.y = center.y - nly * 0.5;
+      upper.y = center.y + nly * 0.5;
+      lower.z = center.z - nlz * 0.5;
+      upper.z = center.z + nlz * 0.5;
 
-      if (!Math::equal(nw, Coord(0), 1e-4)) xalign = (o.x - lower.x) / nw;
-      if (!Math::equal(nh, Coord(0), 1e-4)) yalign = (o.y - lower.y) / nh;
+      if (!Math::equal(nlx, 0., 1e-4)) xalign = (o.x - lower.x) / nlx;
+      if (!Math::equal(nly, 0., 1e-4)) yalign = (o.y - lower.y) / nly;
+      if (!Math::equal(nlz, 0., 1e-4)) zalign = (o.z - lower.z) / nlz;
     }
 }
 
@@ -216,12 +247,12 @@ void RegionImpl::center(Vertex &c)
 
 void RegionImpl::origin(Vertex &v)
 {
-  v.x = spanOrigin(lower.x, upper.x, xalign);
-  v.y = spanOrigin(lower.y, upper.y, yalign);
-  v.z = spanOrigin(lower.z, upper.z, zalign);
+  v.x = span_origin(lower.x, upper.x, xalign);
+  v.y = span_origin(lower.y, upper.y, yalign);
+  v.z = span_origin(lower.z, upper.z, zalign);
 }
 
-void RegionImpl::span(Axis a, Region::Allotment &s)
+void RegionImpl::span(Axis a, Warsaw::Region::Allotment &s)
 {
   switch (a)
     {
@@ -243,6 +274,18 @@ void RegionImpl::span(Axis a, Region::Allotment &s)
     }
 }
 
-void RegionImpl::outline(Path *&p)
+void RegionImpl::outline(Path_out)
 {
 };
+
+std::ostream &operator << (std::ostream &os, const RegionImpl &region)
+{
+  os << "X(" << region.lower.x << ',' << region.upper.x;
+  if (!Math::equal(region.xalign, 0., 1e-2)) os << " @ " << std::setprecision(1) << region.xalign;
+  os << "), Y(" << region.lower.y << ',' << region.upper.y;
+  if (!Math::equal(region.yalign, 0., 1e-2)) os << " @ " << std::setprecision(1) << region.yalign;
+  os << "), Z(" << region.lower.z << ',' << region.upper.z;
+  if (!Math::equal(region.zalign, 0., 1e-2)) os << " @ " << std::setprecision(1) << region.zalign;
+  os << ')';
+  return os;
+}

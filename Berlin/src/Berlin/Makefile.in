@@ -1,0 +1,89 @@
+# $Id: Makefile.in,v 1.4 2001/04/09 01:51:56 stefan Exp $
+#
+# This source file is a part of the Berlin Project.
+# Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+# http://www.berlin-consortium.org
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the
+# Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+# MA 02139, USA.
+
+SHELL		:= /bin/sh
+VERSION		:= @VERSION@
+
+top_srcdir	:= @topdir@
+srcdir		:= $(top_srcdir)/src/Berlin
+builddir	:= ../..
+cdir		:= $(builddir)/config
+hdir		:= $(top_srcdir)/include
+bdir		:= $(builddir)/bin
+
+include $(cdir)/local.mk
+include $(cdir)/Server/local.mk
+
+# Extra compilation and linking flags.
+CPPFLAGS	+= $(CON_CFLAGS)
+LIBS		+= $(CON_LIBS)
+
+SRC		:= Console.cc Pointer.cc Logger.cc ServantBase.cc IdentifiableImpl.cc \
+	  	   RefCountBaseImpl.cc RegionImpl.cc TransformImpl.cc TraversalImpl.cc \
+	  	   AllocationImpl.cc Provider.cc GraphicImpl.cc MonoGraphic.cc \
+	  	   PolyGraphic.cc Allocator.cc Requestor.cc DebugGraphic.cc \
+	  	   DrawTraversalImpl.cc PickTraversalImpl.cc ControllerImpl.cc \
+	  	   DesktopImpl.cc ScreenImpl.cc ScreenManager.cc EventManager.cc \
+	  	   PositionalFocus.cc NonPositionalFocus.cc FilterImpl.cc SubjectImpl.cc \
+	  	   KitImpl.cc KitFactory.cc ServerContextImpl.cc ServerImpl.cc RCManager.cc
+
+DEP		:= $(patsubst %.cc, %.d, $(SRC))
+OBJ		:= $(patsubst %.cc, %.o, $(SRC))
+
+TARGET		:= $(ldir)/libBerlin.so
+
+vpath %.hh  $(hdir)/Warsaw $(hdir)/Berlin
+
+all:	$(TARGET)
+
+$(TARGET):	$(OBJ)
+		@echo linking $(@F)
+		$(CXX) $(LDFLAGS) $(SO_LDFLAGS) -o $@ $(OBJ) $(LIBS)
+
+install:
+		$(INSTALL) -m755 $(EXPAT) $(libdir)
+		$(INSTALL) -m755 $(TARGET) $(libdir)
+
+clean:	
+		rm -f $(TARGET)
+		rm -f *.o *.d
+
+distclean:	clean
+		rm -f Makefile $(hdir)/Server/config.hh $(cdir)/Server/subdirs.mk \
+			$(cdir)/Server/local.mk $(cdir)/Server/module.mk \
+			$(cdir)/Server/config.log $(cdir)/Server/config.status \
+			$(bdir)/Berlin-config $(builddir)/config/berlinrc
+
+maintainer-clean: distclean
+		rm -f $(top_srcdir)/config/Server/configure $(top_srcdir)/config/Server/config.hh.in \
+			$(top_srcdir)/config/Server/aclocal.m4
+
+%.d:	$(srcdir)/%.cc $(hdir)/Berlin/%.hh
+	@echo generating dependencies for $(<F)
+	$(SHELL) -ec '$(CXX) $(DEPFLAGS) $(CPPFLAGS) $< | sed "s/$*\\.o[ :]*/$*\\.d $*\\.o : /g" > $@'
+
+%.o:	$(srcdir)/%.cc
+	@echo compiling $(@F)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(OPTFLAGS) $(SOFLAGS) -c $< -o $@
+
+ifeq (,$(findstring $(MAKECMDGOALS), clean distclean maintainer-clean))
+-include $(DEP)
+endif

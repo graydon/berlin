@@ -1,13 +1,8 @@
-/*$Id: Placement.hh,v 1.5 1999/10/07 15:11:10 gray Exp $
+/*$Id: Placement.hh,v 1.8 2000/08/31 18:52:32 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on code from Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,6 +22,7 @@
 #ifndef _Placement_hh
 #define _Placement_hh
 
+#include <Berlin/ImplVar.hh>
 #include <Berlin/MonoGraphic.hh>
 #include <Berlin/RegionImpl.hh>
 #include <Berlin/TransformImpl.hh>
@@ -40,26 +36,26 @@ public:
   Placement(LayoutManager *);
   virtual ~Placement();
 
-  virtual void request(Requisition &);
+  virtual void request(Warsaw::Graphic::Requisition &);
 
-  virtual void traverse(Traversal_ptr);
+  virtual void traverse(Warsaw::Traversal_ptr);
 
-  virtual void allocate(Tag, const Allocation::Info &);
+  virtual void allocate(Warsaw::Tag, const Warsaw::Allocation::Info &);
 
 private:
   LayoutManager *layout;
-  RegionImpl *region;
+  Impl_var<RegionImpl> region;
 };
 
 class LayoutLayer : public MonoGraphic
 {
 public:
-  LayoutLayer(Graphic_ptr, Graphic_ptr, Graphic_ptr);
+  LayoutLayer(Warsaw::Graphic_ptr, Warsaw::Graphic_ptr, Warsaw::Graphic_ptr);
   virtual ~LayoutLayer();
-  virtual void traverse(Traversal_ptr);
+  virtual void traverse(Warsaw::Traversal_ptr);
 private:
-  Graphic_var under;
-  Graphic_var over;
+  Warsaw::Graphic_var under;
+  Warsaw::Graphic_var over;
 };
 
-#endif /* _Placement_hh */
+#endif

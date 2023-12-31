@@ -1,0 +1,68 @@
+/*$Id: DrawingKit3D.idl,v 1.2 2000/09/19 21:11:01 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999, 2000 Niklas Elmqvist <elm@3dwm.org>
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+
+#ifndef _DrawingKit3D_idl
+#define _DrawingKit3D_idl
+
+#include <Warsaw/Kit.idl>
+#include <Warsaw/Types3D.idl>
+
+module Warsaw {
+
+  interface DrawingKit3D : Kit {
+    
+    // -- Types --
+    
+    enum TextureMode { TextureOff, Texture1D, Texture2D, Texture3D };
+    enum LightingMode { LightOff, LightOn };
+    enum FoggingMode { FogOff, FogLinear, FogExponential };
+
+    // -- Attributes --
+
+    attribute MaterialAttr material;
+    attribute Rasters textures;
+    attribute TextureMode texMode;
+    attribute FoggingMode fogMode;
+    
+    // -- Operations --
+    
+    // Render triangles in 3D.
+    void draw_triangles(in Vertices coords, in Vertices normals, in TexCoords tcs);
+    
+    // Render lines in 3D.
+    void draw_lines(in Vertices coords, in TexCoords tcs);
+    
+    // Render points in 3D.
+    void draw_points(in Vertices coords);
+
+    // Flush all rendering operations (make sure it is finished and
+    // sent to the pipeline) @@@ Redundant? 
+    void flush();
+    
+  };
+
+};
+  
+
+#endif /* DrawingKit3D.idl */

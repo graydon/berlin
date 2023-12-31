@@ -1,7 +1,0 @@
-#!/bin/sh
-# Prunes empty directories
-
-for i in doc bin include lib/Berlin; do
-  rm -rf $i
-done
-

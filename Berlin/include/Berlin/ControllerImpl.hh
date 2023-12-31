@@ -1,7 +1,7 @@
-/*$Id: ControllerImpl.hh,v 1.7 1999/11/06 20:23:07 stefan Exp $
+/*$Id: ControllerImpl.hh,v 1.21 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,64 +22,88 @@
 #ifndef _ControllerImpl_hh
 #define _ControllerImpl_hh
 
+#include <Prague/Sys/Thread.hh>
+#include <Prague/Sys/Tracer.hh>
 #include <Warsaw/config.hh>
 #include <Warsaw/Controller.hh>
-#include <Warsaw/Event.hh>
+#include <Warsaw/Input.hh>
 #include <Warsaw/DrawTraversal.hh>
 #include <Warsaw/PickTraversal.hh>
 #include <Berlin/SubjectImpl.hh>
 #include <Berlin/MonoGraphic.hh>
-#include <Prague/Sys/Thread.hh>
+#include <Berlin/RefCountVar.hh>
 #include <vector>
 
-class ControllerImpl : implements(Controller), public MonoGraphic, public SubjectImpl
+class ControllerImpl : public virtual POA_Warsaw::Controller,
+                       public MonoGraphic,
+                       public SubjectImpl
 {
-  typedef vector<Controller_var> clist_t;
- public:
+  typedef std::vector<RefCount_var<Warsaw::Controller> > clist_t;
+  class Iterator;
+  friend class Iterator;
+public:
   ControllerImpl(bool);
-  virtual void traverse(Traversal_ptr traversal) { traversal->visit(Graphic_var(_this()));}
-  virtual void draw(DrawTraversal_ptr traversal) { MonoGraphic::traverse(traversal);}
-  virtual void pick(PickTraversal_ptr);
+  virtual ~ControllerImpl();
+  virtual void deactivate();
 
-  virtual Controller_ptr parentController();
-  virtual void appendController(Controller_ptr);
-  virtual void prependController(Controller_ptr);
-  virtual void insertController(Controller_ptr, Controller_ptr);
-  virtual void replaceController(Controller_ptr, Controller_ptr);
-  virtual void removeController(Controller_ptr);
-  virtual void setParentController(Controller_ptr);
-  virtual void requestFocus(Controller_ptr);//, in Event::Device d);
-  virtual CORBA::Boolean receiveFocus(Focus_ptr);
-  virtual void loseFocus(Focus_ptr);
-  virtual CORBA::Boolean handle(PickTraversal_ptr, const CORBA::Any &);
+  virtual void traverse(Warsaw::Traversal_ptr);
+  virtual void draw(Warsaw::DrawTraversal_ptr);
+  virtual void pick(Warsaw::PickTraversal_ptr);
 
-  virtual void set(Telltale::Flag);
-  virtual void clear(Telltale::Flag);
-  virtual CORBA::Boolean test(Telltale::Flag);
-  virtual void modify(Telltale::Flag, CORBA::Boolean);
-  virtual void constraint(TelltaleConstraint_ptr c);
-  virtual TelltaleConstraint_ptr constraint();
-// protected:
-  virtual bool handlePositionalEvent(PickTraversal_ptr, const Event::Pointer *);
-  virtual bool inside(PickTraversal_ptr);
-  virtual void move(PickTraversal_ptr, const Event::Pointer *);
-  virtual void press(PickTraversal_ptr, const Event::Pointer *);
-  virtual void drag(PickTraversal_ptr, const Event::Pointer *);
-  virtual void release(PickTraversal_ptr, const Event::Pointer *);
-  virtual void doubleClick(PickTraversal_ptr, const Event::Pointer *);
-  virtual void keyPress(PickTraversal_ptr, const Event::Pointer *);
-  virtual void keyRelease(PickTraversal_ptr, const Event::Pointer *);
-  virtual void other(PickTraversal_ptr, const Event::Pointer *);
-  void grab(PickTraversal_ptr);
-  void ungrab(PickTraversal_ptr);
- private:
-  Controller_var parent;
-  clist_t controllers;
-  unsigned long flags;
-  bool grabbed;
-  bool transparent;
-  TelltaleConstraint_var myConstraint;
-  Prague::Mutex mutex;
+  virtual void append_controller(Warsaw::Controller_ptr);
+  virtual void prepend_controller(Warsaw::Controller_ptr);
+  virtual void remove_controller(Warsaw::Controller_ptr);
+  virtual void set_parent_controller(Warsaw::Controller_ptr);
+  virtual void remove_parent_controller();
+
+  virtual Warsaw::Controller_ptr parent_controller();
+  virtual Warsaw::Controller::Iterator_ptr first_child_controller();
+  virtual Warsaw::Controller::Iterator_ptr last_child_controller();
+
+  virtual CORBA::Boolean request_focus(Warsaw::Controller_ptr, Warsaw::Input::Device);
+  virtual CORBA::Boolean receive_focus(Warsaw::Focus_ptr);
+  virtual void lose_focus(Warsaw::Input::Device);
+
+  virtual CORBA::Boolean first_focus(Warsaw::Input::Device);
+  virtual CORBA::Boolean last_focus(Warsaw::Input::Device);
+  virtual CORBA::Boolean next_focus(Warsaw::Input::Device);
+  virtual CORBA::Boolean prev_focus(Warsaw::Input::Device);
+  virtual CORBA::Boolean handle_positional(Warsaw::PickTraversal_ptr, const Warsaw::Input::Event &);
+  virtual CORBA::Boolean handle_non_positional(const Warsaw::Input::Event &);
+
+  virtual void set(Warsaw::Telltale::Mask);
+  virtual void clear(Warsaw::Telltale::Mask);
+  virtual CORBA::Boolean test(Warsaw::Telltale::Mask);
+  virtual void modify(Warsaw::Telltale::Mask, CORBA::Boolean);
+  virtual void constraint(Warsaw::TelltaleConstraint_ptr);
+  virtual Warsaw::TelltaleConstraint_ptr constraint();
+protected:
+  virtual bool inside(Warsaw::PickTraversal_ptr);
+  virtual void move(Warsaw::PickTraversal_ptr, const Warsaw::Input::Event &);
+  virtual void press(Warsaw::PickTraversal_ptr, const Warsaw::Input::Event &);
+  virtual void drag(Warsaw::PickTraversal_ptr, const Warsaw::Input::Event &);
+  virtual void release(Warsaw::PickTraversal_ptr, const Warsaw::Input::Event &);
+  virtual void double_click(Warsaw::PickTraversal_ptr, const Warsaw::Input::Event &);
+  virtual void key_press(const Warsaw::Input::Event &);
+  virtual void key_release(const Warsaw::Input::Event &);
+  virtual void other(const Warsaw::Input::Event &);
+  void grab(Warsaw::PickTraversal_ptr);
+  void ungrab(Warsaw::PickTraversal_ptr);
+  bool grabbed(Warsaw::Input::Device d) { return _grabs & (1 << d);}
+  void set_focus(Warsaw::Input::Device d) { _focus |= 1 << d; update_state();}
+  void clear_focus(Warsaw::Input::Device d) { _focus &= ~(1 << d); update_state();}
+  virtual void update_state();
+private:
+  Warsaw::Controller_var _parent;
+  clist_t _children;
+  CORBA::ULong _telltale;
+  CORBA::ULong _focus;
+  CORBA::ULong _grabs;
+  bool _transparent;
+  Warsaw::TelltaleConstraint_var _constraint;
+  Prague::Mutex _pmutex; // for the parent link
+  Prague::Mutex _cmutex; // for the children links
+  Prague::Mutex _mutex;  // for the state
 };
 
-#endif /* _ControllerImpl_hh */
+#endif 

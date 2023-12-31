@@ -1,7 +1,7 @@
-/*$Id: AllocationImpl.cc,v 1.5 1999/11/06 20:23:08 stefan Exp $
+/*$Id: AllocationImpl.cc,v 1.14 2001/02/06 22:02:21 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,8 +21,11 @@
  */
 #include "Berlin/AllocationImpl.hh"
 #include "Berlin/RegionImpl.hh"
+#include "Berlin/Provider.hh"
 #include "Berlin/TransformImpl.hh"
-#include "Warsaw/Screen.hh"
+#include <Warsaw/Screen.hh>
+
+using namespace Warsaw;
 
 AllocationImpl::AllocationImpl()
 {
@@ -30,31 +33,55 @@ AllocationImpl::AllocationImpl()
 
 AllocationImpl::~AllocationImpl()
 {
-  for (list_t::iterator i = list.begin(); i != list.end(); i++)
+  for (list_t::iterator i = _list.begin(); i != _list.end(); i++)
     {
-      (*i).allocation->_dispose();
-      (*i).transformation->_dispose();
+      Provider<RegionImpl>::adopt((*i).allocation);
+      Provider<TransformImpl>::adopt((*i).transformation);
     }
 }
 
 void AllocationImpl::add(Region_ptr region, Screen_ptr root)
 {
-  State state;
-  state.allocation = new RegionImpl(region);
-  state.allocation->_obj_is_ready(_boa());
-  state.transformation = new TransformImpl;
-  state.transformation->_obj_is_ready(_boa());
-  state.root = Screen::_duplicate(root);
-  list.push_back(state);
+  Lease_var<RegionImpl> reg(Provider<RegionImpl>::provide());
+  reg->copy(region);
+
+  Lease_var<TransformImpl> trafo(Provider<TransformImpl>::provide());
+  trafo->load_identity();
+
+  Screen_ptr scrn = Screen::_duplicate(root);
+  try
+    {
+      _list.push_back (State());
+  
+      State &state = _list.back();
+      state.allocation = reg._retn();
+      state.transformation = trafo._retn();
+      state.root = scrn;
+    }
+  catch (...)
+    {
+      CORBA::release(scrn);
+      throw;
+    }
 }
 
-CORBA::Long AllocationImpl::size() { return list.size();}
+CORBA::Long AllocationImpl::size() { return _list.size();}
+
+void AllocationImpl::clear()
+{ 
+  for (list_t::iterator i = _list.begin(); i != _list.end(); i++)
+    {
+      Provider<RegionImpl>::adopt((*i).allocation);
+      Provider<TransformImpl>::adopt((*i).transformation);
+    }  
+  _list.clear();
+}
 
 Allocation::Info *AllocationImpl::get(CORBA::Long l)
 {
-  Allocation::Info *info = new Allocation::Info;
-  info->allocation = list[l].allocation->_this();
-  info->transformation = list[l].transformation->_this();
-  info->root = list[l].root;
-  return info;
+  Warsaw::Allocation::Info_var info = new Warsaw::Allocation::Info;
+  info->allocation = _list[l].allocation->_this();
+  info->transformation = _list[l].transformation->_this();
+  info->root = _list[l].root;
+  return info._retn();
 }

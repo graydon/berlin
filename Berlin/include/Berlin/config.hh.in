@@ -1,0 +1,10 @@
+#ifndef _Berlin_config_hh
+#define _Berlin_config_hh
+
+#undef CONSOLE_GGI
+#undef CONSOLE_SDL
+#undef CONSOLE_CAVELIB
+#undef CONSOLE_GLUT
+#undef CONSOLE_DIRECTFB
+
+#endif /* _Berlin_config_hh */

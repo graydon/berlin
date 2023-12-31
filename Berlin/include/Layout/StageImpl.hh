@@ -1,7 +1,7 @@
-/*$Id: StageImpl.hh,v 1.12 1999/10/21 20:23:51 gray Exp $
+/*$Id: StageImpl.hh,v 1.18 2001/04/18 06:07:26 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,104 +22,95 @@
 #ifndef _StageImpl_hh
 #define _StageImpl_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/Stage.hh"
-#include "Warsaw/Traversal.hh"
-#include "Berlin/GraphicImpl.hh"
-#include "Berlin/RegionImpl.hh"
-#include "Berlin/ImplVar.hh"
-#include "Berlin/Geometry.hh"
-#include "Prague/Sys/Thread.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/Stage.hh>
+#include <Warsaw/Traversal.hh>
+#include <Berlin/ImplVar.hh>
+#include <Berlin/GraphicImpl.hh>
+#include <Berlin/RegionImpl.hh>
+#include <Berlin/Geometry.hh>
+#include <Prague/Sys/Thread.hh>
 #include <list>
 
 class StageHandleImpl;
 
-class StageImpl : implements(Stage), public GraphicImpl
+class StageImpl : public virtual POA_Layout::Stage,
+		  public GraphicImpl
 {
   class Sequence;
-  class Finder;
-  class Quad;
   class QuadTree;
  public:
   StageImpl();
   ~StageImpl();
 
-  virtual void request(Requisition &);
+  virtual void request(Warsaw::Graphic::Requisition &);
 
-  virtual void traverse(Traversal_ptr);
+  virtual void traverse(Warsaw::Traversal_ptr);
 
-  virtual void allocate(Tag, const Allocation::Info &);
-  virtual void needRedraw();
-  virtual void needRedrawRegion(Region_ptr);
-  virtual void needResize();
+  virtual void allocate(Warsaw::Tag, const Warsaw::Allocation::Info &);
+  virtual void need_redraw();
+  virtual void need_redraw_region(Warsaw::Region_ptr);
+  virtual void need_resize();
   //. relayout the children. If the bounding box changes call needResize on the parent
   
-  virtual Region_ptr bbox();
+  virtual Warsaw::Region_ptr bbox();
   virtual CORBA::Long layers();
-  virtual StageHandle_ptr layer(Stage::Index);
+  virtual Layout::StageHandle_ptr layer(Layout::Stage::Index);
   /*
    * begin() and end() 'lock' the stage
    * in that only after the last end() conditions for needRedraw() & needResize() are done
    */
   virtual void begin();
   virtual void end();
-  virtual StageHandle_ptr insert(Graphic_ptr, const Vertex &, const Vertex &, Index);
-  virtual void remove(StageHandle_ptr);
+  virtual Layout::StageHandle_ptr insert(Warsaw::Graphic_ptr, const Warsaw::Vertex &, const Warsaw::Vertex &, Layout::Stage::Index);
+  virtual void remove(Layout::StageHandle_ptr);
 
-  void move(StageHandleImpl *, const Vertex &);
-  void resize(StageHandleImpl *, const Vertex &);
-  void relayer(StageHandleImpl *, Stage::Index);
+  void move(StageHandleImpl *, const Warsaw::Vertex &);
+  void resize(StageHandleImpl *, const Warsaw::Vertex &);
+  void relayer(StageHandleImpl *, Layout::Stage::Index);
 private:
-  Tag tag();
-  StageHandleImpl *tag2handle(Tag);
+  Warsaw::Tag unique_tag();
+  StageHandleImpl *tag_to_handle(Warsaw::Tag);
   void damage(StageHandleImpl *);
 
-  Sequence *children;
-  QuadTree *tree;
-  long nesting;
-  Impl_var<RegionImpl> damage_;
-  Impl_var<RegionImpl> bbregion;
-  bool need_redraw : 1;
-  bool need_resize : 1;
-  Prague::Mutex childMutex;
+  Sequence            *_children;
+  QuadTree            *_tree;
+  long                 _nesting;
+  Impl_var<RegionImpl> _damage;
+  Impl_var<RegionImpl> _bbregion;
+  bool                 _need_redraw : 1;
+  bool                 _need_resize : 1;
+  Prague::Mutex        _mutex;
 };
 
-class StageHandleImpl : implements(StageHandle)
+class StageHandleImpl : public virtual POA_Layout::StageHandle
 {
  public:
-  StageHandleImpl(StageImpl *, Graphic_ptr, Tag, const Vertex &, const Vertex &, Stage::Index);
-  virtual Stage_ptr parent() { return stage->_this();}
-  virtual Graphic_ptr child() { return Graphic::_duplicate(c);}
-  virtual Vertex position() { Prague::MutexGuard guard(mutex); return p;}
-  virtual void position(const Vertex &);
-  virtual Vertex size() { Prague::MutexGuard guard(mutex); return s;}
-  virtual void size(const Vertex &);
-  virtual Stage::Index layer() { Prague::MutexGuard guard(mutex); return l;}
-  virtual void layer(Stage::Index);
+  StageHandleImpl(StageImpl *, Warsaw::Graphic_ptr, Warsaw::Tag, const Warsaw::Vertex &, const Warsaw::Vertex &, Layout::Stage::Index);
+  virtual Layout::Stage_ptr parent();
+  virtual Warsaw::Graphic_ptr child();
+  virtual void remove();
+  virtual Warsaw::Vertex position();
+  virtual void position(const Warsaw::Vertex &);
+  virtual Warsaw::Vertex size();
+  virtual void size(const Warsaw::Vertex &);
+  virtual Layout::Stage::Index layer();
+  virtual void layer(Layout::Stage::Index);
 
-  const Geometry::Rectangle<Coord> &bbox() { return boundingbox;}
-  void bbox(RegionImpl &region)
-    {
-      region.valid   = true;
-      region.lower.x = boundingbox.l;
-      region.upper.x = boundingbox.r;
-      region.xalign  = xalign;
-      region.lower.y = boundingbox.t;
-      region.upper.y = boundingbox.b;
-      region.yalign  = yalign;
-    }
+  const Geometry::Rectangle<Warsaw::Coord> &bbox();
+  void bbox(RegionImpl &);
 //  private:
-  void cacheBBox();
-  StageImpl *stage;
-  Graphic_var c;
-  Tag tag;
-  Vertex p;
-  Vertex s;
-  Stage::Index l;
-  Geometry::Rectangle<Coord> boundingbox;
-  Alignment xalign;
-  Alignment yalign;
-  Prague::Mutex mutex;
+  void cache_bbox();
+  StageImpl                         *_parent;
+  Warsaw::Graphic_var                _child;
+  Warsaw::Tag                        _tag;
+  Warsaw::Vertex                     _position;
+  Warsaw::Vertex                     _size;
+  Layout::Stage::Index               _layer;
+  Geometry::Rectangle<Warsaw::Coord> _bbox;
+  Warsaw::Alignment                  _xalign;
+  Warsaw::Alignment                  _yalign;
+  Prague::Mutex                      _mutex;
 };
 
 #endif

@@ -1,14 +1,8 @@
-/*$Id: ThreadData.hh,v 1.2 1999/09/30 17:23:33 gray Exp $
+/*$Id: ThreadData.hh,v 1.3 2000/03/22 22:30:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this file is based on an idea from the ESSI2 Project
- * Authors: Nicolas Becavin <becavin@essi.fr>
- *          Stephane Peter <speter@essi.fr>
- *          Mickael Navarro <navarro@essi.fr>
- *          Jerome Dufon <dufon@essi.fr>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -25,8 +19,8 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _ThreadData_hh
-#define _ThreadData_hh
+#ifndef _Prague_ThreadData_hh
+#define _Prague_ThreadData_hh
 
 #include <Prague/Sys/Thread.hh>
 
@@ -40,10 +34,10 @@ public:
   class TooMuchTSDs : public Exception { public: TooMuchTSDs() : Exception("too much TSDs defined") {}};
   class InvalidKey : public Exception { public: InvalidKey() : Exception("illegal key") {}};
 
-  Data(T v) throw (TooMuchTSDs, InvalidKey)
+  Data(T v) throw (TooMuchTSDs, InvalidKey) : initializer(v)
     {
       if(pthread_key_create(&key, destructor)) throw TooMuchTSDs();
-      if(pthread_setspecific(key, new T(value))) throw InvalidKey();
+      if(pthread_setspecific(key, new T(initializer))) throw InvalidKey();
     }
   Data() throw (TooMuchTSDs, InvalidKey)
     {
@@ -58,58 +52,66 @@ public:
   const T &var(void) const throw (InvalidKey)
     {
       T *data = reinterpret_cast<T *>(pthread_getspecific(key));
-      if (data) return *data;
-      else throw InvalidKey();
+      if (!data)
+	{
+	  if (pthread_setspecific(key, new T(initializer))) throw InvalidKey();
+	  data = reinterpret_cast<T *>(pthread_getspecific(key));
+	}
+      return *data;
     }
   T &var(void) throw (InvalidKey)
     {
       T *data = reinterpret_cast<T *>(pthread_getspecific(key));
-      if(data) return *data;
-      else throw InvalidKey();
+      if (!data)
+	{
+	  if (pthread_setspecific(key, new T(initializer))) throw InvalidKey();
+	  data = reinterpret_cast<T *>(pthread_getspecific(key));
+	}
+      return *data;
     }
-
   Data<T> &operator = (const T &t) throw (InvalidKey)
     {
       T *data = reinterpret_cast<T *>(pthread_getspecific(key));
-      if(data) *data = t;
-      else if(pthread_setspecific(key, new T(t))) throw InvalidKey();
-      return *this;
-    }
-  Data<T> &operator = (T t) throw (InvalidKey)
-    {
-      T *data = reinterpret_cast<T *>(pthread_getspecific(key));
       if (data) *data = t;
-      else if(pthread_setspecific(key, new T(t))) throw InvalidKey();
+      else if (pthread_setspecific(key, new T(t))) throw InvalidKey();
       return *this;
     }
   Data<T> &operator = (const Data<T> &t) throw (InvalidKey)
     {
       T *data = reinterpret_cast<T *>(pthread_getspecific(key));
-      if(data) *data = *t;
-      else if(pthread_setspecific(key, new T(*t))) throw InvalidKey();
+      if (data) *data = *t;
+      else if (pthread_setspecific(key, new T(*t))) throw InvalidKey();
       return *this;
     }
   const T *operator->() const throw (InvalidKey)
     {
       T *data = reinterpret_cast<T *>(pthread_getspecific(key));
-      if(data) return data;
-      else throw InvalidKey();
+      if (!data)
+	{
+	  if (pthread_setspecific(key, new T(initializer))) throw InvalidKey();
+	  data = reinterpret_cast<T *>(pthread_getspecific(key));
+	}
+      return data;
     }
   T *operator->() throw (InvalidKey)
     {
       T *data = reinterpret_cast<T *>(pthread_getspecific(key));
-      if(data) return data;
-      else throw InvalidKey();
+      if (!data)
+	{
+	  if (pthread_setspecific(key, new T(initializer))) throw InvalidKey();
+	  data = reinterpret_cast<T *>(pthread_getspecific(key));
+	}
+      return data;
     }
   const T &operator *() const { return var();}
         T &operator *()       { return var();}
-protected:
-  pthread_key_t key;
 private:
   static void destructor(void *data) { delete reinterpret_cast<T *>(data);}
   Data(const Data<T> &); 
+  pthread_key_t key;
+  T initializer;
 };
 
 };
 
-#endif /* _ThreadData_hh */
+#endif /* _Prague_ThreadData_hh */

@@ -1,0 +1,100 @@
+These are instructions for the configuration, building, and installation
+of the Berlin windowing system.
+
+Prerequisites
+=============
+
+Berlin uses a number of third party libraries, which you will need to
+have installed before you can proceed. Please see at
+
+http://www.berlin-consortium.org/dependencies.html
+
+for a complete list. Unfortunately, quite a number of them are still
+in heavy development, so you may need to get the sources and compile
+them yourself. Respective rpm and deb packages may *not* be enough !
+
+Downloading
+===========
+
+There are currently three ways to download berlin. You can check out the
+sources directly from cvs, in which case you find instructions at
+
+http://www.berlin-consortium.org/cvs.html
+
+or you can download a nightly snapshot from
+
+ftp://berlin.sourceforge.net/pub/berlin/
+
+or you can get release packages at
+
+http://sourceforge.net/projects/berlin/
+
+Configuration
+=============
+
+In case you use the cvs version, you have to step into the toplevel
+directory ('Berlin'), and call ./autogen.sh, to generate configure
+scripts and helper files.
+
+Decide where to build berlin, either inside the source tree (let's
+refer to this as $berlin-src), or (the recomended way), in a separate 
+build directory ($berlin-build).
+Step into the build directory, and run configure:
+
+> cd $berlin-build
+> $berlin-src/configure
+
+this will set up the build tree and check for the available packages.
+
+[ Add support for interactive configuration and document the options
+  here]
+
+Building
+========
+
+Run make. As make produces a lot of noise, you may want to suppress
+that, i.e. run make 'silently'. It still prints out what it is doing,
+so you can keep track of things:
+
+> make -s
+
+Testing
+=======
+
+you should now find some libraries in $berlin-build/lib, modules in
+$berlin-build/module, and binaries in $berlin-build/bin. If you want
+to run berlin at this place, you have to tell the loader where to look
+for the libraries, and, in case you use the python environment, tell
+python where to find the berlin modules:
+
+> setenv LD_LIBRARY_PATH $berlin-build/lib:$LD_LIBRARY_PATH
+> setenv PYTHONPATH $berlin-build/lib/python:$PYTHONPATH
+
+or similar depending on your shell.
+The berlin server is in $berlin-build/bin/server, and to tell him about
+the current (temporary) location of the resources (fonts, modules, rasters, ...)
+you have to provide him with a resource file containing the paths:
+
+> bin/server -r config/berlinrc
+
+Voila ! That should run the server.
+
+Installing
+==========
+
+Sorry, the install target isn't finished yet, but we are working on it.
+
+
+Troubleshooting
+===============
+
+There are a couple of places which are frequently subject to problems.
+Please consult the FAQ at
+
+http://www2/berlin-consortium.org/wiki/html/Berlin/FAQ.htm
+
+please be sure that third party libraries are correctly installed before
+you post about a bug. For example, the by far most frequent problem encountered
+is reported by people who forgot to start the name server...
+
+Good luck,	Stefan <stefan@berlin-consortium.org>

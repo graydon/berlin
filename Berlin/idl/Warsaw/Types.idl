@@ -1,0 +1,108 @@
+/*$Id: Types.idl,v 1.3 2000/08/31 18:51:47 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Portions Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * Portions Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Types_idl
+#define _Warsaw_Types_idl
+
+module Warsaw
+{
+  typedef unsigned long Tag;
+  //. User interface objects specify positions and sizes in terms
+  //. of coordinates.  The Coord type represents a position or distance
+  //. in units of 1/10 mm.  Coord might better be defined as an interface
+  //. from the perspective of abstraction, but for practical reasons it is
+  //. defined as a typedef.  For applications with simple graphics needs,
+  //. the use of floating point coordinates is typically
+  //. not a problem.  Applications with more sophisticated text
+  //. or graphics usually need to manipulate floating point
+  //. coordinates anyway.
+  typedef double Coord;
+  //. The PixelCoord type represents a position or distance in
+  //. units of screen pixels.  PixelCoord values are inherently
+  //. resolution-dependent and generally should be avoided.
+  //. However, some user interfaces need to guarantee that they
+  //. produce output that is precisely balanced in terms of pixels.
+  //. Coord values are resolution-independent, but one cannot rely
+  //. on precise output at low resolutions.  Coordinates are normally
+  //. rounded-off to guarantee that objects that abut in coordinates
+  //. will abut on the screen.
+  //.
+  //. This approach introduces the possibility that the same Coord
+  //. value might be converted to two different PixelCoord values.
+  //. To avoid such an occurrence, an application object should
+  //. convert the coordinate value to a PixelCoord and then back
+  //. to a Coord before using it.
+  typedef long PixelCoord;
+  //. Axis is a type for specifying a dimension of cartesian coordinates.
+  //. Many user interface operations, especially involving layout,
+  //. can be parameterized by dimension.
+  enum Axis { xaxis, yaxis, zaxis };
+  
+  //. A vertex is a 3-dimensional point.  An implementation
+  //. may only implement 2d operations and therefore will ignore
+  //. the z-field of vertices.
+  struct Vertex 
+  {
+    Coord x, y, z;
+  };
+  
+  //. An alignment is a floating point value that represents
+  //. a relative position.  Alignments are typically between
+  //. zero and one inclusive, with zero indicating the position
+  //. is aligned with the lower point and one indicating
+  //. alignment with the higher point.  For example, an alignment
+  //. of zero along the x axis indicates that the position
+  //. is left-aligned, a value of one means the position is
+  //. right-aligned.
+  typedef double Alignment;
+  
+  struct Color
+  {
+    double red, green, blue;
+    double alpha;
+  };
+  
+  typedef sequence<Vertex> Path;
+  
+  //. this is a character in the unicode range U+0000 - U+FFFF. It is a
+  //. coded representation of a "unit" of textual information. it is not
+  //. a picture on a screen, nor a particular semantic value. it is only
+  //. meaningful in the context of an application, a locale, and a human
+  //. reader of a particular language.
+  typedef unsigned short Unichar;
+  
+  //. this is a sequence of unichars. they have a logical memory ordering
+  //. which corresponds to the sequence in which they are entered into a
+  //. computer, over time, by a human or other process. Even if they are
+  //. in a right-to-left writing system, they always go in this order
+  //. when considered as characters. Only when transformed to glyphs do
+  //. they get special layout properties like screen direction.
+  typedef sequence<Unichar> Unistring;
+  
+  struct NVPair 
+  {
+    Unistring name;
+    any val;
+  };
+};
+
+#endif

@@ -1,13 +1,8 @@
-/*$Id: Placement.cc,v 1.9 1999/11/06 20:23:08 stefan Exp $
+/*$Id: Placement.cc,v 1.17 2000/11/14 21:36:37 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,25 +19,26 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#include "Berlin/TraversalImpl.hh"
-#include "Berlin/ImplVar.hh"
+#include <Berlin/TraversalImpl.hh>
+#include <Berlin/Provider.hh>
+#include <Berlin/ImplVar.hh>
 #include "Layout/Placement.hh"
 #include "Layout/LayoutManager.hh"
+
+using namespace Warsaw;
 
 Placement::Placement(LayoutManager *l)
 {
   layout = l;
   region = new RegionImpl;
-  region->_obj_is_ready(CORBA::BOA::getBOA());
 }
 
 Placement::~Placement()
 {
-  region->_dispose();
   delete layout;
 }
 
-void Placement::request(Requisition &r)
+void Placement::request(Warsaw::Graphic::Requisition::Requisition &r)
 {
   MonoGraphic::request(r);
   layout->request(0, 0, r);
@@ -50,24 +46,24 @@ void Placement::request(Requisition &r)
 
 void Placement::traverse(Traversal_ptr traversal)
 {
-  Graphic_var child = body();
-  if (CORBA::is_nil(child)) return;
-  /*
-   * cheap and dirty cull test -stefan
-   */
-//   if (!traversal->intersectsAllocation()) return;
-  Region_var allocation = Region::_duplicate(traversal->allocation());
+  Region_var allocation = traversal->current_allocation();
   if (!CORBA::is_nil(allocation))
     {
-      Impl_var<RegionImpl> result(new RegionImpl(allocation));
-      Graphic::Requisition r;
-      GraphicImpl::initRequisition(r);
+      Warsaw::Graphic::Requisition r;
+      GraphicImpl::init_requisition(r);
       MonoGraphic::request(r);
-      RegionImpl *tmp = result.get();
+      Graphic_var child = body();
+      if (CORBA::is_nil(child)) return;
+      Lease_var<RegionImpl> result(Provider<RegionImpl>::provide());
+      result->copy(allocation);
+      RegionImpl *tmp = static_cast<RegionImpl *>(result);
       layout->allocate(1, &r, allocation, &tmp);
-      Impl_var<TransformImpl> tx(new TransformImpl);
-      result->normalize(tx);
-      traversal->traverseChild(child, 0, Region_var(result->_this()), Transform_var(tx->_this()));
+      Lease_var<TransformImpl> tx(Provider<TransformImpl>::provide());
+      tx->load_identity();
+      result->normalize(Transform_var(tx->_this()));
+      try { traversal->traverse_child (child, 0, Region_var(result->_this()), Transform_var(tx->_this()));}
+      catch (const CORBA::OBJECT_NOT_EXIST &) { body (Warsaw::Graphic::_nil());}
+      catch (const CORBA::COMM_FAILURE &) { body(Warsaw::Graphic::_nil());}
     }
   else MonoGraphic::traverse(traversal);
 }
@@ -75,13 +71,14 @@ void Placement::traverse(Traversal_ptr traversal)
 void Placement::allocate(Tag, const Allocation::Info &a)
 {
   region->copy(a.allocation);
-  Graphic::Requisition r;
-  GraphicImpl::initRequisition(r);
+  Warsaw::Graphic::Requisition r;
+  GraphicImpl::init_requisition(r);
   MonoGraphic::request(r);
-  layout->allocate(1, &r, a.allocation, &region);
-
-  Impl_var<TransformImpl> tx(new TransformImpl);
-  region->normalize(tx);
+  RegionImpl *cast = region;
+  layout->allocate(1, &r, a.allocation, &cast);
+  Lease_var<TransformImpl> tx(Provider<TransformImpl>::provide());
+  tx->load_identity();
+  region->normalize(Transform_var(tx->_this()));
   a.transformation->premultiply(Transform_var(tx->_this()));
   a.allocation->copy(Region_var(region->_this()));
 }
@@ -89,8 +86,8 @@ void Placement::allocate(Tag, const Allocation::Info &a)
 LayoutLayer::LayoutLayer(Graphic_ptr between, Graphic_ptr under, Graphic_ptr over)
 {
   body(between);
-  under = Graphic::_duplicate(under);
-  over = Graphic::_duplicate(over);
+  under = Warsaw::Graphic::_duplicate(under);
+  over = Warsaw::Graphic::_duplicate(over);
 }
 
 LayoutLayer::~LayoutLayer()
@@ -99,7 +96,13 @@ LayoutLayer::~LayoutLayer()
 
 void LayoutLayer::traverse(Traversal_ptr t)
 {
-  if (!CORBA::is_nil(under)) under->traverse(t);
+  if (!CORBA::is_nil(under))
+    try { under->traverse (t);}
+    catch (const CORBA::OBJECT_NOT_EXIST &) { under = Warsaw::Graphic::_nil();}
+    catch (const CORBA::COMM_FAILURE &) { under = Warsaw::Graphic::_nil();}
   MonoGraphic::traverse(t);
-  if (!CORBA::is_nil(over)) over->traverse(t);
+  if (!CORBA::is_nil(over))
+    try { over->traverse (t);}
+    catch (const CORBA::OBJECT_NOT_EXIST &) { over = Warsaw::Graphic::_nil();}
+    catch (const CORBA::COMM_FAILURE &) { over = Warsaw::Graphic::_nil();}
 }

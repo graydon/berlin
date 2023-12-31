@@ -1,7 +1,7 @@
-/*$Id: regex.cc,v 1.3 1999/05/03 22:06:45 gray Exp $
+/*$Id: regex.cc,v 1.5 2001/03/21 06:28:55 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,93 +24,64 @@
 
 using namespace Prague;
 
-/* @Method{string regex::error(int errcode)}
- *
- * @Description{convert @var{errcode} into a string}
- */
-string regex::error(int errcode)
+std::string regex::error(int errcode)
 {
-  if (errcode == 0) return string();
-  size_t length = regerror(errcode, info->rx, 0, 0);
+  if (errcode == 0) return std::string();
+  size_t length = regerror(errcode, _info->rx, 0, 0);
   char *buffer = new char[length];
-  regerror(errcode, info->rx, buffer, length);
-  string text = buffer;
+  regerror(errcode, _info->rx, buffer, length);
+  std::string text = buffer;
   delete[] buffer;
   return text;
 }
 
-/* @Method{regex::regex(const string &p, int flags)}
- *
- * @Description{}
- */
-regex::regex(const string &p, int flags)
-  : info(new rx_t(flags & extended))
+regex::regex(const std::string &p, int flags)
+  : _info(new rx_t(flags & extended))
 {
-  info->rx = new regex_t;
-  int errcode = regcomp(info->rx, p.c_str(), info->extended ? extended : 0);
-  if (errcode) { delete info->rx; info->rx = 0;}
+  _info->rx = new regex_t;
+  int errcode = regcomp(_info->rx, p.c_str(), _info->extended ? extended : 0);
+  if (errcode) { delete _info->rx; _info->rx = 0;}
 }
 
-/* @Method{regex::regex(const regex &r)}
- *
- * @Description{}
- */
-regex::regex(const regex &r) : info(r.info)
+regex::regex(const regex &r) : _info(r._info)
 {
-  info->count++;
+  _info->count++;
 }
 
-/* @Method{regex &regex::operator =(const regex &r)}
- *
- * @Description{}
- */
 regex &regex::operator = (const regex &r)
 {
-  if (!--info->count) delete info;
-  info = r.info;
-  info->count++;
+  if (!--_info->count) delete _info;
+  _info = r._info;
+  _info->count++;
   return *this;
 }
 
-/* @Method{regex &regex::operator =(const string &p)}
- *
- * @Description{}
- */
-regex &regex::operator = (const string &p)
+regex &regex::operator = (const std::string &p)
 {
-  if (info->count != 1)
+  if (_info->count != 1)
     {
-      info->count--;
-      info = new rx_t(info->extended);
+      _info->count--;
+      _info = new rx_t(_info->extended);
     }
-  info->rx = new regex_t;
-  int errcode = regcomp(info->rx, p.c_str(), extended);
-  if (errcode) { delete info->rx; info->rx = 0;}
+  _info->rx = new regex_t;
+  int errcode = regcomp(_info->rx, p.c_str(), extended);
+  if (errcode) { delete _info->rx; _info->rx = 0;}
   return *this;
 }
 
-/* @Method{regex::~regex()}
- *
- * @Description{}
- */
 regex::~regex()
 {
-  if (!--info->count) delete info;
+  if (!--_info->count) delete _info;
 }
 
-/*
- * @Method{rxmatch regex::search(const string &s, int i) const}
- *
- * @Description{ search in s; return position of first occurrence. If i is positive, start search from that position. If i is negative, perform reverse search from that position and return last occurrence.}
- */
-rxmatch regex::search(const string &s, int i) const
+rxmatch regex::search(const std::string &s, int i) const
 {
-  int n = info->rx->re_nsub + 1;
+  int n = _info->rx->re_nsub + 1;
   regmatch_t *rm = new regmatch_t [n];
   if (i >= 0)
     while (s[i] != '\0')
       {
- 	if (regexec(info->rx, s.c_str() + i, n, rm, i ? REG_NOTBOL : 0) == 0) return rxmatch(s, i, n, rm);
+ 	if (regexec(_info->rx, s.c_str() + i, n, rm, i ? REG_NOTBOL : 0) == 0) return rxmatch(s, i, n, rm);
 	i++;
       }
   else
@@ -118,7 +89,7 @@ rxmatch regex::search(const string &s, int i) const
       i = s.length() - 1;
       do
         {
-	  if (regexec(info->rx, s.c_str() + i, n, rm, i ? REG_NOTBOL : 0) == 0) return rxmatch(s, i, n, rm);
+	  if (regexec(_info->rx, s.c_str() + i, n, rm, i ? REG_NOTBOL : 0) == 0) return rxmatch(s, i, n, rm);
           i--;
         }
       while (i >= 0);
@@ -126,20 +97,15 @@ rxmatch regex::search(const string &s, int i) const
   return rxmatch(s, -1, n, rm);
 }
 
-/*
- * @Method{string::size_type regex::match(const string &s, int i) const}
- *
- * @Description{return length of matched string iff this matches s at i, -1 otherwise.}
- */
-string::size_type regex::match(const string &s, int i) const
+std::string::size_type regex::match(const std::string &s, int i) const
 {
-  string substr;
+  std::string substr;
   if (i < 0) i += s.length();
-  if (i > (int) s.length()) return string::npos;
-  regmatch_t rm;  
-  int errcode = regexec(info->rx, s.c_str() + i, 1, &rm, 0);
+  if (i > (int) s.length()) return std::string::npos;
+  regmatch_t rm;
+  int errcode = regexec(_info->rx, s.c_str() + i, 1, &rm, 0);
   if (errcode == 0 && rm.rm_so >= 0) return rm.rm_eo - rm.rm_so;
-  return string::npos;
+  return std::string::npos;
 }
 
 const regex rxwhite("[ \n\t\r\v\f]+");

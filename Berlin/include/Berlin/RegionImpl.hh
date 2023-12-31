@@ -1,13 +1,8 @@
-/*$Id: RegionImpl.hh,v 1.9 1999/11/06 20:23:08 stefan Exp $
+/*$Id: RegionImpl.hh,v 1.18 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,99 +22,117 @@
 #ifndef _RegionImpl_hh
 #define _RegionImpl_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/Region.hh"
-#include "Berlin/TransformImpl.hh"
-#include "Berlin/Vertex.hh"
-#include "Berlin/Math.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/Region.hh>
+#include <Berlin/ServantBase.hh>
+#include <Berlin/TransformImpl.hh>
+#include <Berlin/Vertex.hh>
+#include <Berlin/Math.hh>
+#include <Berlin/Provider.hh>
 #include <iostream>
 
-class RegionImpl : implements(Region)
+class RegionImpl : public virtual POA_Warsaw::Region,
+                   public virtual ServantBase
 {
+  friend class Provider<RegionImpl>;
 public:
   RegionImpl();
   RegionImpl(const RegionImpl &);
-  RegionImpl(Region_ptr);
-  RegionImpl(Region_ptr, Transform_ptr);
+  RegionImpl(Warsaw::Region_ptr);
+  RegionImpl(Warsaw::Region_ptr, Warsaw::Transform_ptr);
   virtual ~RegionImpl();
-
+  RegionImpl &operator = (const RegionImpl &);
   virtual CORBA::Boolean defined();
-  virtual CORBA::Boolean contains(const Vertex &);
-  virtual CORBA::Boolean containsPlane(const Vertex &, Axis a);
-  virtual CORBA::Boolean intersects(Region_ptr);
-  virtual void copy(Region_ptr);
-  virtual void mergeIntersect(Region_ptr);
-  virtual void mergeUnion(Region_ptr);
-  virtual void subtract(Region_ptr);
-  virtual void applyTransform(Transform_ptr);
-  virtual void bounds(Vertex &, Vertex &);
-  virtual void center(Vertex &);
-  virtual void origin(Vertex &);
-  virtual void span(Axis, Region::Allotment &);
-  virtual void outline(Path *&);
-public:
-  void normalize(Vertex &);
-  void normalize(TransformImpl *);
-  bool valid;
-  Vertex lower, upper;
-  Alignment xalign, yalign, zalign;
+  virtual CORBA::Boolean contains(const Warsaw::Vertex &);
+  virtual CORBA::Boolean contains_plane(const Warsaw::Vertex &, Warsaw::Axis a);
+  virtual CORBA::Boolean intersects(Warsaw::Region_ptr);
+  virtual void copy(Warsaw::Region_ptr);
+  virtual void merge_intersect(Warsaw::Region_ptr);
+  virtual void merge_union(Warsaw::Region_ptr);
+  virtual void subtract(Warsaw::Region_ptr);
+  virtual void apply_transform(Warsaw::Transform_ptr);
+  virtual void bounds(Warsaw::Vertex &, Warsaw::Vertex &);
+  virtual void center(Warsaw::Vertex &);
+  virtual void origin(Warsaw::Vertex &);
+  virtual void span(Warsaw::Axis, Warsaw::Region::Allotment &);
+  virtual void outline(Warsaw::Path_out);
 
-  static void mergeMin(Vertex &, const Vertex &);
-  static void mergeMax(Vertex &, const Vertex &);
-  static Coord spanAlign(Coord, Coord, Coord);
-  static Coord spanOrigin(Coord, Coord, Coord);
+  void clear();
+
+  Warsaw::Region_ptr _this ()
+  {
+    if (!_this_valid)
+      {
+	__this = POA_Warsaw::Region::_this();
+	_this_valid = true;
+      }
+    return Warsaw::Region::_duplicate (__this);
+  }
+
+public:
+  void normalize(Warsaw::Vertex &);
+  void normalize(Warsaw::Transform_ptr);
+  bool valid;
+  Warsaw::Vertex lower, upper;
+  Warsaw::Alignment xalign, yalign, zalign;
+
+  static void merge_min(Warsaw::Vertex &, const Warsaw::Vertex &);
+  static void merge_max(Warsaw::Vertex &, const Warsaw::Vertex &);
+  static Warsaw::Coord span_align(Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
+  static Warsaw::Coord span_origin(Warsaw::Coord, Warsaw::Coord, Warsaw::Coord);
+
+private:
+  bool _active : 1;
+  bool _this_valid;
+  Warsaw::Region_var __this;
 };
 
-inline Coord RegionImpl::spanOrigin(Coord lower, Coord upper, Coord align)
+inline Warsaw::Coord RegionImpl::span_origin(Warsaw::Coord lower, Warsaw::Coord upper, Warsaw::Coord align)
 {
-  Coord orig;
-  if (Math::equal(lower, upper, 1e-4)) orig = Coord(0.0);
+  Warsaw::Coord orig;
+  if (Math::equal(lower, upper, 1e-4)) orig = 0.;
   else orig = lower + align * (upper - lower);
   return orig;
 }
 
-inline Coord RegionImpl::spanAlign(Coord lower, Coord upper, Coord origin)
+inline Warsaw::Coord RegionImpl::span_align(Warsaw::Coord lower, Warsaw::Coord upper, Warsaw::Coord origin)
 {
-  Coord s;
-  if (Math::equal(lower, upper, 1e-4)) s = Coord(0.0);
-  else s = Coord((origin - lower) / (upper - lower));
+  Warsaw::Coord s;
+  if (Math::equal(lower, upper, 1e-4)) s = 0.;
+  else s = (origin - lower) / (upper - lower);
   return s;
 }
 
-inline void RegionImpl::mergeMin(Vertex &v0, const Vertex &v)
+inline void RegionImpl::merge_min(Warsaw::Vertex &v0, const Warsaw::Vertex &v)
 {
   v0.x = Math::min(v0.x, v.x);
   v0.y = Math::min(v0.y, v.y);
   v0.z = Math::min(v0.z, v.z);
 }
 
-inline void RegionImpl::mergeMax(Vertex &v0, const Vertex &v)
+inline void RegionImpl::merge_max(Warsaw::Vertex &v0, const Warsaw::Vertex &v)
 {
   v0.x = Math::max(v0.x, v.x);
   v0.y = Math::max(v0.y, v.y);
   v0.z = Math::max(v0.z, v.z);
 }
 
-inline void RegionImpl::normalize(Vertex &o)
+inline void RegionImpl::normalize(Warsaw::Vertex &o)
 {
-  o.x = spanOrigin(lower.x, upper.x, xalign);
-  o.y = spanOrigin(lower.y, upper.y, yalign);
-  o.z = spanOrigin(lower.z, upper.z, zalign);
+  o.x = span_origin(lower.x, upper.x, xalign);
+  o.y = span_origin(lower.y, upper.y, yalign);
+  o.z = span_origin(lower.z, upper.z, zalign);
   lower -= o;
   upper -= o;
 }
 
-inline void RegionImpl::normalize(TransformImpl *t)
+inline void RegionImpl::normalize(Warsaw::Transform_ptr t)
 {
-  Vertex o;
+  Warsaw::Vertex o;
   normalize(o);
-  t->translate(o);
+  if (!CORBA::is_nil(t)) t->translate(o);
 }
 
-inline ostream &operator << (ostream &os, const RegionImpl &region)
-{
-  return os << "[(" << region.lower.x << ',' << region.lower.y << ',' << region.lower.z << ')'
-	    << ",(" << region.upper.x << ',' << region.upper.y << ',' << region.upper.z << ")]";
-}
+std::ostream &operator << (std::ostream &, const RegionImpl &);
 
-#endif /* _RegionImpl_hh */
+#endif

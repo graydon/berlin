@@ -1,10 +1,8 @@
-#ifndef _GLFont_hh
-#define _GLFont_hh
-
-/*$Id: GLFont.hh,v 1.2 1999/05/20 04:53:57 gray Exp $
+/*$Id: GLFont.hh,v 1.7 2000/08/31 18:52:32 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,39 +20,32 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
+#ifndef _GLFont_hh
+#define _GLFont_hh
 
-/** this is a simple wrapper around stephane rehel's gltt library. Yay stephane! */
-
-#include "Warsaw/config.hh"
-#include "Warsaw/Style.hh"
-#include "Warsaw/Types.hh"
-#include "Warsaw/Text.hh"
+#include <Warsaw/config.hh>
+#include <Warsaw/Types.hh>
+#include <Warsaw/Graphic.hh>
+#include <Warsaw/DrawingKit.hh>
 #include <string>
 #include <GL/gl.h>
 
-class GLTTPixmapFont;
-class FTFace;
-
-class GLFont : 
-  implementsscoped(Text,BaseFont) 
+class GLFont
 {
- public:
-  GLFont(const Text::FontDescriptor &fd, const Style::Spec &sty) throw (Text::NoSuchFontException);
-  ~GLFont();
-  void acceptFontVisitor(Text::FontVisitor_ptr v);
-  void drawText(const Unistring &u, const Vertex &v);
-  void allocateText(const Unistring &u, Graphic::Requisition &r);
-  FeatureValueList *queryFeature(FeatureType ft);
-  void setFeature(FeatureType ft, FeatureValue fv);
-  
-  CORBA::Boolean  canDrawText(const Unistring &u);
-  void getDescriptor(Text::FontDescriptor &f);  
- protected:
-  const Text::FontDescriptor myDescriptor;
-  GLfloat myFontColor[4];
-  FTFace *face; 
-  GLTTPixmapFont *font;
-  
+public:
+  GLFont() {}
+  virtual ~GLFont() {}
+  virtual CORBA::ULong size() = 0;
+  virtual CORBA::ULong weight() = 0;
+  virtual Warsaw::Unistring *family() = 0;
+  virtual Warsaw::Unistring *subfamily() = 0;
+  virtual Warsaw::Unistring *fullname() = 0;
+  virtual Warsaw::Unistring *style() = 0;
+  virtual Warsaw::DrawingKit::FontMetrics metrics() = 0;
+  virtual Warsaw::DrawingKit::GlyphMetrics metrics(Warsaw::Unichar uc) = 0;
+
+  virtual void drawChar(Warsaw::Unichar) = 0;
+  virtual void allocateChar(Warsaw::Unichar, Warsaw::Graphic::Requisition &) = 0;
 };
 
 #endif

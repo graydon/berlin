@@ -1,0 +1,65 @@
+/*$Id: DesktopKit.idl,v 1.5 2000/09/19 21:11:01 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_DesktopKit_idl
+#define _Warsaw_DesktopKit_idl
+
+#include <Warsaw/Types.idl>
+#include <Warsaw/Kit.idl>
+
+module Warsaw
+{
+  interface Controller;
+  interface Window;
+  interface Desktop;
+  interface Command;
+  
+  /*
+   * entry point for Moscow :
+   * A DesktopKit defines the interface between client and server.
+   * All DesktopKit generated Graphics are top level objects, they
+   * should be used to wrap client sub graphs into.
+   * In this respect a DesktopKit plays the role of X's window manager 
+   * concept
+   * One day the DesktopKit should allow to define what communication
+   * protocols a client understands (via Trading Service ?)
+   *
+   *   -stefan
+   */
+  interface DesktopKit : Kit
+    {
+      /*
+       * all names subject to change
+       */
+      Desktop desk();
+      Window  shell(in Controller g);
+      Window  transient(in Controller g);
+      Window  pulldown(in Controller g);
+
+      Command move(in Window w);
+      Command resize(in Window w);
+      Command move_resize(in Window w, in Alignment x, in Alignment y, in short b);
+      Command relayer(in Window w);
+      Command map(in Window w, in boolean f);
+    };
+};
+
+#endif

@@ -1,7 +1,7 @@
-/*$Id: logbuf.cc,v 1.1 1999/05/25 18:29:00 gray Exp $
+/*$Id: logbuf.cc,v 1.3 2001/03/21 06:28:55 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -31,7 +31,7 @@ logbuf::int_type logbuf::sputc(logbuf::char_type c)
   if (pptr() == epptr()) return EOF;
   *pptr() = c;
   pbump(1);
-  if(wrapflag && pptr() == epptr())
+  if(pptr() == epptr())
     {
       setp(pbase(), epptr());
       wrapped = true;
@@ -39,14 +39,14 @@ logbuf::int_type logbuf::sputc(logbuf::char_type c)
   return static_cast<int_type>(c);
 }
 
-logbuf::int_type logbuf::xsputn(const logbuf::char_type *s, streamsize n)
+std::streamsize logbuf::xsputn(const logbuf::char_type *s, std::streamsize n)
 {
   if (pptr() == epptr()) return EOF;
-  streamsize length = epptr() - pptr();
+  std::streamsize length = epptr() - pptr();
   if (n <= length)
     {
       memcpy (pptr (), s, n * sizeof (char_type));
-      if (length == n && wrapflag)
+      if (length == n)
 	{
 	  setp(pbase(), epptr());
 	  wrapped = true;
@@ -57,30 +57,25 @@ logbuf::int_type logbuf::xsputn(const logbuf::char_type *s, streamsize n)
   else
     {
       memcpy (pptr (), s, length * sizeof (char_type));
-      if (wrapflag)
-	{
-	  setp(pbase(), epptr());
-	  wrapped = true;
-	  return length + xsputn(s + length, n - length);
-	}
-      else return EOF;
+      setp(pbase(), epptr());
+      wrapped = true;
+      return length + xsputn(s + length, n - length);
     }
-//   return length;
 }
 
-void logbuf::dump(ostream &os)
+void logbuf::dump(std::ostream &os)
 {
   os << "* logbuf::dump =\n";
   if (wrapped)
     for (char_type *i = pptr(); i != epptr(); i++)
       {
 	if (isprint(*i) || isspace(*i)) os.put(*i);
-	else os << hex << *i;
+	else os << std::hex << *i;
       }
   for (char_type *i = pbase(); i != pptr(); i++)
     {
       if (isprint(*i) || isspace(*i)) os.put(*i);
-      else os << hex << *i;
+      else os << std::hex << *i;
     }
-  os << "* end of logbuf::dump\n";
+  os << "* end of logbuf::dump" << std::endl;
 }

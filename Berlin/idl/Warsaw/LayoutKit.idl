@@ -1,0 +1,309 @@
+/*$Id: LayoutKit.idl,v 1.5 2000/09/19 21:11:02 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_LayoutKit_idl
+#define _Warsaw_LayoutKit_idl
+
+#include <Warsaw/Kit.idl>
+#include <Warsaw/Grid.idl>
+#include <Warsaw/Stage.idl>
+#include <Warsaw/Viewport.idl>
+
+module Warsaw
+{
+  //. LayoutKit provides operations for creating glyphs that
+  //. are useful in managing the arrangement of one or more glyphs.
+  //. Many of the LayoutKit objects are modelled after
+  //. Knuth's TeX document processing system.
+  interface LayoutKit : Kit
+    {
+      //. The "fill" attribute defines an "infinity" coordinate
+      //. for the purposes of specifying stretchability that
+      //. is large relative to other objects.
+      attribute Coord fill;
+      
+      //. A clipper confines the drawing of its child within its allocation
+      Graphic clipper(in Graphic g);
+      
+      //. A backdrop tiles its body to fill the visible region.
+      //   Graphic backdrop();
+      
+      //   AutoScroll create_auto_scroll(in Adjustment x_adjustment, in Adjustment y_adjustment);
+      
+      //. A viewport allows its child to be scrolled.
+      Layout::Viewport scrollable(in Graphic g);
+      
+      //. A stage allows its children to be placed at any position and
+      //. layering.
+      Layout::Stage create_stage();
+      
+      //. A fixed grid tiles its children into columns and rows and aligns
+      //. the children within each column and row.
+      Layout::Grid fixed_grid(in Layout::Grid::Index upper);
+      
+      //. A fixed range manages a subrange of a grid.
+      Graphic fixed_range(in Layout::Grid g, in Layout::Grid::Range r);
+      
+      //. An hbox tiles its children left-to-right along
+      //. the X axis and aligns their origins along the Y axis.
+      //. The natural, minimum, and maximum sizes along
+      //. the tiling axis are the sums of the child natural,
+      //. minimum, and maximum sizes, respectively.  The natural
+      //. size along the alignment axis is the maximum of the child
+      //. natural sizes.  The minimum size along the alignment
+      //. axis is the maximum of the child minimum sizes.
+      //. The maximum size along the alignment axis is the
+      //. minimum of the child maximum sizes.
+      //.
+      //. The X alignment of an hbox is the left side of the box.
+      //. The Y alignment of a vbox is the top side of the box.
+      Graphic hbox();
+      //. A vbox tiles its children top-to-bottom along the 
+      //. Y axis and aligns their origins along the X axis.
+      Graphic vbox();
+      
+      //. These operations are variations on hbox and vbox,
+      //. returning objects that only differ in their
+      //. alignment along the tiling axis.  Both
+      //. hbox_first_aligned and vbox_first_aligned
+      //. use the alignment of their first component
+      //. for their alignment along the tiling axis.
+      Graphic hbox_first_aligned();
+      Graphic vbox_first_aligned();
+      
+      //. These operations return an hbox and vbox that automatically
+      //. align thier children according to the given alignment. 
+      Graphic hbox_align_elements(in Alignment align);
+      Graphic vbox_align_elements(in Alignment align);
+      
+      //. An overlay aligns the origins of its children
+      //. along both the X and Y axis.  Overlays draw
+      //. their children first-to-last, guaranteeing that
+      //. the later graphics will appear "above" earlier graphics
+      //. with the same z-coordinate.
+      Graphic overlay();
+      
+      //. A deck is an aggregate that only shows one of its children
+      //. at a time.  The natural size of a deck is the maximum size
+      //. of the natural sizes of its children.  Regardless of
+      //. the flexibility of their children, decks are rigid.
+      Graphic deck();
+      
+      //. Return a graphic that draws the second parameter graphic
+      //. first, then draws the body specified by the first parameter.
+      //. Structural operations such as Graphic::append are delegated
+      //. to the body graphic.
+      Graphic back(in Graphic g, in Graphic under);
+      
+      //. Return a graphic that draws the body graphic first,
+      //. specified by the first parameter, and then
+      //. draws the second parameter graphic.
+      //. Structural operations such as Graphic::append are delegated
+      //. to the body graphic.
+      Graphic front(in Graphic g, in Graphic over);
+      
+      //. Return a graphic that draws the second parameter graphic first,
+      //. then the body graphic specified by the first parameter, and
+      //. then the third parameter graphic.
+      //. Structural operations such as Graphic::append are delegated
+      //. to the body graphic.
+      Graphic between(in Graphic g, in Graphic under, in Graphic over);
+      
+      //. Glue is the TeX term for flexible spacing between
+      //. other graphics.  LayoutKit provides a variety of operations
+      //. for creating glue objects.  The glue operation is
+      //. the most general, specifying the axis of flexibility,
+      //. the natural size, stretchability, shrinkability, and
+      //. alignment along that axis.  A glue object's requirement
+      //. along other axes is undefined.
+      Graphic glue(in Axis a, in Coord natural, in Coord stretch, in Coord shrink, in Alignment align);
+      
+      //. Return a glue object that uses the given requisition
+      //. as its desired size.
+      Graphic glue_requisition(in Graphic::Requisition r);
+      
+      //. Return different kinds of horizontal glue.  The hfill and
+      //. hglue_fill operations return glue that is infinitely
+      //. stretchable and not shrinkable; hfill has zero for its
+      //. natural size.  The hglue and hglue_aligned operations
+      //. return horizontal glue with the given sizes.  The hspace
+      //. operation returns rigid glue.
+      Graphic hfill();
+      Graphic hglue_fill(in Coord natural);
+      Graphic hglue(in Coord natural, in Coord stretch, in Coord shrink);
+      Graphic hglue_aligned(in Coord natural, in Coord stretch, in Coord shrink, in Alignment a);
+      Graphic hspace(in Coord natural);
+      
+      //. Return different kinds of vertical glue.  The vfill and
+      //. vglue_fill operations return glue that is infinitely
+      //. stretchable and not shrinkable; vfill has zero for its
+      //. natural size.  The vglue and vglue_aligned operations
+      //. return vertical glue with the given sizes.  The vspace
+      //. operation returns rigid glue.
+      Graphic vfill();
+      Graphic vglue_fill(in Coord natural);
+      Graphic vglue(in Coord natural, in Coord stretch, in Coord shrink);
+      Graphic vglue_aligned(in Coord natural, in Coord stretch, in Coord shrink, in Alignment a);
+      Graphic vspace(in Coord natural);
+      
+      //. Return a graphic that has the same desired size as
+      //. the given graphic or graphics, but does not perform
+      //. any drawing.  The shapeOf operation has the same
+      //. sizes as a given graphic along all axes, shapeOfXY
+      //. uses different graphics for the X and Y axis, and
+      //. shape_of_xyz also uses a different graphic for the Z axis
+      //. (shape_of_xy returns a graphic whose Z requirement
+      //. is undefined).
+      Graphic shape_of(in Graphic g);
+      Graphic shape_of_xy(in Graphic gx, in Graphic gy);
+      Graphic shape_of_xyz(in Graphic gx, in Graphic gy, in Graphic gz);
+      
+      //. These operations return a graphic that positions a given
+      //. graphic according to a given alignment. The align operation
+      //. returns a graphic aligned with given x and y alignments. The
+      //. align_axis operation returns a graphic aligned in one dimension.
+      //. The halign and valign operations return graphics aligned for
+      //. the horizontal and vertical axes, respectively.
+      Graphic align(in Graphic g, in Alignment x, in Alignment y);
+      Graphic align_axis(in Graphic g, in Axis a, in Alignment algn);
+      Graphic halign(in Graphic g, in Alignment x);
+      Graphic valign(in Graphic g, in Alignment y);
+      
+      //. These operations return a graphic that makes a given graphic
+      //. act rigid even if it is flexible.  Fixed graphics
+      //. are ideal for specifying sizes that are otherwise undefined,
+      //. such as the initial dimensions of a file chooser.
+      //. The fixed operation returns a graphic fixed with given
+      //. width and height natural sizes.  The fixedAxis operation
+      //. returns a graphic fixed in one dimension.  The
+      //. hfixed and vfixed operations return fixed graphics
+      //. for the horizontal and vertical axes, respectively.
+      Graphic fixed_size(in Graphic g, in Coord x, in Coord y);
+      Graphic fixed_axis(in Graphic g, in Axis a, in Coord size);
+      Graphic hfixed(in Graphic g, in Coord x);
+      Graphic vfixed(in Graphic g, in Coord y);
+      
+      //. These operations return a graphic that makes a given graphic
+      //. act flexible even if is rigid.  The flexible operation
+      //. returns a graphic with a given stretchability and
+      //. shrinkability along all axes.  The flexible_fill operation
+      //. is equivalent to calling flexible with fill stretchability and
+      //. zero shrinkability.  The hflexible and vflexible operations
+      //. return a graphic with a given flexibility in the X or Y axis,
+      //. respectively.
+      Graphic flexible(in Graphic g, in Coord stretch, in Coord shrink);
+      Graphic flexible_fill(in Graphic g);
+      Graphic flexible_axis(in Graphic g, in Axis a, in Coord stretch, in Coord shrink);
+      Graphic hflexible(in Graphic g, in Coord stretch, in Coord shrink);
+      Graphic vflexible(in Graphic g, in Coord stretch, in Coord shrink);
+      
+      //. These operations return a graphic that makes a given graphic
+      //. have a specified natural size instead of the graphic's
+      //. original natural size.  Natural graphics do not affect
+      //. the rigidity of the given graphic.  The natural operation
+      //. returns a graphic with a given natural width and height.
+      //. The natural_axis operation returns a graphic with a given
+      //. natural size along a given axis.  The hnatural and vnatural
+      //. operations return a graphic with the given natural size
+      //. along the X or Y axis, respectively.
+      Graphic natural(in Graphic g, in Coord x, in Coord y);
+      Graphic natural_axis(in Graphic g, in Axis a, in Coord size);
+      Graphic hnatural(in Graphic g, in Coord x);
+      Graphic vnatural(in Graphic g, in Coord y);
+      
+      //. These operations return a graphic that extends the
+      //. size of a graphic to leave room for a margin of a given size.
+      //. The margin operation returns a graphic with the same fixed size
+      //. for the left, right, bottom, and top margins.
+      //. The margin_lbrt operation returns a graphic with specified
+      //. fixed sizes for each margin.  The margin_lrbt_flexible
+      //. operation is the most general, returning a graphic
+      //. with independent sizes and flexibility for each margin.
+      Graphic margin(in Graphic g, in Coord all);
+      Graphic margin_lrbt(in Graphic g,
+			  in Coord lmargin, in Coord rmargin, in Coord bmargin, in Coord tmargin);
+      Graphic margin_flexible(in Graphic g,
+			      in Coord margn, in Coord stretch, in Coord shrink);
+      Graphic margin_lrbt_flexible(in Graphic g,
+				   in Coord lmargin, in Coord lstretch, in Coord lshrink,
+				   in Coord rmargin, in Coord rstretch, in Coord rshrink,
+				   in Coord bmargin, in Coord bstretch, in Coord bshrink,
+				   in Coord tmargin, in Coord tstretch, in Coord tshrink);
+      
+      //. These operations are short-hand for specifying
+      //. margin graphics with zero-size top and bottom margins.
+      //. The hmargin operation is equivalent to
+      //. "margin_lrbt(g, both, both, 0, 0)."  The hmargin_lr operation
+      //. is equivalent to "margin_lrbt(g, lmargin, rmargin, 0, 0)."
+      //. The hmargin_lr_flexible operation is equivalent to
+      //. "margin_lrbt_flexible(g, lmargin, lstretch, lshrink,
+      //. rmargin, rstretch, rshrink, 0, 0, 0, 0, 0, 0)."
+      Graphic hmargin(in Graphic g, in Coord both);
+      Graphic hmargin_lr(in Graphic g, in Coord lmargin, in Coord rmargin);
+      Graphic hmargin_lr_flexible(in Graphic g,
+			 	  in Coord lmargin, in Coord lstretch, in Coord lshrink,
+			 	  in Coord rmargin, in Coord rstretch, in Coord rshrink);
+      
+      //. These operations are short-hand for specifying
+      //. margin graphics with zero-size left and right margins.
+      //. The vmargin operation is equivalent to
+      //. "margin_lrbt(g, 0, 0, both, both)."  The vmargin_bt operation
+      //. is equivalent to "margin_lrbt(g, 0, 0, bmargin, tmargin)."
+      //. The vmargin_bt_flexible operation is equivalent to
+      //. "margin_lrbt_flexible(g, 0, 0, 0, 0, 0, 0,
+      //. bmargin, bstretch, bshrink, tmargin, tstretch, tshrink)."
+      Graphic vmargin(in Graphic g, in Coord both);
+      Graphic vmargin_bt(in Graphic g, in Coord bmargin, in Coord tmargin);
+      Graphic vmargin_bt_flexible(in Graphic g,
+			 	  in Coord bmargin, in Coord bstretch, in Coord bshrink,
+				  in Coord tmargin, in Coord tstretch, in Coord tshrink);
+      
+      //. These operations return a graphic with a left margin.
+      //. The lmargin operation is equivalent to
+      //. "hmargin(g, natural, 0)." The lmargin_flexible operation is
+      //. equivalent to "hmargin(g, natural, stretch, shrink, 0, 0, 0)."
+      Graphic lmargin(in Graphic g, in Coord nat);
+      Graphic lmargin_flexible(in Graphic g, in Coord nat, in Coord stretch, in Coord shrink);
+      
+      //. These operations return a graphic with a right margin.
+      //. The rmargin operation is equivalent to
+      //. "hmargin(g, 0, natural)." The rmarginFlexible operation is
+      //. equivalent to "hmargin(g, 0, 0, 0, natural, stretch, shrink)."
+      Graphic rmargin(in Graphic g, in Coord nat);
+      Graphic rmargin_flexible(in Graphic g, in Coord nat, in Coord stretch, in Coord shrink);
+      
+      //. These operations return a graphic with a bottom margin.
+      //. The bmargin operation is equivalent to
+      //. "vmargin(g, natural, 0)." The bmargin_flexible operation is
+      //. equivalent to "vmargin(g, natural, stretch, shrink, 0, 0, 0)."
+      Graphic bmargin(in Graphic g, in Coord nat);
+      Graphic bmargin_flexible(in Graphic g, in Coord nat, in Coord stretch, in Coord shrink);
+      
+      //. These operations return a graphic with a top margin.
+      //. The tmargin operation is equivalent to
+      //. "vmargin(g, 0, natural)." The tmargin_flexible operation is
+      //. equivalent to "vmargin(g, 0, 0, 0, natural, stretch, shrink)."
+      Graphic tmargin(in Graphic g, in Coord nat);
+      Graphic tmargin_flexible(in Graphic g, in Coord nat, in Coord stretch, in Coord shrink);
+    };
+};
+
+#endif

@@ -1,7 +1,7 @@
-/*$Id: FdSet.hh,v 1.2 1999/04/27 20:11:10 gray Exp $
+/*$Id: FdSet.hh,v 1.5 2001/01/15 02:49:18 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,18 +24,12 @@
 
 #include <sys/time.h>
 #include <sys/types.h>
-
-#if defined __sgi__
-#include <bstring.h>
-#endif
+#include <cstring> // some platforms seem to need this (solaris, bsd)
 
 namespace Prague
 {
 
-/* @Class{FdSet}
- *
- * @Description{a set of file descriptors such as used by @var{select()}}
- */
+//. FdSet is a helper class used when selecting available fds for non-blocking i/o
 class FdSet
 {
 public:
@@ -43,9 +37,13 @@ public:
   FdSet(const FdSet &F) : fds(F.fds), m(F.m) {}
   ~FdSet() {}
   FdSet &operator = (const FdSet &F) { fds = F.fds; m = F.m; return *this;}
+  //. add a fd to the set
   void set(int fd) { FD_SET(fd, &fds); if (fd > m) m = fd;}
+  //. return whether the given fd is available for non-blocking i/o
   bool isset(int fd) const { return FD_ISSET(fd, &fds);}
+  //. clear fd from the set
   void clear(int fd) { FD_CLR(fd, &fds); if (fd == m) for (int i = 0; i < fd - 1; i++) if (isset(fd)) m = fd;}
+  //. return max fd
   int max() const { return m;}
   operator fd_set *() { return &fds;}
 protected:
@@ -55,26 +53,4 @@ protected:
 
 };
 
-/* @Method{FdSet::FdSet()}
- * @Description{default constructor}
- */
-/* @Method{FdSet::FdSet(const FdSet &F)}
- * @Description{copy constructor}
- */
-/* @Method{FdSet::~FdSet()}
- * @Description{destructor}
- */
-/* @Method{void FdSet::set(int fd)}
- * @Description{set the entry for file descriptor @var{fd}}
- */
-/* @Method{void FdSet::clear(int fd)}
- * @Description{clear the entry for file descriptor @var{fd}}
- */
-/* @Method{bool FdSet::isset(int fd)}
- * @Description{check the entry for file descriptor @var{fd}}
- */
-/* @Method{void FdSet::max()}
- * @Description{maximal used file descriptor}
- */
-
-#endif /* _FdSet_h */
+#endif

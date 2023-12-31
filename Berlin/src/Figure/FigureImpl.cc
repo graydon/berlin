@@ -1,7 +1,7 @@
-/*$Id: FigureImpl.cc,v 1.6 1999/11/10 21:57:36 stefan Exp $
+/*$Id: FigureImpl.cc,v 1.19 2001/02/06 22:02:21 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -20,44 +20,47 @@
  * MA 02139, USA.
  */
 
+#include <Prague/Sys/Tracer.hh>
 #include <Warsaw/config.hh>
 #include <Warsaw/PickTraversal.hh>
 #include <Warsaw/DrawTraversal.hh>
 #include <Warsaw/DrawingKit.hh>
-#include <Warsaw/Pencil.hh>
+#include <Warsaw/IO.hh>
 #include <Berlin/Geometry.hh>
 #include <Berlin/TransformImpl.hh>
 #include <Berlin/RegionImpl.hh>
-#include <Berlin/ImplVar.hh>
 #include <Berlin/Color.hh>
 #include <Berlin/Vertex.hh>
-#include <Berlin/Logger.hh>
-#include <Figure/FigureImpl.hh>
+#include <Berlin/Provider.hh>
+#include "Figure/FigureImpl.hh"
 
 using namespace Geometry;
+using namespace Prague;
+using namespace Warsaw;
 
 TransformFigure::TransformFigure()
-  : tx(new TransformImpl),
-    ext(new RegionImpl)
+  : _mode(Figure::outline),
+    _tx(new TransformImpl),
+    _ext(new RegionImpl)
 {
-  fg.red = fg.green = fg.blue = 0., fg.alpha = 1.;
-  bg.red = bg.green = bg.blue = 0., bg.alpha = 1.;
+  _fg.red = _fg.green = _fg.blue = 0., _fg.alpha = 1.;
+  _bg.red = _bg.green = _bg.blue = 0., _bg.alpha = 1.;
 }
 
 TransformFigure::~TransformFigure() {}
-Transform_ptr TransformFigure::transformation() { return Transform::_duplicate(tx);}
-void TransformFigure::request(Requisition &r)
+Transform_ptr TransformFigure::transformation() { return _tx->_this();}
+void TransformFigure::request(Warsaw::Graphic::Requisition &r)
 {
-  SectionLog section("TransformFigure::request");
+  Trace trace("TransformFigure::request");
   Allocation::Info info;
-  Impl_var<RegionImpl> region(new RegionImpl);
-  extension(info, region);
+  Lease_var<RegionImpl> region(Provider<RegionImpl>::provide());
+  extension(info, Region_var(region->_this()));
   if (region->valid)
     {
       Coord x_lead = -region->lower.x, x_trail = region->upper.x;
       Coord y_lead = -region->lower.y, y_trail = region->upper.y;
-      GraphicImpl::requireLeadTrail(r.x, x_lead, x_lead, x_lead, x_trail, x_trail, x_trail);
-      GraphicImpl::requireLeadTrail(r.y, y_lead, y_lead, y_lead, y_trail, y_trail, y_trail);
+      GraphicImpl::require_lead_trail(r.x, x_lead, x_lead, x_lead, x_trail, x_trail, x_trail);
+      GraphicImpl::require_lead_trail(r.y, y_lead, y_lead, y_lead, y_trail, y_trail, y_trail);
       r.z.defined = false;
     }
   else
@@ -70,89 +73,91 @@ void TransformFigure::request(Requisition &r)
 
 void TransformFigure::extension(const Allocation::Info &info, Region_ptr region)
 {
-  SectionLog section("TransformFigure::extension");
-  if (ext->valid)
+  Trace trace("TransformFigure::extension");
+  if (_ext->valid)
     {
-      Impl_var<RegionImpl> tmp(new RegionImpl(ext));
+      Lease_var<RegionImpl> tmp(Provider<RegionImpl>::provide());
+      tmp->copy(Region_var(_ext->_this()));
       tmp->xalign = tmp->yalign = tmp->zalign = 0.;
-      Impl_var<TransformImpl> transformation(new TransformImpl);
+      Lease_var<TransformImpl> transformation(Provider<TransformImpl>::provide());
       if (!CORBA::is_nil(info.transformation)) transformation->copy(info.transformation);
-      transformation->premultiply(tx);
-      tmp->applyTransform(transformation);
-      region->mergeUnion(tmp);
+      transformation->premultiply(Transform_var(_tx->_this()));
+      tmp->apply_transform(Transform_var(transformation->_this()));
+      region->merge_union(Region_var(tmp->_this()));
     }
 }
 
 void TransformFigure::pick(PickTraversal_ptr traversal)
 {
-  if (ext->valid && traversal->intersectsRegion(ext))
+  if (_ext->valid && traversal->intersects_region(Region_var(_ext->_this())))
     traversal->hit();
 }
 
-void TransformFigure::needRedraw()
+void TransformFigure::need_redraw()
 {
-  SectionLog section("TransformFigure::needRedraw");
+  Trace trace("TransformFigure::need_redraw");
   Allocation::Info info;
-  Impl_var<RegionImpl> region(new RegionImpl);
-  extension(info, region);
-  needRedrawRegion(region);
+  Lease_var<RegionImpl> region(Provider<RegionImpl>::provide());
+  extension(info, Region_var(region->_this()));
+  need_redraw_region(Region_var(region->_this()));
 }
 
 void TransformFigure::resize() {}
 void TransformFigure::copy(const TransformFigure &tf)
 {
-  mode = tf.mode;
-  fg = tf.fg;
-  bg = tf.bg;
-  tx->copy(tf.tx);
-  if (tf.ext->valid) ext->copy(tf.ext);
+  _mode = tf._mode;
+  _fg = tf._fg;
+  _bg = tf._bg;
+  _tx->copy(Transform_var(tf._tx->_this()));
+  if (tf._ext->valid) _ext->copy(Region_var(tf._ext->_this()));
 }
 
-FigureImpl::FigureImpl() { path = new Figure::Vertices;}
+FigureImpl::FigureImpl() : _path(new Warsaw::Path()) {}
 FigureImpl::~FigureImpl() {}
 
-void FigureImpl::addPoint(Coord x, Coord y)
+void FigureImpl::add_point(Coord x, Coord y)
 {
-  if (path->length() == 0)
+  if (_path->length() == 0)
     {
-      ext->lower.x = x;
-      ext->upper.x = x;
-      ext->lower.y = y;
-      ext->upper.y = y;
-      ext->lower.z = Coord(0);
-      ext->upper.z = Coord(0);
-      ext->valid = true;
+      _ext->lower.x = x;
+      _ext->upper.x = x;
+      _ext->lower.y = y;
+      _ext->upper.y = y;
+      _ext->lower.z = Coord(0);
+      _ext->upper.z = Coord(0);
+      _ext->valid = true;
     }
   else
     {
-      ext->lower.x = Math::min(ext->lower.x, x);
-      ext->upper.x = Math::max(ext->upper.x, x);
-      ext->lower.y = Math::min(ext->lower.y, y);
-      ext->upper.y = Math::max(ext->upper.y, y);
+      _ext->lower.x = Math::min(_ext->lower.x, x);
+      _ext->upper.x = Math::max(_ext->upper.x, x);
+      _ext->lower.y = Math::min(_ext->lower.y, y);
+      _ext->upper.y = Math::max(_ext->upper.y, y);
     }
   Vertex v;
   v.x = x;
   v.y = y;
   v.z = 0.;
-  CORBA::ULong n = path->length();
-  path->length(n + 1);
-  path[n] = v;
+  CORBA::ULong n = _path->length();
+  _path->length(n + 1);
+  _path[n] = v;
 }
 
 void FigureImpl::extension(const Allocation::Info &info, Region_ptr region)
 {
-  SectionLog section("FigureImpl::extension");
-  if (path->length() > 0)
+  Trace trace("FigureImpl::extension");
+  if (_path->length() > 0)
     {
-      Impl_var<RegionImpl> tmp(new RegionImpl(ext));
+      Lease_var<RegionImpl> tmp(Provider<RegionImpl>::provide());
+      tmp->copy(Region_var(_ext->_this()));
       tmp->xalign = tmp->yalign = tmp->zalign = 0.;
-      Impl_var<TransformImpl> transformation(new TransformImpl);
-      if (!CORBA::is_nil(info.transformation)) transformation->copy(info.transformation);
-      transformation->premultiply(tx);
-      tmp->applyTransform(transformation);
-      if (mode &= Figure::stroke)
+      Lease_var<TransformImpl> transformation(Provider<TransformImpl>::provide());
+      transformation->copy(info.transformation);
+      transformation->premultiply(Transform_var(_tx->_this()));
+      tmp->apply_transform(Transform_var(transformation->_this()));
+      if (_mode & Figure::outline)
 	{
-	  Coord w = 1.;
+// 	  Coord w = 1.;
 // 	  if (is_not_nil(style_))
 // 	    {
 // 	      Brush_var b = style_->brush_attr();
@@ -163,49 +168,46 @@ void FigureImpl::extension(const Allocation::Info &info, Region_ptr region)
 // 		  if (!Math::equal(i->width, float(0), float(1e-2))) w = i->width;
 //                 }
 //             }
-	  tmp->lower.x -= w; tmp->upper.x += w;
-	  tmp->lower.y -= w; tmp->upper.y += w;
-	  tmp->lower.z -= w; tmp->upper.z += w;
+// 	  tmp->lower.x -= w; tmp->upper.x += w;
+// 	  tmp->lower.y -= w; tmp->upper.y += w;
+// 	  tmp->lower.z -= w; tmp->upper.z += w;
 	}
-      region->mergeUnion(tmp);
+      region->merge_union(Region_var(tmp->_this()));
     }
 }
 
 void FigureImpl::draw(DrawTraversal_ptr traversal)
 {
-  SectionLog section("FigureImpl::draw");
-  if (path->length() > 0)
+  Trace trace("FigureImpl::draw");
+  if (_path->length() > 0)
     {
       // bounding box culling, use extension(...) to add brush effect into extension.
       Allocation::Info info;
-      Impl_var<RegionImpl> region(new RegionImpl);
-      extension(info, region);
-      if (traversal->intersectsRegion(region))
+      Lease_var<RegionImpl> region(Provider<RegionImpl>::provide());
+      extension(info, Region_var(region->_this()));
+      if (traversal->intersects_region(Region_var(region->_this())))
 	{
-	  Style::Spec style;
-	  if (mode == (stroke | fill))
-	    {
-	      style.length(2);
-	      style[0].a = Style::linecolor, style[0].val <<= fg;
-	      style[1].a = Style::fillcolor, style[1].val <<= bg; 
-	    }
-	  else if (mode == stroke)
-	    {
-	      style.length(1);
-	      style[0].a = Style::linecolor, style[0].val <<= fg;
-	    }
-	  else
-	    {
-	      style.length(1);
-	      style[0].a = Style::fillcolor, style[0].val <<= fg; 
-	    }
-	  DrawingKit_var drawing = traversal->kit();
-	  Pencil_var pencil = drawing->getPencil(style);
-	  ::Path p;
-	  CORBA::ULong n = path->length();
-	  p.p.length(n);
-	  for (CORBA::ULong i = 0; i != n; i++) p.p[i] = path[i];
-	  pencil->drawPath(p);
+	  DrawingKit_var drawing = traversal->drawing();
+	  Color color = drawing->foreground();
+	  drawing->save();
+	  Transform_var tmp = drawing->transformation();
+	  Lease_var<TransformImpl> cumulative(Provider<TransformImpl>::provide());
+	  cumulative->copy(Transform_var(drawing->transformation()));
+	  cumulative->premultiply(Transform_var(_tx->_this()));
+	  drawing->transformation(Transform_var(cumulative->_this()));
+//  	  if (_mode & Figure::fill)
+//  	    {
+// 	      drawing->foreground(_bg);
+// 	      drawing->surface_fillstyle(DrawingKit::solid);
+// 	      drawing->draw_path(_path);
+// 	    }
+//  	  if (_mode & Figure::outline)
+// 	    {
+// 	      drawing->foreground(_fg);
+// 	      drawing->surface_fillstyle(DrawingKit::outlined);
+	  drawing->draw_path(_path);
+// 	}
+	  drawing->restore();
 	}
     }
 }
@@ -216,10 +218,12 @@ void FigureImpl::draw(DrawTraversal_ptr traversal)
 
 void FigureImpl::pick(PickTraversal_ptr traversal)
 {
-//   if (ext->defined)
-//     {
-//       if (traversal->intersectsRegion(ext))
-// 	{
+  TransformFigure::pick(traversal);
+  return;
+  if (_ext->valid)
+    {
+      if (traversal->intersects_region(Region_var(_ext->_this())))
+ 	{
 // 	  Vertex lower, upper, center;
 // 	  Region_var visible = p->visible();
 // 	  visible->bounds(lower, upper);
@@ -308,8 +312,9 @@ void FigureImpl::pick(PickTraversal_ptr traversal)
 //                 }
 //             }
 // 	  if (hit) t->hit();
-// 	}
-//     }
+ 	}
+      traversal->hit();
+    }
 }
 
 /*
@@ -318,19 +323,19 @@ void FigureImpl::pick(PickTraversal_ptr traversal)
 
 void FigureImpl::resize()
 {
-  ext->valid = false;
-  if (path->length() > 0)
+  _ext->valid = false;
+  if (_path->length() > 0)
     {
-      ext->valid = true;
-      ext->lower = path[0];
-      ext->upper = path[0];
-      CORBA::ULong n = path->length();
+      _ext->valid = true;
+      _ext->lower = _path[0];
+      _ext->upper = _path[0];
+      CORBA::ULong n = _path->length();
       for (CORBA::ULong i = 1; i < n; i++)
 	{
-	  ext->lower.x = Math::min(ext->lower.x, path[i].x);
-	  ext->upper.x = Math::max(ext->upper.x, path[i].x);
-	  ext->lower.y = Math::min(ext->lower.y, path[i].y);
-	  ext->upper.y = Math::max(ext->upper.y, path[i].y);
+	  _ext->lower.x = Math::min(_ext->lower.x, _path[i].x);
+	  _ext->upper.x = Math::max(_ext->upper.x, _path[i].x);
+	  _ext->lower.y = Math::min(_ext->lower.y, _path[i].y);
+	  _ext->upper.y = Math::max(_ext->upper.y, _path[i].y);
         }
 //       // in case of vertical/horizontal line with nil brush, 
 //       // painter->is_visible will be return false, so add 1
@@ -342,12 +347,12 @@ void FigureImpl::resize()
 
 void FigureImpl::reset()
 {
-  path = new Vertices;
-  ext->valid = false;
+  _path = new Warsaw::Path();
+  _ext->valid = false;
 }
 
-void FigureImpl::copy (const FigureImpl &f)
+void FigureImpl::copy(const FigureImpl &f)
 {
   TransformFigure::copy(f);
-  path = new Vertices(f.path);
+  _path = new Warsaw::Path(f._path);
 }

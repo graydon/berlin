@@ -1,0 +1,68 @@
+/*$Id: Grid.idl,v 1.5 2000/09/19 21:11:02 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Layout_Grid_idl
+#define _Layout_Grid_idl
+
+#include <Warsaw/Graphic.idl>
+
+module Layout
+{
+  //. A grid tiles its children into columns and rows and aligns
+  //. the children within each column and row.
+  interface Grid : Warsaw::Graphic
+    {
+      //. The Index structure identifies a single cell in a grid. A
+      //. nil index is defined to contain the values col = -1, row = -1.
+      struct Index
+      {
+	long col;
+	long row;
+      };
+      typedef sequence<Index> IndexSeq;
+      //. The Range structure defines a sub-range of the glyphs in a grid.
+      struct Range
+      {
+	Index lower;
+	Index upper;
+      };
+      //. Replace the graphic at the row and column position.  It is ok
+      //. to replace a graphic with nil, or to replace a nil with a graphic.
+      void replace(in Warsaw::Graphic g, in Grid::Index i);
+      //. Find the row and column position of the bottom-left most cell
+      //. that intersects the traversal painters visible region bounds.
+      //. If no cell is intersected find the closest edge cell.
+      Index find(in Warsaw::Traversal t);
+      //. Return the allocation of a cell.
+      void allocate_cell(in Warsaw::Region given, in Grid::Index i, in Warsaw::Region a);
+      //. These operations use a sub-range of the glyphs in the grid.
+      void request_range(out Warsaw::Graphic::Requisition r, in Range a);
+      void traverse_range(in Warsaw::Traversal t, in Range a);
+      Grid::Index find_range(in Warsaw::Traversal t, in Range a);
+      //. Return the lower-left corner of the range within the grid.
+      //. Note that a grid's offset expects the Allocation given to
+      //. childAllocate to be adjusted by the negated rangePosition. 
+      void range_position(in Warsaw::Region given, in Range a, out Warsaw::Vertex pos);
+      Index upper();
+    };
+};
+
+#endif

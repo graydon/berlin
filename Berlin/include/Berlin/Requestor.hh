@@ -1,13 +1,8 @@
-/*$Id: Requestor.hh,v 1.3 1999/05/31 19:46:27 gray Exp $
+/*$Id: Requestor.hh,v 1.6 2000/09/19 21:11:03 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on code from Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -32,13 +27,13 @@
 class Requestor : public MonoGraphic
 {
 public:
-  Requestor(Alignment xalign = .5, Alignment yalign = .5, Coord xspan = 1, Coord yspan = 1);
-  Requestor(const Graphic::Requisition &r);
+  Requestor(Warsaw::Alignment xalign = .5, Warsaw::Alignment yalign = .5, Warsaw::Coord xspan = 1, Warsaw::Coord yspan = 1);
+  Requestor(const Warsaw::Graphic::Requisition &);
   ~Requestor();
  
-  virtual void request(Requisition &);
+  virtual void request(Warsaw::Graphic::Requisition &);
 protected:
-  Graphic::Requisition requisition;
+  Warsaw::Graphic::Requisition _requisition;
 };
 
-#endif /* _Requestor_hh */
+#endif 

@@ -1,7 +1,7 @@
-/*$Id: User.cc,v 1.3 1999/11/16 22:02:48 stefan Exp $
+/*$Id: User.cc,v 1.5 2001/03/21 06:28:55 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -31,7 +31,7 @@ User::User(int uid)
   pwd = getpwuid(uid);
 };
 
-User::User(const string &name)
+User::User(const std::string &name)
 {
   pwd = getpwnam(name.c_str());
 };

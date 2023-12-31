@@ -1,7 +1,7 @@
-/*$Id: Data.cc,v 1.1 1999/09/27 17:53:10 gray Exp $
+/*$Id: Data.cc,v 1.2 2000/03/22 22:30:17 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -36,7 +36,7 @@ public:
   ~lostream() { mutex.unlock();}
   template <class T>
   lostream &operator << (const T &t) { cout << t; return *this;}
-  lostream & operator << (ostream & (func)(ostream &)) { func(cout); return *this;}
+  lostream &operator << (ostream & (func)(ostream &)) { func(cout); return *this;}
 private:
   static Mutex mutex;
 };
@@ -46,22 +46,18 @@ Mutex lostream::mutex;
 class Worker
 {
 public:
-  Worker() : thread(start, this)
-    {
-      thread.start();
-    }
+  Worker() : thread(&Worker::start, this) { thread.start();}
+  ~Worker() { thread.join(0);}
 private:
   static int counter;
   static Mutex mutex;
+  static Thread::Data<int> tsd;
   Thread thread;
-  static void *start(void *X)
+  static void *start(void *)
     {
-      Thread::Data<int> tsd;
-      {
-	mutex.lock();
- 	*tsd = counter++;
-	mutex.unlock();
-      }
+      mutex.lock();
+      tsd = counter++;
+      mutex.unlock();
       lostream() << "thread creates specific data: " << *tsd << endl;
       Thread::delay(Time(200));
       lostream() << "thread destroys specific data: " << *tsd << endl;
@@ -71,6 +67,7 @@ private:
 
 int   Worker::counter = 0;
 Mutex Worker::mutex;
+Thread::Data<int> Worker::tsd;
 
 int main(int argc, char **argv)
 {

@@ -1,7 +1,8 @@
-/*$Id: ServerContextImpl.hh,v 1.13 1999/11/20 12:08:52 aaronv Exp $
+/*$Id: ServerContextImpl.hh,v 1.20 2001/04/18 06:07:25 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org>
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,43 +23,40 @@
 #ifndef _ServerContextImpl_hh
 #define _ServerContextImpl_hh
 
-#include "Warsaw/config.hh"
-#include "Warsaw/ServerContext.hh"
-#include "Prague/Sys/Thread.hh"
-#include <vector>
-#include <string>
-#include <map>
+#include <Warsaw/config.hh>
+#include <Warsaw/Server.hh>
+#include <Berlin/KitImpl.hh>
+#include <Prague/Sys/Thread.hh>
+#include <multimap.h>
 
-class ServerContextManagerImpl;
+class ServerImpl;
 
-class ServerContextImpl : implements(ServerContext)
-// this is an encapsulated "entry point" which a client uses to manufacture
-// new objects, look up singletons, look up the scene root, etc.
+//. this is an encapsulated "entry point" which a client uses to manufacture
+//. new objects, look up singletons, look up the scene root, etc.
+class ServerContextImpl : public virtual POA_Warsaw::ServerContext,
+			  public virtual PortableServer::RefCountServantBase
 {
-  typedef vector<CORBA::Object_var> olist_t;
-
- public:  
-  ServerContextImpl(ServerContextManagerImpl *,
-                    CosLifeCycle::FactoryFinder_ptr,
-                    ClientContext_ptr);
-
-  ClientContext_ptr client();
-  CosLifeCycle::FactoryFinder_ptr factoryFinder();
-  CORBA::Object_ptr create(const char *)
-    throw (SecurityException, CreationFailureException);
-  void setSingleton(const char *, CORBA::Object_ptr) 
-    throw (SecurityException, SingletonFailureException);
-  void delSingleton(const char *) 
-    throw (SecurityException, SingletonFailureException);
-  CORBA::Object_ptr getSingleton(const char *) 
-    throw (SecurityException, SingletonFailureException);
+  typedef std::multimap<std::string, KitImpl *> klist_t;
+ public:
+  ServerContextImpl(ServerImpl *, Warsaw::ClientContext_ptr);
+  ~ServerContextImpl();
+  Warsaw::ClientContext_ptr client();
+  Warsaw::Kit_ptr resolve(const char *, const Warsaw::Kit::PropertySeq &)
+    throw (Warsaw::SecurityException, Warsaw::CreationFailureException);
+  void set_singleton(const char *, CORBA::Object_ptr) 
+    throw (Warsaw::SecurityException, Warsaw::SingletonFailureException);
+  void remove_singleton(const char *) 
+    throw (Warsaw::SecurityException, Warsaw::SingletonFailureException);
+  CORBA::Object_ptr get_singleton(const char *) 
+    throw (Warsaw::SecurityException, Warsaw::SingletonFailureException);
   bool ping();
- protected:
-  ServerContextManagerImpl *manager;
-  CosLifeCycle::FactoryFinder_var ffinder;
-  ClientContext_var cContext;
-  olist_t objects;
-  Prague::Mutex mutex;
+ private:
+  static unsigned long      _counter;
+  ServerImpl               *_server;
+  Warsaw::ClientContext_var _client;
+  klist_t                   _kits;
+  CORBA::PolicyList         _policies;
+  Prague::Mutex             _mutex;
 };
 
 #endif

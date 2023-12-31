@@ -1,9 +1,0 @@
-#ifndef __NOSUCHNODEEXCEPTION__    
-#define __NOSUCHNODEEXCEPTION__
-
-module DOM {
-exception NoSuchNodeException {};
-};
-
-
-#endif

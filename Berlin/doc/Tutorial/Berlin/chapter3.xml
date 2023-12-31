@@ -1,0 +1,139 @@
+<chapter><title>Memory Management</title>
+<para>
+	<!-- talk about memory management -->
+</para>
+<sect1><title>Servants, Proxies, and Objects</title>
+<para>
+	<!-- talk about the distinction between the three -->
+
+</para>
+<sect2><title>Proxy life cycle</title>
+<para>
+</para>
+</sect2>
+<sect2><title>Object life cycle</title>
+<para>
+</para>
+</sect2>
+<sect2><title>Servant lifecycle</title>
+<para>
+In the sake of scalability CORBA provides a variety of coupling strategies between objects and servants. While the fastest and easiest way is a one-to-one mapping between objects and servants, which lasts over the whole life time of both, in some contexts it might be better to let the server incarnate objects by servants on demand, and evict servants whenever it is short of memory. In the context of berlin, we use a one-to-one mapping, where objects are activated with newly created servants, and the servants life time is bound by the object.
+</para>
+</sect2>
+</sect1>
+<sect1><title>The problem of Ownership</title>
+<para>
+In a distributed environment we can no longer use explicit construction to create new instances. Instead, we rely on factory methods to create objects for us. That has two important consequences:
+<itemizedlist>
+<listitem><para>the exact object type isn't known</para></listitem>
+<listitem><para>the callee isn't necessarily the owner of the returned reference</para></listitem>
+</itemizedlist>
+Therefor, we need some other means to inform the system that we no longer need the reference we hold.
+</para>
+<sect2><title>Proxies</title>
+<!-- talk about _duplicate() and release() -->
+<para>
+</para>
+</sect2>
+<sect2><title>Servants</title>
+<para>
+ For reasons we discussed before, it is the POA which needs to delete the servant whenever the last pending request has been processed. All servants therefor need to be derived from <emphasis>PortableServer::RefCountBase</emphasis>. The counter is initialized to one, and incremented by one in the activation process, i.e. as soon as the servant is registered into the Active Object Map of the POA. Therefor, if the servant should be deleted upon deactivation, we must decrement the counter immediately after activation:
+</para>
+<example><title>servant lifecycle for servants derived from PortableServer::RefCountBase</title>	
+<programlistingco>
+<areaspec>
+<area id="constructor" coords="2">
+<area id="activation" coords="4">
+<area id="decrement" coords="5">
+<area id="deactivation" coords="9">
+</areaspec>
+<programlisting>
+{
+  MyServant *servant = new MyServant();
+  PortableServer::POA_var poa = ...;
+  PortableServer::ObjectId_var oid = poa->activate_object(servant);
+  servant->_remove_ref();
+
+  // do some work here
+
+  poa->deactivate_object(oid);
+  delete [] oid;
+}
+</programlisting>
+<calloutlist>
+<callout arearefs="constructor">
+<para>The constructor initializes the reference counter to 1</para>
+</callout>
+<callout arearefs="activation">
+<para>The POA inserts the servant into its Active Object Map, incrementing the counter by 1.</para>
+</callout>
+<callout arearefs="decrement">
+<para>With a decrement the counter is reset to 1</para>
+</callout>
+<callout arearefs="deactivation">
+<para>The deactivation removes the servant from the POA's AOM. As soon as the last pending request on this servant has been processed, the counter is decremented and the servant is deleted.</para>
+</callout>
+</calloutlist>
+</programlistingco>
+</example>
+</sect2>
+<sect2><title>Objects</title>
+<sect3><title>local temporary objects</title>
+
+<example><title>a local temporary object</title>	
+<programlisting>
+{
+  RegionImpl *region = new RegionImpl;
+  PortableServer::POA_var poa = ...;
+  PortableServer::ObjectId_var oid = poa->activate_object(region);
+  // do some work here
+
+  poa->deactivate_object(oid);
+  delete [] oid;
+}
+</programlisting>
+</example>
+<example><title>a local temporary object, using the Impl_var template</title>	
+<programlisting>
+{
+  Impl_var&lt;RegionImpl&gt; region(new RegionImpl);
+  // do some work here
+}
+</programlisting>
+</example>
+</sect3>
+<sect3><title>objects with a single owner</title>
+<example><title>a single owned object is created and destroyed</title>	
+<programlisting>
+{
+  Graphic::Iterator_var iterator = graphic->first_child();
+  // do some work here
+
+  iterator->destroy();
+}
+</programlisting>
+</example>
+</sect3>
+<sect3><title>objects with multiple owners</title>
+<example><title>a multiowned object is referenced temporarily</title>	
+<programlisting>
+{
+  Graphic_var child = graphic->body();
+  // do some work here
+
+  child->decrement();
+}
+</programlisting>
+</example>
+<example><title>a multiowned object is referenced temporarily using the RefCount_var template</title>	
+<programlisting>
+{
+  RefCount_var&lt;Graphic&gt; child = graphic->body();
+  // do some work here
+}
+</programlisting>
+</example>
+</sect3>
+</sect2>
+</sect1>
+</chapter>

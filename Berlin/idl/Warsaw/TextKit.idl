@@ -1,0 +1,56 @@
+/*$Id: TextKit.idl,v 1.6 2000/09/19 21:11:02 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_TextKit_idl
+#define _Warsaw_TextKit_idl
+
+#include <Warsaw/Kit.idl>
+#include <Warsaw/Graphic.idl>
+#include <Warsaw/Types.idl>
+
+module Warsaw
+{
+  interface TextBuffer;
+  interface StreamBuffer;
+  
+  //. TextKit produces text chunks (flyweights) as well as decorators which set the
+  //. current font state as a traversal passes through them.
+  interface TextKit : Kit
+    {
+      Graphic chunk(in Unistring u);    
+      Graphic glyph(in Unichar u);    
+      //. placeholder for an empty line
+      Graphic strut();
+      Graphic simple_viewer(in TextBuffer buf);
+      Graphic terminal(in StreamBuffer buf);
+      
+      Graphic size(in Graphic body, in unsigned long ems);
+      Graphic weight(in Graphic body, in unsigned long wt);
+      Graphic family(in Graphic body, in Unistring fam);
+      Graphic subfamily(in Graphic body, in Unistring fam);
+      Graphic fullname(in Graphic body, in Unistring name);
+      Graphic style(in Graphic body, in Unistring sty);
+      Graphic font_attribute(in Graphic body, in NVPair nvp);
+    };
+};
+
+#endif

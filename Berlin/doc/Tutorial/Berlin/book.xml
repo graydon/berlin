@@ -1,0 +1,43 @@
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.0//EN"
+                  "http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd"[
+
+<!-- these are chapter-entity declarations -->
+
+<!ENTITY hello         SYSTEM "hello.xml">
+<!ENTITY chapter1      SYSTEM "chapter1.xml">
+<!ENTITY chapter2      SYSTEM "chapter2.xml">
+<!ENTITY chapter3      SYSTEM "chapter3.xml">
+
+]>
+
+<!--                                                      -->
+<!-- this file is copyright (C) 2001 Stefan Seefeld       -->
+<!-- released under the GNU GPL v2.0+                     -->
+
+<book>
+  <bookinfo>
+  <title>The Berlin Tutorial</title>
+    <authorgroup>
+      <author><firstname>Stefan</firstname> <surname>Seefeld</surname></author>
+      <author><firstname>Graydon</firstname> <surname>Hoare</surname></author>
+      <!-- additional authors, please insert your names here -->
+    </authorgroup>
+    <copyright>
+      <year>1999, 2000, 2001</year>
+      <holder>the authors</holder>
+    </copyright>
+    <legalnotice>
+      <para>Released under the terms of the GNU General Public License, version 2.0 or greater.
+      This document has been prepared for printing and the web using XML &amp; DocBook. It is available
+      online at <ulink url="http://www.berlin-consortium.org">http://www.berlin-consortium.org</ulink>
+      in HTML and PDF. Comments, additions, and discussion are welcome, and best directed towards the 
+      mailing list.</para>
+    </legalnotice>
+  </bookinfo>
+
+&hello;
+<!-- &chapter1; -->
+<!-- &chapter2; -->
+<!-- &chapter3; -->
+
+</book>

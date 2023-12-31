@@ -1,0 +1,757 @@
+<chapter><title>ideas and principles</title>
+<para>
+	<!-- talk about ideas and principles -->
+</para><sect1><title>the scene graph</title>
+<para>
+	<!-- talk about the scene graph -->A central difference between the
+	berlin server and other display servers you might have encountered is
+	that berlin maintains a detailed, abstract graph of the current scene in
+	its own process memory. This means that, rather than asking client
+	applications to repaint every window whenever any change occurs, a lot
+	of the redrawing machinery is contained within the server. 
+</para><sect2><title>graph structure</title>
+<para>
+	<!-- talk about graph structure --> The scene graph abstractly resembles
+	a tree. That is, there are a number of nodes (called "Graphics"), which
+	are connected together in a transitive parent/child relation. The
+	meaning of this relation is a hybrid of a number of intuitively related
+	concepts.
+</para></sect2>
+
+<sect2><title>logical containment</title>
+<para>
+	<!-- talk about logical containment -->The basic idea of the
+	parent/child relation is that it expresses the logical
+	<emphasis>containment</emphasis> of the child witin the parent. This
+	means both that the child only occupies a subset of the space in the
+	scene that the parent occupies, and that the parent is in a way
+	"responsible" for the child. A parent sequences layout and drawing of
+	its children, and may play a "containing" role in memory management,
+	event distribution, etc.
+
+</para></sect2>
+<sect2><title>transformational containment</title>
+<para>
+	<!-- talk about transformational containment -->Since the scene graph is actually
+	stored in double-precision floating point values, and since any graphic
+	may be subject to arbitrary linear transformations within the scene, the
+	parent/child relationship between graphics naturally extends to
+	composition of linear transformations. That is, any child is assumed to
+	be subject not only to its own linear transformation, but also the
+	cumulative product of all its parents' transformations. This means, in
+	practise, that if you happen to scale, shear, invert or rotate a window,
+	all of its "contents" will scale, shear, invert or rotate along with
+	it. This behaviour can be overridden in cases where it is
+	undesirable, but it fits with one's physical intuitions so it is
+	included as part of the general semantics of the parent/child relation.
+</para></sect2>
+<sect2><title>sharing</title>
+<para>
+
+	<!-- talk about sharing -->There are instances in which it is desirable
+	to share children between multiple parents in the scene graph. This is
+	typically referred to as "flyweighting", and doing so means that the
+	scene graph is actually not stored structurally as a real tree; though
+	it frequently represents a tree and is only flyweighted to improve
+	efficiency. This is somewhat of an "under the hood" issue, but it is
+	central to our design and must be understood at least in passing in
+	order to understand the remaining secion, on the visitation pattern.
+
+</para><sect3><title>efficiency motivation</title>
+<para>
+	<!-- talk about efficiency motivation -->Storing a large number of
+	small objects can frequently cost too much, in terms of
+	memory. Particularly when given a relatively static object like an icon
+	or a textual glyph. However, we would like not to make special cases
+	since they complicate our code. So in order to improve efficiency,
+	especially in the very important case of text, we store only 1 copy of
+	each object and allow it to appear in multiple logical places in the
+	scene graph.
+</para></sect3>
+<sect3><title>trails</title>
+<para>
+	<!-- talk about trails -->While each graphic may occur in multiple
+	places, if we enforce the DAG (directed, acyclic graph) structure on our
+	scene, we can maintain a useful fact: that no matter how many paths
+	through the graph there actually are, it remains possible to construct a
+	true tree with exactly the same logical meaning / appearance. That is,
+	if there is a parent P with 1 child C connected along 2 distinct edges
+	to P, we could in principle construct the tree with the same parent P
+	having 2 children C1 and C2, each of which is just an identical copy of
+	C. This process can be repeated anywhere in the scene graph where there
+	are 2 different "trails" leading from the root of the graph to a given
+	child. While we do not explicitly construct this tree, it is easy now to
+	see that we can "imagine" ourselves to be traversing such a "flattened"
+	tree any time we traverse the scene graph, by simply maintaining a stack
+	of which edges was followed from the root of the graph to the current
+	graphic. 
+	</para>
+	  <para>In fact this is what our traversals do, so the fact of multiple
+	  parents for each child is largely hidden from the programmer. The only
+	  reason we mention the fact here is to reassure you that the
+	  multiple-parent condition is not a serious problem, and to explain why
+          traversals do all the things they do.
+</para></sect3>
+
+<sect3><title>externalization of state</title>
+<para>
+	<!-- talk about externalization of state -->In addition to understanding
+	the concept of a trail, it is important to realize that a graphic cannot
+	reliably store a copy of its cumulative transformation or layout
+	information, since it may be laid out at multiple places on the screen,
+	many of which may have different cumulative transformations. Thus is can
+	only store "relative" information about its layout requirements, and
+	have its true state computed on the fly. This is known as
+	"externalizing" its state; in berlin we attempt to externalize as much
+	state from each graphic as possible. Partly this is done to facilitate
+	the memory savings mentionned previously, but it also simplifies the task of
+	maintaining the proper values for layout and cumulative transformation,
+	which are highly dynamic to begin with. Since we compute them on the
+	fly, such values are never "out of sync" with one another.
+</para></sect3>
+</sect2>
+<sect2><title>traversal</title>
+<para>
+	<!-- talk about traversal -->The scene graph is subject to a few "bulk"
+	operations, such as delivering events and drawing. These operations are
+	encapsulated in stateful objects, called Traversals.
+
+</para><sect3><title>a generic algorithm</title>
+<para>
+	<!-- talk about a generic algorithm -->The traversal algorithm is a
+	generic "walk" over the scene graph. It may be either depth first or
+	breadth first at each node, and may apply one of a number of operations
+	to each node. The common feature of traversals is that they compute the
+	externalized state of each node as they visit, so that the node can
+	"read off" its state as it is traversed through.</para>
+</sect3>
+</sect2>
+
+<sect2><title>altering the screen</title>
+<para>
+	<!-- talk about altering the screen -->Obviously a static scene graph is
+	not interesting; the point of a windowing system is to allow users to
+	interact with the computer. We will defer discussion of exactly how a
+	user's events are transformed into application changes for the moment,
+	and focus on how changes to the scene graph are propagated to the
+	screen. The basic redrawing facility described here is invoked from
+	within any graphic node by calling
+	<function>this->needredraw()</function>, which calculates the graphic's
+	damaged region and requests redrawing from the draw thread.
+
+</para><sect3><title>allocation</title>
+<para>
+	<!-- talk about allocation -->A graphic may occur in any number of
+	places in the scene graph, so the first thing a graphic must do when
+	updating its appearance on the screen is to work out exactly
+	<emphasis>where</emphasis> it appears. The answer to this question is
+	not a single position -- rather it is a list of regions, each of which
+	represents a separate position on the screen where the graphic
+	appears. This list is called the <classname>Allocation</classname>s of a
+	graphic, and is of central importance to the redrawing system.
+	</para>
+	  <para>Calculating allocations is a recursive call, which "reaches up"
+	  each of its parents and their transformations. Each parent will
+	  compute the child's allocation by reaching up through each of its
+	  parents, etc. Eventually the roots of the graph are reached (yes
+	  roots: there can be more than 1 screen watching the same graph) and it
+	  will return regions of the screen. Though it sounds like there are
+	  many steps, it all happens in process, following pointers, so
+	  allocation computing is usually very quick. </para>
+</sect3>
+
+<sect3><title>damage</title>
+<para>
+	<!-- talk about damage -->In the case of
+	<function>needredraw()</function>, the graphic's allocations are all
+	merged together into a <classname>Region</classname> object which the
+	graphic constructs, called the "damage region". The
+	<classname>Allocation</classname> list contains a reference to a
+	<classname>Screen</classname> object, which the graphic will then insert
+	the damage region into. Doing so queues up a redraw which the drawing
+	thread will dispatch with a draw traversal.
+</para></sect3>
+<sect3><title>draw traversal </title>
+<para>
+	<!-- talk about draw traversal --><classname>DrawTraversal</classname>s
+	are objects which the drawing thread passes over the scene graph,
+	rendering objects which intersect the damage region. Each draw traversal
+	thus carries a damage region inside it, and tests the intersection of
+	each node as it passes by. If the node passes the intersection test, the
+	node will be traversed and be given access to the traversal's
+	<classname>DrawingKit</classname>, which subsequently can be used to
+	draw to the device in charge of the traversal.
+
+</para></sect3>
+
+<sect3><title>dynamic layout</title>
+<para>
+	<!-- talk about dynamic layout -->The technical details of the drawing
+	kit (lines, paths, paint, textures) are not deeply relevant at this
+	point; we defer discussion of them to a later chapter. However one thing
+	which is important to know is that layout (coordinates, size, alignment)
+	of graphics is, like their position and transformation, calculated
+	dynamically with each traversal. The details of the layout algorithm
+	are somewhat involved, so likewise they will be deferred. It suffices to
+	say that the abstraction of layout is suitable to local constraint-based
+	systems such as box-packing, typesetting concepts such as "springs" and
+	"glue", absolute positioning, and more.  </para></sect3>
+</sect2>
+
+
+</sect1>
+<sect1><title>The logical control graph - input event handling</title>
+<para>
+	<!-- talk about events -->Users interact with the scene graph by feeding
+	the display server with events, from a wide variety of physical input
+	devices. Unlike many GUIs, we take an extensible and "low impact"
+	approach to dispatching events to their respective destinations.
+
+</para><sect2><title>input devices and event types</title>
+<para>
+	<!-- Events from a device
+	are categorized (at the moment) by very simple type tags. we hope in the
+	future modify this to work with an event attribute trading service, such
+	that an application can deal with events strictly in terms of the type
+	of information they convey, rather than the fixed device type which
+	created them. -->
+
+	It is a difficult task to design a user interface which will work not 
+        only with all kind of existing input devices but also with devices even 
+        not yet conceived. For this reason, and because the concrete environment 
+        may be very different for two users, map physical devices and their input 
+        data to logical devices and sets of elementary data. Categorizing input data 
+        in terms of certain attributes (types) like 
+        <table frame="all" pgwide="1">
+          <title>device attributes</title>
+          <tgroup cols="2">
+            <thead>
+               <row>
+                 <entry>name</entry>
+                 <entry>type</entry>
+               </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>telltale</entry>
+                <entry>Bitset</entry>
+              </row>
+              <row>
+                <entry>key</entry>
+                <entry>Toggle</entry>
+              </row>
+              <row>
+                <entry>button</entry>
+                <entry>Toggle</entry>
+              </row>
+              <row>
+                <entry>positional</entry>
+                <entry>Position</entry>
+              </row>
+              <row>
+                <entry>valuation</entry>
+                <entry>Float</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        Each logical device now posesses any number of these attributes which are the only
+        means for berlin to describe them. For example mice and keyboards would be described as
+        <table frame="all" pgwide="1">
+          <title>logical devices</title>
+          <tgroup cols="4">
+            <colspec colnum="1" colname="c1"/>
+            <colspec colnum="4" colname="c4"/>
+            <spanspec spanname="keyboard" namest="c1" nameend="c4" align="center"/>
+            <spanspec spanname="mouse" namest="c1" nameend="c4" align="center"/>
+            <thead>
+               <row>
+                 <entry>device</entry>
+                 <entry>name</entry>
+                 <entry>type</entry>
+                 <entry>description</entry>
+               </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry spanname="keyboard" valign="bottom">Keyboard</entry>
+              </row>
+              <row>
+                <entry>0</entry>
+                <entry>key</entry>
+                <entry>Toggle</entry>
+                <entry>the keysym (as unicode ?) </entry>
+              </row>
+              <row>
+                <entry>0</entry>
+                <entry>telltale</entry>
+                <entry>Bitset</entry>
+                <entry>set of current modifiers</entry>
+              </row>
+               <row>
+                 <entry spanname="mouse" valign="bottom">Mouse</entry>
+               </row>
+              <row>
+                <entry>1</entry>
+                <entry>positional</entry>
+                <entry>Position</entry>
+                <entry>the current location</entry>
+              </row>
+              <row>
+                <entry>1</entry>
+                <entry>button</entry>
+                <entry>Toggle</entry>
+                <entry>the actuated button</entry>
+              </row>
+              <row>
+                <entry>1</entry>
+                <entry>telltale</entry>
+                <entry>Bitset</entry>
+                <entry>pressed buttons</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        Berlin's <classname>EventManager</classname> will use such a description to 
+        create Event types suitable to carry the data associated with each attribute.
+        An Event is therefor nothing but a list of device/attribute pairs where an attribute
+        has a discriminator (type) and a value. 
+        This composition based principle allows devices to be coupled as well. For example, 
+        traditionally mouse events trigger different commands dependant on whether modifier
+        keys are pressed. This can simply be achieved in synthesizing the appropriate events
+        with the following data:
+
+        <programlisting>
+        Input::Position position = ...;
+        Input::Toggle button = ...;
+        Input::Bitset keymodifiers = ...;
+        Input::Event event;
+        event.length(3);
+        event[0].device = 0;
+        event[0].attr.location(position);
+        event[1].device = 0;
+        event[1].attr.selection(button);
+        event[2].device = 1;
+        event[2].attr.state(keymodifiers);
+        ...
+        </programlisting>
+</para>
+</sect2>
+<sect2><title>controllers, focus and picking</title>
+<para>
+	<!-- talk about controllers, focus and picking -->In order for events to
+	have any effect on an application, they must be "dispatched" from the
+	event queue they originate in, and be "received" by some appropriate
+	object in the scene graph. Such objects are called
+	<classname>Controllers</classname>.
+
+</para><sect3><title>decorators which consume events</title>
+<para>
+	<!-- talk about decorators which consume events -->
+	<classname>Controllers</classname> are implemented in terms of invisible
+	"decorator" graphics. They are parents of the graphics which you
+	naturally assume to be receiving the events. So in the case of a button,
+	for instance, the "image" of a beveled rectangle with some label in it
+	is a <emphasis>child</emphasis> of the invisible controller which really
+	receives and processes mouse clicks. The button's bevel merely reflects
+	the state of the controller. This has the advantage that any graphic can
+	become an "active" recipient of events merely by being wrapped in a
+	suitable controller.
+
+</para></sect3>
+<sect3><title>focus</title>
+<para>
+	<!-- talk about the concept of focus -->the Controller receiving the
+	event is said to hold the focus for the device the event originated in.
+	There are two fundamentally different ways to change the focus for a given
+	device. Positional events are - unless a device grab is active - dispatched
+	to the top most controller intersecting with the event's position. The
+	determination of this controller is done with a pick traversal.
+	For non positional devices a controller can request the focus explicitly.
+
+</para></sect3>
+<sect3><title>logical control graph</title>
+<para>
+	<!-- talk about logical control graph -->If you step back from the scene
+	graph and just concentrate on the controllers, you will see that they
+	form a sort of "subgraph" within the scene. This is referred to as the
+	<emphasis>logical control graph</emphasis>, since it is the set of nodes
+	into which most applications will hook their logic. The necessary methods to
+        construct the control graph are:
+	<programlisting>
+	interface Controller
+	{
+          void append_controller(in Controller c);
+          void prepend_controller(in Controller c);
+          void remove_controller(in Controller c);
+          Iterator first_child_controller();
+          Iterator last_child_controller();
+	};
+	</programlisting>
+        Note that the control graph isn't necessarily isomorph to the scene graph though that's
+        we one would intuitively expect. Since the control graph defines (mostly) the traversal
+        order for the navigation of non positional focus, it is the desired behavior which should
+        ultimately drive the topology if this graph.
+
+</para></sect3>
+<sect3><title>picking</title>
+<para>
+	<!-- talk about picking -->For positional events the target controller
+	must be determined - at least if no device grab is active - by comparing
+	the event's position with the graphics screen real estate. This lookup
+	algorithm is called picking and is done by means of a <classname>PickTraversal</classname>
+        which gets passed through the scene graph. As it does this, it maintains a growing and 
+        shrinking stack of information representing the current state of the traversal. This stack 
+        represents a "trail" or "path" to the currently traversed graphic.
+        We need to create a "snapshot" of this trail at the hit graphic. This is done by calling
+	<emphasis>hit</emphasis> on the PickTraversal, resulting in a memento being created.
+        <figure id="scene-figure" float="1">
+          <title>scene</title>
+          <graphic fileref="figures/scene.jpg"></graphic>
+        </figure>
+        <figure id="scene-graph-figure" float="1">
+          <title>scene graph corresponding to the snapshot in ...</title>
+          <graphic fileref="figures/scene-graph.jpg"></graphic>
+        </figure>
+        Imagine the mouse to click on the red polygon. This will result in
+        the <classname>TransformFigure</classname>'s method <emphasis>pick</emphasis>
+        to be called which looks like
+
+        <programlisting>
+        void TransformFigure::pick(PickTraversal_ptr traversal)
+        {
+          if (ext->valid and and traversal->intersects_region(ext))
+            traversal->hit();
+        }
+        </programlisting>
+        The <classname> Traversal</classname>'s trail, in the moment the <emphasis>hit</emphasis> occurs,
+        contains the following entries:
+        <figure id="trail-figure" float="1">
+          <title>trail</title>
+          <graphic fileref="figures/trail.jpg"></graphic>
+        </figure>
+        For each position, the trail contains the following information:
+        <table frame="all" pgwide="1">
+          <title>stack information at each position in a traversal</title>
+          <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry>Graphic</entry>
+                <entry>the actual node in the scene graph</entry>
+              </row>
+              <row>
+                <entry>Tag</entry>
+                <entry>an identifier for the edge to the parent</entry>
+              </row>
+              <row>
+                <entry>Region</entry>
+                <entry>allocation, in local coordinates</entry>
+              </row>
+              <row>
+                <entry>Transform</entry>
+                <entry>the transfomration from global to local coordinate system</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+        Since after the traversal is over, the stack will be empty, the <classname>Picktraversal</classname>
+        needs to create a memento of itself, which can be used later on to deliver the event.
+        The controller stack, extracted out of the trail, is
+        <figure id="cstack-figure" float="1">
+          <title>controller/focus stack</title>
+          <graphic fileref="figures/cstack.jpg"></graphic>
+        </figure>
+        It is used to update the focus, i.e. to call (in appropriate order) all the controllers'
+        <emphasis>receiveFocus</emphasis> methods. From within this method, the controllers can manipulate
+        global data such as pointer images, context sensitive menus etc. In particular, a Controller may
+        want to install an <classname>Event::Filter</classname> through which the event has to be passed
+        before the top controller (the <classname>Editor</classname> in this case) can handle it.
+        <programlisting>
+        CORBA::Boolean ControllerImpl::receive_focus(Focus_ptr f)
+        {
+          set(Telltale::active);
+          f->set_pointer(myPointer);
+          return true;
+        }
+        </programlisting>
+        Finally, if all filters let the event through, the Editor's handle method will be called. It sees
+        the trail like
+        <figure id="gstack-figure" float="1">
+          <title>trail, the unaccessible graphics are grayed out</title>
+          <graphic fileref="figures/gstack.jpg"></graphic>
+        </figure>
+        A special iterator allows it to access the graphics which, inside the editor, were intersecting
+        with the device.
+</para></sect3>
+<sect3><title>navigating non positional devices</title>
+<para>
+	<!-- talk about focus navigation -->
+        <figure id="control-graph-figure" float="1">
+          <title>control graph</title>
+          <graphic fileref="figures/control-graph.jpg"></graphic>
+        </figure>
+	You can navigate the focus through this control graph via the following
+	methods:
+        <programlisting>
+        interface Controller
+        {
+          boolean request_focus(in Controller c, in Event::Device d);
+          boolean receive_focus(in Focus f);
+          void lose_focus(in Focus f);
+
+          boolean first_focus(in Event::Device d);
+          boolean last_focus(in Event::Device d);
+          boolean next_focus(in Event::Device d);
+          boolean prev_focus(in Event::Device d);
+        };
+        </programlisting>
+</para></sect3>
+<sect3><title>sumary</title>
+<para>
+	<!-- event dispatching sumary -->
+        <figure id="event-dispatching-figure" float="1">
+          <title>event and focus management</title>
+          <graphic fileref="figures/events.jpg"></graphic>
+        </figure>
+
+</para></sect3>
+</sect2>
+</sect1>
+<sect1><title>MVC</title>
+<para>
+	<!-- talk about MVC -->MVC is short for "Model, View, Controller", and
+	is a design technique frequently adopted by object-based programs to
+	assist in modularity, flexibility and reuse. As you can guess, it
+	involves separating the objects in a particular interaction sequence
+	into 3 categories, each of which supports a general-purpose interface
+	through which it is known to the other 2. </para>
+
+      <para>Many programs pay a certain quantity of lip service to MVC, but
+      Berlin adopts it as a central technique through all its systems,
+      internally as well as when communicating with applications in separate
+      processes. It is very important to understand how and why we use MVC.</para>
+
+<sect2><title>why separate?</title>
+<para>
+	<!-- talk about why separate? -->Separating a program into Model, View
+	and Controller has a number of important advantages over attacking all
+	three concepts at once. First and foremost, it provides a natural set of
+	encapsulation boundaries, which helps reduce program interdependencies
+	and interactions, and thus reduce bugs and enhance program
+	comprehension. Secondly, the separation encourages many-to-many
+	relationships along the component boundaries, which (as it turns out) is
+	implicit in many program requirements from the onset. For instance,
+	having a model separated from the controller makes it very easy to adapt
+	your model to simultaneous manipulation by multiple parties, such as
+	remote users or script engines, or by manipulation through previously
+	unknown event types. Likewise having separate view components makes it
+	easy to produce multiple views of the same model (for simultaneous
+	interaction through different representations) and to adapt to novel
+	representations. In our case, the MVC separation is also an ideal set of
+	boundaries along which to make a switch between programming languages or
+	process address spaces (as allowed by CORBA). We make it a common
+	practise to store some or all of a data model in a client application,
+	and most of the controller and model components in the display server
+	where they have high-bandwidth access to display and input
+	hardware. 
+</para></sect2>
+<sect2><title>application space vs. representation space</title>
+<para>
+	<!-- talk about application space vs. representation space -->The
+	aforementionned separation between process address spaces is, in
+	general, referred to as the client/server separation. In many windowing
+	systems, the client stores the majority of data structures, and the
+	display server stores the minimum data required to represent its drawing
+	state. In berlin, we have much more flexibility over storage locations,
+	for two reasons: the client/server communication protocol is generated
+	automatically by the CORBA stub compiler, so it is very easy to add
+	semantically rich concepts to its "vocabulary"; and the display server
+	has no special operating-system level privilidges, so can be much more
+	promiscuous about the sort of dynamic extensions it loads. The resulting
+	flexibility means that we can load most of the representation code of a
+	user interface metaphor into the display server, and just "attach"
+	application models, running in separate processes, to the UI at
+	appropriate places. This separation between "representation space" and
+	"application space" gives us concrete advantages: applications written
+	in simple scripting languages have access to powerful UI components,
+	accessibility mechanisms and user preferences (like "themes") have a
+	more universal effect on applications, network traffic is greatly
+	reduced, multiple representations can be attached to the same
+	application relatively painlessly, and application writers do not need
+	to know as much about the device they are drawing to.
+
+
+</para></sect2>
+<sect2><title>models in application space</title>
+<para>
+	<!-- talk about models in application space -->Models support a common
+	interface, which we have named <classname>Subject</classname> in order
+	to be familliar to Java programmers. It includes operations for adding
+	and removing <classname>Observers</classname> (such as
+	<classname>Views</classname>, as well as a common notification method
+	which a client (or the model itself) should call when observers should
+	be notified of a change to the model. In addition, most models subclass
+	the <classname>Subject</classname> interface a little, to provide
+	accessors for their concrete datatype.
+
+</para><sect3><title>a special case: Controllers</title>
+<para>
+	<!-- talk about the Controller and it's state -->A good example which helps
+        illustrating the purpose of the MVC paradigm is the separation of data and
+        presentation within the Controller. As we have seen in the previous chapter,
+        the controller's job is to process input events. In fact, it <emphasis>interprets
+        </emphasis>the event and maps it to (observable) state changes. Events as such
+        are considered a private means between the server and the Controller for notification.
+        Therefor, focus changes and event reception isn't visible for the outer world.
+        However, the Controller is tightly coupled to a model, which represents it's state.
+        In fact, this coupling is so tight that we chose to implement it within the same
+        object. It's a <classname>Telltale</classname> <emphasis>inside</emphasis> the controller 
+        which serves this purpose. A typical controller implementation will set appropriate flags
+        in this telltale which are observable.
+        In other words - you never ask the controller whether it has keyboard focus or whether
+        it holds a grab for a positional device. You ask whether it is <emphasis>active</emphasis>,
+        <emphasis>pressed</emphasis>, <emphasis>choosen</emphasis>, etc. For buttons for example
+        you typically use frames or highlights to reflect these state flags.
+        This decoupling has the advantage that you can customize the behavior - i.e. the mapping 
+        from events to these semantic flags - and therefor have greater freedom to adapt the interface 
+        to your own needs. Here are the predefined flags declared in the Telltale interface:
+        <table frame="all">
+          <title>predefined telltale flags</title>
+          <tgroup cols="2">
+            <tbody>
+              <row>
+                <entry>enabled</entry>
+                <entry>the controller is enabled if it can receive events</entry>
+              </row>
+              <row>
+                <entry>active</entry>
+                <entry>a button click or the Enter key would press it</entry>
+              </row>
+              <row>
+                <entry>pressed</entry>
+                <entry>controller is being pressed</entry>
+              </row>
+              <row>
+                <entry>chosen</entry>
+                <entry>a flag used in toggable widgets</entry>
+              </row>
+              <row>
+                <entry>running</entry>
+                <entry>indicates that an associated command is being executed</entry>
+              </row>
+              <row>
+                <entry>...</entry>
+                <entry>...</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+</para></sect3><sect3><title>concrete examples</title>
+<para>
+	<!-- talk about concrete examples -->Here we give some examples of
+	Models which berlin has pre-made interfaces for observing and
+	modifying. They should help convey the idea of Model, if it's not yet
+	clear.
+
+</para><sect4><title>bounded values</title>
+<para>
+	<!-- talk about bounded values -->A <classname>BoundedValue</classname>
+	is a double precision floating point value with some built-in named
+	incriments. The incriments are important, because it allows
+	general-purpose controllers to be constructed which "step through" the
+	numeric range without needing to care exactly how large the range is or
+	what the incriments of stepping are. When the value is changed, the
+	<classname>BoundedValue</classname> inspects the change to make sure it
+	represents an actual numeric difference (this step is important to avoid
+	notification loops) and then notifies all observers.
+
+</para></sect4>
+<sect4><title>telltales</title>
+<para>
+	<!-- talk about telltales --><classname>Telltales</classname> represent
+	sets of flags, each of which can be independently tested, set or
+	unset. The flags are named to correspond to common "switchable" states
+	that UI controls can assume, such as enabled, visible, active, chosen,
+	running, stepping, choosable, toggle. These names are chosen in order to
+	allow telltales to, amongst other things, be used to model the state of
+	a controller itself. 
+</para></sect4>
+
+<sect4><title>strings</title>
+<para>
+	<!-- talk about strings -->Strings, the most common example that we all
+	know and love, are slightly more complex in berlin since we use the
+	Unicode text encoding internally. Specifically, every time text is
+	changed in a modifiable string buffer, we must re-chunk the text into
+	indivisible units (not the same as characters), and then sequentially
+	process any unit which was changed by re-rendering it into glyphs. This
+	feature alone precludes making a 1:1 correspondence between the text
+	"model" and any view or control of it. 
+
+</para></sect4>
+</sect3>
+</sect2>
+<sect2><title>views in representation space</title>
+<para>
+
+	<!-- talk about views in representation space -->As discussed
+	previously, views of models (a.k.a. "representation space") reside
+	primarily though not exclusively in the display server process. While it
+	is possible to attach remote "view" nodes to the scene graph, 2 reasons
+	prevent this from occuring in the common case: CORBA itself is somewhat
+	slow when making a large number of inter-process calls, and doing so
+	would also eliminate any user preferences which might effect the view's
+	concrete appearance. Since part of our goal is to allow users to
+	centrally enforce their preferences across all UI elements, the second
+	issue is considered quite serious. It is recommended that you let the
+	server construct views for you in as many cases as possible.
+
+</para><sect3><title>concete examples</title>
+<para>
+	<!-- talk about concete examples -->Here we give some specific views of
+	abstract models. This will help set the concept of
+	<classname>View</classname>.</para>
+
+<sect4><title>radio boxes</title>
+<para>
+	<!-- talk about radio boxes -->Radio boxes are a specific view of a set
+	of mutually excluside telltales. Selecting one will unselect any
+	other. They are usually presented with a set of labelled, bevelled discs
+	or rectangles, possibly with checkmarks drawn on top of them. 
+
+</para></sect4>
+<sect4><title>sliders</title>
+<para>
+	<!-- talk about sliders -->Sliders are a specific view of a
+	<classname>BoundedValue</classname>. 
+
+</para></sect4>
+<sect4><title>text glyphs</title>
+<para>
+	<!-- talk about text glyphs -->
+</para></sect4>
+</sect3>
+</sect2>
+<sect2><title>controllers: bridging spaces</title>
+<para>
+	<!-- talk about controllers: bridging spaces -->
+</para><sect3><title>concrete examples</title>
+<para>
+	<!-- talk about concrete examples -->
+</para><sect4><title>incrimenting a value</title>
+<para>
+	<!-- talk about incrimenting a value -->
+</para></sect4>
+<sect4><title>editing a buffer</title>
+<para>
+	<!-- talk about editing a buffer -->
+</para></sect4>
+<sect4><title>executing a command </title>
+<para>
+	<!-- talk about executing a command  -->
+</para></sect4>
+</sect3>
+</sect2>
+</sect1>
+</chapter>

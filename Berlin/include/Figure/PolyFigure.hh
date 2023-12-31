@@ -1,7 +1,7 @@
-/*$Id: PolyFigure.hh,v 1.2 1999/10/13 21:32:31 gray Exp $
+/*$Id: PolyFigure.hh,v 1.7 2000/10/31 18:15:28 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,43 +24,44 @@
 
 #include <Warsaw/config.hh>
 #include <Warsaw/Figure.hh>
-#include <Berlin/PolyGraphic.hh>
 #include <Berlin/ImplVar.hh>
+#include <Berlin/PolyGraphic.hh>
 
 class TransformImpl;
 
-class PolyFigure : implements(Figure), public PolyGraphic
+class PolyFigure : public virtual POA_Figure::FigureBase,
+		   public PolyGraphic
 {
 public:
     PolyFigure();
     PolyFigure(const PolyFigure &);
     virtual ~PolyFigure();
 
-    virtual void request(Requisition &);
-    virtual void extension(const Allocation::Info &, Region_ptr);
-    virtual void traverse(Traversal_ptr);
-    virtual Transform_ptr transformation();
-    virtual void needRedraw();
-    virtual void needResize();
-    virtual void allocate(Tag, const Allocation::Info &);
+    virtual void request(Warsaw::Graphic::Requisition &);
+    virtual void extension(const Warsaw::Allocation::Info &, Warsaw::Region_ptr);
+    virtual void traverse(Warsaw::Traversal_ptr);
+    virtual Warsaw::Transform_ptr transformation();
+    virtual void need_redraw();
+    virtual void need_resize();
+    virtual void allocate(Warsaw::Tag, const Warsaw::Allocation::Info &);
 
     /*
      * shameless hack !!!: eventually these settings are dealt with
      *                     by styles so PolyFigures simply ignore it...
      *                     -stefan
      */
-    Mode type() { return 0;}
-    void type(Mode) {}
-    Color foreground() { return Color();}
-    void foreground(const Color &) {}
-    Color background() { return Color();}
-    void background(const Color &) {}
+    Figure::Mode type() { return 0;}
+    void type(Figure::Mode) {}
+    Warsaw::Color foreground() { return Warsaw::Color();}
+    void foreground(const Warsaw::Color &) {}
+    Warsaw::Color background() { return Warsaw::Color();}
+    void background(const Warsaw::Color &) {}
     virtual void resize() {}
 
 protected:
-    void updateBbox();
-    Impl_var<TransformImpl> tx;
-    Impl_var<RegionImpl> bbox;
+    void update_bbox();
+    Impl_var<TransformImpl> _tx;
+    Impl_var<RegionImpl>    _bbox;
 };
 
 class UPolyFigure : public PolyFigure
@@ -68,7 +69,7 @@ class UPolyFigure : public PolyFigure
 public:
   UPolyFigure() {}
   UPolyFigure(const UPolyFigure &);
-  virtual void traverse(Traversal_ptr);
+  virtual void traverse(Warsaw::Traversal_ptr);
 };
 
-#endif /* _PolyFigure_hh */
+#endif

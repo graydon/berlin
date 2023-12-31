@@ -1,11 +1,9 @@
-/*$Id: smtp.hh,v 1.2 1999/07/23 19:01:37 gray Exp $
+/*$Id: smtp.hh,v 1.5 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
- * http://www.berlin-consortium.org
- *
- * this file is based on code from the socket++ library
  * Copyright (C) 1992-1996 Gnanasekaran Swaminathan <gs4t@virginia.edu>
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,8 +21,8 @@
  * MA 02139, USA.
  */
 
-#ifndef _smtp_hh
-#define _smtp_hh
+#ifndef _Prague_smtp_hh
+#define _Prague_smtp_hh
 
 #include <Prague/Network/protocol.hh>
 
@@ -36,51 +34,46 @@ class smtp: public protocol
 public:
   class smtpbuf : public protocol::protocolbuf
   {
-    ostream*            o; // send all the responses to o
-    void                send_cmd (const char* cmd, const char* s = 0, const char* p = 0);
-    void                get_response ();
-    smtpbuf (smtpbuf&);
-    smtpbuf& operator = (smtpbuf&);
   public:
-    smtpbuf (ostream* out = 0) : protocol::protocolbuf (protocol::tcp), o (out) {}
-    void                send_buf (const char* buf, int buflen);
+    smtpbuf(std::ostream *os = 0) : protocol::protocolbuf (protocol::tcp), _os(os) {}
+    void                send_buf(const char *buf, int buflen);
 
-    void                helo ();
-    void                quit () { send_cmd ("QUIT"); }
-    void                turn () { send_cmd ("TURN"); }
-    void                rset () { send_cmd ("RSET"); }
-    void                noop () { send_cmd ("NOOP"); }
-    void                vrfy (const char* s) { send_cmd ("VRFY ", s); }
-    void                expn (const char* s) { send_cmd ("EXPN ", s); }
+    void                helo();
+    void                quit() { send_cmd("QUIT");}
+    void                turn() { send_cmd("TURN");}
+    void                rset() { send_cmd("RSET");}
+    void                noop() { send_cmd("NOOP");}
+    void                vrfy(const std::string &s) { send_cmd("VRFY ", s);}
+    void                expn(const std::string &s) { send_cmd("EXPN ", s);}
 
-    void                data () { send_cmd ("DATA"); }
-    void                data (const char* buf, int buflen);
-    void                data (const char* filename); // filename = 0 => stdin
+    void                data() { send_cmd("DATA");}
+    void                data(const char *buf, int buflen);
+    void                data(const std::string &filename); // filename = 0 => stdin
 
-    void                mail (const char* reverse_path);
-    void                rcpt (const char* forward_path);
-    void                help (const char* s = 0);
+    void                mail(const std::string &from);
+    void                rcpt(const std::string &to);
+    void                help(const std::string &s = "");
 
-    virtual void        serve_clients (int portno = -1);
-    virtual const char* rfc_name () const { return "smtp"; }
-    virtual const char* rfc_doc  () const { return "rfc821"; }
+    virtual void        serve_clients(int portno = -1);
+    virtual const char *rfc_name() const { return "smtp";}
+    virtual const char *rfc_doc() const { return "rfc821";}
+  private:
+    std::ostream       *_os; // send all the responses to os
+    void                send_cmd(const std::string &cmd, const std::string &s = "", const std::string &p = "");
+    void                get_response();
+    //     smtpbuf(smtpbuf &);
+    //     smtpbuf& operator = (smtpbuf &);
   };
-    
-protected:
-  smtp(): ios (0) {}
-
 public:
-  smtp (ostream* out): ios (0) { ios::init (new smtpbuf (out)); }
-  ~smtp () { delete ios::rdbuf (); ios::init (0); }
-
-  int      get_response (char* buf, int len);
-
-  smtpbuf* rdbuf ()       { return static_cast<smtpbuf *> (protocol::rdbuf ()); }
-  smtpbuf* operator -> () { return rdbuf (); }
+  smtp(std::ostream *out): protocol(new smtpbuf(out)) {}
+  ~smtp() { delete protocol::rdbuf(); init(0);}
+  int      get_response (char *buf, int len);
+  smtpbuf *rdbuf()       { return static_cast<smtpbuf *>(protocol::rdbuf());}
+  smtpbuf *operator ->() { return rdbuf();}
 };
 
 };
 
-extern ostream& operator << (ostream &o, const Prague::smtp &s);
+extern std::ostream &operator << (std::ostream &, Prague::smtp &);
 
-#endif /* _smtp_hh */
+#endif

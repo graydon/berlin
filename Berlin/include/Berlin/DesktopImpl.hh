@@ -1,7 +1,7 @@
-/*$Id: DesktopImpl.hh,v 1.2 1999/11/06 20:23:07 stefan Exp $
+/*$Id: DesktopImpl.hh,v 1.9 2000/12/21 21:05:43 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -25,33 +25,28 @@
 #include <Warsaw/config.hh>
 #include <Warsaw/Desktop.hh>
 #include <Berlin/ControllerImpl.hh>
+#include <Berlin/RefCountVar.hh>
 
 class WindowImpl;
 
-class DesktopImpl : implements(Desktop), public ControllerImpl
+class DesktopImpl : public virtual POA_Warsaw::Desktop,
+                    public ControllerImpl
 {
- public:
-  DesktopImpl();
+public:
+  DesktopImpl(Layout::Stage_ptr);
   virtual ~DesktopImpl();
-  virtual void body(Graphic_ptr) {}
-  virtual Graphic_ptr body() { return CORBA::is_nil(stage) ? Stage::_nil() : Stage::_duplicate(stage);}
-//   virtual void draw(DrawTraversal_ptr);
-
-  Region_ptr bbox() { return stage->bbox();}
-  long layers() { return stage->layers();}
-  StageHandle_ptr layer(Index l) { return stage->layer(l);}
-  void begin() { stage->begin();}
-  void end() { stage->end();}
-
-  StageHandle_ptr insert(Graphic_ptr g, const Vertex &p, const Vertex &s, Stage::Index l)
-    {
-      return stage->insert(g, p, s, l);
-    }
-  void remove(StageHandle_ptr h) { stage->remove(h);}
-
-  void init(Stage_ptr);
- private:
-  Stage_var stage;
+  virtual void body(Warsaw::Graphic_ptr);
+  virtual Warsaw::Graphic_ptr body();
+  virtual Warsaw::Region_ptr bbox();
+  virtual CORBA::Long layers();
+  virtual Layout::StageHandle_ptr layer(Layout::Stage::Index);
+  virtual void begin();
+  virtual void end();
+  virtual Layout::StageHandle_ptr insert(Warsaw::Graphic_ptr, const Warsaw::Vertex &, const Warsaw::Vertex &, Layout::Stage::Index);
+protected:
+  virtual void key_press(const Warsaw::Input::Event &); 
+private:
+  RefCount_var<Layout::Stage> _stage;
 };
 
-#endif /* _DesktopImpl_hh */
+#endif 

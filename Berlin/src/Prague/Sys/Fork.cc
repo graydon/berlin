@@ -1,7 +1,7 @@
-/*$Id: Fork.cc,v 1.2 1999/07/23 21:06:11 gray Exp $
+/*$Id: Fork.cc,v 1.7 2001/03/21 06:28:55 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * this file is based on code from the socket++ library
@@ -23,10 +23,12 @@
  * MA 02139, USA.
  */
 
+#include <Prague/config.hh>
 #include <Prague/Sys/Fork.hh>
 #include <sys/wait.h>
-#include <errno.h>
+#include <cerrno>
 #include <cstdio>
+#include <cstring> // for strsignal...
 
 using namespace Prague;
 
@@ -35,9 +37,9 @@ struct Fork::Process
   struct Cleaner { ~Cleaner ();};
   struct Reaper : Signal::Notifier { virtual void notify(int);};
   struct Suicide : Signal::Notifier { virtual void notify(int);};
-  friend Cleaner;
+  friend struct Cleaner;
   
-  static void infanticideReason(pid_t, int);
+  static void infanticide_reason(pid_t, int);
   static Cleaner  cleaner;
   static Reaper   reaper;
   static Suicide  suicide;
@@ -125,21 +127,18 @@ void Fork::Process::reap_child () const
 {
   int status;
   if (pid > 0 && waitpid (pid, &status, 0) == pid && reason)
-    infanticideReason (pid, status);
+    infanticide_reason (pid, status);
 }
 
-void Fork::Process::infanticideReason (pid_t pid, int status)
+void Fork::Process::infanticide_reason (pid_t pid, int status)
 {
   if (pid <= 0) return;
   if (WIFSTOPPED (status))
-    cerr << "process " << pid << " gets "
-	 << sys_siglist[WSTOPSIG (status)] << endl;
+    std::cerr << "process " << pid << " gets " << strsignal(WSTOPSIG (status)) << std::endl;
   else if (WIFEXITED (status))
-    cerr << "process " << pid << " exited with status "
-	 << WEXITSTATUS (status) << endl;
+    std::cerr << "process " << pid << " exited with status " << WEXITSTATUS (status) << std::endl;
   else if (WIFSIGNALED (status))
-    cerr << "process " << pid << " got "
-	 << sys_siglist[WTERMSIG (status)] << endl;
+    std::cerr << "process " << pid << " got " << strsignal(WTERMSIG (status)) << std::endl;
 }
 
 void Fork::Process::Reaper::notify(int signo)
@@ -158,7 +157,7 @@ void Fork::Process::Reaper::notify(int signo)
 	      cur->pid = -1;
 	      if (prev) prev->next = cur->next;
 	      else children = children->next;
-	      if (cur->reason) infanticideReason (wpid, status);
+	      if (cur->reason) infanticide_reason (wpid, status);
 	      delete cur;
 	      break;
 	    }
@@ -189,9 +188,8 @@ Fork::~Fork () { if (process->pid <= 0) delete process;}
 bool  Fork::child() const { return process->pid == 0;}
 bool  Fork::parent() const { return process->pid > 0;}
 pid_t Fork::pid() const { return process->pid;}
-void  Fork::suicideOnSignal (int signo)
-  // commit suicide at the signal signo
+void  Fork::suicide_on_signal (int signo)
 {
   if (!Signal::set(signo, &Process::suicide))
-    perror ("Fork: Cannot commit suicide with the specified signal");
+    std::perror ("Fork: Cannot commit suicide with the specified signal");
 }

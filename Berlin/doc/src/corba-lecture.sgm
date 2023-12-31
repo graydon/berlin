@@ -1,0 +1,271 @@
+<!-- This is the top entity for the berlin corba lecture. -->
+<!-- the driver file (driver.dsl) should be applied       -->
+<!-- to this document. it will then generate the          -->
+<!-- whole book from the following declarations           -->
+<!--                                                      -->
+<!-- this file is copyright (C) 1999 Graydon Hoare        -->
+<!-- released under the GNU GPL v2.0+                     -->
+
+<!doctype Book system "../dtds/berlin.dtd" []>
+
+<book id="corba-lecture">
+  <title>The Berlin Corba Lecture</title>
+  <bookinfo>
+
+    <authorgroup>
+      <author>
+        <firstname>Graydon</firstname> <surname>Hoare</surname>
+      </author>
+        <!-- additional authors, please insert your names here -->
+    </authorgroup>
+
+    <copyright>
+      <year>1999, 2000</year>
+      <holder>the authors</holder>
+    </copyright>
+    <legalnotice>
+      <para>
+      Released under the terms of the GNU General Public License,
+      version 2.0 or greater. This document has been prepared for printing
+    and the web using SGML &amp; DocBook. It is available online
+    at <ulink url="http://www.berlin-consortium.org">http://www.berlin-consortium.org</ulink>
+ in HTML and PDF.  Comments, additions,
+    and discussion are welcome, and best directed towards the mailing
+    list.</para>
+    </legalnotice>
+
+    <abstract>
+      <!-- one of (formalpara para simpara) --> <para>This lecture should get
+      you aquainted with the concepts of CORBA, and of OO distributed computing
+      in general </para>
+    </abstract>
+
+  </bookinfo>
+
+<chapter id="objects-proxies-and-adaptors"><title>objects, proxies and adaptors</title>
+<para>
+In order to understand CORBA, you must first understand 3 general concepts:
+how objects work, what proxies are, and what adaptors are. You probably already know
+some if not all of this stuff, but it's a quick read to make sure you're using the
+same terms for things that we're using, and there's some pretty pictures too.
+</para>
+
+<sect1 id="oo-language-rep"><title>how do OO languages represent objects?</title>
+<para>
+An OO language like C++ or Java represents an object as a structure containing
+all of the instance variables of the object. When you think you have an object,
+you generally have either a pointer to such a structure, or in C++ you might
+have a literal instance of such a structure (stack allocated). In addition to
+its fields, the structure contains a pointer to a table of methods, each of
+which (when invoked) takes an "invisible" first parameter, which is a pointer to
+the structure once again. This permits the "method" to modify the structure
+through the implicit <varname>this</varname> variable, which always refers to
+the object through which the method was invoked. See the following diagram for a
+visualization of the structure of a simple chicken object.
+        <figure id="object-structure" float="1">
+          <title>a chicken object</title>
+          <graphic scale="&graphscale;" fileref="../figures/object-structure"></graphic>
+        </figure>
+</para>
+</sect1>
+
+<sect1 id="what-is-a-proxy"><title>why does this matter?</title>
+<para>
+This representation matters because it's important to realize that any client of
+an object (some other object which invokes the object's methods) does so by
+<emphasis>calling through a pointer</emphasis> to the appropriate method. It is
+this functionality which permits subclasses to override superclasses, by
+changing the method pointers in the method table of the object. Read that last
+bit again if it remains at all mysterious, because it isn't. There is simply a
+pointer to a method, which can perform any actions it likes on the structure
+which is passed in as the <varname>this</varname> variable. There is nothing
+whatsoever magical about an object's methods, and nothing forcing the methods to
+do what they say they do. 
+</para>
+
+<para>
+Of particular intrest to us is the concept of <emphasis>proxying</emphasis>. A
+proxy is an object which delegates <emphasis>all</emphasis> of its methods to
+methods on another object. Consider for example our chicken object. Suppose a
+legitimate chicken was sitting in a hen house and wanted to go outside to peck
+at the ground some. In a normal world, this would be a problem because the
+chicken would be vulnerable to being eaten by a fox. If, however, the chicken
+makes a <emphasis>proxy</emphasis> for itself, and sends the proxy outside in
+its place, then for all intents and purposes the chicken is outside (you can ask
+the proxy its size, and it will forward the call to the real chicken) but if
+some fox happens to eat the proxy, it's no big concern to the real
+chicken. Proxies are doppelgangers for real objects.
+        <figure id="proxy-motivation" float="1">
+          <title>a chicken proxy</title>
+          <graphic scale="&graphscale;" fileref="../figures/proxy-motivation"></graphic>
+        </figure>
+</para>
+</sect1>
+
+<sect1 id="what-are-proxies-good-for"><title>I'm not a chicken, so why does this matter?</title>
+<para>
+
+Fine, so you don't want to avoid being eaten by a fox. In the real world
+building an object with the same signature as some other object and forwarding
+all its method calls (i.e. proxying) has a lot of really useful applications.
+
+</para>
+
+      <simplelist>
+	<member>Debugging all the calls going to the proxied object</member>
+	<member>Implementing garbage collection systems</member>
+	<member>Operating an object written in another language</member>
+	<member>Operating an object located in another address space</member>
+	<member>Operating an object located on a remote machine</member>
+	<member>Operating an object which has a different linking format</member>
+      </simplelist>
+
+
+<para>
+It is primarily the last 4 concepts which we will be focusing on. Operating
+objects which would otherwise be deemed as "un-operatable" since they reside
+outside a process's conventional calling and linking facilities is generally
+referred to as "interoperability", and is the concept which interoperability
+standards such as CORBA and DCOM are concerned with. Using proxies this way, programs can
+invoke methods on one another even if they are in radically different environments, such
+as illustrated below:
+
+        <figure id="proxy-software-motivation" float="1">
+          <title>WARNING: ILLUSTRATION ONLY. DO NOT ATTEMPT THIS IN REALITY.</title>
+          <graphic scale="&graphscale;" fileref="../figures/proxy-software-motivation"></graphic>
+        </figure>
+
+In order to get to that, however, we will first need to take a small sidetrack
+into the concept of adaptors.
+</para>
+</sect1>
+
+<sect1 id="what-is-an-adaptor"><title>adapting to life in the modern world</title>
+<para>
+Say you're travelling overseas and you want to operate your laptop. It's 2155,
+the world is completely modern and wired to the teeth, yet despite everyone's
+best intentions, your laptop comes from a country with telecom connectors that
+look like type A in the diagram below, and you're stuck in a hotel which only
+has connectors of type B:
+
+        <figure id="adaptor-motivation" float="1">
+          <title>we have all been here</title>
+          <graphic scale="&graphscale;" fileref="../figures/adaptor-motivation"></graphic>
+        </figure>
+<para>
+
+<para>
+It hurts. It's awful. You gnash your teeth wondering why, after so many
+centuries of progress by the world's best and brightest, this problem still
+plagues us. After the sheer offensiveness of the situation wears off, your heart
+sinks another notch, because you know there's 1 and only 1 solution to this. It
+does not involve your country invading this country and convincing them all to
+use the right sockets. It does not involve the ISO. It does not involve
+retrofitting the millions of deployed devices all over this country which use
+this rediculous connector. The solution lies down the street at the electronics
+shop, where they sell adaptors.
+
+        <figure id="adaptor-solution" float="1">
+          <title>sometimes glue is the only solution</title>
+          <graphic scale="&graphscale;" fileref="../figures/adaptor-solution"></graphic>
+        </figure>
+</para>
+</sect1>
+
+<sect1 id="software-adaptors"><title>reach out and touch some object</title>
+<para>
+Luckily, if you write free software for a living, you don't usually have to pay
+for the adaptors, you can just make them. They're relatively cheap, they're
+reuseable, and frequently one simple adaptor can serve to make 2 enormous sets
+of data or program talk to one another. For instance, if you were willing to
+descend into the depths of madness for a few weeks to get it working, you could
+write a pair of adaptors which let C++ programs "connect" to perl programs, and
+vice versa. Once you have the "connector", you can present proxies to C++
+objects inside a perl program, and proxies to perl objects inside a C++ program,
+and everyone's happy. The C++ program thinks its operating a normal C++ object
+when in fact its calls are being forwarded by the proxy, through the adaptor
+and into the perl process. Likewise for the perl object. Nobody needs to know
+about the little act of perversion you've cooked up with these pseudo-objects.
+
+        <figure id="simple-adaptor" float="1">
+          <title>a "simple" set of adaptors and proxies you'd probably rather not make</title>
+          <graphic scale="&graphscale;" fileref="../figures/simple-adaptor"></graphic>
+        </figure>
+</para>
+</sect1>
+
+<sect1 id="adaptor-interconnect"><title>software adaptor bonanza</title>
+<para>
+Once you get started writing adaptors though, you'll notice a problem which
+arises: you have N different things and you want to connect all of them to one
+another. This means writing (N-1)^2 adaptors, which really doesn't sound very
+cool if N is particularly large:
+
+        <figure id="too-many-adaptors" float="1">
+          <title>adaptors adaptors adaptors!</title>
+          <graphic scale="&graphscale;" fileref="../figures/too-many-adaptors"></graphic>
+        </figure>
+
+And, if you've ever seen this sort of problem before, you'll rapidly come to the
+same solution everyone else has: make a common interconnect point which you can
+individually adapt each of the adapted parties to, then just make 2N adaptors
+(one for each direction between each party and the common interconnect).
+
+        <figure id="fewer-adaptors" float="1">
+          <title>still bleak, but much better</title>
+          <graphic scale="&graphscale;" fileref="../figures/fewer-adaptors"></graphic>
+        </figure>
+</para>
+</sect1>
+</chapter>
+
+<chapter id="corba-chapter"><title>fine, but what about CORBA?</title>
+<para>
+Assuming you've read the last chapter, and you absolutely understand what a
+proxy object is, what an adaptor is, why they exist, and why you would want to
+use a common interconnect to save you making millions of adaptors between
+different software components (go read it if you do not); we now present an
+overview of CORBA and enough of the specifics that you should at least be able
+to understand the documentation which comes with your CORBA implementation.
+</para>
+
+<sect1 id="short-corba-summary"><title>CORBA in under 25 words</title>
+
+<important>
+<para>
+CORBA is a common interconnect and a standardized way of generating proxies and
+adaptors, which use the interconnect, from a common interface description
+language.
+</para></important>
+<para>
+<para>
+Here's a picture to help flesh out those words in your mind. Look it over and
+make sure you understand at least what each of the boxes is. The pattern which
+is occuring in each box is basically the same: the CORBA library (also called an
+ORB) serves both as an interconnect for communicating with other ORBs, as well
+as adapting incoming calls to the host language's objects
+<emphasis>and</emphasis> accepting calls from proxies within the host proces. In
+short, it is a "software bus" which you can plug any language, any process, and
+any computer into and eventually (with a little work) convince them to talk to
+one another.
+
+        <figure id="corba-overview" float="1">
+          <title>the general idea of CORBA</title>
+          <graphic scale="&graphscale;" fileref="../figures/corba-overview"></graphic>
+        </figure>
+</para>
+</sect1>
+
+    <sect1 id="corba-details">
+      <title>is the picture really so simple?</title>
+      <para>No. The full CORBA picture is actually really large and covers a lot of material. We don't
+have space to cover all of it in detail here (besides which many people have written a lot about it already)
+but we can cover some of the things you do need to know.
+</para>
+      
+    </sect1>
+
+</chapter>
+
+
+</book>

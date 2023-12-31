@@ -1,7 +1,7 @@
-/*$Id: Math.hh,v 1.2 1999/04/16 16:32:04 gray Exp $
+/*$Id: Math.hh,v 1.4 2000/06/05 20:32:47 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -23,6 +23,7 @@
 #define _Math_hh
 
 #include <algorithm>
+#include <cstdlib>
 #include <cmath>
 
 class Math
@@ -38,7 +39,7 @@ public:
   static float abs(float a) { return fabs(a);}
   static double abs(double a) { return fabs(a);}
   static int abs(int a) { return abs(a);}
-  static long abs(long a) { return abs(a);}
+  static long abs(long a) { return labs(a);}
 
   template <class T> static int round(T a) { return a > 0 ? static_cast<int>(a + 0.5) : - static_cast<int>(-a + 0.5);}
 

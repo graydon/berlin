@@ -1,7 +1,7 @@
-/*$Id: Time.hh,v 1.4 1999/05/25 18:28:58 gray Exp $
+/*$Id: Time.hh,v 1.7 2001/03/21 06:28:22 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,8 +19,8 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _Time_hh
-#define _Time_hh
+#ifndef _Prague_Time_hh
+#define _Prague_Time_hh
 
 #include <sys/time.h>
 #include <ctime>
@@ -29,10 +29,6 @@
 namespace Prague
 {
 
-/* @Class{Time : public timeval}
- *
- * @Description{}
- */
 class Time : public timeval
 {
 public:
@@ -59,16 +55,12 @@ public:
   operator double () const { return static_cast<double>(tv_sec) + static_cast<double>(tv_usec)/1000000.;}
   operator const char *() const { return ctime(&tv_sec);}
   static Time currentTime();
-  friend ostream &operator << (ostream &os, const Time &T) { return os << T.tv_sec << " s, " << T.tv_usec << " us";}
+  friend std::ostream &operator << (std::ostream &os, const Time &T) { return os << T.tv_sec << " s, " << T.tv_usec << " us";}
 protected:
   inline void normalize();
 private:
 };
 
-/* @Method{void Time::normalize()}
- *
- * @Description{}
- */
 inline void Time::normalize()
 {
   while (tv_usec >=  1000000) tv_usec -= 1000000, tv_sec++;
@@ -79,6 +71,6 @@ inline void Time::normalize()
     }
 }
 
-};
+}
 
-#endif /* _Time_hh */
+#endif /* _Prague_Time_hh */

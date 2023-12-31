@@ -1,7 +1,7 @@
-/*$Id: PipeAgent.hh,v 1.5 1999/11/17 02:03:39 stefan Exp $
+/*$Id: PipeAgent.hh,v 1.8 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,29 +19,27 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _PipeAgent_hh
-#define _PipeAgent_hh
+#ifndef _Prague_PipeAgent_hh
+#define _Prague_PipeAgent_hh
 
 #include <Prague/IPC/Coprocess.hh>
 
 namespace Prague
 {
 
-char *sigName(int);
-char *statusName(int);
-
+//. a PipeAgent uses a pipe to communicate with the coprocess
 class PipeAgent : public Coprocess
 {
 public:
-  PipeAgent(const string &, IONotifier *, EOFNotifier * = 0);
+  PipeAgent(const std::string &, IONotifier *, EOFNotifier * = 0);
   virtual      ~PipeAgent();
+  //. spawns a child process after creating a pipe, then redirects i/o to it
   virtual void  start();
 private:
   PipeAgent(const PipeAgent &);
   PipeAgent &operator = (const PipeAgent &);
-  Mutex mutex;
 };
 
 };
 
-#endif /* _PipeAgent_hh */
+#endif

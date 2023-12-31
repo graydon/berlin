@@ -1,0 +1,86 @@
+/*$Id: Transform.idl,v 1.5 2000/09/19 21:11:02 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_Transform_idl
+#define _Warsaw_Transform_idl
+
+#include <Warsaw/Types.idl>
+
+module Warsaw
+{
+  //. A transform represents a (logically) 4x4 matrix for use
+  //. in translating coordinates.  A 2-dimensional implementation
+  //. may store and manipulate a 3x2 matrix rather than
+  //. a full 4x4 matrix.
+  interface Transform
+    {
+      //. The Matrix type defines the data that may be contained
+      //. in a transform.
+      typedef Coord Matrix[4][4];
+      //. Copy the matrix data from the given transform.
+      void copy(in Transform t);
+      //. Set this transform's matrix to the identity matrix.
+      void load_identity();
+      //. Copy the given matrix data into this transform.
+      void load_matrix(in Matrix m);
+      //. Store this transform's matrix to the given matrix data.
+      void store_matrix(out Matrix m);
+      //. The equal operation tests if a transformation matrix
+      //. is the same as a given transform within
+      //. a standard coordinate tolerance.  The identity operation
+      //. tests if the matrix is equal to an identity matrix
+      //. (also with the standard tolerance).  The translate_only
+      //. operation test if a transform involves translation only.
+      //. This operation can be useful for optimizing certain rendering
+      //. operations that can be done faster in the absence of
+      //. scaling and rotation.  The det_is_zero
+      //. operation tests if the determinant of the matrix
+      //. is zero within the standard tolerance.
+      boolean equal(in Transform t);
+      boolean identity();
+      boolean translation();
+      boolean det_is_zero();
+      void scale(in Vertex v);
+      void rotate(in double angle, in Axis a);
+      //. Modify the matrix to perform coordinate scaling,
+      //. rotation, and translation.  The rotation angle
+      //. is given in degrees.  A 2-dimensional implementation
+      //. only implements rotate about the z-axis.
+      void translate(in Vertex v);
+      //. These operations set the matrix to be the result of
+      //. multiplying the matrix and the given transform.
+      //. Two operations are necessary because matrix multiplication
+      //. is not necessarily communative.  Premultiply means
+      //. the current matrix is on the left-hand side of the
+      //. multiplication, postmultiply means the current matrix
+      //. is on the right.
+      void premultiply(in Transform t);
+      void postmultiply(in Transform t);
+      //. Set the matrix to its inverse.
+      void invert();
+      //. Multiply the given vertex by the transformation matrix
+      //. to compute transformed or inverse-transformed coordinates.
+      void transform_vertex(inout Vertex v);
+      void inverse_transform_vertex(inout Vertex v);
+    };
+};
+
+#endif

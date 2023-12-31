@@ -1,8 +1,9 @@
-/*$Id: ImageKitImpl.cc,v 1.7 1999/11/06 20:23:08 stefan Exp $
+/*$Id: ImageKitImpl.cc,v 1.12 2001/04/18 06:07:27 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Brent A. Fulgham <bfulgham@debian.org>
  * Copyright (C) 1999 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,31 +22,36 @@
  * MA 02139, USA.
  */
 
-#include "Warsaw/config.hh"
-#include "Berlin/Plugin.hh"
-#include "Berlin/Logger.hh"
+#include <Berlin/ImplVar.hh>
 #include "Image/ImageKitImpl.hh"
 #include "Image/RasterImpl.hh"
+#include <Prague/Sys/Tracer.hh>
 
-ImageKitImpl::ImageKitImpl() {}
+using namespace Prague;
+using namespace Warsaw;
+
+ImageKitImpl::ImageKitImpl(KitFactory *f, const Warsaw::Kit::PropertySeq &p)
+  : KitImpl(f, p) {}
 ImageKitImpl::~ImageKitImpl() {}
 
 Raster_ptr ImageKitImpl::empty()
 {
-  SectionLog section("ImageKitImpl::empty");
+  Trace trace("ImageKitImpl::empty");
   RasterImpl *raster = new RasterImpl();
-  raster->_obj_is_ready(_boa());
-  rasters.push_back(raster);
+  activate(raster);
   return raster->_this();
 }
 
 Raster_ptr ImageKitImpl::create(const char *file)
 {
-  SectionLog section("ImageKitImpl::create");
+  Trace trace("ImageKitImpl::create");
   RasterImpl *raster = new RasterImpl(file);
-  raster->_obj_is_ready(_boa());
-  rasters.push_back(raster);
+  activate(raster);
   return raster->_this();
 }
 
-EXPORT_PLUGIN(ImageKitImpl, interface(ImageKit))
+extern "C" KitFactory *load()
+{
+  static std::string properties[] = {"implementation", "ImageKitImpl"};
+  return new KitFactoryImpl<ImageKitImpl> ("IDL:Warsaw/ImageKit:1.0", properties, 1);
+}

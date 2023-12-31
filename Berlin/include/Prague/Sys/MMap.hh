@@ -1,7 +1,7 @@
-/*$Id: MMap.hh,v 1.1 1999/10/14 03:32:19 gray Exp $
+/*$Id: MMap.hh,v 1.4 2001/03/21 06:28:22 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,13 +19,17 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _MMap_hh
-#define _MMap_hh
+#ifndef _Prague_MMap_hh
+#define _Prague_MMap_hh
 
 #include <unistd.h>
 #include <sys/mman.h>
 #include <string>
 
+namespace Prague
+{
+
+//. a convenience wrapper around the mmap family of functions
 class MMap
 {
 public:
@@ -34,24 +38,32 @@ public:
   class Exception
   {
   public:
-    Exception(const string &m) : msg(m) {}
-    const string &what() const { return msg;}
+    Exception(const std::string &m) : _msg(m) {}
+    const std::string &what() const { return _msg;}
   private:
-    string msg;
+    std::string _msg;
   }; 
   MMap(int, int = -1, int = read|write, int = priv, void * = 0, off_t = 0);
-  MMap(const string &, int = -1, int = read|write, int = priv, void * = 0, off_t = 0);
+  MMap(const std::string &, int = -1, int = read|write, int = priv, void * = 0, off_t = 0);
   ~MMap();
-  void *addr() const { return base;}
-  size_t size() const { return length;}
+  //. return the base address
+  void *addr() const { return _base;}
+  //. return the size
+  size_t size() const { return _length;}
+  //. synchronize the memory with the associated file
   void sync(ssize_t = -1, bool = true);
+  //. synchronize the memory with the associated file
   void sync(void *, size_t, bool = true);
+  //. protect the memory
   void protect(ssize_t = -1, int = read|write);
+  //. protect the memory
   void protect(void *, size_t, int = read|write);
 private:
   MMap(const MMap &);
-  void *base;
-  size_t length;
+  void  *_base;
+  size_t _length;
 };
 
-#endif /* _MMap_hh */
+};
+
+#endif

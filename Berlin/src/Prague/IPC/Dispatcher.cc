@@ -1,7 +1,7 @@
-/*$Id: Dispatcher.cc,v 1.5 1999/11/17 18:15:52 stefan Exp $
+/*$Id: Dispatcher.cc,v 1.15 2001/03/25 08:25:16 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,12 +21,12 @@
  */
 
 #include "Prague/Sys/Signal.hh"
+#include "Prague/Sys/Tracer.hh"
 #include "Prague/IPC/Dispatcher.hh"
 #include <queue>
 #include <algorithm>
 #include <ctime>
 #include <cerrno>
-#include <unistd.h>
 #include <sys/types.h>
 
 using namespace Prague;
@@ -39,20 +39,20 @@ struct SignalNotifier : Signal::Notifier
 {
   virtual void notify(int signum)
   {
-    cerr << Signal::name(signum) << endl;
+    std::cerr << Signal::name(signum) << std::endl;
     exit(1);
   }
 };
 
 Dispatcher::Cleaner::~Cleaner()
 {
-//   MutexGuard guard(singletonMutex);
+//   Prague::Guard<Mutex> guard(singletonMutex);
   delete dispatcher;
 }
 
 Dispatcher *Dispatcher::instance()
 {
-  MutexGuard guard(singletonMutex);
+  Prague::Guard<Mutex> guard(singletonMutex);
   if (!dispatcher) dispatcher = new Dispatcher;
   return dispatcher;
 }
@@ -63,49 +63,52 @@ Dispatcher::Dispatcher()
   : notifier(new SignalNotifier),
     tasks(64),
     workers(tasks, acceptor, 4),
-    server(&Dispatcher::dispatch, this)
+    server(&Dispatcher::run, this)
 {
   Signal::mask(Signal::pipe);
-  Signal::set(Signal::hangup, notifier);
-  Signal::set(Signal::interrupt, notifier);
-  Signal::set(Signal::quit, notifier);
-  Signal::set(Signal::illegal, notifier);
-  Signal::set(Signal::abort, notifier);
-  Signal::set(Signal::fpe, notifier);
-  Signal::set(Signal::bus, notifier);
-  //  Signal::set(Signal::segv, notifier);
-  Signal::set(Signal::iotrap, notifier);
-  Signal::set(Signal::terminate, notifier);
+//   Signal::set(Signal::hangup, notifier);
+//   Signal::set(Signal::interrupt, notifier);
+//   Signal::set(Signal::quit, notifier);
+//   Signal::set(Signal::illegal, notifier);
+//   Signal::set(Signal::abort, notifier);
+//   Signal::set(Signal::fpe, notifier);
+//   Signal::set(Signal::bus, notifier);
+//   //  Signal::set(Signal::segv, notifier);
+//   Signal::set(Signal::iotrap, notifier);
+//   Signal::set(Signal::terminate, notifier);
 }
 
 Dispatcher::~Dispatcher()
 {
 }
 
-void Dispatcher::bind(int fd, Agent *agent, Agent::iomask_t mask)
+void Dispatcher::bind(Agent *agent, int fd, Agent::iomask mask)
 {
+  Trace trace("Dispatcher::bind");
   if (server.state() != Thread::running)
     {
       pipe(wakeup);
       rfds.set(wakeup[0]);
       server.start();
     }
-//   Signal::Guard sguard(Signal::child);
-  MutexGuard guard(mutex);
+  Prague::Guard<Mutex> guard(mutex);
   if (find(agents.begin(), agents.end(), agent) == agents.end())
-    agents.push_back(agent);
+    {
+      agents.push_back(agent);
+      agent->add_ref();
+    }
   if (mask & Agent::in)
     {
       if (mask & Agent::inready)
 	{
 	  wfds.set(fd);
-	  if (wchannel.find(fd) == wchannel.end()) wchannel[fd] = task(fd, agent, Agent::inready);
-	  else cerr << "Dispatcher::bind() : Error : file descriptor already in use" << endl;
+	  if (wchannel.find(fd) == wchannel.end()) wchannel[fd] = new task(fd, agent, Agent::inready);
+	  else std::cerr << "Dispatcher::bind() : Error : file descriptor already in use" << std::endl;
 	}
       if (mask & Agent::inexc)
 	{
 	  xfds.set(fd);
-	  if (xchannel.find(fd) == xchannel.end()) xchannel[fd] = task(fd, agent, Agent::inexc);
+	  if (xchannel.find(fd) == xchannel.end()) xchannel[fd] = new task(fd, agent, Agent::inexc);
 	}
     }
   if (mask & Agent::out)
@@ -113,13 +116,13 @@ void Dispatcher::bind(int fd, Agent *agent, Agent::iomask_t mask)
       if (mask & Agent::outready)
 	{
 	  rfds.set(fd);
-	  if (rchannel.find(fd) == rchannel.end()) rchannel[fd] = task(fd, agent, Agent::outready);
-	  else cerr << "Dispatcher::bind() : Error : file descriptor already in use" << endl;
+	  if (rchannel.find(fd) == rchannel.end()) rchannel[fd] = new task(fd, agent, Agent::outready);
+	  else std::cerr << "Dispatcher::bind() : Error : file descriptor already in use" << std::endl;
 	}
       if (mask & Agent::outexc)
 	{
 	  xfds.set(fd);
-	  if (xchannel.find(fd) == xchannel.end()) xchannel[fd] = task(fd, agent, Agent::outexc);
+	  if (xchannel.find(fd) == xchannel.end()) xchannel[fd] = new task(fd, agent, Agent::outexc);
 	}
     }
   if (mask & Agent::err)
@@ -127,53 +130,65 @@ void Dispatcher::bind(int fd, Agent *agent, Agent::iomask_t mask)
       if (mask & Agent::errready)
 	{
 	  rfds.set(fd);
-	  if (rchannel.find(fd) == rchannel.end()) rchannel[fd] = task(fd, agent, Agent::errready);
-	  else cerr << "Dispatcher::bind() : Error : file descriptor already in use" << endl;
+	  if (rchannel.find(fd) == rchannel.end()) rchannel[fd] = new task(fd, agent, Agent::errready);
+	  else std::cerr << "Dispatcher::bind() : Error : file descriptor already in use" << std::endl;
 	}
       if (mask & Agent::errexc)
 	{
 	  xfds.set(fd);
-	  if (xchannel.find(fd) == xchannel.end()) xchannel[fd] = task(fd, agent, Agent::errexc);
+	  if (xchannel.find(fd) == xchannel.end()) xchannel[fd] = new task(fd, agent, Agent::errexc);
 	}
     }
+  notify();
 }
 
-void Dispatcher::release(int fd)
+void Dispatcher::release(Agent *agent, int fd)
 {
-  MutexGuard guard(mutex);
-  dictionary_t::iterator c;
-  if ((c = rchannel.find(fd)) != rchannel.end())
-    {
-      rchannel.erase(c);
-      rfds.clear(fd);
-    }
-  if ((c = wchannel.find(fd)) != wchannel.end())
-    {
-      wchannel.erase(c);
-      wfds.clear(fd);
-    }
-  if ((c = xchannel.find(fd)) != xchannel.end())
-    {
-      xchannel.erase(c);
-      xfds.clear(fd);
-    }
-}
+  Trace trace("Dispatcher::release");
+  /*
+   * release file descriptors
+   */
+  Prague::Guard<Mutex> guard(mutex);
+  for (repository_t::iterator i = rchannel.begin(); i != rchannel.end(); i++)
+    if ((*i).second->agent == agent && (fd == -1 || fd == (*i).second->fd))
+      {
+	deactivate((*i).second);
+	(*i).second->released = true;
+	rchannel.erase(i);
+      }
+  for (repository_t::iterator i = wchannel.begin(); i != wchannel.end(); i++)
+    if ((*i).second->agent == agent && (fd == -1 || fd == (*i).second->fd))
+      {
+	deactivate((*i).second);
+	(*i).second->released = true;
+	wchannel.erase(i);
+      }
+  for (repository_t::iterator i = xchannel.begin(); i != xchannel.end(); i++)
+    if ((*i).second->agent == agent && (fd == -1 || fd == (*i).second->fd))
+      {
+	deactivate((*i).second);
+	(*i).second->released = true;
+	xchannel.erase(i);
+      }
+  /*
+   * release Agent if no more file descriptors left
+   */
+  for (repository_t::iterator i = rchannel.begin(); i != rchannel.end(); i++)
+    if ((*i).second->agent == agent) return;
+  for (repository_t::iterator i = wchannel.begin(); i != wchannel.end(); i++)
+    if ((*i).second->agent == agent) return;
+  for (repository_t::iterator i = xchannel.begin(); i != xchannel.end(); i++)
+    if ((*i).second->agent == agent) return;
 
-void Dispatcher::release(Agent *agent)
-{
-//   Signal::Guard guard(Signal::child);
-  MutexGuard guard(mutex);
-  for (dictionary_t::iterator i = rchannel.begin(); i != rchannel.end(); i++)
-    if ((*i).second.agent == agent) rchannel.erase(i);
-  for (dictionary_t::iterator i = wchannel.begin(); i != wchannel.end(); i++)
-    if ((*i).second.agent == agent) wchannel.erase(i);
-  for (dictionary_t::iterator i = xchannel.begin(); i != xchannel.end(); i++)
-    if ((*i).second.agent == agent) xchannel.erase(i);
   alist_t::iterator i = find(agents.begin(), agents.end(), agent);
-  if (i != agents.end()) agents.erase(i);
+  if (i != agents.end())
+    {
+      agents.erase(i);
+      agent->remove_ref();
+    }
 }
 
-void *Dispatcher::dispatch(void *X)
+void *Dispatcher::run(void *X)
 {
   Dispatcher *dispatcher = reinterpret_cast<Dispatcher *>(X);
   dispatcher->workers.start();
@@ -182,47 +197,65 @@ void *Dispatcher::dispatch(void *X)
   return 0;
 };
 
-void Dispatcher::process(const task &t)
+void Dispatcher::dispatch(task *t)
 {
-  if (t.agent->processIO(t.fd, t.mask)) activate(t);
+  deactivate(t);
+  tasks.push(t);
 }
 
-void Dispatcher::deactivate(const task &t)
+void Dispatcher::process(task *t)
 {
-  switch (t.mask)
+  Trace trace("Dispatcher::process");
+  Agent *agent = t->agent;
+  // save the agent from being deleted while it processes i/o
+  agent->add_ref();
+  bool done = !agent->process(t->fd, t->mask);
+  agent->remove_ref();
+  // now look whether the agent is released and the task should be deleted
+  Prague::Guard<Mutex> guard(mutex);
+  if (!done)
     {
-    case Agent::inready: wfds.clear(t.fd); break;
+      if (t->released) delete t;
+      else activate(t);
+    }
+}
+
+void Dispatcher::deactivate(task *t)
+{
+  switch (t->mask)
+    {
+    case Agent::inready: wfds.clear(t->fd); break;
     case Agent::outready:
-    case Agent::errready: rfds.clear(t.fd); break;
+    case Agent::errready: rfds.clear(t->fd); break;
     case Agent::inexc:
     case Agent::outexc:
-    case Agent::errexc: xfds.clear(t.fd); break;
+    case Agent::errexc: xfds.clear(t->fd); break;
     default: break;
     }
 }
 
-void Dispatcher::activate(const task &t)
+void Dispatcher::activate(task *t)
 {
-  switch (t.mask)
+  switch (t->mask)
     {
-    case Agent::inready: wfds.set(t.fd); break;
+    case Agent::inready: wfds.set(t->fd); break;
     case Agent::outready:
-    case Agent::errready: rfds.set(t.fd); break;
+    case Agent::errready: rfds.set(t->fd); break;
     case Agent::inexc:
     case Agent::outexc:
-    case Agent::errexc: xfds.set(t.fd); break;
+    case Agent::errexc: xfds.set(t->fd); break;
     default: break;
     }
-  char *c = "c";
-  write(wakeup[1], c, 1);
+  notify();
 }
 
 void Dispatcher::wait()
 {
+  Trace trace("Dispatcher::wait");
   FdSet tmprfds = rfds;
   FdSet tmpwfds = wfds;
   FdSet tmpxfds = xfds;
-  unsigned int fdsize = max(max(tmprfds.max(), tmpwfds.max()), tmpxfds.max()) + 1;
+  unsigned int fdsize = std::max(std::max(tmprfds.max(), tmpwfds.max()), tmpxfds.max()) + 1;
   int nsel = select(fdsize, tmprfds, tmpwfds, tmpxfds, 0);
   pthread_testcancel();
   if (nsel == -1)
@@ -231,31 +264,20 @@ void Dispatcher::wait()
     }
   else if (nsel > 0 && fdsize)
     {
-      tlist_t t;
-      for (dictionary_t::iterator i = rchannel.begin(); i != rchannel.end(); i++)
+      Prague::Guard<Mutex> guard(mutex);
+      for (repository_t::iterator i = rchannel.begin(); i != rchannel.end(); i++)
 	if (tmprfds.isset((*i).first))
-	  {
-	    t.push_back((*i).second);
-	    deactivate((*i).second);
-	  }
-      for (dictionary_t::iterator i = wchannel.begin(); i != wchannel.end(); i++)
+	  dispatch((*i).second);
+      for (repository_t::iterator i = wchannel.begin(); i != wchannel.end(); i++)
 	if (tmpwfds.isset((*i).first))
-	  {
-	    t.push_back((*i).second);
-	    deactivate((*i).second);
-	  }
-      for (dictionary_t::iterator i = xchannel.begin(); i != xchannel.end(); i++)
+	  dispatch((*i).second);
+      for (repository_t::iterator i = xchannel.begin(); i != xchannel.end(); i++)
 	if (tmpxfds.isset((*i).first))
-	  {
-	    t.push_back((*i).second);
-	    deactivate((*i).second);
-	  }
+	  dispatch((*i).second);
       if (tmprfds.isset(wakeup[0]))
 	{
 	  char c[1];
-	  read(wakeup[0],c,1);
+	  read(wakeup[0], c, 1);
 	}
-      for (tlist_t::const_iterator i = t.begin(); i != t.end(); i++)
-	tasks.push(*i);
     }
-};
+}

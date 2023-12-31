@@ -1,0 +1,48 @@
+body
+  {
+    margin-left: 5%;
+    margin-right: 5%;
+    color: #000000;
+    background: #ffffff;
+  }
+:link { color: #bb0000; text-decoration: none;}
+:visited { color: #bb0000; text-decoration: none;}
+:active { color: #ff0000; text-decoration: none;}
+span.keyword { font-style: italic;}
+span.variable { font-style: italic;}
+span.name { font-weight: bold; }
+a.name { font-weight: bold; }
+div.module { padding: 1.0em;}
+div.declarations { padding: 1.0em;}
+div.desc
+  {
+    border: none;
+    font-style: italic;
+  }
+div.summary
+  {
+    border: none;
+    font-style: italic;
+    margin-left: 2em;
+  }
+div.enumerator
+  {
+    margin-left: 2em;
+  }
+div.files
+  {
+    margin-left: 1em;
+  }
+td.heading
+  {
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 0.1em;
+    background: #eeeeee;
+  }
+div.logo
+  {
+    margin-left: 2em;
+    text-align: center;
+    color: #dddddd;
+  }

@@ -1,7 +1,7 @@
-/*$Id: DesktopKitImpl.cc,v 1.8 1999/11/06 20:23:08 stefan Exp $
+/*$Id: DesktopKitImpl.cc,v 1.30 2001/04/24 05:04:49 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -20,162 +20,251 @@
  * MA 02139, USA.
  */
 
+#include <Prague/Sys/Tracer.hh>
+#include <Warsaw/config.hh>
+#include <Warsaw/Server.hh>
+#include <Warsaw/resolve.hh>
+#include <Berlin/ImplVar.hh>
+#include <Berlin/CommandImpl.hh>
+#include <Berlin/RefCountVar.hh>
 #include "Desktop/DesktopKitImpl.hh"
 #include "Desktop/WindowImpl.hh"
-#include "Berlin/Logger.hh"
-#include "Berlin/Plugin.hh"
+#include "Desktop/Pulldown.hh"
+#include "Desktop/Manipulator.hh"
 
-DesktopKitImpl::DesktopKitImpl() {}
+using namespace Prague;
+using namespace Warsaw;
+
+DesktopKitImpl::DesktopKitImpl(KitFactory *f, const Warsaw::Kit::PropertySeq &p)
+  : KitImpl(f, p) {}
 DesktopKitImpl::~DesktopKitImpl() {}
-
-void DesktopKitImpl::bind(ServerContext_ptr sc)
+void DesktopKitImpl::bind(ServerContext_ptr context)
 {
-  CloneableImpl::bind(sc);
-  CORBA::Object_var object = context->getSingleton(interface(Desktop));
-  desktop = Desktop::_narrow(object);
-  
-  lk = obtain(context, LayoutKit);
-  wk = obtain(context, WidgetKit);
+  Trace trace("DesktopKitImpl::bind");
+  KitImpl::bind(context);
+  CORBA::Object_var object = context->get_singleton("IDL:Warsaw/Desktop:1.0");
+  _desktop = Desktop::_narrow(object);
+  _desktop->increment();
+  Warsaw::Kit::PropertySeq props;
+  props.length(0);
+  _layout = resolve_kit<LayoutKit>(context, "IDL:Warsaw/LayoutKit:1.0", props);
+  _tool   = resolve_kit<ToolKit>(context, "IDL:Warsaw/ToolKit:1.0", props);
+  _widget = resolve_kit<WidgetKit>(context, "IDL:Warsaw/WidgetKit:1.0", props);
 }
 
 Desktop_ptr DesktopKitImpl::desk()
 {
-  return Desktop::_duplicate(desktop);
+  return RefCount_var<Warsaw::Desktop>::increment(_desktop);
 }
 
 
-Window_ptr DesktopKitImpl::shell(Graphic_ptr g)
+Window_ptr DesktopKitImpl::shell(Controller_ptr g)
 {
-  SectionLog section("DesktopKitImpl::shell");
+  Trace trace("DesktopKitImpl::shell");
   WindowImpl *window = new WindowImpl;
-  window->_obj_is_ready(_boa());
-  Color gray = {0.5, 0.5, 0.5, 1.0};
+  activate(window);
+  Window_var wptr = window->_this();
+  Graphic::Requisition req;
+  req.x.defined = true;
+  req.x.minimum = 0.;
+  req.x.natural = 0.;
+  req.x.maximum = _layout->fill();
+  req.x.align = 0.;
+  req.y.defined = true;
+  req.y.minimum = 200.;
+  req.y.natural = 200.;
+  req.y.maximum = 200.;
+  req.y.align = 0;
+  Command_var mover = move(wptr);
+  ToolKit::FrameSpec spec;
+  spec.brightness(0.5); spec._d(ToolKit::outset);
+  RefCount_var<Graphic> tbframe = _tool->frame(RefCount_var<Graphic>(_layout->glue_requisition(req)), 10., spec, true);
+  RefCount_var<Graphic> tbdragger = _tool->dragger(tbframe, mover);
+
+  req.x.minimum = 200.;
+  req.x.natural = 200.;
+  req.x.maximum = 200.;
+  req.y.minimum = 40.;
+  req.y.natural = 40.;
+  req.y.maximum = 40.;
+  Command_var lresize = move_resize(wptr, 1.0, 0.0, Window::left|Window::bottom);
+  RefCount_var<Graphic> lframe = _tool->frame(RefCount_var<Graphic>(_layout->glue_requisition(req)), 10., spec, true);
+  RefCount_var<Graphic> ldragger = _tool->dragger(lframe, lresize);
+
+  req.x.minimum = 0.;
+  req.x.natural = 0.;
+  req.x.maximum = _layout->fill();
+  req.y.minimum = 40.;
+  req.y.natural = 40.;
+  req.y.maximum = 40.;
+  Command_var bresize = move_resize(wptr, 0.0, 0.0, Window::bottom);
+  RefCount_var<Graphic> bframe = _tool->frame(RefCount_var<Graphic>(_layout->glue_requisition(req)), 10., spec, true);
+  RefCount_var<Graphic> bdragger = _tool->dragger(bframe, bresize);
+
+  req.x.minimum = 200.;
+  req.x.natural = 200.;
+  req.x.maximum = 200.;
+  req.y.minimum = 40.;
+  req.y.natural = 40.;
+  req.y.maximum = 40.;
+  Command_var rresize = move_resize(wptr, 0.0, 0.0, Window::right|Window::bottom);
+  RefCount_var<Graphic> rframe = _tool->frame(RefCount_var<Graphic>(_layout->glue_requisition(req)), 10., spec, true);
+  RefCount_var<Graphic> rdragger = _tool->dragger(rframe, rresize);
+
+  RefCount_var<Graphic> vbox = _layout->vbox();
+  RefCount_var<Graphic> hbox = _layout->hbox();
+  hbox->append_graphic(ldragger);
+  hbox->append_graphic(bdragger);
+  hbox->append_graphic(rdragger);
+  vbox->append_graphic(tbdragger);
+  vbox->append_graphic(RefCount_var<Graphic>(_layout->align(g, 0., 0.)));
+  vbox->append_graphic(hbox);
+  RefCount_var<Graphic> background = _tool->rgb(vbox, 0.7, 0.7, 0.7);
+  wptr->body(background);
+  /*
+   * FIXME: we need to take care to include the window control elements 
+   *        into the control graph too...
+   *        - stefan
+   */
+  wptr->append_controller(g);
+  window->insert(_desktop);
+  _desktop->append_controller(wptr);
+  wptr->mapped(true);
+  return wptr._retn();
+}
+
+Window_ptr DesktopKitImpl::transient(Controller_ptr g)
+{
+  Trace trace("DesktopKitImpl::transient");
+  WindowImpl *window = new WindowImpl();
+  activate(window);
+  Window_var wptr = window->_this();
+  ToolKit::FrameSpec spec;
+  spec.brightness(0.5); spec._d(ToolKit::outset);
 
   Graphic::Requisition req;
   req.x.defined = true;
   req.x.minimum = 0.;
   req.x.natural = 0.;
-  req.x.maximum = lk->fil();
+  req.x.maximum = _layout->fill();
   req.x.align = 0.;
   req.y.defined = true;
-  req.y.minimum = 20.;
-  req.y.natural = 20.;
-  req.y.maximum = 20.;
+  req.y.minimum = 200.;
+  req.y.natural = 200.;
+  req.y.maximum = 200.;
   req.y.align = 0;
-  Command_var move = window->move();
-  Graphic_var tbframe = wk->outset(Graphic_var(lk->glueRequisition(req)), gray, true);
-  Graphic_var tbdragger = wk->dragger(tbframe, move);
+  Command_var mover = move(wptr);
+  RefCount_var<Graphic> tbframe = _tool->frame(RefCount_var<Graphic>(_layout->glue_requisition(req)), 10., spec, true);
+  RefCount_var<Graphic> tbdragger = _tool->dragger(tbframe, mover);
 
-  req.x.minimum = 20.;
-  req.x.natural = 20.;
-  req.x.maximum = 20.;
-  req.y.minimum = 4.;
-  req.y.natural = 4.;
-  req.y.maximum = 4.;
-  Command_var lresize = window->moveResize(1.0, 0.0, Window::left|Window::bottom);
-  Graphic_var lframe = wk->outset(Graphic_var(lk->glueRequisition(req)), gray, true);
-  Graphic_var ldragger = wk->dragger(lframe, lresize);
+  req.x.minimum = 200.;
+  req.x.natural = 200.;
+  req.x.maximum = 200.;
+  req.y.minimum = 40.;
+  req.y.natural = 40.;
+  req.y.maximum = 40.;
+  Command_var lresize = move_resize(wptr, 1.0, 0.0, Window::left|Window::bottom);
+  RefCount_var<Graphic> lframe = _tool->frame(RefCount_var<Graphic>(_layout->glue_requisition(req)), 10., spec, true);
+  RefCount_var<Graphic> ldragger = _tool->dragger(lframe, lresize);
 
   req.x.minimum = 0.;
   req.x.natural = 0.;
-  req.x.maximum = lk->fil();
-  req.y.minimum = 4.;
-  req.y.natural = 4.;
-  req.y.maximum = 4.;
-  Command_var bresize = window->moveResize(0.0, 0.0, Window::bottom);
-  Graphic_var bframe = wk->outset(Graphic_var(lk->glueRequisition(req)), gray, true);
-  Graphic_var bdragger = wk->dragger(bframe, bresize);
+  req.x.maximum = _layout->fill();
+  req.y.minimum = 40.;
+  req.y.natural = 40.;
+  req.y.maximum = 40.;
+  Command_var bresize = move_resize(wptr, 0.0, 0.0, Window::bottom);
+  RefCount_var<Graphic> bframe = _tool->frame(RefCount_var<Graphic>(_layout->glue_requisition(req)), 10., spec, true);
+  RefCount_var<Graphic> bdragger = _tool->dragger(bframe, bresize);
 
-  req.x.minimum = 20.;
-  req.x.natural = 20.;
-  req.x.maximum = 20.;
-  req.y.minimum = 4.;
-  req.y.natural = 4.;
-  req.y.maximum = 4.;
-  Command_var rresize = window->moveResize(0.0, 0.0, Window::right|Window::bottom);
-  Graphic_var rframe = wk->outset(Graphic_var(lk->glueRequisition(req)), gray, true);
-  Graphic_var rdragger = wk->dragger(rframe, rresize);
+  req.x.minimum = 200.;
+  req.x.natural = 200.;
+  req.x.maximum = 200.;
+  req.y.minimum = 40.;
+  req.y.natural = 40.;
+  req.y.maximum = 40.;
+  Command_var rresize = move_resize(wptr, 0.0, 0.0, Window::right|Window::bottom);
+  RefCount_var<Graphic> rframe = _tool->frame(RefCount_var<Graphic>(_layout->glue_requisition(req)), 10., spec, true);
+  RefCount_var<Graphic> rdragger = _tool->dragger(rframe, rresize);
 
-  Graphic_var vbox = lk->vbox();
-  Graphic_var hbox = lk->hbox();
-  hbox->append(ldragger);
-  hbox->append(bdragger);
-  hbox->append(rdragger);
-  vbox->append(tbdragger);
-  vbox->append(g);
-  vbox->append(hbox);
-  window->body(vbox);
-  window->insert(desktop, true);
-  windows.push_back(window);
-  desktop->appendController(Controller_var(window->_this()));
-  return window->_this();
+  RefCount_var<Graphic> vbox = _layout->vbox();
+  RefCount_var<Graphic> hbox = _layout->hbox();
+  hbox->append_graphic(ldragger);
+  hbox->append_graphic(bdragger);
+  hbox->append_graphic(rdragger);
+  vbox->append_graphic(tbdragger);
+  vbox->append_graphic(RefCount_var<Graphic>(_layout->align(g, 0., 0.)));
+  vbox->append_graphic(hbox);
+  RefCount_var<Graphic> background = _tool->rgb(vbox, 0.7, 0.7, 0.7);
+  wptr->body(background);
+  /*
+   * FIXME: we need to take care to include the window control elements 
+   *        into the control graph too...
+   *        - stefan
+   */
+  wptr->append_controller(g);
+  window->insert(_desktop);
+  _desktop->append_controller(wptr);
+  return wptr._retn();
 }
 
-Window_ptr DesktopKitImpl::transient(Graphic_ptr g)
+Window_ptr DesktopKitImpl::pulldown(Controller_ptr g)
 {
-  SectionLog section("DesktopKitImpl::transient");
-  WindowImpl *window = new WindowImpl;
-  window->_obj_is_ready(_boa());
-  Color gray = {0.5, 0.5, 0.5, 1.0};
+  Trace trace("DesktopKitImpl::pulldown");
+  Pulldown *menu = new Pulldown();
+  activate(menu);
+  Window_var wptr = menu->_this();
+  ToolKit::FrameSpec spec;
+  spec.brightness(0.5); spec._d(ToolKit::outset);
 
-  Graphic::Requisition req;
-  req.x.defined = true;
-  req.x.minimum = 0.;
-  req.x.natural = 0.;
-  req.x.maximum = lk->fil();
-  req.x.align = 0.;
-  req.y.defined = true;
-  req.y.minimum = 20.;
-  req.y.natural = 20.;
-  req.y.maximum = 20.;
-  req.y.align = 0;
-  Command_var move = window->move();
-  Graphic_var tbframe = wk->outset(Graphic_var(lk->glueRequisition(req)), gray, true);
-  Graphic_var tbdragger = wk->dragger(tbframe, move);
-
-  req.x.minimum = 20.;
-  req.x.natural = 20.;
-  req.x.maximum = 20.;
-  req.y.minimum = 4.;
-  req.y.natural = 4.;
-  req.y.maximum = 4.;
-  Command_var lresize = window->moveResize(1.0, 0.0, Window::left|Window::bottom);
-  Graphic_var lframe = wk->outset(Graphic_var(lk->glueRequisition(req)), gray, true);
-  Graphic_var ldragger = wk->dragger(lframe, lresize);
-
-  req.x.minimum = 0.;
-  req.x.natural = 0.;
-  req.x.maximum = lk->fil();
-  req.y.minimum = 4.;
-  req.y.natural = 4.;
-  req.y.maximum = 4.;
-  Command_var bresize = window->moveResize(0.0, 0.0, Window::bottom);
-  Graphic_var bframe = wk->outset(Graphic_var(lk->glueRequisition(req)), gray, true);
-  Graphic_var bdragger = wk->dragger(bframe, bresize);
-
-  req.x.minimum = 20.;
-  req.x.natural = 20.;
-  req.x.maximum = 20.;
-  req.y.minimum = 4.;
-  req.y.natural = 4.;
-  req.y.maximum = 4.;
-  Command_var rresize = window->moveResize(0.0, 0.0, Window::right|Window::bottom);
-  Graphic_var rframe = wk->outset(Graphic_var(lk->glueRequisition(req)), gray, true);
-  Graphic_var rdragger = wk->dragger(rframe, rresize);
-
-  Graphic_var vbox = lk->vbox();
-  Graphic_var hbox = lk->hbox();
-  hbox->append(ldragger);
-  hbox->append(bdragger);
-  hbox->append(rdragger);
-  vbox->append(tbdragger);
-  vbox->append(g);
-  vbox->append(hbox);
-  window->body(vbox);
-  window->insert(desktop, false);
-  windows.push_back(window);
-  desktop->appendController(Controller_var(window->_this()));
-  return window->_this();
+  RefCount_var<Graphic> outset = _tool->frame(g, 20., spec, true);
+  RefCount_var<Graphic> background = _tool->rgb(outset, 0.7, 0.7, 0.7);
+  wptr->body(background);
+  wptr->append_controller(g);
+  menu->insert(_desktop);
+  _desktop->append_controller(wptr);
+  return wptr._retn();
 }
 
-EXPORT_PLUGIN(DesktopKitImpl,interface(DesktopKit))
+Command_ptr DesktopKitImpl::move(Warsaw::Window_ptr window)
+{
+  Manipulator *manipulator = new Mover(window);
+  activate(manipulator);
+  return manipulator->_this();
+}
+
+Command_ptr DesktopKitImpl::resize(Warsaw::Window_ptr window)
+{
+  Manipulator *manipulator = new Resizer(window);
+  activate(manipulator);
+  return manipulator->_this();
+}
+
+Command_ptr DesktopKitImpl::move_resize(Warsaw::Window_ptr window, Warsaw::Alignment x, Warsaw::Alignment y, CORBA::Short border)
+{
+  Manipulator *manipulator = new MoveResizer(window, _desktop, x, y, border);
+  activate(manipulator);
+  return manipulator->_this();
+}
+
+Command_ptr DesktopKitImpl::relayer(Warsaw::Window_ptr window)
+{
+  Manipulator *manipulator = new Relayerer(window);
+  activate(manipulator);
+  return manipulator->_this();
+}
+
+Command_ptr DesktopKitImpl::map(Warsaw::Window_ptr window, CORBA::Boolean flag)
+{
+  Manipulator *manipulator;
+  if (flag) manipulator = new Mapper(window);
+  else manipulator = new Unmapper(window);
+  activate(manipulator);
+  return manipulator->_this();
+}
+
+extern "C" KitFactory *load()
+{
+  static std::string properties[] = {"implementation", "DesktopKitImpl"};
+  return new KitFactoryImpl<DesktopKitImpl> ("IDL:Warsaw/DesktopKit:1.0", properties, 1);
+}

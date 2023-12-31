@@ -1,4 +1,4 @@
-/*$Id: Unicode.hh,v 1.1 1999/11/29 01:20:25 tobias Exp $
+/*$Id: Unicode.hh,v 1.3 2001/01/09 21:35:08 tobias Exp $
  *
  * This source file is a part of the Berlin Project.
  * Copyright (C) 1999 Tobias Hunger <Tobias_Hunger@gmx.de>
@@ -26,19 +26,19 @@
 #ifndef _Berlin_Unicode_hh
 #define _Berlin_Unicode_hh
 
-#include <Prague/Unicode/Unicode.hh>
+#include <Babylon/Babylon.hh>
 #include <Warsaw/Types.hh>
 
 namespace Unicode {
+    
+    // This is ugly but necessary since Unistring does not
+    // know iterators! So I can't do decent assigment
+    // operators :-(
+    Warsaw::Unistring to_CORBA(const Babylon::String &s);
+    Warsaw::Unichar   to_CORBA(const Babylon::Char c);
 
-  // This is ugly but necessary since Unistring does not
-  // know iterators! So I can't do decent assigment
-  // operators :-(
-  Unistring toCORBA(const Unicode::String &s);
-  Unichar   toCORBA(const Unicode::Char   &c);
-
-  Unicode::String toPrague(const Unistring & us);
-  Unicode::Char   toPrague(const Unichar   & uc);
+    Babylon::String   to_internal(const Warsaw::Unistring & us);
+    Babylon::Char     to_internal(const Warsaw::Unichar uc);
 
 }; // namespace Unicode
 

@@ -1,7 +1,7 @@
-/*$Id: SHM.hh,v 1.2 1999/04/27 20:11:11 gray Exp $
+/*$Id: SHM.hh,v 1.5 2001/01/15 02:49:18 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,21 +19,19 @@
  * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
  * MA 02139, USA.
  */
-#ifndef _SHM_hh
-#define _SHM_hh
+#ifndef _Prague_SHM_hh
+#define _Prague_SHM_hh
 
 #include <sys/types.h>
+#include <sys/ipc.h>
 
 namespace Prague
 {
 
-/* @Class{SHM}
- *
- * @Description{SHM is the interface to Unix shared memory}
- */
 struct SHM
 {
-  static int   allocate(size_t);
+  static int   allocate(key_t, size_t, int = IPC_CREAT | 0666);
+  static int   allocate(size_t, int = IPC_CREAT | 0666);
   static void  deallocate(int);
   static void *attach(int);
   static void  detach(void *);

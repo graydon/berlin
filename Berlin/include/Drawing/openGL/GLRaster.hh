@@ -1,7 +1,7 @@
-/*$Id: GLRaster.hh,v 1.4 1999/11/10 21:57:36 stefan Exp $
+/*$Id: GLRaster.hh,v 1.7 2000/08/31 18:52:32 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -27,20 +27,31 @@
 #include <Warsaw/Transform.hh>
 #include <vector>
 #include <GL/gl.h>
-class GLRaster
+
+struct GLRaster
 {
-public:
-  GLRaster(Raster_var);
-  ~GLRaster();
-  void draw();
-  Raster_var remote;
-  PixelCoord width;
-  PixelCoord height;
+  GLRaster(Warsaw::Raster_var r) : remote(Warsaw::Raster::_duplicate(r)) {}
+  Warsaw::Raster_var remote;
+  Warsaw::PixelCoord width;
+  Warsaw::PixelCoord height;
   GLuint texture;
+};
+
+struct GLTexture : GLRaster
+{
+  GLTexture(Warsaw::Raster_var);
+  ~GLTexture();
+private:
+  GLuint bind(GLint components, GLenum format, unsigned char *data);
+};
+
+struct GLImage : GLRaster
+{
+  GLImage(Warsaw::Raster_var);
+  ~GLImage();
   GLfloat s, t;
 private:
   GLuint bind(GLint components, GLenum format, unsigned char *data);
-  void unbind();
 };
 
-#endif /* _GLRaster_hh */
+#endif 

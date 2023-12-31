@@ -1,7 +1,7 @@
-/*$Id: MMap.cc,v 1.2 1999/10/15 17:59:26 gray Exp $
+/*$Id: MMap.cc,v 1.8 2001/04/13 23:26:25 oxygene2000 Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or
@@ -20,48 +20,60 @@
  * MA 02139, USA.
  */
 
+#ifdef sun
+#define _XPG4_2
+#endif
+
 #include "Prague/Sys/MMap.hh"
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <iostream>
 #include <cerrno>
 #include <cstdio>
 
+using namespace Prague;
+
 MMap::MMap(int fd, int l, int prot, int share, void *addr, off_t offset)
-  : base(MAP_FAILED), length(0)
+  : _base(MAP_FAILED), _length(0)
 {
   struct stat sb;
-  length = l > -1 ? l : fstat(fd, &sb) == -1 ? -1 : sb.st_size;
-  if (l > static_cast<int>(length))
+  _length = l > -1 ? l : fstat(fd, &sb) == -1 ? -1 : sb.st_size;
+  if (l > static_cast<int>(_length))
     {
-      length = l;
-      ftruncate(fd, length);
+      _length = l;
+      ftruncate(fd, _length);
     }
-  else if (l > 0 && l < static_cast<int>(length)) length = l;
-  base = mmap(addr, length, prot, share, fd, offset);
-  if (base == MAP_FAILED) perror("MMap::MMap");
+  else if (l > 0 && l < static_cast<int>(_length)) _length = l;
+  _base = mmap(addr, _length, prot, share, fd, offset);
+  if (_base == MAP_FAILED) perror("MMap::MMap");
 }
 
-MMap::MMap(const string &filename, int l, int prot, int share, void *addr, off_t offset)
-  : base(MAP_FAILED), length(0)
+MMap::MMap(const std::string &filename, int l, int prot, int share, void *addr, off_t offset)
+  : _base(MAP_FAILED), _length(0)
 {
   int fd = open(filename.c_str(), O_RDWR|O_CREAT, 0666);
-  struct stat sb;
-  length = fstat(fd, &sb) == -1 ? -1 : sb.st_size;
-  if (l > static_cast<int>(length))
+  if (fd == -1)
     {
-      length = l;
-      ftruncate(fd, length);
+      std::cerr << "MMap::MMap: unable to open '" << filename << '\'' << std::endl;
+      return;
     }
-  else if (l > 0 && l < static_cast<int>(length)) length = l;
-  base = mmap(addr, length, prot, share, fd, offset);
-  if (base == MAP_FAILED) perror("MMap::MMap");
+  struct stat sb;
+  _length = fstat(fd, &sb) == -1 ? -1 : sb.st_size;
+  if (l > static_cast<int>(_length))
+    {
+      _length = l;
+      ftruncate(fd, _length);
+    }
+  else if (l > 0 && l < static_cast<int>(_length)) _length = l;
+  _base = mmap(addr, _length, prot, share, fd, offset);
+  if (_base == MAP_FAILED) std::perror("MMap::MMap");
   close(fd);
 }
 
-MMap::~MMap() { if (base != MAP_FAILED) munmap(base, length);}
-void MMap::sync(ssize_t len, bool wait) { msync(base, len < 0 ? length : len, wait ? MS_SYNC : MS_ASYNC);}
+MMap::~MMap() { if (_base != MAP_FAILED) munmap(_base, _length);}
+void MMap::sync(ssize_t len, bool wait) { msync(_base, len < 0 ? _length : len, wait ? MS_SYNC : MS_ASYNC);}
 void MMap::sync(void *addr, size_t len, bool wait) { msync(addr, len, wait ? MS_SYNC : MS_ASYNC);}
-void MMap::protect(ssize_t len, int prot) { mprotect(base, len < 0 ? length : len, prot);}
+void MMap::protect(ssize_t len, int prot) { mprotect(_base, len < 0 ? _length : len, prot);}
 void MMap::protect(void *addr, size_t len, int prot) { mprotect(addr, len, prot);}

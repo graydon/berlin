@@ -1,7 +1,7 @@
-/*$Id: Time.cc,v 1.3 1999/05/19 17:01:24 gray Exp $
+/*$Id: Time.cc,v 1.4 2000/09/23 21:18:36 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * This library is free software; you can redistribute it and/or

@@ -1,7 +1,7 @@
-/*$Id: xdrbuf.cc,v 1.2 1999/04/27 20:09:49 gray Exp $
+/*$Id: xdrbuf.cc,v 1.3 2000/09/23 21:18:36 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
  *
  * this code is based on binio from Dietmar Kuehl:

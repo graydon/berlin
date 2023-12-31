@@ -1,13 +1,8 @@
-/*$Id: MonoGraphic.hh,v 1.10 1999/09/30 17:23:33 gray Exp $
+/*$Id: MonoGraphic.hh,v 1.14 2000/09/19 21:11:03 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -35,20 +30,24 @@ public:
   MonoGraphic();
   virtual ~MonoGraphic();
 
-  virtual Graphic_ptr body();
-  virtual void body(Graphic_ptr);
-  virtual void append(Graphic_ptr);
-  virtual void prepend(Graphic_ptr);
+  virtual Warsaw::Graphic_ptr body();
+  virtual void body(Warsaw::Graphic_ptr);
+  virtual void append_graphic(Warsaw::Graphic_ptr);
+  virtual void prepend_graphic(Warsaw::Graphic_ptr);
+  virtual void remove_graphic(Warsaw::Tag);
+  virtual void remove_child_graphic(Warsaw::Tag);
+  virtual Warsaw::Graphic::Iterator_ptr first_child_graphic();
+  virtual Warsaw::Graphic::Iterator_ptr last_child_graphic();
 
-  virtual Transform_ptr transformation();
-  virtual void request(Requisition &);
-  virtual void extension(const Allocation::Info &, Region_ptr);
-  virtual void shape(Region_ptr);
+  virtual Warsaw::Transform_ptr transformation();
+  virtual void request(Warsaw::Graphic::Requisition &);
+  virtual void extension(const Warsaw::Allocation::Info &, Warsaw::Region_ptr);
+  virtual void shape(Warsaw::Region_ptr);
 
-  virtual void traverse(Traversal_ptr);
+  virtual void traverse(Warsaw::Traversal_ptr);
 protected:
-  Graphic_var child;
-  Prague::Mutex childMutex;
+  Edge          _child;
+  Prague::Mutex _mutex;
 };
 
-#endif /* _MonoGraphic_hh */
+#endif 

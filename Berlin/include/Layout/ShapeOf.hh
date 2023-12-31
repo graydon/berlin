@@ -1,13 +1,8 @@
-/*$Id: ShapeOf.hh,v 1.1 1999/02/19 14:03:56 gray Exp $
+/*$Id: ShapeOf.hh,v 1.3 2000/08/31 18:52:32 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on code from Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -32,14 +27,14 @@
 class ShapeOf : public GraphicImpl
 {
 public:
-  ShapeOf(Graphic_ptr, Graphic_ptr, Graphic_ptr);
+  ShapeOf(Warsaw::Graphic_ptr, Warsaw::Graphic_ptr, Warsaw::Graphic_ptr);
   virtual ~ShapeOf();
 
-  virtual void request(Requisition &);
+  virtual void request(Warsaw::Graphic::Requisition &);
 private:
-  Graphic_ptr x;
-  Graphic_ptr y;
-  Graphic_ptr z;
+  Warsaw::Graphic_ptr x;
+  Warsaw::Graphic_ptr y;
+  Warsaw::Graphic_ptr z;
 };
 
-#endif /* _ShapeOf_hh */
+#endif

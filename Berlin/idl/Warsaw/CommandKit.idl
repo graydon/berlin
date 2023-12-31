@@ -1,0 +1,62 @@
+/*$Id: CommandKit.idl,v 1.7 2000/12/21 21:05:43 stefan Exp $
+ *
+ * This source file is a part of the Berlin Project.
+ * Copyright (C) 1998 Graydon Hoare <graydon@pobox.com> 
+ * Copyright (C) 1999, 2000 Stefan Seefeld <stefan@berlin-consortium.org> 
+ * http://www.berlin-consortium.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 675 Mass Ave, Cambridge,
+ * MA 02139, USA.
+ */
+#ifndef _Warsaw_CommandKit_idl
+#define _Warsaw_CommandKit_idl
+
+#include <Warsaw/Types.idl>
+#include <Warsaw/Kit.idl>
+#include <Warsaw/Command.idl>
+#include <Warsaw/Telltale.idl>
+#include <Warsaw/Selection.idl>
+
+module Warsaw
+{
+  interface BoundedValue;
+  interface BoundedRange;
+  interface TextBuffer;
+  interface StreamBuffer;
+  interface Command;
+  
+  //. the command kit is a collection of strategy objects. they form the
+  //. basis of any control protocol between widgets and subjects. The
+  //. kit also encapsulates the constructors for command dispatchers
+  //. (a.k.a. reactors), which you can think of as threading strategies
+  //. if that suits you.
+  interface CommandKit : Kit
+    {
+      Command debugger(in Command c, in string s);
+      Command log(in string t);
+      MacroCommand composite();
+      TelltaleConstraint exclusive(in Telltale::Mask m);
+      TelltaleConstraint selection_required();
+      Telltale     normal_telltale();
+      Telltale     constrained_telltale(in TelltaleConstraint c);
+      Selection    group(in Selection::Policy p);
+      BoundedValue bvalue(in Coord l, in Coord u, in Coord v, in Coord s, in Coord p);
+      BoundedRange brange(in Coord l, in Coord u, in Coord lv, in Coord uv, in Coord s, in Coord p);
+      TextBuffer   text();
+      StreamBuffer stream(in long buffer);
+    };
+};
+
+#endif

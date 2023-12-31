@@ -1,13 +1,8 @@
-/*$Id: Deck.cc,v 1.8 1999/09/13 21:22:07 gray Exp $
+/*$Id: Deck.cc,v 1.13 2000/11/14 21:36:37 stefan Exp $
  *
  * This source file is a part of the Berlin Project.
- * Copyright (C) 1999 Stefan Seefeld <seefelds@magellan.umontreal.ca> 
+ * Copyright (C) 1999 Stefan Seefeld <stefan@berlin-consortium.org> 
  * http://www.berlin-consortium.org
- *
- * this code is based on code from Fresco.
- * Copyright (c) 1987-91 Stanford University
- * Copyright (c) 1991-94 Silicon Graphics, Inc.
- * Copyright (c) 1993-94 Fujitsu, Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -26,38 +21,44 @@
  */
 #include "Layout/Deck.hh"
 #include "Layout/LayoutManager.hh"
-#include "Warsaw/Traversal.hh"
-#include "Warsaw/Transform.hh"
+#include <Warsaw/Traversal.hh>
+#include <Warsaw/Transform.hh>
 
-Deck::Deck() : requested(false) {}
+using namespace Warsaw;
+
+Deck::Deck() : _requested(false) {}
 Deck::~Deck() {}
 
-void Deck::request(Requisition &r)
+void Deck::request(Warsaw::Graphic::Requisition &r)
 {
-  if (!requested)
+  if (!_requested)
     {
-      GraphicImpl::initRequisition(requisition);
-      long n = children.size();
+      GraphicImpl::init_requisition(_requisition);
+      long n = _children.size();
       if (n > 0)
 	{
-	  Graphic::Requisition *r = childrenRequests();
+	  Warsaw::Graphic::Requisition *r = children_requests();
 	  LayoutAlign x(xaxis);
-	  x.request(n, r, requisition);
+	  x.request(n, r, _requisition);
 	  LayoutAlign y(yaxis);
-	  y.request(n, r, requisition);
-	  pool.deallocate(r);
+	  y.request(n, r, _requisition);
+	  _pool.deallocate(r);
 	}
-      requested = true;
+      _requested = true;
     }
-  r = requisition;
+  r = _requisition;
 }
 
 void Deck::extension(const Allocation::Info &a, Region_ptr r)
 {
-  if (size_t n = children.size()) children[n - 1].first->extension(a, r);
+  if (size_t n = _children.size()) _children[n - 1].peer->extension(a, r);
 }
 
 void Deck::traverse(Traversal_ptr t)
 {
-  if (size_t n = children.size()) t->traverseChild(children[n - 1].first, children[n - 1].second, Region::_nil(), Transform::_nil());
+  size_t n = _children.size ();
+  if (n == 0) return;
+  try { t->traverse_child (_children [n-1].peer, _children [n-1].localId, Region::_nil(), Transform::_nil());}
+  catch (const CORBA::OBJECT_NOT_EXIST &) { _children [n-1].peer = Warsaw::Graphic::_nil();}
+  catch (const CORBA::COMM_FAILURE &) { _children [n-1].peer = Warsaw::Graphic::_nil();}
 }
